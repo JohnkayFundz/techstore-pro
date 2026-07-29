@@ -1,0 +1,332 @@
+/* ==========================================================
+   TECHSTORE PRO
+   CATEGORIES SECTION
+========================================================== */
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+.categories-section{
+
+padding:6rem 0;
+
+background:var(--surface-soft);
+
+}
+
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.categories-header{
+
+text-align:center;
+
+max-width:700px;
+
+margin:0 auto 3rem;
+
+}
+
+
+
+.categories-header h2{
+
+font-size:clamp(2rem,4vw,3rem);
+
+font-weight:900;
+
+margin-bottom:1rem;
+
+}
+
+
+
+.categories-header p{
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   CATEGORY GRID
+========================================================== */
+
+
+.categories-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(4,1fr);
+
+gap:1.5rem;
+
+}
+
+
+
+/* ==========================================================
+   CATEGORY CARD
+========================================================== */
+
+
+.category-card{
+
+position:relative;
+
+padding:2rem;
+
+background:var(--surface);
+
+border:1px solid var(--border-color);
+
+border-radius:24px;
+
+text-align:center;
+
+overflow:hidden;
+
+transition:
+
+transform var(--transition-normal),
+
+box-shadow var(--transition-normal);
+
+}
+
+
+
+.category-card::before{
+
+content:"";
+
+position:absolute;
+
+width:120px;
+
+height:120px;
+
+top:-50px;
+
+right:-50px;
+
+border-radius:50%;
+
+background:rgba(37,99,235,.08);
+
+}
+
+
+
+.category-card:hover{
+
+transform:translateY(-10px);
+
+box-shadow:var(--shadow-lg);
+
+}
+
+
+
+/* ==========================================================
+   ICON
+========================================================== */
+
+
+.category-icon{
+
+position:relative;
+
+width:75px;
+
+height:75px;
+
+margin:0 auto 1.2rem;
+
+display:grid;
+
+place-items:center;
+
+border-radius:22px;
+
+background:
+
+rgba(37,99,235,.12);
+
+color:var(--primary);
+
+font-size:2rem;
+
+transition:.35s ease;
+
+}
+
+
+
+.category-card:hover .category-icon{
+
+transform:
+
+rotate(-8deg)
+
+scale(1.1);
+
+}
+
+
+
+/* ==========================================================
+   TEXT
+========================================================== */
+
+
+.category-card h3{
+
+font-size:1.3rem;
+
+font-weight:800;
+
+margin-bottom:.5rem;
+
+}
+
+
+
+.category-card p{
+
+font-size:.95rem;
+
+color:var(--text-light);
+
+margin-bottom:1rem;
+
+}
+
+
+
+/* ==========================================================
+   LINK
+========================================================== */
+
+
+.category-link{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:.4rem;
+
+color:var(--primary);
+
+font-weight:700;
+
+}
+
+
+
+.category-link:hover{
+
+gap:.8rem;
+
+}
+
+
+
+/* ==========================================================
+   FEATURED CATEGORY
+========================================================== */
+
+
+.category-card.featured{
+
+border:
+
+2px solid var(--primary);
+
+}
+
+
+
+.category-card.featured::after{
+
+content:"Featured";
+
+position:absolute;
+
+top:1rem;
+
+right:1rem;
+
+padding:.3rem .7rem;
+
+border-radius:999px;
+
+font-size:.7rem;
+
+font-weight:800;
+
+background:var(--primary);
+
+color:white;
+
+}
+
+
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+
+[data-theme="dark"] .categories-section{
+
+background:#020617;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+
+@media(max-width:1024px){
+
+.categories-grid{
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:600px){
+
+.categories-section{
+
+padding:4rem 1rem;
+
+}
+
+
+.categories-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}

@@ -1,0 +1,419 @@
+/* =====================================================
+   PRODUCT GALLERY
+===================================================== */
+
+.product-gallery{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:100%;
+}
+
+/* =====================================================
+   MAIN IMAGE
+===================================================== */
+
+.gallery-main{
+    position:relative;
+    width:100%;
+    height:550px;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.gallery-main-image{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    padding:30px;
+    transition:transform .35s ease;
+    cursor:zoom-in;
+}
+
+/* Hover Zoom */
+
+.gallery-main:hover .gallery-main-image{
+    transform:scale(1.08);
+}
+
+/* =====================================================
+   IMAGE OVERLAY
+===================================================== */
+
+.gallery-main::after{
+    content:"🔍";
+    position:absolute;
+    right:18px;
+    bottom:18px;
+    width:44px;
+    height:44px;
+    background:rgba(255,255,255,.92);
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:1.2rem;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    pointer-events:none;
+    opacity:0;
+    transition:.3s;
+}
+
+.gallery-main:hover::after{
+    opacity:1;
+}
+
+/* =====================================================
+   LOADING EFFECT
+===================================================== */
+
+.gallery-main-image{
+    animation:fadeImage .4s ease;
+}
+
+@keyframes fadeImage{
+
+    from{
+        opacity:0;
+        transform:scale(.96);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}/* =====================================================
+   THUMBNAIL GALLERY
+===================================================== */
+
+.gallery-thumbnails{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+/* =====================================================
+   THUMBNAIL BUTTON
+===================================================== */
+
+.thumbnail{
+    width:90px;
+    height:90px;
+    border:2px solid #e5e7eb;
+    border-radius:16px;
+    background:#fff;
+    cursor:pointer;
+    overflow:hidden;
+    padding:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .3s ease;
+}
+
+.thumbnail:hover{
+    transform:translateY(-4px);
+    border-color:#2563eb;
+    box-shadow:0 10px 24px rgba(37,99,235,.15);
+}
+
+.thumbnail:active{
+    transform:scale(.96);
+}
+
+/* =====================================================
+   THUMBNAIL IMAGE
+===================================================== */
+
+.thumbnail img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transition:transform .3s ease;
+}
+
+.thumbnail:hover img{
+    transform:scale(1.08);
+}
+
+/* =====================================================
+   ACTIVE THUMBNAIL
+===================================================== */
+
+.thumbnail.active{
+    border-color:#2563eb;
+    background:#eff6ff;
+    box-shadow:0 12px 30px rgba(37,99,235,.25);
+}
+
+.thumbnail.active img{
+    transform:scale(1.05);
+}
+
+/* =====================================================
+   FOCUS STATE
+===================================================== */
+
+.thumbnail:focus-visible{
+    outline:3px solid #93c5fd;
+    outline-offset:4px;
+}
+
+/* =====================================================
+   SMOOTH TRANSITIONS
+===================================================== */
+
+.thumbnail,
+.thumbnail img,
+.gallery-main-image{
+    transition:all .3s ease;
+}/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+
+/* Large Tablets */
+
+@media (max-width: 1024px){
+
+    .gallery-main{
+        height:460px;
+    }
+
+    .thumbnail{
+        width:82px;
+        height:82px;
+    }
+
+}
+
+/* Tablets */
+
+@media (max-width: 768px){
+
+    .product-gallery{
+        gap:16px;
+    }
+
+    .gallery-main{
+        height:380px;
+        border-radius:16px;
+    }
+
+    .gallery-main-image{
+        padding:20px;
+    }
+
+    .gallery-thumbnails{
+        gap:12px;
+    }
+
+    .thumbnail{
+        width:72px;
+        height:72px;
+        border-radius:12px;
+        padding:5px;
+    }
+
+    .gallery-main::after{
+        width:40px;
+        height:40px;
+        font-size:1rem;
+        right:14px;
+        bottom:14px;
+    }
+
+}
+
+/* Mobile */
+
+@media (max-width: 480px){
+
+    .product-gallery{
+        gap:14px;
+    }
+
+    .gallery-main{
+        height:300px;
+        border-radius:14px;
+    }
+
+    .gallery-main-image{
+        padding:15px;
+    }
+
+    .gallery-thumbnails{
+        gap:10px;
+        justify-content:center;
+    }
+
+    .thumbnail{
+        width:60px;
+        height:60px;
+        border-radius:10px;
+        padding:4px;
+    }
+
+    .gallery-main::after{
+        width:36px;
+        height:36px;
+        font-size:.9rem;
+        right:10px;
+        bottom:10px;
+    }
+
+}
+
+/* Small Phones */
+
+@media (max-width: 360px){
+
+    .gallery-main{
+        height:260px;
+    }
+
+    .thumbnail{
+        width:54px;
+        height:54px;
+    }
+
+}/* =====================================================
+   DARK MODE
+===================================================== */
+
+.dark .gallery-main{
+    background:#1f2937;
+    border-color:#374151;
+}
+
+.dark .thumbnail{
+    background:#111827;
+    border-color:#374151;
+}
+
+.dark .thumbnail.active{
+    background:#1e3a8a;
+    border-color:#60a5fa;
+}
+
+.dark .gallery-main::after{
+    background:rgba(31,41,55,.9);
+    color:#fff;
+}
+
+/* =====================================================
+   ACCESSIBILITY
+===================================================== */
+
+.gallery-main-image,
+.thumbnail{
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+.thumbnail:focus-visible{
+    outline:3px solid #93c5fd;
+    outline-offset:4px;
+}
+
+@media (prefers-reduced-motion: reduce){
+
+    .gallery-main-image,
+    .thumbnail,
+    .thumbnail img{
+        transition:none;
+        animation:none;
+    }
+
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes galleryFade{
+
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.product-gallery{
+    animation:galleryFade .45s ease;
+}
+
+.thumbnail{
+    animation:galleryFade .35s ease;
+}
+
+/* =====================================================
+   SCROLLBAR (if thumbnails overflow)
+===================================================== */
+
+.gallery-thumbnails::-webkit-scrollbar{
+    height:8px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-track{
+    background:#f3f4f6;
+    border-radius:999px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:999px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-thumb:hover{
+    background:#94a3b8;
+}
+
+/* =====================================================
+   OPTIONAL HORIZONTAL SCROLL
+===================================================== */
+
+@media (max-width:768px){
+
+    .gallery-thumbnails{
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        padding-bottom:6px;
+        justify-content:flex-start;
+        scroll-behavior:smooth;
+    }
+
+    .thumbnail{
+        flex:0 0 auto;
+    }
+
+}
+
+/* =====================================================
+   FINAL POLISH
+===================================================== */
+
+.gallery-main,
+.thumbnail,
+.thumbnail img{
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease,
+        background-color .3s ease,
+        opacity .3s ease;
+}

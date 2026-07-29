@@ -1,0 +1,60 @@
+:root{
+
+
+    --primary:#2563eb;
+
+    --secondary:#64748b;
+
+
+    --success:#16a34a;
+
+    --danger:#dc2626;
+
+
+    --warning:#f59e0b;
+
+
+    --bg:#f8fafc;
+
+    --surface:#ffffff;
+
+
+    --text:#0f172a;
+
+    --text-secondary:#64748b;
+
+
+    --border:#e2e8f0;
+
+
+    --shadow:
+    0 10px 30px
+    rgba(0,0,0,.08);
+
+
+    --radius:16px;
+
+
+}
+
+
+
+.dark{
+
+
+    --bg:#020617;
+
+
+    --surface:#0f172a;
+
+
+    --text:#f8fafc;
+
+
+    --text-secondary:#94a3b8;
+
+
+    --border:#1e293b;
+
+
+}

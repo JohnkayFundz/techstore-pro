@@ -1,0 +1,473 @@
+/* ==========================================================
+   TECHSTORE PRO
+   PRODUCTS PAGE
+========================================================== */
+
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+
+.products-page{
+
+padding:6rem 0;
+
+background:var(--background);
+
+}
+
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+
+.products-header{
+
+max-width:750px;
+
+margin:0 auto 3rem;
+
+text-align:center;
+
+}
+
+
+
+.products-header h1{
+
+font-size:
+
+clamp(2.5rem,5vw,4rem);
+
+font-weight:900;
+
+margin-bottom:1rem;
+
+}
+
+
+
+.products-header p{
+
+color:var(--text-light);
+
+font-size:1.05rem;
+
+}
+
+
+
+/* ==========================================================
+   TOOLBAR
+========================================================== */
+
+
+.products-toolbar{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:1rem;
+
+margin-bottom:2rem;
+
+padding:1.2rem;
+
+background:var(--surface);
+
+border:
+
+1px solid var(--border-color);
+
+border-radius:20px;
+
+}
+
+
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+
+.products-search{
+
+position:relative;
+
+flex:1;
+
+max-width:420px;
+
+}
+
+
+
+.products-search input{
+
+width:100%;
+
+padding:
+
+1rem 1rem 1rem 3rem;
+
+border-radius:14px;
+
+border:
+
+1px solid var(--border-color);
+
+background:var(--surface);
+
+color:var(--text);
+
+}
+
+
+
+.products-search svg{
+
+position:absolute;
+
+left:1rem;
+
+top:50%;
+
+transform:translateY(-50%);
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   SORT
+========================================================== */
+
+
+.products-sort{
+
+padding:
+
+.9rem 1rem;
+
+border-radius:14px;
+
+border:
+
+1px solid var(--border-color);
+
+background:var(--surface);
+
+color:var(--text);
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
+
+
+/* ==========================================================
+   CATEGORY FILTER
+========================================================== */
+
+
+.category-filters{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:.8rem;
+
+margin-bottom:3rem;
+
+justify-content:center;
+
+}
+
+
+
+.category-filter-btn{
+
+padding:
+
+.7rem 1.2rem;
+
+border-radius:999px;
+
+border:
+
+1px solid var(--border-color);
+
+background:transparent;
+
+color:var(--text-light);
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.3s ease;
+
+}
+
+
+
+.category-filter-btn:hover,
+.category-filter-btn.active{
+
+background:var(--primary);
+
+border-color:var(--primary);
+
+color:white;
+
+}
+
+
+
+/* ==========================================================
+   PRODUCTS GRID
+========================================================== */
+
+
+.products-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(4,1fr);
+
+gap:1.5rem;
+
+}
+
+
+
+/* ==========================================================
+   RESULTS COUNT
+========================================================== */
+
+
+.products-result-count{
+
+margin-bottom:1.5rem;
+
+font-weight:700;
+
+color:var(--text);
+
+}
+
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+
+.products-empty{
+
+padding:5rem 2rem;
+
+text-align:center;
+
+background:var(--surface);
+
+border:
+
+1px solid var(--border-color);
+
+border-radius:24px;
+
+}
+
+
+
+.products-empty-icon{
+
+font-size:4rem;
+
+margin-bottom:1rem;
+
+}
+
+
+
+.products-empty h2{
+
+font-size:2rem;
+
+font-weight:900;
+
+margin-bottom:.8rem;
+
+}
+
+
+
+.products-empty p{
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   PAGINATION
+========================================================== */
+
+
+.pagination{
+
+display:flex;
+
+justify-content:center;
+
+gap:.6rem;
+
+margin-top:3rem;
+
+}
+
+
+
+.pagination button{
+
+width:42px;
+
+height:42px;
+
+border-radius:12px;
+
+border:
+
+1px solid var(--border-color);
+
+background:var(--surface);
+
+color:var(--text);
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.3s ease;
+
+}
+
+
+
+.pagination button:hover,
+.pagination button.active{
+
+background:var(--primary);
+
+border-color:var(--primary);
+
+color:white;
+
+}
+
+
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+
+[data-theme="dark"] .products-toolbar,
+[data-theme="dark"] .products-empty{
+
+background:#0f172a;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+
+@media(max-width:1100px){
+
+.products-grid{
+
+grid-template-columns:
+
+repeat(3,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:900px){
+
+.products-toolbar{
+
+flex-direction:column;
+
+align-items:stretch;
+
+}
+
+
+
+.products-search{
+
+max-width:none;
+
+}
+
+
+
+.products-grid{
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:600px){
+
+.products-page{
+
+padding:4rem 1rem;
+
+}
+
+
+
+.products-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+.category-filters{
+
+justify-content:flex-start;
+
+}
+
+}

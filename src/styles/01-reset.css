@@ -1,0 +1,155 @@
+/* ==========================================================
+   TECHSTORE PRO
+   CSS RESET
+========================================================== */
+
+
+/* BOX MODEL */
+
+*,
+*::before,
+*::after{
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+}
+
+
+
+/* DOCUMENT */
+
+html{
+
+scroll-behavior:smooth;
+
+font-size:16px;
+
+}
+
+
+
+body{
+
+min-height:100vh;
+
+}
+
+
+
+/* MEDIA */
+
+img,
+picture,
+video,
+canvas,
+svg{
+
+display:block;
+
+max-width:100%;
+
+}
+
+
+
+/* FORM ELEMENTS */
+
+input,
+button,
+textarea,
+select{
+
+font:inherit;
+
+}
+
+
+
+/* BUTTON RESET */
+
+button{
+
+cursor:pointer;
+
+}
+
+
+
+/* LINKS */
+
+a{
+
+text-decoration:none;
+
+color:inherit;
+
+}
+
+
+
+/* LISTS */
+
+ul,
+ol{
+
+list-style:none;
+
+}
+
+
+
+/* TABLE */
+
+table{
+
+border-collapse:collapse;
+
+border-spacing:0;
+
+}
+
+
+
+/* HEADINGS */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+
+font-weight:inherit;
+
+line-height:1.2;
+
+}
+
+
+
+/* PARAGRAPHS */
+
+p{
+
+line-height:1.7;
+
+}
+
+
+
+/* REMOVE DEFAULT */
+
+button,
+input,
+textarea,
+select{
+
+outline:none;
+
+}
+
+

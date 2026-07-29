@@ -1,0 +1,259 @@
+/* ==========================================================
+   TECHSTORE PRO
+   DESIGN SYSTEM VARIABLES
+========================================================== */
+
+
+/* ==========================================================
+   ROOT LIGHT THEME
+========================================================== */
+
+:root{
+
+/* BRAND COLORS */
+
+--primary:#2563eb;
+
+--primary-hover:#1d4ed8;
+
+--secondary:#7c3aed;
+
+--accent:#06b6d4;
+
+
+/* STATUS COLORS */
+
+--success:#22c55e;
+
+--warning:#f59e0b;
+
+--danger:#ef4444;
+
+
+
+/* BACKGROUNDS */
+
+--background:#f8fafc;
+
+--surface:#ffffff;
+
+--surface-soft:#f1f5f9;
+
+
+
+/* TEXT COLORS */
+
+--text:#0f172a;
+
+--text-light:#64748b;
+
+--text-muted:#94a3b8;
+
+
+
+/* BORDERS */
+
+--border-color:#e2e8f0;
+
+--border-light:#f1f5f9;
+
+
+
+/* SHADOWS */
+
+--shadow-sm:
+
+0 2px 8px rgba(15,23,42,.06);
+
+
+--shadow-md:
+
+0 10px 30px rgba(15,23,42,.1);
+
+
+--shadow-lg:
+
+0 20px 50px rgba(15,23,42,.15);
+
+
+
+/* GRADIENTS */
+
+--hero-gradient:
+
+linear-gradient(
+135deg,
+#2563eb,
+#7c3aed
+);
+
+
+--primary-gradient:
+
+linear-gradient(
+135deg,
+#2563eb,
+#06b6d4
+);
+
+
+
+/* BORDER RADIUS */
+
+--radius-sm:8px;
+
+--radius-md:14px;
+
+--radius-lg:24px;
+
+--radius-xl:32px;
+
+
+
+/* SPACING SYSTEM */
+
+--space-1:.25rem;
+
+--space-2:.5rem;
+
+--space-3:.75rem;
+
+--space-4:1rem;
+
+--space-5:1.25rem;
+
+--space-6:1.5rem;
+
+--space-8:2rem;
+
+--space-10:2.5rem;
+
+--space-12:3rem;
+
+--space-16:4rem;
+
+--space-20:5rem;
+
+
+
+/* TYPOGRAPHY */
+
+--font-primary:
+
+"Inter",
+"Segoe UI",
+Arial,
+sans-serif;
+
+
+
+--font-display:
+
+"Inter",
+sans-serif;
+
+
+
+--container-width:1200px;
+
+
+
+/* TRANSITIONS */
+
+--transition-fast:.2s ease;
+
+--transition-normal:.35s ease;
+
+--transition-slow:.5s ease;
+
+
+
+/* Z INDEX */
+
+--z-dropdown:100;
+
+--z-navbar:1000;
+
+--z-modal:2000;
+
+--z-toast:3000;
+
+}
+
+
+
+/* ==========================================================
+   DARK THEME
+========================================================== */
+
+
+[data-theme="dark"]{
+
+
+--background:#020617;
+
+--surface:#0f172a;
+
+--surface-soft:#1e293b;
+
+
+
+--text:#f8fafc;
+
+--text-light:#cbd5e1;
+
+--text-muted:#94a3b8;
+
+
+
+--border-color:#334155;
+
+--border-light:#1e293b;
+
+
+
+--shadow-sm:
+
+0 2px 8px rgba(0,0,0,.3);
+
+
+--shadow-md:
+
+0 10px 30px rgba(0,0,0,.4);
+
+
+--shadow-lg:
+
+0 20px 50px rgba(0,0,0,.5);
+
+
+
+--hero-gradient:
+
+linear-gradient(
+135deg,
+#020617,
+#1e40af
+);
+
+
+}
+
+
+
+/* ==========================================================
+   GLOBAL TRANSITION
+========================================================== */
+
+
+*{
+
+transition:
+
+background-color var(--transition-normal),
+
+border-color var(--transition-normal),
+
+color var(--transition-normal);
+
+}

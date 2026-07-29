@@ -1,0 +1,70 @@
+/* =====================================================
+   BRANDS
+===================================================== */
+
+.brands {
+  padding: 5rem 0;
+  background: var(--surface);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.section-header p {
+  color: var(--text-light);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+}
+
+.brand-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 2rem;
+  text-align: center;
+  transition: all .35s ease;
+  cursor: pointer;
+}
+
+.brand-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,.08);
+}
+
+.brand-logo {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.brand-card h3 {
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+@media (max-width:768px) {
+  .brands {
+    padding: 4rem 0;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .brands-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

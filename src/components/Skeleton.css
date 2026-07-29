@@ -1,0 +1,125 @@
+/* =====================================================
+   SKELETON LOADER
+===================================================== */
+
+.skeleton {
+
+    position:relative;
+
+    display:block;
+
+    overflow:hidden;
+
+    background:#e5e7eb;
+
+}
+
+
+
+
+
+/* SHIMMER */
+
+.skeleton::after {
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    transform:translateX(-100%);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.6),
+            transparent
+        );
+
+    animation:
+        skeleton-loading 1.4s infinite;
+
+}
+
+
+
+
+
+@keyframes skeleton-loading {
+
+    100% {
+
+        transform:translateX(100%);
+
+    }
+
+}
+
+
+
+
+
+
+
+/* =====================================================
+   APP DARK MODE
+===================================================== */
+
+
+body.dark .skeleton {
+
+    background:#334155;
+
+}
+
+
+
+body.dark .skeleton::after {
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.08),
+            transparent
+        );
+
+}
+
+
+
+
+
+
+
+/* =====================================================
+   SYSTEM DARK MODE FALLBACK
+===================================================== */
+
+
+@media (prefers-color-scheme:dark) {
+
+
+    .skeleton {
+
+        background:#2f3542;
+
+    }
+
+
+
+    .skeleton::after {
+
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,.08),
+                transparent
+            );
+
+    }
+
+}

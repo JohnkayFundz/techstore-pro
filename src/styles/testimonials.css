@@ -1,0 +1,364 @@
+/* ==========================================================
+   TECHSTORE PRO
+   TESTIMONIALS SECTION
+========================================================== */
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+.testimonials-section{
+
+padding:6rem 0;
+
+background:var(--surface-soft);
+
+}
+
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+
+.testimonials-header{
+
+max-width:700px;
+
+margin:0 auto 3rem;
+
+text-align:center;
+
+}
+
+
+
+.testimonials-header h2{
+
+font-size:clamp(2rem,4vw,3rem);
+
+font-weight:900;
+
+margin-bottom:1rem;
+
+}
+
+
+
+.testimonials-header p{
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   GRID
+========================================================== */
+
+
+.testimonials-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(3,1fr);
+
+gap:2rem;
+
+}
+
+
+
+/* ==========================================================
+   TESTIMONIAL CARD
+========================================================== */
+
+
+.testimonial-card{
+
+position:relative;
+
+padding:2rem;
+
+background:var(--surface);
+
+border:
+
+1px solid var(--border-color);
+
+border-radius:24px;
+
+transition:
+
+transform var(--transition-normal),
+
+box-shadow var(--transition-normal);
+
+}
+
+
+
+.testimonial-card:hover{
+
+transform:translateY(-8px);
+
+box-shadow:var(--shadow-lg);
+
+}
+
+
+
+/* ==========================================================
+   QUOTE ICON
+========================================================== */
+
+
+.testimonial-quote{
+
+position:absolute;
+
+top:1.5rem;
+
+right:1.5rem;
+
+font-size:3rem;
+
+color:rgba(37,99,235,.12);
+
+}
+
+
+
+/* ==========================================================
+   STARS
+========================================================== */
+
+
+.testimonial-rating{
+
+display:flex;
+
+gap:.3rem;
+
+margin-bottom:1.2rem;
+
+color:#f59e0b;
+
+font-size:1.1rem;
+
+}
+
+
+
+/* ==========================================================
+   MESSAGE
+========================================================== */
+
+
+.testimonial-text{
+
+font-size:1rem;
+
+line-height:1.8;
+
+color:var(--text-light);
+
+margin-bottom:1.5rem;
+
+}
+
+
+
+/* ==========================================================
+   USER
+========================================================== */
+
+
+.testimonial-user{
+
+display:flex;
+
+align-items:center;
+
+gap:1rem;
+
+}
+
+
+
+.testimonial-avatar{
+
+width:60px;
+
+height:60px;
+
+border-radius:50%;
+
+overflow:hidden;
+
+flex-shrink:0;
+
+}
+
+
+
+.testimonial-avatar img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
+}
+
+
+
+.testimonial-name{
+
+font-weight:800;
+
+color:var(--text);
+
+margin-bottom:.2rem;
+
+}
+
+
+
+.testimonial-role{
+
+font-size:.9rem;
+
+color:var(--text-muted);
+
+}
+
+
+
+/* ==========================================================
+   VERIFIED BADGE
+========================================================== */
+
+
+.verified-badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:.3rem;
+
+margin-top:.5rem;
+
+font-size:.75rem;
+
+font-weight:700;
+
+color:var(--success);
+
+}
+
+
+
+/* ==========================================================
+   TRUST SUMMARY
+========================================================== */
+
+
+.review-summary{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:2rem;
+
+margin-top:3rem;
+
+}
+
+
+
+.review-score{
+
+font-size:3rem;
+
+font-weight:900;
+
+color:var(--text);
+
+}
+
+
+
+.review-stars{
+
+color:#f59e0b;
+
+}
+
+
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+
+[data-theme="dark"] .testimonials-section{
+
+background:#020617;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+
+@media(max-width:1024px){
+
+.testimonials-grid{
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:700px){
+
+.testimonials-section{
+
+padding:4rem 1rem;
+
+}
+
+
+.testimonials-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+.review-summary{
+
+flex-direction:column;
+
+}
+
+}

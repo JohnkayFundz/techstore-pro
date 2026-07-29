@@ -1,0 +1,169 @@
+/* ==========================================================
+   ORDER CARD
+========================================================== */
+
+.order-card {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+body.dark .order-card {
+    background: var(--gray-900);
+    border-color: var(--gray-700);
+}
+
+/* ==========================================================
+   IMAGE
+========================================================== */
+
+.order-image {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+}
+
+.order-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* ==========================================================
+   CONTENT
+========================================================== */
+
+.order-content {
+    flex: 1;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.order-header h3 {
+    font-size: 1.25rem;
+    color: var(--gray-900);
+}
+
+body.dark .order-header h3 {
+    color: var(--gray-100);
+}
+
+.order-content p {
+    margin: 0.5rem 0;
+    color: var(--gray-600);
+}
+
+body.dark .order-content p {
+    color: var(--gray-300);
+}
+
+/* ==========================================================
+   STATUS BADGES
+========================================================== */
+
+.order-status {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.order-status.delivered {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.order-status.shipped {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.order-status.processing {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.order-status.pending {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.order-status.cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.order-footer h2 {
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.btn-primary {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+    .order-card {
+        flex-direction: column;
+    }
+
+    .order-image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .order-header,
+    .order-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+}

@@ -1,0 +1,96 @@
+/* ===========================================
+   PROMO BANNER
+=========================================== */
+
+.promo-banner {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  overflow: hidden;
+}
+
+.promo-banner .container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.promo-badge {
+  display: inline-block;
+  padding: .6rem 1rem;
+  background: rgba(255,255,255,.15);
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.promo-content h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.promo-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  opacity: .95;
+  max-width: 650px;
+  margin-bottom: 2rem;
+}
+
+.promo-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.promo-image {
+  display: flex;
+  justify-content: center;
+}
+
+.promo-circle {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  animation: floatPromo 4s ease-in-out infinite;
+}
+
+@keyframes floatPromo {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@media (max-width: 992px) {
+  .promo-banner .container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .promo-buttons {
+    justify-content: center;
+  }
+
+  .promo-content h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .promo-content h2 {
+    font-size: 2rem;
+  }
+
+  .promo-circle {
+    width: 180px;
+    height: 180px;
+    font-size: 3rem;
+  }
+}

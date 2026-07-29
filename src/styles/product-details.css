@@ -1,0 +1,624 @@
+/* ==========================================================
+   TECHSTORE PRO
+   PRODUCT DETAILS PAGE
+========================================================== */
+
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+
+.product-details-page{
+
+padding:6rem 0;
+
+background:var(--background);
+
+}
+
+
+
+/* ==========================================================
+   MAIN LAYOUT
+========================================================== */
+
+
+.product-details-container{
+
+display:grid;
+
+grid-template-columns:
+
+1fr 1fr;
+
+gap:4rem;
+
+align-items:start;
+
+}
+
+
+
+/* ==========================================================
+   PRODUCT GALLERY
+========================================================== */
+
+
+.product-gallery{
+
+position:sticky;
+
+top:100px;
+
+}
+
+
+
+.main-product-image{
+
+height:520px;
+
+border-radius:30px;
+
+overflow:hidden;
+
+background:var(--surface-soft);
+
+}
+
+
+
+.main-product-image img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
+transition:.4s ease;
+
+}
+
+
+
+.main-product-image:hover img{
+
+transform:scale(1.05);
+
+}
+
+
+
+.thumbnail-gallery{
+
+display:flex;
+
+gap:1rem;
+
+margin-top:1rem;
+
+}
+
+
+
+.thumbnail{
+
+width:80px;
+
+height:80px;
+
+border-radius:14px;
+
+overflow:hidden;
+
+border:
+
+2px solid transparent;
+
+cursor:pointer;
+
+}
+
+
+
+.thumbnail.active{
+
+border-color:var(--primary);
+
+}
+
+
+
+.thumbnail img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
+}
+
+
+
+/* ==========================================================
+   PRODUCT INFO
+========================================================== */
+
+
+.product-info{
+
+display:flex;
+
+flex-direction:column;
+
+gap:1.2rem;
+
+}
+
+
+
+.product-brand{
+
+font-weight:800;
+
+color:var(--primary);
+
+}
+
+
+
+.product-title{
+
+font-size:
+
+clamp(2rem,4vw,3rem);
+
+font-weight:900;
+
+line-height:1.2;
+
+}
+
+
+
+.product-description{
+
+color:var(--text-light);
+
+line-height:1.8;
+
+}
+
+
+
+/* ==========================================================
+   RATING
+========================================================== */
+
+
+.product-review{
+
+display:flex;
+
+align-items:center;
+
+gap:.8rem;
+
+}
+
+
+
+.product-stars{
+
+color:#f59e0b;
+
+}
+
+
+
+.review-text{
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   PRICE
+========================================================== */
+
+
+.product-price-box{
+
+display:flex;
+
+align-items:center;
+
+gap:1rem;
+
+}
+
+
+
+.product-current-price{
+
+font-size:2rem;
+
+font-weight:900;
+
+}
+
+
+
+.product-old-price{
+
+text-decoration:line-through;
+
+color:var(--text-muted);
+
+}
+
+
+
+.product-discount{
+
+padding:.4rem .8rem;
+
+border-radius:999px;
+
+background:
+
+rgba(239,68,68,.12);
+
+color:var(--danger);
+
+font-weight:800;
+
+}
+
+
+
+/* ==========================================================
+   STOCK
+========================================================== */
+
+
+.stock-status{
+
+display:flex;
+
+align-items:center;
+
+gap:.5rem;
+
+font-weight:700;
+
+}
+
+
+
+.stock-status.available{
+
+color:var(--success);
+
+}
+
+
+
+.stock-status.out{
+
+color:var(--danger);
+
+}
+
+
+
+/* ==========================================================
+   OPTIONS
+========================================================== */
+
+
+.product-option{
+
+display:flex;
+
+flex-direction:column;
+
+gap:.8rem;
+
+}
+
+
+
+.option-title{
+
+font-weight:800;
+
+}
+
+
+
+.color-options{
+
+display:flex;
+
+gap:.7rem;
+
+}
+
+
+
+.color-btn{
+
+width:35px;
+
+height:35px;
+
+border-radius:50%;
+
+border:
+
+2px solid var(--border-color);
+
+cursor:pointer;
+
+}
+
+
+
+.color-btn.active{
+
+outline:
+
+3px solid var(--primary);
+
+}
+
+
+
+/* ==========================================================
+   QUANTITY
+========================================================== */
+
+
+.quantity-box{
+
+display:flex;
+
+align-items:center;
+
+gap:1rem;
+
+}
+
+
+
+.quantity-control{
+
+display:flex;
+
+align-items:center;
+
+border:
+
+1px solid var(--border-color);
+
+border-radius:14px;
+
+overflow:hidden;
+
+}
+
+
+
+.quantity-control button{
+
+width:45px;
+
+height:45px;
+
+border:none;
+
+background:var(--surface);
+
+font-size:1.3rem;
+
+cursor:pointer;
+
+}
+
+
+
+.quantity-control span{
+
+width:50px;
+
+text-align:center;
+
+font-weight:800;
+
+}
+
+
+
+/* ==========================================================
+   ACTIONS
+========================================================== */
+
+
+.product-actions{
+
+display:flex;
+
+gap:1rem;
+
+margin-top:1rem;
+
+}
+
+
+
+.product-actions .btn{
+
+flex:1;
+
+}
+
+
+
+/* ==========================================================
+   FEATURES
+========================================================== */
+
+
+.product-features{
+
+margin-top:2rem;
+
+padding-top:2rem;
+
+border-top:
+
+1px solid var(--border-color);
+
+}
+
+
+
+.product-features ul{
+
+display:flex;
+
+flex-direction:column;
+
+gap:.8rem;
+
+}
+
+
+
+.product-features li{
+
+display:flex;
+
+align-items:center;
+
+gap:.7rem;
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   RELATED PRODUCTS
+========================================================== */
+
+
+.related-section{
+
+padding:6rem 0;
+
+}
+
+
+
+.related-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(4,1fr);
+
+gap:1.5rem;
+
+}
+
+
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+
+[data-theme="dark"] .main-product-image{
+
+background:#0f172a;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+
+@media(max-width:1000px){
+
+.product-details-container{
+
+grid-template-columns:1fr;
+
+}
+
+
+
+.product-gallery{
+
+position:static;
+
+}
+
+
+.related-grid{
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:600px){
+
+.product-details-page{
+
+padding:4rem 1rem;
+
+}
+
+
+
+.main-product-image{
+
+height:350px;
+
+}
+
+
+
+.product-actions{
+
+flex-direction:column;
+
+}
+
+
+
+.related-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}

@@ -1,0 +1,328 @@
+/* ==========================================================
+   TECHSTORE PRO
+   BUTTON COMPONENTS
+========================================================== */
+
+
+/* ==========================================================
+   BASE BUTTON
+========================================================== */
+
+.btn{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:.6rem;
+
+padding:.9rem 1.8rem;
+
+border:none;
+
+border-radius:var(--radius-md);
+
+font-size:1rem;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:
+
+transform var(--transition-fast),
+background var(--transition-fast),
+box-shadow var(--transition-fast),
+color var(--transition-fast);
+
+}
+
+
+
+/* Hover movement */
+
+.btn:hover{
+
+transform:translateY(-3px);
+
+}
+
+
+
+/* ==========================================================
+   PRIMARY BUTTON
+========================================================== */
+
+
+.btn-primary{
+
+background:var(--primary);
+
+color:white;
+
+box-shadow:
+
+0 10px 25px rgba(37,99,235,.2);
+
+}
+
+
+
+.btn-primary:hover{
+
+background:var(--primary-hover);
+
+box-shadow:
+
+0 15px 35px rgba(37,99,235,.3);
+
+}
+
+
+
+/* ==========================================================
+   SECONDARY BUTTON
+========================================================== */
+
+
+.btn-secondary{
+
+background:var(--surface);
+
+color:var(--text);
+
+border:1px solid var(--border-color);
+
+}
+
+
+
+.btn-secondary:hover{
+
+background:var(--text);
+
+color:white;
+
+}
+
+
+
+/* ==========================================================
+   OUTLINE BUTTON
+========================================================== */
+
+
+.btn-outline{
+
+background:transparent;
+
+border:2px solid var(--primary);
+
+color:var(--primary);
+
+}
+
+
+
+.btn-outline:hover{
+
+background:var(--primary);
+
+color:white;
+
+}
+
+
+
+/* ==========================================================
+   DARK BUTTON
+========================================================== */
+
+
+.btn-dark{
+
+background:#020617;
+
+color:white;
+
+}
+
+
+
+.btn-dark:hover{
+
+background:#1e293b;
+
+}
+
+
+
+/* ==========================================================
+   SUCCESS BUTTON
+========================================================== */
+
+
+.btn-success{
+
+background:var(--success);
+
+color:white;
+
+}
+
+
+
+.btn-success:hover{
+
+background:#16a34a;
+
+}
+
+
+
+/* ==========================================================
+   DANGER BUTTON
+========================================================== */
+
+
+.btn-danger{
+
+background:var(--danger);
+
+color:white;
+
+}
+
+
+
+.btn-danger:hover{
+
+background:#dc2626;
+
+}
+
+
+
+/* ==========================================================
+   ICON BUTTON
+========================================================== */
+
+
+.btn-icon{
+
+width:45px;
+
+height:45px;
+
+padding:0;
+
+display:grid;
+
+place-items:center;
+
+border-radius:50%;
+
+}
+
+
+
+/* ==========================================================
+   SIZES
+========================================================== */
+
+
+.btn-sm{
+
+padding:.6rem 1rem;
+
+font-size:.85rem;
+
+}
+
+
+
+.btn-lg{
+
+padding:1.1rem 2.4rem;
+
+font-size:1.1rem;
+
+}
+
+
+
+.btn-block{
+
+width:100%;
+
+}
+
+
+
+/* ==========================================================
+   LOADING BUTTON
+========================================================== */
+
+
+.btn-loading{
+
+position:relative;
+
+pointer-events:none;
+
+opacity:.7;
+
+}
+
+
+
+.btn-loading::after{
+
+content:"";
+
+width:18px;
+
+height:18px;
+
+border:2px solid white;
+
+border-top-color:transparent;
+
+border-radius:50%;
+
+animation:
+
+buttonSpin .7s linear infinite;
+
+}
+
+
+
+@keyframes buttonSpin{
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+
+@media(max-width:768px){
+
+.btn-lg{
+
+width:100%;
+
+}
+
+}

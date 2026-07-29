@@ -1,0 +1,321 @@
+/* ==========================================================
+   TECHSTORE PRO
+   FEATURED PRODUCTS SECTION
+========================================================== */
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+.featured-section{
+
+padding:6rem 0;
+
+background:var(--background);
+
+}
+
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+
+.featured-header{
+
+display:flex;
+
+align-items:flex-end;
+
+justify-content:space-between;
+
+gap:2rem;
+
+margin-bottom:3rem;
+
+}
+
+
+
+.featured-header-content{
+
+max-width:650px;
+
+}
+
+
+
+.featured-header h2{
+
+font-size:clamp(2rem,4vw,3rem);
+
+font-weight:900;
+
+margin-bottom:1rem;
+
+}
+
+
+
+.featured-header p{
+
+color:var(--text-light);
+
+}
+
+
+
+.view-all-link{
+
+display:flex;
+
+align-items:center;
+
+gap:.5rem;
+
+color:var(--primary);
+
+font-weight:800;
+
+transition:.3s ease;
+
+}
+
+
+
+.view-all-link:hover{
+
+gap:1rem;
+
+}
+
+
+
+/* ==========================================================
+   PRODUCT GRID
+========================================================== */
+
+
+.featured-products-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(4,1fr);
+
+gap:1.5rem;
+
+}
+
+
+
+/* ==========================================================
+   FEATURED BADGE
+========================================================== */
+
+
+.featured-label{
+
+position:absolute;
+
+top:1rem;
+
+left:1rem;
+
+z-index:5;
+
+padding:.4rem .8rem;
+
+border-radius:999px;
+
+background:var(--primary);
+
+color:white;
+
+font-size:.75rem;
+
+font-weight:800;
+
+}
+
+
+
+/* ==========================================================
+   PRODUCT HIGHLIGHT
+========================================================== */
+
+
+.product-card.featured{
+
+border:
+
+2px solid rgba(37,99,235,.25);
+
+}
+
+
+
+.product-card.featured:hover{
+
+border-color:var(--primary);
+
+}
+
+
+
+/* ==========================================================
+   QUICK BENEFITS
+========================================================== */
+
+
+.feature-benefits{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(3,1fr);
+
+gap:1rem;
+
+margin-top:3rem;
+
+}
+
+
+
+.feature-benefit{
+
+display:flex;
+
+align-items:center;
+
+gap:1rem;
+
+padding:1.2rem;
+
+background:var(--surface);
+
+border:
+
+1px solid var(--border-color);
+
+border-radius:18px;
+
+}
+
+
+
+.feature-benefit-icon{
+
+width:45px;
+
+height:45px;
+
+display:grid;
+
+place-items:center;
+
+border-radius:14px;
+
+background:rgba(37,99,235,.1);
+
+color:var(--primary);
+
+}
+
+
+
+.feature-benefit h4{
+
+font-size:1rem;
+
+font-weight:800;
+
+}
+
+
+
+.feature-benefit p{
+
+font-size:.85rem;
+
+color:var(--text-light);
+
+}
+
+
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+
+[data-theme="dark"] .featured-section{
+
+background:#020617;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+
+@media(max-width:1100px){
+
+.featured-products-grid{
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:768px){
+
+.featured-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+
+.feature-benefits{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
+
+@media(max-width:600px){
+
+.featured-section{
+
+padding:4rem 1rem;
+
+}
+
+
+
+.featured-products-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}
