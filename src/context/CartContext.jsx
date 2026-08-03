@@ -308,6 +308,7 @@ export function CartProvider({ children }) {
 
   const value = useMemo(
     () => ({
+      state,
       cart: state.cart,
       lastAddedId: state.lastAddedId,
 

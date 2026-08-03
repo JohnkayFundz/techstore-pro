@@ -3,15 +3,15 @@ import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 
 function StatsCards() {
-  const { state } = useCart();
+  const { cart = [] } = useCart();
   const { wishlist } = useWishlist();
 
-  const totalItems = state.cart.reduce(
+  const totalItems = cart.reduce(
     (sum, item) => sum + item.quantity,
     0
   );
 
-  const totalSpent = state.cart.reduce(
+  const totalSpent = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );

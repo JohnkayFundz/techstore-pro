@@ -38,7 +38,7 @@ function Navbar() {
   } = useAuth();
 
   const {
-    state,
+    cart = [],
   } = useCart();
 
   const {
@@ -79,7 +79,7 @@ function Navbar() {
 
   const cartCount = useMemo(() => {
 
-    return state.cart.reduce(
+    return cart.reduce(
 
       (total, item) =>
         total + item.quantity,
@@ -88,7 +88,7 @@ function Navbar() {
 
     );
 
-  }, [state.cart]);
+  }, [cart]);
 
   const wishlistCount =
     wishlist.length;

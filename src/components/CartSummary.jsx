@@ -3,15 +3,15 @@ import { FiShoppingCart } from "react-icons/fi";
 import { useCart } from "../../context/CartContext";
 
 function CartSummary() {
-  const { state } = useCart();
+  const { cart = [] } = useCart();
 
-  const totalItems = state.cart.reduce(
+  const totalItems = cart.reduce(
     (sum, item) => sum + item.quantity,
     0
   );
 
-  const totalPrice = state.cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + Number(item.price) * item.quantity,
     0
   );
 
@@ -25,7 +25,7 @@ function CartSummary() {
         </Link>
       </div>
 
-      {state.cart.length === 0 ? (
+      {cart.length === 0 ? (
         <div className="empty-dashboard">
           <FiShoppingCart size={40} />
 
@@ -33,7 +33,10 @@ function CartSummary() {
 
           <p>Add products to your cart to see them here.</p>
 
-          <Link to="/products" className="btn btn-primary">
+          <Link
+            to="/products"
+            className="btn btn-primary"
+          >
             Shop Now
           </Link>
         </div>
@@ -51,7 +54,10 @@ function CartSummary() {
             </div>
           </div>
 
-          <Link to="/checkout" className="btn btn-primary">
+          <Link
+            to="/checkout"
+            className="btn btn-primary"
+          >
             Proceed to Checkout
           </Link>
         </>

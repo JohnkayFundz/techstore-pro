@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 
 function Dashboard() {
-  const { state } = useCart();
+  const { cart } = useCart();
   const { wishlist } = useWishlist();
 
   let user = {
@@ -13,6 +13,7 @@ function Dashboard() {
 
   try {
     const storedUser = localStorage.getItem("techstore-user");
+
     if (storedUser) {
       user = JSON.parse(storedUser);
     }
@@ -20,13 +21,13 @@ function Dashboard() {
     console.error("Failed to load user:", error);
   }
 
-  const totalItems = state.cart.reduce(
+  const totalItems = cart.reduce(
     (total, item) => total + item.quantity,
     0
   );
 
-  const totalSpent = state.cart.reduce(
-    (total, item) => total + item.price * item.quantity,
+  const totalSpent = cart.reduce(
+    (total, item) => total + Number(item.price) * item.quantity,
     0
   );
 
@@ -37,10 +38,16 @@ function Dashboard() {
         <div className="dashboard-header">
           <div>
             <h1>My Dashboard</h1>
-            <p>Welcome back, {user.name || user.email} 👋</p>
+
+            <p>
+              Welcome back, {user.name || user.email} 👋
+            </p>
           </div>
 
-          <Link to="/products" className="btn btn-primary">
+          <Link
+            to="/products"
+            className="btn btn-primary"
+          >
             Continue Shopping
           </Link>
         </div>
@@ -48,26 +55,42 @@ function Dashboard() {
         {/* Statistics */}
         <div className="dashboard-stats">
           <div className="dashboard-card">
-            <span className="dashboard-icon">🛒</span>
+            <span className="dashboard-icon">
+              🛒
+            </span>
+
             <h2>{totalItems}</h2>
+
             <p>Cart Items</p>
           </div>
 
           <div className="dashboard-card">
-            <span className="dashboard-icon">❤️</span>
+            <span className="dashboard-icon">
+              ❤️
+            </span>
+
             <h2>{wishlist.length}</h2>
-            <p>Wishlist</p>
+
+            <p>Wishlist Items</p>
           </div>
 
           <div className="dashboard-card">
-            <span className="dashboard-icon">💳</span>
+            <span className="dashboard-icon">
+              💳
+            </span>
+
             <h2>${totalSpent.toFixed(2)}</h2>
+
             <p>Cart Total</p>
           </div>
 
           <div className="dashboard-card">
-            <span className="dashboard-icon">📦</span>
+            <span className="dashboard-icon">
+              📦
+            </span>
+
             <h2>0</h2>
+
             <p>Orders</p>
           </div>
         </div>
@@ -81,11 +104,15 @@ function Dashboard() {
             <div className="profile-info">
               <div className="profile-row">
                 <span>Name</span>
-                <strong>{user.name || "Not provided"}</strong>
+
+                <strong>
+                  {user.name || "Not provided"}
+                </strong>
               </div>
 
               <div className="profile-row">
                 <span>Email</span>
+
                 <strong>{user.email}</strong>
               </div>
             </div>
@@ -96,19 +123,31 @@ function Dashboard() {
             <h3>Quick Actions</h3>
 
             <div className="dashboard-actions">
-              <Link to="/products" className="dashboard-action">
+              <Link
+                to="/products"
+                className="dashboard-action"
+              >
                 Browse Products
               </Link>
 
-              <Link to="/wishlist" className="dashboard-action">
-                View Wishlist
+              <Link
+                to="/wishlist"
+                className="dashboard-action"
+              >
+                Wishlist
               </Link>
 
-              <Link to="/cart" className="dashboard-action">
+              <Link
+                to="/cart"
+                className="dashboard-action"
+              >
                 Shopping Cart
               </Link>
 
-              <Link to="/checkout" className="dashboard-action">
+              <Link
+                to="/checkout"
+                className="dashboard-action"
+              >
                 Checkout
               </Link>
             </div>
@@ -119,27 +158,45 @@ function Dashboard() {
         <div className="dashboard-panel">
           <h3>Recent Activity</h3>
 
-          {state.cart.length === 0 ? (
+          {cart.length === 0 ? (
             <div className="empty-dashboard">
-              <p>No recent shopping activity yet.</p>
+              <p>
+                No recent shopping activity yet.
+              </p>
 
-              <Link to="/products" className="btn btn-primary">
+              <Link
+                to="/products"
+                className="btn btn-primary"
+              >
                 Start Shopping
               </Link>
             </div>
           ) : (
             <div className="activity-list">
-              {state.cart.map((item) => (
-                <div className="activity-item" key={item.id}>
-                  <img src={item.image} alt={item.name} />
+              {cart.map((item) => (
+                <div
+                  className="activity-item"
+                  key={item.cartId}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                  />
 
                   <div>
                     <h4>{item.name}</h4>
-                    <p>Quantity: {item.quantity}</p>
+
+                    <p>
+                      Quantity: {item.quantity}
+                    </p>
                   </div>
 
                   <strong>
-                    ${(item.price * item.quantity).toFixed(2)}
+                    $
+                    {(
+                      Number(item.price) *
+                      item.quantity
+                    ).toFixed(2)}
                   </strong>
                 </div>
               ))}
