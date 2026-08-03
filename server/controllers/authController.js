@@ -19,14 +19,19 @@ const generateToken = (id) => {
    SEND TOKEN RESPONSE
 ========================================================== */
 
-const sendTokenResponse = (user, statusCode, res, message) => {
+const sendTokenResponse = (
+  user,
+  statusCode,
+  res,
+  message
+) => {
   const token = generateToken(user._id);
 
   const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 
   res
@@ -44,6 +49,7 @@ const sendTokenResponse = (user, statusCode, res, message) => {
         avatar: user.avatar,
         phone: user.phone,
         address: user.address,
+        createdAt: user.createdAt,
       },
     });
 };
@@ -92,7 +98,7 @@ export const registerUser = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Internal server error.",
     });
   }
 };
@@ -143,7 +149,7 @@ export const loginUser = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Internal server error.",
     });
   }
 };
@@ -172,7 +178,7 @@ export const logoutUser = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id).select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -199,7 +205,7 @@ export const getCurrentUser = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Internal server error.",
     });
   }
 };

@@ -20,6 +20,19 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
+    oldPrice: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    discount: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+
     category: {
       type: String,
       required: [true, "Category is required"],
@@ -56,7 +69,22 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
+    warranty: {
+      type: String,
+      default: "No warranty",
+    },
+
     featured: {
+      type: Boolean,
+      default: false,
+    },
+
+    bestseller: {
+      type: Boolean,
+      default: false,
+    },
+
+    newArrival: {
       type: Boolean,
       default: false,
     },
@@ -65,11 +93,17 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
   }
 );
+
 
 const Product = mongoose.model("Product", productSchema);
 

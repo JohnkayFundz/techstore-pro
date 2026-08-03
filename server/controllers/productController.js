@@ -1,167 +1,530 @@
+import mongoose from "mongoose";
 import Product from "../models/Product.js";
+
 
 /* ==========================================================
    GET ALL PRODUCTS
+   GET /api/products
 ========================================================== */
 
 export const getProducts = async (req, res) => {
   try {
-    const { keyword, category, featured, page = 1, limit = 10 } = req.query;
+    const {
+      keyword,
+      category,
+      featured,
+      bestseller,
+      newArrival,
+      sort = "newest",
+      page = 1,
+      limit = 10,
+    } = req.query;
 
-    const filter = {};
 
+    const filter = {
+      isActive: true,
+    };
+
+
+    // Search by name or brand
     if (keyword) {
-      filter.name = {
-        $regex: keyword,
-        $options: "i",
-      };
+      filter.$or = [
+        {
+          name: {
+            $regex: keyword,
+            $options: "i",
+          },
+        },
+        {
+          brand: {
+            $regex: keyword,
+            $options: "i",
+          },
+        },
+      ];
     }
 
+
+    // Filter category
     if (category) {
       filter.category = category;
     }
 
+
+    // Featured products
     if (featured === "true") {
       filter.featured = true;
     }
 
-    filter.isActive = true;
 
-    const skip = (Number(page) - 1) * Number(limit);
+    // Best sellers
+    if (bestseller === "true") {
+      filter.bestseller = true;
+    }
+
+
+    // New arrivals
+    if (newArrival === "true") {
+      filter.newArrival = true;
+    }
+
+
+
+    // Sorting
+    let sortOption = {
+      createdAt: -1,
+    };
+
+
+    switch (sort) {
+
+      case "price-low":
+        sortOption = {
+          price: 1,
+        };
+        break;
+
+
+      case "price-high":
+        sortOption = {
+          price: -1,
+        };
+        break;
+
+
+      case "name":
+        sortOption = {
+          name: 1,
+        };
+        break;
+
+
+      case "rating":
+        sortOption = {
+          rating: -1,
+        };
+        break;
+
+
+      default:
+        sortOption = {
+          createdAt: -1,
+        };
+    }
+
+
+
+    // Pagination
+    const currentPage = Number(page);
+    const pageSize = Number(limit);
+
+    const skip =
+      (currentPage - 1) * pageSize;
+
+
 
     const products = await Product.find(filter)
+      .sort(sortOption)
       .skip(skip)
-      .limit(Number(limit))
-      .sort({ createdAt: -1 });
+      .limit(pageSize);
 
-    const totalProducts = await Product.countDocuments(filter);
+
+
+    const totalProducts =
+      await Product.countDocuments(filter);
+
+
 
     res.status(200).json({
+
       success: true,
+
       count: products.length,
+
       totalProducts,
-      currentPage: Number(page),
-      totalPages: Math.ceil(totalProducts / Number(limit)),
+
+      currentPage,
+
+      totalPages: Math.ceil(
+        totalProducts / pageSize
+      ),
+
       products,
+
     });
+
+
   } catch (error) {
+
+    console.error(
+      "Get Products Error:",
+      error
+    );
+
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message: "Failed to fetch products.",
+
     });
+
   }
 };
+
+
+
+
 
 /* ==========================================================
    GET SINGLE PRODUCT
+   GET /api/products/:id
 ========================================================== */
 
-export const getProductById = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
+export const getProductById = async (
+  req,
+  res
+) => {
 
-    if (!product) {
-      return res.status(404).json({
+  try {
+
+
+    if (
+      !mongoose.Types.ObjectId.isValid(
+        req.params.id
+      )
+    ) {
+
+      return res.status(400).json({
+
         success: false,
-        message: "Product not found.",
+
+        message: "Invalid product ID.",
+
       });
+
     }
 
+
+
+    const product =
+      await Product.findOne({
+
+        _id: req.params.id,
+
+        isActive: true,
+
+      });
+
+
+
+    if (!product) {
+
+      return res.status(404).json({
+
+        success: false,
+
+        message: "Product not found.",
+
+      });
+
+    }
+
+
+
     res.status(200).json({
+
       success: true,
+
       product,
+
     });
+
+
+
   } catch (error) {
+
+
+    console.error(
+      "Get Product Error:",
+      error
+    );
+
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message: "Failed to fetch product.",
+
     });
+
   }
+
 };
+
+
+
+
+
 
 /* ==========================================================
    CREATE PRODUCT
+   POST /api/products
+   Admin Only
 ========================================================== */
 
-export const createProduct = async (req, res) => {
+export const createProduct = async (
+  req,
+  res
+) => {
+
   try {
-    const product = await Product.create(req.body);
+
+
+    const product =
+      await Product.create({
+
+        ...req.body,
+
+        createdBy: req.user._id,
+
+      });
+
+
 
     res.status(201).json({
+
       success: true,
-      message: "Product created successfully.",
+
+      message:
+        "Product created successfully.",
+
       product,
+
     });
+
+
+
   } catch (error) {
+
+
+    console.error(
+      "Create Product Error:",
+      error
+    );
+
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message:
+        "Failed to create product.",
+
     });
+
   }
+
 };
+
+
+
+
+
 
 /* ==========================================================
    UPDATE PRODUCT
+   PUT /api/products/:id
+   Admin Only
 ========================================================== */
 
-export const updateProduct = async (req, res) => {
-  try {
-    let product = await Product.findById(req.params.id);
+export const updateProduct = async (
+  req,
+  res
+) => {
 
-    if (!product) {
-      return res.status(404).json({
+  try {
+
+
+    if (
+      !mongoose.Types.ObjectId.isValid(
+        req.params.id
+      )
+    ) {
+
+      return res.status(400).json({
+
         success: false,
-        message: "Product not found.",
+
+        message: "Invalid product ID.",
+
       });
+
     }
 
-    product = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+
+
+    const product =
+      await Product.findByIdAndUpdate(
+
+        req.params.id,
+
+        req.body,
+
+        {
+          new: true,
+          runValidators: true,
+        }
+
+      );
+
+
+
+    if (!product) {
+
+      return res.status(404).json({
+
+        success: false,
+
+        message: "Product not found.",
+
+      });
+
+    }
+
+
+
+    res.status(200).json({
+
+      success: true,
+
+      message:
+        "Product updated successfully.",
+
+      product,
+
+    });
+
+
+
+  } catch (error) {
+
+
+    console.error(
+      "Update Product Error:",
+      error
     );
 
-    res.status(200).json({
-      success: true,
-      message: "Product updated successfully.",
-      product,
-    });
-  } catch (error) {
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message:
+        "Failed to update product.",
+
     });
+
   }
+
 };
 
+
+
+
+
+
+
 /* ==========================================================
-   DELETE PRODUCT
+   DELETE PRODUCT (SOFT DELETE)
+   DELETE /api/products/:id
+   Admin Only
 ========================================================== */
 
-export const deleteProduct = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
+export const deleteProduct = async (
+  req,
+  res
+) => {
 
-    if (!product) {
-      return res.status(404).json({
+  try {
+
+
+    if (
+      !mongoose.Types.ObjectId.isValid(
+        req.params.id
+      )
+    ) {
+
+      return res.status(400).json({
+
         success: false,
-        message: "Product not found.",
+
+        message: "Invalid product ID.",
+
       });
+
     }
 
-    await product.deleteOne();
+
+
+    const product =
+      await Product.findById(
+        req.params.id
+      );
+
+
+
+    if (!product) {
+
+      return res.status(404).json({
+
+        success: false,
+
+        message: "Product not found.",
+
+      });
+
+    }
+
+
+
+    product.isActive = false;
+
+    await product.save();
+
+
 
     res.status(200).json({
+
       success: true,
-      message: "Product deleted successfully.",
+
+      message:
+        "Product deleted successfully.",
+
     });
+
+
+
   } catch (error) {
+
+
+    console.error(
+      "Delete Product Error:",
+      error
+    );
+
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message:
+        "Failed to delete product.",
+
     });
+
   }
+
 };

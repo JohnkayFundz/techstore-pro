@@ -1,17 +1,64 @@
 import api from "./axios";
 
-export const register = (userData) =>
-  api.post("/auth/register", userData);
 
-export const login = (userData) =>
-  api.post("/auth/login", userData);
+/* ==========================================================
+   AUTH API
+========================================================== */
 
-export const logout = () =>
-  api.post("/auth/logout");
 
-export const getCurrentUser = (token) =>
-  api.get("/auth/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+// Register
+export const register = async (userData) => {
+
+  const { data } =
+    await api.post(
+      "/auth/register",
+      userData
+    );
+
+  return data;
+
+};
+
+
+
+// Login
+export const login = async (userData) => {
+
+  const { data } =
+    await api.post(
+      "/auth/login",
+      userData
+    );
+
+  return data;
+
+};
+
+
+
+// Logout
+export const logout = async () => {
+
+  const { data } =
+    await api.post(
+      "/auth/logout"
+    );
+
+  return data;
+
+};
+
+
+
+// Get current logged-in user
+
+export const getCurrentUser = async () => {
+
+  const { data } =
+    await api.get(
+      "/auth/me"
+    );
+
+  return data;
+
+};

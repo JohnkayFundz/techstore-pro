@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 
 import products from "../data/products";
-import ProductGrid from "../components/ProductGrid";
+import ProductGrid from "../components/products/ProductGrid";
 import RatingStars from "../components/RatingStars";
 
 import { useCart } from "../context/CartContext";

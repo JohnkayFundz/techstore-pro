@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import ProductGrid from "./ProductGrid";
+import ProductGrid from "./products/ProductGrid";
 
 import "./ProductSection.css";
 

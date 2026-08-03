@@ -15,27 +15,59 @@ import {
 
 const router = express.Router();
 
+
 /* ==========================================================
-   PUBLIC ROUTES
+   PUBLIC PRODUCT ROUTES
 ========================================================== */
 
-// Get all products
+// @route   GET /api/products
+// @desc    Get all products
+// @access  Public
 router.get("/", getProducts);
 
-// Get single product
+
+// @route   GET /api/products/:id
+// @desc    Get single product by ID
+// @access  Public
 router.get("/:id", getProductById);
 
+
+
 /* ==========================================================
-   ADMIN ROUTES
+   ADMIN PRODUCT ROUTES
 ========================================================== */
 
-// Create product
-router.post("/", protect, adminOnly, createProduct);
+// @route   POST /api/products
+// @desc    Create new product
+// @access  Private/Admin
+router.post(
+  "/",
+  protect,
+  adminOnly,
+  createProduct
+);
 
-// Update product
-router.put("/:id", protect, adminOnly, updateProduct);
 
-// Delete product
-router.delete("/:id", protect, adminOnly, deleteProduct);
+// @route   PUT /api/products/:id
+// @desc    Update product
+// @access  Private/Admin
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  updateProduct
+);
+
+
+// @route   DELETE /api/products/:id
+// @desc    Delete product
+// @access  Private/Admin
+router.delete(
+  "/:id",
+  protect,
+  adminOnly,
+  deleteProduct
+);
+
 
 export default router;

@@ -1,49 +1,74 @@
+import { createContext, useContext, useEffect, useState } from "react";
+
 import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+  getCurrentUser,
+  logout as logoutApi,
+} from "../api/authApi";
 
-import { getCurrentUser } from "../api/authApi";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
+
 
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
+
   const [loading, setLoading] = useState(true);
 
 
+  // Restore user session
   useEffect(() => {
 
     const loadUser = async () => {
 
-      const token = localStorage.getItem("token");
-      const savedUser = localStorage.getItem("techstore-user");
-
-
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-
-      // Restore cached user immediately
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      }
-
-
       try {
 
-        const response = await getCurrentUser(token);
+        const token = localStorage.getItem("token");
 
-        setUser(response.data.user);
+
+        if (!token) {
+
+          setLoading(false);
+          return;
+
+        }
+
+
+        // Load cached user first
+        const cachedUser =
+          localStorage.getItem("techstore-user");
+
+
+        if (cachedUser) {
+
+          try {
+
+            setUser(JSON.parse(cachedUser));
+
+          } catch {
+
+            localStorage.removeItem("techstore-user");
+
+          }
+
+        }
+
+
+        // Verify token with backend
+        const response =
+          await getCurrentUser(token);
+
+
+        const currentUser =
+          response.data.user;
+
+
+        setUser(currentUser);
+
 
         localStorage.setItem(
           "techstore-user",
-          JSON.stringify(response.data.user)
+          JSON.stringify(currentUser)
         );
 
 
@@ -56,9 +81,14 @@ export function AuthProvider({ children }) {
 
 
         localStorage.removeItem("token");
-        localStorage.removeItem("techstore-user");
+
+        localStorage.removeItem(
+          "techstore-user"
+        );
+
 
         setUser(null);
+
 
       } finally {
 
@@ -71,10 +101,12 @@ export function AuthProvider({ children }) {
 
     loadUser();
 
+
   }, []);
 
 
 
+  // Login
   const login = (userData, token) => {
 
     localStorage.setItem(
@@ -95,12 +127,50 @@ export function AuthProvider({ children }) {
 
 
 
-  const logout = () => {
+  // Update user profile
+  const updateUser = (updatedUser) => {
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("techstore-user");
+    setUser(updatedUser);
 
-    setUser(null);
+
+    localStorage.setItem(
+      "techstore-user",
+      JSON.stringify(updatedUser)
+    );
+
+  };
+
+
+
+  // Logout
+  const logout = async () => {
+
+    try {
+
+      await logoutApi();
+
+    } catch (error) {
+
+      console.error(
+        "Logout error:",
+        error
+      );
+
+    } finally {
+
+      localStorage.removeItem(
+        "token"
+      );
+
+
+      localStorage.removeItem(
+        "techstore-user"
+      );
+
+
+      setUser(null);
+
+    }
 
   };
 
@@ -109,13 +179,29 @@ export function AuthProvider({ children }) {
   return (
 
     <AuthContext.Provider
+
       value={{
+
         user,
+
         loading,
+
         login,
+
         logout,
-        isAuthenticated: Boolean(user),
+
+        updateUser,
+
+
+        isAuthenticated:
+          Boolean(user),
+
+
+        isAdmin:
+          user?.role === "admin",
+
       }}
+
     >
 
       {children}
@@ -128,8 +214,22 @@ export function AuthProvider({ children }) {
 
 
 
+
 export function useAuth() {
 
-  return useContext(AuthContext);
+  const context =
+    useContext(AuthContext);
+
+
+  if (!context) {
+
+    throw new Error(
+      "useAuth must be used within an AuthProvider"
+    );
+
+  }
+
+
+  return context;
 
 }

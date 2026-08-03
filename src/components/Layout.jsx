@@ -1,27 +1,33 @@
 import { Outlet } from "react-router-dom";
 
-import Navbar from "./Navbar.jsx";
-import Footer from "./Footer.jsx";
-import Toast from "./Toast.jsx";
-import ErrorBoundary from "./ErrorBoundary.jsx";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Toast from "./Toast";
+import ErrorBoundary from "./ErrorBoundary";
+
 
 function Layout() {
   return (
     <>
+
       {/* Accessibility Skip Link */}
       <a
         href="#main-content"
         className="skip-link"
-        aria-label="Skip to main content"
       >
         Skip to content
       </a>
 
-      {/* Header */}
-      <Navbar />
 
-      {/* Global Toast */}
+      {/* Header */}
+      <header className="site-header">
+        <Navbar />
+      </header>
+
+
+      {/* Global Notifications */}
       <Toast />
+
 
       {/* Main Content */}
       <main
@@ -33,10 +39,16 @@ function Layout() {
         </ErrorBoundary>
       </main>
 
+
       {/* Footer */}
-      <Footer />
+      <footer className="site-footer">
+        <Footer />
+      </footer>
+
+
     </>
   );
 }
+
 
 export default Layout;

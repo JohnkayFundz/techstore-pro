@@ -1,57 +1,74 @@
-const API_URL = "http://localhost:5000/api/orders";
+import api from "./axios";
 
+/* ==========================================================
+   CREATE ORDER
+========================================================== */
 
-// Create Order
-export async function createOrder(orderData) {
+export const createOrder = async (orderData) => {
+  const { data } = await api.post("/orders", orderData);
+  return data;
+};
 
-  const token = localStorage.getItem("token");
+/* ==========================================================
+   GET MY ORDERS
+========================================================== */
 
+export const getMyOrders = async () => {
+  const { data } = await api.get("/orders/my-orders");
+  return data;
+};
 
-  const response = await fetch(API_URL, {
+/* ==========================================================
+   GET SINGLE ORDER
+========================================================== */
 
-    method: "POST",
+export const getOrderById = async (orderId) => {
+  const { data } = await api.get(`/orders/${orderId}`);
+  return data;
+};
 
-    headers: {
+/* ==========================================================
+   GET ALL ORDERS (ADMIN)
+========================================================== */
 
-      "Content-Type": "application/json",
+export const getAllOrders = async () => {
+  const { data } = await api.get("/orders/admin/all");
+  return data;
+};
 
-      Authorization: `Bearer ${token}`,
+/* ==========================================================
+   UPDATE ORDER STATUS
+========================================================== */
 
-    },
-
-    body: JSON.stringify(orderData),
-
-  });
-
-
-  return response.json();
-
-}
-
-
-
-// Get Logged-in User Orders
-export async function getMyOrders() {
-
-  const token = localStorage.getItem("token");
-
-
-  const response = await fetch(
-    `${API_URL}/my-orders`,
-    {
-
-      method: "GET",
-
-      headers: {
-
-        Authorization: `Bearer ${token}`,
-
-      },
-
-    }
+export const updateOrderStatus = async (orderId, status) => {
+  const { data } = await api.put(
+    `/orders/${orderId}/status`,
+    { status }
   );
 
+  return data;
+};
 
-  return response.json();
+/* ==========================================================
+   MARK ORDER AS PAID
+========================================================== */
 
-}
+export const markOrderAsPaid = async (orderId) => {
+  const { data } = await api.put(
+    `/orders/${orderId}/pay`
+  );
+
+  return data;
+};
+
+/* ==========================================================
+   DELETE ORDER
+========================================================== */
+
+export const deleteOrder = async (orderId) => {
+  const { data } = await api.delete(
+    `/orders/${orderId}`
+  );
+
+  return data;
+};

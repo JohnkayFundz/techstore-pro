@@ -1,7 +1,33 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from server directory FIRST with override
+const envPath = path.join(__dirname, ".env");
+console.log("📁 Loading .env from:", envPath);
+
+const result = dotenv.config({ 
+  path: envPath,
+  override: true 
+});
+
+if (result.error) {
+  console.error("❌ Error loading .env file:", result.error);
+} else {
+  console.log("✅ .env loaded successfully");
+}
+
+// Verify environment variables loaded
+console.log("✅ Environment Variables Loaded:");
+console.log("  NODE_ENV:", process.env.NODE_ENV);
+console.log("  CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME ? "✅" : "❌");
+console.log("  CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY ? "✅" : "❌");
+console.log("  CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "✅" : "❌");
+console.log("  MONGODB_URI:", process.env.MONGODB_URI ? "✅" : "❌");
 
 import app from "./app.js";
 

@@ -1,19 +1,19 @@
 import {
+  useEffect,
   useMemo,
   useState,
-  useEffect,
 } from "react";
 
 import debounce from "lodash.debounce";
 
-import ProductGrid from "../components/ProductGrid.jsx";
-import SearchBar from "../components/SearchBar.jsx";
-import CategoryFilter from "../components/CategoryFilter.jsx";
+import ProductGrid from "../components/products/ProductGrid";
+import SearchBar from "../components/SearchBar";
+import CategoryFilter from "../components/CategoryFilter";
 
-import productsData from "../data/products.js";
-
+import { getProducts } from "../api/productApi";
 
 function Products() {
+  const [products, setProducts] = useState([]);
 
   const [search, setSearch] = useState("");
 
@@ -23,215 +23,144 @@ function Products() {
 
   const [maxPrice, setMaxPrice] = useState(5000);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
+  /*
+    Load Products
+  */
 
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    setLoading(true);
+
+    const response = await getProducts();
+
+    if (response.success) {
+      setProducts(response.products || []);
+    }
+
+    setLoading(false);
+  };
 
   /*
     Debounced Search
   */
 
   const handleSearch = useMemo(() => {
-
     return debounce((value) => {
-
       setSearch(value);
-
     }, 300);
-
   }, []);
 
-
-
-
   useEffect(() => {
-
     return () => {
-
       handleSearch.cancel();
-
     };
-
   }, [handleSearch]);
-
-
-
-
-
 
   /*
     Categories
   */
 
   const categories = useMemo(() => {
-
     return [
       "All",
       ...new Set(
-        productsData.map(
+        products.map(
           (product) => product.category
         )
       ),
     ];
-
-  }, []);
-
-
-
-
-
-
+  }, [products]);
 
   /*
     Filter + Sort Products
   */
 
   const filteredProducts = useMemo(() => {
-
-    let result = [
-      ...productsData
-    ];
-
-
+    let result = [...products];
 
     // Search
 
     if (search.trim()) {
-
-      result = result.filter(
-        (product) =>
+      result = result.filter((product) => {
+        return (
           product.name
-            .toLowerCase()
-            .includes(
-              search.toLowerCase()
-            )
-      );
-
+            ?.toLowerCase()
+            .includes(search.toLowerCase()) ||
+          product.brand
+            ?.toLowerCase()
+            .includes(search.toLowerCase()) ||
+          product.description
+            ?.toLowerCase()
+            .includes(search.toLowerCase())
+        );
+      });
     }
 
-
-
-
-    // Category Filter
+    // Category
 
     if (category !== "All") {
-
       result = result.filter(
         (product) =>
           product.category === category
       );
-
     }
 
-
-
-
-    // Price Filter
+    // Price
 
     result = result.filter(
-      (product) =>
-        product.price <= maxPrice
+      (product) => product.price <= maxPrice
     );
-
-
-
-
-
 
     // Sorting
 
-    const sortFunctions = {
+    switch (sortBy) {
+      case "price-low":
+        result.sort(
+          (a, b) => a.price - b.price
+        );
+        break;
 
-      "price-low": (a, b) =>
-        a.price - b.price,
+      case "price-high":
+        result.sort(
+          (a, b) => b.price - a.price
+        );
+        break;
 
+      case "rating":
+        result.sort(
+          (a, b) => b.rating - a.rating
+        );
+        break;
 
-      "price-high": (a, b) =>
-        b.price - a.price,
+      case "name":
+        result.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        break;
 
-
-      rating: (a, b) =>
-        b.rating - a.rating,
-
-
-      name: (a, b) =>
-        a.name.localeCompare(b.name),
-
-    };
-
-
-
-
-    if (sortBy !== "default") {
-
-      result.sort(
-        sortFunctions[sortBy]
-      );
-
+      default:
+        break;
     }
 
-
-
-
     return result;
-
-
   }, [
+    products,
     search,
     category,
     sortBy,
     maxPrice,
   ]);
-
-
-
-
-
-
-
-  /*
-    Loading Animation
-  */
-
-  useEffect(() => {
-
-    setLoading(true);
-
-
-    const timer = setTimeout(() => {
-
-      setLoading(false);
-
-    }, 500);
-
-
-
-    return () => {
-
-      clearTimeout(timer);
-
-    };
-
-
-  }, [
-    search,
-    category,
-    sortBy,
-    maxPrice,
-  ]);
-
-
-
-
-
-
 
   /*
     Clear Filters
   */
 
   const clearFilters = () => {
-
     setSearch("");
 
     setCategory("All");
@@ -239,219 +168,121 @@ function Products() {
     setSortBy("default");
 
     setMaxPrice(5000);
-
   };
 
-
-
-
-
-
+  if (loading) {
+    return (
+      <main className="products-page">
+        <section
+          style={{
+            padding: "80px 0",
+            textAlign: "center",
+          }}
+        >
+          <h2>Loading Products...</h2>
+        </section>
+      </main>
+    );
+  }
 
   return (
-
     <main className="products-page">
-
       <section className="products-header">
-
-        <h1>
-          TechStore Products
-        </h1>
-
+        <h1>TechStore Products</h1>
 
         <p>
-          Premium laptops, phones and accessories.
+          Premium laptops, phones and
+          accessories.
         </p>
-
       </section>
 
-
-
-
-
-
-
       <section className="products-controls">
-
-
         <SearchBar
-
           search={search}
-
           setSearch={handleSearch}
-
         />
-
-
-
 
         <CategoryFilter
-
           category={category}
-
           setCategory={setCategory}
-
           categories={categories}
-
         />
 
-
-
-
-
-
-
         <select
-
+          className="sort-select"
           value={sortBy}
-
           onChange={(e) =>
             setSortBy(e.target.value)
           }
-
-          className="sort-select"
-
-          aria-label="Sort products"
-
         >
-
           <option value="default">
             Sort By
           </option>
-
 
           <option value="price-low">
             Price: Low to High
           </option>
 
-
           <option value="price-high">
             Price: High to Low
           </option>
-
 
           <option value="rating">
             Highest Rating
           </option>
 
-
           <option value="name">
-            Name
+            Name A-Z
           </option>
-
-
         </select>
 
-
-
-
-
-
-
-
         <div className="price-filter">
-
           <label htmlFor="price-range">
-
-            Max Price: ${maxPrice}
-
+            Max Price: $
+            {maxPrice.toLocaleString()}
           </label>
 
-
-
           <input
-
             id="price-range"
-
             type="range"
-
             min="100"
-
             max="5000"
-
             step="100"
-
             value={maxPrice}
-
             onChange={(e) =>
               setMaxPrice(
                 Number(e.target.value)
               )
             }
-
           />
-
         </div>
-
-
-
-
-
-
 
         <button
-
           className="clear-filter-btn"
-
           onClick={clearFilters}
-
         >
-
           Clear Filters
-
         </button>
-
-
-
       </section>
-
-
-
-
-
-
-
 
       <section className="products-results">
-
-
         <div className="products-count">
-
           Showing{" "}
-
           <strong>
             {filteredProducts.length}
-          </strong>
-
-          {" "}products
-
-
+          </strong>{" "}
+          product
+          {filteredProducts.length !== 1 &&
+            "s"}
         </div>
 
-
-
-
-
-
-
         <ProductGrid
-
           products={filteredProducts}
-
           loading={loading}
-
         />
-
-
-
       </section>
-
-
     </main>
-
   );
-
 }
-
 
 export default Products;

@@ -5,188 +5,135 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 
 import "./ProductGrid.css";
 
-
 function ProductGrid({
   products = [],
   loading = false,
 }) {
 
-
   // Loading State
-
   if (loading) {
-
     return (
-
       <section
         className="product-grid"
         aria-label="Loading products"
       >
-
-        {
-          Array.from({
-            length: 8
-          }).map((_, index) => (
-
-            <ProductCardSkeleton
-              key={index}
-            />
-
-          ))
-        }
-
+        {Array.from({ length: 8 }).map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
       </section>
-
     );
-
   }
 
 
-
-
-
   // Empty State
-
-  if (!products.length) {
-
+  if (!products || products.length === 0) {
     return (
-
       <div
-
         className="empty-products"
-
         role="status"
-
         aria-live="polite"
-
       >
 
         <div className="empty-icon">
-
           🔍
-
         </div>
 
 
         <h3>
-
           No Products Found
-
         </h3>
 
 
         <p>
-
           Try adjusting your search,
           category, or filters.
-
         </p>
 
-
       </div>
-
     );
-
   }
 
 
-
-
-
-
-
   // Product Grid
-
   return (
-
     <section
-
       className="product-grid"
-
       aria-label="Product list"
-
     >
 
-      {
-        products.map((product)=>(
+      {products.map((product) => (
 
-          <ProductCard
+        <ProductCard
+          key={
+            product._id ||
+            product.id
+          }
+          product={product}
+        />
 
-            key={product.id}
-
-            product={product}
-
-          />
-
-        ))
-      }
-
+      ))}
 
     </section>
-
   );
-
 }
-
-
 
 
 
 ProductGrid.propTypes = {
 
+  products: PropTypes.arrayOf(
+    PropTypes.shape({
 
-  products:
+      _id: PropTypes.string,
 
-    PropTypes.arrayOf(
-
-      PropTypes.shape({
-
-        id:
-          PropTypes.number.isRequired,
-
-
-        name:
-          PropTypes.string.isRequired,
+      id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
 
 
-        brand:
-          PropTypes.string,
+      name: PropTypes.string.isRequired,
 
 
-        category:
-          PropTypes.string,
+      brand: PropTypes.string,
 
 
-        image:
-          PropTypes.string,
+      category: PropTypes.string,
 
 
-        price:
-          PropTypes.number,
+      image: PropTypes.string,
 
 
-        rating:
-          PropTypes.number,
+      price: PropTypes.number,
 
 
-        stock:
-          PropTypes.number,
+      oldPrice: PropTypes.number,
 
 
-      })
-
-    ),
+      discount: PropTypes.number,
 
 
+      rating: PropTypes.number,
 
-  loading:
 
-    PropTypes.bool,
+      reviews: PropTypes.number,
+
+
+      stock: PropTypes.number,
+
+
+      newArrival: PropTypes.bool,
+
+
+      bestseller: PropTypes.bool,
+
+    })
+  ),
+
+
+  loading: PropTypes.bool,
 
 };
-
-
-
 
 
 export default ProductGrid;

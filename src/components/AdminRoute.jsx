@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import Loading from "./Loading";
 
 
 function AdminRoute({ children }) {
@@ -12,20 +13,15 @@ function AdminRoute({ children }) {
   } = useAuth();
 
 
+
+  // Checking authentication state
   if (loading) {
-
-    return (
-      <div className="page-loader">
-        <div className="spinner"></div>
-        <p>
-          Checking permissions...
-        </p>
-      </div>
-    );
-
+    return <Loading />;
   }
 
 
+
+  // User not logged in
   if (!user) {
 
     return (
@@ -38,6 +34,8 @@ function AdminRoute({ children }) {
   }
 
 
+
+  // User logged in but not admin
   if (user.role !== "admin") {
 
     return (
@@ -50,14 +48,18 @@ function AdminRoute({ children }) {
   }
 
 
+
+  // Admin access granted
   return children;
 
 }
 
 
+
 AdminRoute.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 
 
 export default AdminRoute;

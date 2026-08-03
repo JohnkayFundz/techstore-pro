@@ -7,10 +7,10 @@ import {
 import { Link } from "react-router-dom";
 
 import { getMyOrders } from "../api/orderApi";
+import { currency } from "../data/products";
 
 
 function Orders() {
-
 
   const [orders, setOrders] = useState([]);
 
@@ -27,42 +27,30 @@ function Orders() {
 
 
 
-
-
   useEffect(() => {
-
 
     const fetchOrders = async () => {
 
-
       try {
-
 
         const result = await getMyOrders();
 
 
-
         if (result.success) {
 
-
-          setOrders(result.orders);
-
+          setOrders(result.orders || []);
 
         } else {
-
 
           setError(
             result.message ||
             "Failed to load orders."
           );
 
-
         }
 
 
-
       } catch (err) {
-
 
         console.error(
           "Orders Error:",
@@ -71,27 +59,21 @@ function Orders() {
 
 
         setError(
+          err.response?.data?.message ||
           "Unable to fetch orders."
         );
 
 
-
       } finally {
-
 
         setLoading(false);
 
-
       }
-
 
     };
 
 
-
     fetchOrders();
-
-
 
   }, []);
 
@@ -99,21 +81,16 @@ function Orders() {
 
 
 
-
-
   const filteredOrders = useMemo(() => {
-
 
     let result = [...orders];
 
 
-
     if (search.trim()) {
-
 
       result = result.filter((order) =>
 
-        order._id
+        String(order._id)
           .toLowerCase()
           .includes(
             search.toLowerCase()
@@ -121,56 +98,39 @@ function Orders() {
 
       );
 
-
     }
 
 
 
-
-
     if (status !== "All") {
-
 
       result = result.filter(
         (order) =>
           order.status === status
       );
 
-
     }
-
-
 
 
 
     result.sort((a, b) => {
 
+      const first =
+        new Date(a.createdAt);
 
-      if (sort === "Newest") {
-
-
-        return (
-          new Date(b.createdAt) -
-          new Date(a.createdAt)
-        );
+      const second =
+        new Date(b.createdAt);
 
 
-      }
-
-
-
-      return (
-        new Date(a.createdAt) -
-        new Date(b.createdAt)
-      );
-
+      return sort === "Newest"
+        ? second - first
+        : first - second;
 
     });
 
 
 
     return result;
-
 
 
   }, [
@@ -185,14 +145,9 @@ function Orders() {
 
 
 
-
-
   const stats = {
 
-
-    total:
-      orders.length,
-
+    total: orders.length,
 
 
     pending:
@@ -202,13 +157,11 @@ function Orders() {
       ).length,
 
 
-
     processing:
       orders.filter(
         (order) =>
           order.status === "processing"
       ).length,
-
 
 
     shipped:
@@ -218,11 +171,17 @@ function Orders() {
       ).length,
 
 
-
     delivered:
       orders.filter(
         (order) =>
           order.status === "delivered"
+      ).length,
+
+
+    cancelled:
+      orders.filter(
+        (order) =>
+          order.status === "cancelled"
       ).length,
 
   };
@@ -232,10 +191,7 @@ function Orders() {
 
 
 
-
-
   if (loading) {
-
 
     return (
 
@@ -255,25 +211,18 @@ function Orders() {
 
 
 
-
-
-
   return (
 
     <section className="orders-page">
-
 
       <div className="container">
 
 
 
-
-
         <div className="page-header">
 
-
           <h1>
-            My Orders
+            📦 My Orders
           </h1>
 
 
@@ -283,7 +232,6 @@ function Orders() {
 
 
         </div>
-
 
 
 
@@ -305,9 +253,7 @@ function Orders() {
 
 
 
-
         <div className="orders-stats">
-
 
 
           <div className="orders-stat">
@@ -321,8 +267,6 @@ function Orders() {
             </p>
 
           </div>
-
-
 
 
 
@@ -340,8 +284,6 @@ function Orders() {
 
 
 
-
-
           <div className="orders-stat">
 
             <h2>
@@ -353,8 +295,6 @@ function Orders() {
             </p>
 
           </div>
-
-
 
 
 
@@ -372,8 +312,6 @@ function Orders() {
 
 
 
-
-
           <div className="orders-stat">
 
             <h2>
@@ -382,6 +320,20 @@ function Orders() {
 
             <p>
               Delivered
+            </p>
+
+          </div>
+
+
+
+          <div className="orders-stat">
+
+            <h2>
+              {stats.cancelled}
+            </h2>
+
+            <p>
+              Cancelled
             </p>
 
           </div>
@@ -400,7 +352,6 @@ function Orders() {
         <div className="orders-toolbar">
 
 
-
           <input
 
             type="search"
@@ -414,7 +365,6 @@ function Orders() {
             }
 
           />
-
 
 
 
@@ -454,8 +404,12 @@ function Orders() {
             </option>
 
 
-          </select>
+            <option value="cancelled">
+              Cancelled
+            </option>
 
+
+          </select>
 
 
 
@@ -485,7 +439,6 @@ function Orders() {
           </select>
 
 
-
         </div>
 
 
@@ -499,15 +452,9 @@ function Orders() {
         <div className="orders-list">
 
 
-
-
-
           {filteredOrders.length === 0 ? (
 
-
-
             <div className="empty-orders">
-
 
               <h2>
                 No Orders Found
@@ -519,16 +466,21 @@ function Orders() {
               </p>
 
 
-            </div>
+              <Link
+                to="/products"
+                className="btn btn-primary"
+              >
+                Shop Now
+              </Link>
 
+
+            </div>
 
 
           ) : (
 
 
-
             filteredOrders.map((order) => (
-
 
 
               <div
@@ -541,36 +493,29 @@ function Orders() {
 
 
 
-
                 <div className="order-top">
 
 
                   <div>
 
-
                     <h3>
 
                       Order #
-                      {order._id.slice(-8)}
+                      {String(order._id).slice(-8)}
 
                     </h3>
 
 
-
                     <p>
 
-                      {
-                        new Date(
-                          order.createdAt
-                        ).toLocaleDateString()
-
-                      }
+                      {new Date(
+                        order.createdAt
+                      ).toLocaleDateString()}
 
                     </p>
 
 
                   </div>
-
 
 
 
@@ -588,10 +533,7 @@ function Orders() {
                   </span>
 
 
-
                 </div>
-
-
 
 
 
@@ -611,12 +553,10 @@ function Orders() {
 
                     <p>
 
-                      $
+                      {currency}
 
-                      {
-                        order.totalAmount
-                          .toLocaleString()
-                      }
+                      {order.totalAmount
+                        .toLocaleString("en-US")}
 
                     </p>
 
@@ -637,9 +577,7 @@ function Orders() {
 
                     <p>
 
-                      {
-                        order.paymentMethod
-                      }
+                      {order.paymentMethod}
 
                     </p>
 
@@ -660,16 +598,14 @@ function Orders() {
 
                     <p>
 
-                      {
-                        order.items.length
-                      }
-
+                      {order.items.length}
                       {" "}products
 
                     </p>
 
 
                   </div>
+
 
 
 
@@ -681,9 +617,7 @@ function Orders() {
 
 
 
-
                 <div className="order-bottom">
-
 
 
                   <Link
@@ -699,10 +633,7 @@ function Orders() {
                   </Link>
 
 
-
                 </div>
-
-
 
 
 
@@ -710,17 +641,14 @@ function Orders() {
               </div>
 
 
-
             ))
+
 
           )}
 
 
 
-
         </div>
-
-
 
 
 
@@ -732,7 +660,6 @@ function Orders() {
   );
 
 }
-
 
 
 export default Orders;

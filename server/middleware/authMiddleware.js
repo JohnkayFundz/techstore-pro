@@ -7,9 +7,9 @@ import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
   try {
-    let token;
+    let token = null;
 
-    // Authorization Header
+    // Get token from Authorization header
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer ")
@@ -17,12 +17,12 @@ export const protect = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
 
-    // Cookie Token
+    // Fallback to cookie
     if (!token && req.cookies?.token) {
       token = req.cookies.token;
     }
 
-    // No Token
+    // No token
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -30,11 +30,25 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    // Basic validation
+    if (
+      typeof token !== "string" ||
+      token.trim() === "" ||
+      token.split(".").length !== 3
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: "Malformed authentication token.",
+      });
+    }
+
     // Verify JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Find User
-    const user = await User.findById(decoded.id).select("-password");
+    // Find user
+    const user = await User.findById(decoded.id)
+      .select("-password")
+      .lean();
 
     if (!user) {
       return res.status(401).json({
@@ -47,6 +61,8 @@ export const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error("Protect Middleware Error:", error);
+
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({
         success: false,
@@ -60,8 +76,6 @@ export const protect = async (req, res, next) => {
         message: "Invalid authentication token.",
       });
     }
-
-    console.error("Auth Middleware Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -90,4 +104,51 @@ export const adminOnly = (req, res, next) => {
   }
 
   next();
+};
+
+/* ==========================================================
+   OPTIONAL AUTH
+========================================================== */
+
+export const optionalAuth = async (req, res, next) => {
+  try {
+    let token = null;
+
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+
+    if (!token && req.cookies?.token) {
+      token = req.cookies.token;
+    }
+
+    if (!token) {
+      return next();
+    }
+
+    // Ignore malformed tokens for optional auth
+    if (
+      typeof token !== "string" ||
+      token.split(".").length !== 3
+    ) {
+      return next();
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id)
+      .select("-password")
+      .lean();
+
+    if (user) {
+      req.user = user;
+    }
+
+    next();
+  } catch (error) {
+    next();
+  }
 };

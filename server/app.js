@@ -1,55 +1,73 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
 import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 const app = express();
-
 
 /* ==========================================================
    APP SETTINGS
 ========================================================== */
 
-// Trust reverse proxy (Render, Railway, Nginx, etc.)
 app.set("trust proxy", 1);
 
-
-
 /* ==========================================================
-   MIDDLEWARE
+   RATE LIMITERS
 ========================================================== */
 
-// Security Headers
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests. Please try again later.",
+  },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many login attempts. Please try again in 15 minutes.",
+  },
+});
+
+/* ==========================================================
+   GLOBAL MIDDLEWARE
+========================================================== */
+
 app.use(helmet());
 
+app.use(compression());
 
-// Enable CORS
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_URL ||
-      "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
   })
 );
 
-
-// Parse JSON
 app.use(
   express.json({
     limit: "10mb",
   })
 );
 
-
-// Parse URL Encoded Data
 app.use(
   express.urlencoded({
     extended: true,
@@ -57,270 +75,194 @@ app.use(
   })
 );
 
-
-// Parse Cookies
 app.use(cookieParser());
 
-
-// HTTP Request Logger
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-
-// Development Request Logger
 if (process.env.NODE_ENV === "development") {
-
   app.use((req, res, next) => {
-
-    console.log(
-      `📥 ${req.method} ${req.originalUrl}`
-    );
-
+    console.log(`📥 ${req.method} ${req.originalUrl}`);
     next();
-
   });
-
 }
 
+/* ==========================================================
+   API RATE LIMIT
+========================================================== */
 
+app.use("/api", apiLimiter);
 
 /* ==========================================================
    HOME ROUTE
 ========================================================== */
 
 app.get("/", (req, res) => {
-
   res.status(200).json({
-
     success: true,
-
-    message:
-      "🚀 Welcome to TechStore Pro API",
-
+    message: "🚀 Welcome to TechStore Pro API",
     version: "1.0.0",
-
-    environment:
-      process.env.NODE_ENV ||
-      "development",
-
-    timestamp:
-      new Date().toISOString(),
-
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString(),
   });
-
 });
 
-
-
 /* ==========================================================
-   API INFO
+   API INFORMATION
 ========================================================== */
 
 app.get("/api", (req, res) => {
-
-  res.status(200).json({
-
+  res.json({
     success: true,
-
-    name:
-      "TechStore Pro API",
-
-    version:
-      "1.0.0",
-
-
+    name: "TechStore Pro API",
+    version: "1.0.0",
     endpoints: {
-
-      auth:
-        "/api/auth",
-
-      users:
-        "/api/users",
-
-      products:
-        "/api/products",
-
-      orders:
-        "/api/orders",
-
+      auth: "/api/auth",
+      admin: "/api/admin",
+      users: "/api/users",
+      products: "/api/products",
+      orders: "/api/orders",
+      upload: "/api/upload",
     },
-
   });
-
 });
-
-
 
 /* ==========================================================
    HEALTH CHECK
 ========================================================== */
 
 app.get("/health", (req, res) => {
-
-  res.status(200).json({
-
+  res.json({
     success: true,
-
-    status:
-      "OK",
-
-    uptime:
-      process.uptime(),
-
-    timestamp:
-      new Date().toISOString(),
-
+    status: "OK",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
-
 });
-
-
 
 /* ==========================================================
    API ROUTES
 ========================================================== */
 
-
-// Authentication
 app.use(
   "/api/auth",
+  authLimiter,
   authRoutes
 );
 
+app.use(
+  "/api/admin",
+  adminRoutes
+);
 
-// Users
 app.use(
   "/api/users",
   userRoutes
 );
 
-
-// Products
 app.use(
   "/api/products",
   productRoutes
 );
 
-
-// Orders
 app.use(
   "/api/orders",
   orderRoutes
 );
 
-
+app.use(
+  "/api/upload",
+  uploadRoutes
+);
 
 /* ==========================================================
-   INVALID JSON HANDLER
+   INVALID JSON ERROR
 ========================================================== */
 
 app.use((err, req, res, next) => {
-
   if (
     err instanceof SyntaxError &&
     err.status === 400 &&
     "body" in err
   ) {
-
     return res.status(400).json({
-
       success: false,
-
-      message:
-        "Invalid JSON payload.",
-
+      message: "Invalid JSON payload.",
     });
-
   }
 
-
   next(err);
-
 });
 
+/* ==========================================================
+   MULTER ERROR HANDLER
+========================================================== */
 
+app.use((err, req, res, next) => {
+  if (err.name === "MulterError") {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        success: false,
+        message: "File size exceeds 5MB limit.",
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      message: err.message || "File upload error.",
+    });
+  }
+
+  if (err.message && err.message.includes("Only JPG, PNG")) {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  next(err);
+});
 
 /* ==========================================================
-   404 NOT FOUND
+   404 ROUTE
 ========================================================== */
 
 app.use((req, res) => {
-
   res.status(404).json({
-
     success: false,
-
-    message:
-      "Route not found",
-
-    path:
-      req.originalUrl,
-
-    method:
-      req.method,
-
+    message: "Route not found",
+    method: req.method,
+    path: req.originalUrl,
   });
-
 });
-
-
 
 /* ==========================================================
    GLOBAL ERROR HANDLER
 ========================================================== */
 
 app.use((err, req, res, next) => {
+  console.error("=================================");
+  console.error("❌ Global Error");
+  console.error("Error Name:", err?.name);
+  console.error("Error Message:", err?.message);
+  console.error("Error Code:", err?.code);
+  console.error("Full Error:", err);
+  console.error("Stack:", err?.stack);
+  console.error("=================================");
 
-  console.error(
-    "================================="
-  );
-
-  console.error(
-    "❌ Global Error Handler"
-  );
-
-  console.error(
-    err.stack
-  );
-
-  console.error(
-    "================================="
-  );
-
-
-  const statusCode =
-    err.statusCode ||
-    err.status ||
-    500;
-
+  const statusCode = err.statusCode || err.status || 500;
 
   res.status(statusCode).json({
-
     success: false,
-
     message:
       process.env.NODE_ENV === "production"
         ? "Internal Server Error"
-        : err.message ||
-          "Something went wrong.",
-
-
+        : err?.message || "Something went wrong.",
     ...(process.env.NODE_ENV !== "production" && {
-
-      stack:
-        err.stack,
-
+      stack: err?.stack,
     }),
-
   });
-
 });
-
-
-
-/* ==========================================================
-   EXPORT APP
-========================================================== */
 
 export default app;
