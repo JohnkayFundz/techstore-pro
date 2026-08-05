@@ -13,7 +13,9 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
+
 const app = express();
+
 
 /* ==========================================================
    APP SETTINGS
@@ -21,129 +23,316 @@ const app = express();
 
 app.set("trust proxy", 1);
 
+
 /* ==========================================================
    RATE LIMITERS
 ========================================================== */
 
 const apiLimiter = rateLimit({
+
   windowMs: 15 * 60 * 1000,
+
   max: 100,
+
   standardHeaders: true,
+
   legacyHeaders: false,
+
   message: {
     success: false,
     message: "Too many requests. Please try again later.",
   },
+
 });
 
+
+
 const authLimiter = rateLimit({
+
   windowMs: 15 * 60 * 1000,
+
   max: 10,
+
   standardHeaders: true,
+
   legacyHeaders: false,
+
   message: {
     success: false,
-    message: "Too many login attempts. Please try again in 15 minutes.",
+    message:
+      "Too many login attempts. Please try again in 15 minutes.",
   },
+
 });
+
+
 
 /* ==========================================================
    GLOBAL MIDDLEWARE
 ========================================================== */
 
+
 app.use(helmet());
+
 
 app.use(compression());
 
+
+
+/* ==========================================================
+   CORS CONFIGURATION
+========================================================== */
+
+
+const allowedOrigins = [
+
+  "http://localhost:5173",
+
+  "http://localhost:4173",
+
+  process.env.CLIENT_URL,
+
+  // Add production frontend URL later
+  // "https://your-techstore.vercel.app"
+
+];
+
+
+
 app.use(
+
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+
+    origin: (origin, callback) => {
+
+
+      if (!origin) {
+
+        return callback(null, true);
+
+      }
+
+
+
+      if (
+        allowedOrigins.includes(origin)
+      ) {
+
+        return callback(null, true);
+
+      }
+
+
+
+      console.log(
+        "❌ CORS blocked:",
+        origin
+      );
+
+
+      return callback(
+        new Error("Not allowed by CORS")
+      );
+
+    },
+
+
     credentials: true,
+
   })
+
 );
 
+
+
+
+
 app.use(
+
   express.json({
+
     limit: "10mb",
+
   })
+
 );
 
+
+
 app.use(
+
   express.urlencoded({
+
     extended: true,
+
     limit: "10mb",
+
   })
+
 );
+
+
 
 app.use(cookieParser());
 
-if (process.env.NODE_ENV !== "production") {
-  app.use(morgan("dev"));
+
+
+
+
+if (
+  process.env.NODE_ENV !== "production"
+) {
+
+  app.use(
+    morgan("dev")
+  );
+
 }
 
-if (process.env.NODE_ENV === "development") {
-  app.use((req, res, next) => {
-    console.log(`📥 ${req.method} ${req.originalUrl}`);
-    next();
-  });
+
+
+if (
+  process.env.NODE_ENV === "development"
+) {
+
+  app.use(
+    (req, res, next) => {
+
+      console.log(
+        `📥 ${req.method} ${req.originalUrl}`
+      );
+
+      next();
+
+    }
+  );
+
 }
+
+
 
 /* ==========================================================
    API RATE LIMIT
 ========================================================== */
 
-app.use("/api", apiLimiter);
+
+app.use(
+  "/api",
+  apiLimiter
+);
+
+
+
 
 /* ==========================================================
    HOME ROUTE
 ========================================================== */
 
+
 app.get("/", (req, res) => {
+
   res.status(200).json({
+
     success: true,
-    message: "🚀 Welcome to TechStore Pro API",
+
+    message:
+      "🚀 Welcome to TechStore Pro API",
+
     version: "1.0.0",
-    environment: process.env.NODE_ENV,
-    timestamp: new Date().toISOString(),
+
+    environment:
+      process.env.NODE_ENV,
+
+    timestamp:
+      new Date().toISOString(),
+
   });
+
 });
+
+
+
+
 
 /* ==========================================================
    API INFORMATION
 ========================================================== */
 
+
 app.get("/api", (req, res) => {
+
   res.json({
+
     success: true,
-    name: "TechStore Pro API",
-    version: "1.0.0",
+
+    name:
+      "TechStore Pro API",
+
+    version:
+      "1.0.0",
+
     endpoints: {
-      auth: "/api/auth",
-      admin: "/api/admin",
-      users: "/api/users",
-      products: "/api/products",
-      orders: "/api/orders",
-      upload: "/api/upload",
+
+      auth:
+        "/api/auth",
+
+      admin:
+        "/api/admin",
+
+      users:
+        "/api/users",
+
+      products:
+        "/api/products",
+
+      orders:
+        "/api/orders",
+
+      upload:
+        "/api/upload",
+
     },
+
   });
+
 });
+
+
+
+
 
 /* ==========================================================
    HEALTH CHECK
 ========================================================== */
 
+
 app.get("/health", (req, res) => {
+
   res.json({
+
     success: true,
-    status: "OK",
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
+
+    status:
+      "OK",
+
+    uptime:
+      process.uptime(),
+
+    timestamp:
+      new Date().toISOString(),
+
   });
+
 });
+
+
+
+
 
 /* ==========================================================
    API ROUTES
 ========================================================== */
+
 
 app.use(
   "/api/auth",
@@ -151,118 +340,247 @@ app.use(
   authRoutes
 );
 
+
+
 app.use(
   "/api/admin",
   adminRoutes
 );
+
+
 
 app.use(
   "/api/users",
   userRoutes
 );
 
+
+
 app.use(
   "/api/products",
   productRoutes
 );
+
+
 
 app.use(
   "/api/orders",
   orderRoutes
 );
 
+
+
 app.use(
   "/api/upload",
   uploadRoutes
 );
 
+
+
+
+
 /* ==========================================================
    INVALID JSON ERROR
 ========================================================== */
 
+
 app.use((err, req, res, next) => {
+
+
   if (
+
     err instanceof SyntaxError &&
+
     err.status === 400 &&
+
     "body" in err
+
   ) {
+
     return res.status(400).json({
+
       success: false,
-      message: "Invalid JSON payload.",
+
+      message:
+        "Invalid JSON payload.",
+
     });
+
   }
 
+
   next(err);
+
 });
+
+
+
+
 
 /* ==========================================================
    MULTER ERROR HANDLER
 ========================================================== */
 
+
 app.use((err, req, res, next) => {
-  if (err.name === "MulterError") {
-    if (err.code === "LIMIT_FILE_SIZE") {
+
+
+  if (
+    err.name === "MulterError"
+  ) {
+
+
+    if (
+      err.code === "LIMIT_FILE_SIZE"
+    ) {
+
       return res.status(400).json({
+
         success: false,
-        message: "File size exceeds 5MB limit.",
+
+        message:
+          "File size exceeds 5MB limit.",
+
       });
+
     }
 
+
+
     return res.status(400).json({
+
       success: false,
-      message: err.message || "File upload error.",
+
+      message:
+        err.message ||
+        "File upload error.",
+
     });
+
   }
 
-  if (err.message && err.message.includes("Only JPG, PNG")) {
+
+
+
+  if (
+
+    err.message &&
+
+    err.message.includes(
+      "Only JPG, PNG"
+    )
+
+  ) {
+
     return res.status(400).json({
+
       success: false,
-      message: err.message,
+
+      message:
+        err.message,
+
     });
+
   }
+
+
 
   next(err);
+
 });
+
+
+
+
 
 /* ==========================================================
    404 ROUTE
 ========================================================== */
 
+
 app.use((req, res) => {
+
   res.status(404).json({
+
     success: false,
-    message: "Route not found",
-    method: req.method,
-    path: req.originalUrl,
+
+    message:
+      "Route not found",
+
+    method:
+      req.method,
+
+    path:
+      req.originalUrl,
+
   });
+
 });
+
+
+
+
 
 /* ==========================================================
    GLOBAL ERROR HANDLER
 ========================================================== */
 
-app.use((err, req, res, next) => {
-  console.error("=================================");
-  console.error("❌ Global Error");
-  console.error("Error Name:", err?.name);
-  console.error("Error Message:", err?.message);
-  console.error("Error Code:", err?.code);
-  console.error("Full Error:", err);
-  console.error("Stack:", err?.stack);
-  console.error("=================================");
 
-  const statusCode = err.statusCode || err.status || 500;
+app.use((err, req, res, next) => {
+
+
+  console.error(
+    "================================="
+  );
+
+  console.error(
+    "❌ Global Error"
+  );
+
+  console.error(
+    err
+  );
+
+  console.error(
+    "================================="
+  );
+
+
+
+  const statusCode =
+    err.statusCode ||
+    err.status ||
+    500;
+
+
 
   res.status(statusCode).json({
+
     success: false,
+
     message:
+
       process.env.NODE_ENV === "production"
+
         ? "Internal Server Error"
-        : err?.message || "Something went wrong.",
+
+        : err.message ||
+          "Something went wrong.",
+
+
     ...(process.env.NODE_ENV !== "production" && {
-      stack: err?.stack,
+
+      stack:
+        err.stack,
+
     }),
+
   });
+
 });
+
+
+
+
 
 export default app;
