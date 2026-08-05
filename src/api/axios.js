@@ -1,7 +1,6 @@
 import axios from "axios";
 
 
-
 const api = axios.create({
 
   baseURL: import.meta.env.VITE_API_URL,
@@ -24,20 +23,10 @@ api.interceptors.request.use(
   (config) => {
 
 
-    config.headers =
-      config.headers || {};
+    const token = localStorage.getItem("token");
 
 
-
-    const token =
-      localStorage.getItem("token");
-
-
-
-    if (
-      token &&
-      !config.headers.Authorization
-    ) {
+    if (token) {
 
       config.headers.Authorization =
         `Bearer ${token}`;
@@ -46,16 +35,10 @@ api.interceptors.request.use(
 
 
 
+    // Handle file uploads
+    if (config.data instanceof FormData) {
 
-    // Allow browser to set FormData boundary
-
-    if (
-      config.data instanceof FormData
-    ) {
-
-      delete config.headers[
-        "Content-Type"
-      ];
+      delete config.headers["Content-Type"];
 
     }
 
@@ -81,9 +64,10 @@ api.interceptors.request.use(
 
 
 
+
 /* ==========================================================
    RESPONSE INTERCEPTOR
-   Handle expired login
+   Global error handling
 ========================================================== */
 
 api.interceptors.response.use(
@@ -94,23 +78,30 @@ api.interceptors.response.use(
   (error) => {
 
 
-    if (
-      error.response?.status === 401
-    ) {
+    const status =
+      error.response?.status;
 
 
-      localStorage.removeItem(
-        "token"
-      );
 
+    if (status === 401) {
+
+
+      localStorage.removeItem("token");
 
       localStorage.removeItem(
         "techstore-user"
       );
 
 
-      window.location.href =
-        "/login";
+      // prevent redirect loop
+      if (
+        window.location.pathname !== "/login"
+      ) {
+
+        window.location.href =
+          "/login";
+
+      }
 
     }
 
@@ -122,6 +113,7 @@ api.interceptors.response.use(
   }
 
 );
+
 
 
 
