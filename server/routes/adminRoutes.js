@@ -6,13 +6,21 @@ import {
 } from "../middleware/authMiddleware.js";
 
 import {
+  // Dashboard
   getDashboardStats,
   getSalesAnalytics,
+
+  // Users
   getUsers,
   updateUserRole,
   deleteUser,
+
+  // Orders
   getOrders,
   updateOrderStatus,
+  deleteOrder,
+
+  // Products
   getProducts,
   getProduct,
   createProduct,
@@ -34,7 +42,7 @@ router.get(
 );
 
 router.get(
-  "/analytics",
+  "/sales",
   protect,
   adminOnly,
   getSalesAnalytics
@@ -81,6 +89,13 @@ router.put(
   protect,
   adminOnly,
   updateOrderStatus
+);
+
+router.delete(
+  "/orders/:id",
+  protect,
+  adminOnly,
+  deleteOrder
 );
 
 /* ==========================================================

@@ -5,10 +5,12 @@ import {
 } from "react";
 
 import debounce from "lodash.debounce";
+import { toast } from "react-toastify";
 
 import ProductGrid from "../components/products/ProductGrid";
 import SearchBar from "../components/SearchBar";
 import CategoryFilter from "../components/CategoryFilter";
+import Loading from "../components/Loading";
 
 import { getProducts } from "../api/productApi";
 
@@ -39,7 +41,21 @@ function Products() {
     const response = await getProducts();
 
     if (response.success) {
-      setProducts(response.products || []);
+      const items = response.products || [];
+
+      setProducts(items);
+
+      if (items.length > 0) {
+        setMaxPrice(
+          Math.max(
+            ...items.map((product) => product.price)
+          )
+        );
+      }
+    } else {
+      toast.error(response.message);
+
+      setProducts([]);
     }
 
     setLoading(false);
@@ -77,31 +93,41 @@ function Products() {
   }, [products]);
 
   /*
-    Filter + Sort Products
+    Highest Price
+  */
+
+  const highestPrice = useMemo(() => {
+    if (!products.length) return 5000;
+
+    return Math.max(
+      ...products.map((product) => product.price)
+    );
+  }, [products]);
+
+  /*
+    Filter + Sort
   */
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Search
-
     if (search.trim()) {
       result = result.filter((product) => {
+        const keyword = search.toLowerCase();
+
         return (
           product.name
             ?.toLowerCase()
-            .includes(search.toLowerCase()) ||
+            .includes(keyword) ||
           product.brand
             ?.toLowerCase()
-            .includes(search.toLowerCase()) ||
+            .includes(keyword) ||
           product.description
             ?.toLowerCase()
-            .includes(search.toLowerCase())
+            .includes(keyword)
         );
       });
     }
-
-    // Category
 
     if (category !== "All") {
       result = result.filter(
@@ -110,13 +136,9 @@ function Products() {
       );
     }
 
-    // Price
-
     result = result.filter(
       (product) => product.price <= maxPrice
     );
-
-    // Sorting
 
     switch (sortBy) {
       case "price-low":
@@ -133,7 +155,9 @@ function Products() {
 
       case "rating":
         result.sort(
-          (a, b) => b.rating - a.rating
+          (a, b) =>
+            (b.rating || 0) -
+            (a.rating || 0)
         );
         break;
 
@@ -167,22 +191,11 @@ function Products() {
 
     setSortBy("default");
 
-    setMaxPrice(5000);
+    setMaxPrice(highestPrice);
   };
 
   if (loading) {
-    return (
-      <main className="products-page">
-        <section
-          style={{
-            padding: "80px 0",
-            textAlign: "center",
-          }}
-        >
-          <h2>Loading Products...</h2>
-        </section>
-      </main>
-    );
+    return <Loading />;
   }
 
   return (
@@ -191,8 +204,8 @@ function Products() {
         <h1>TechStore Products</h1>
 
         <p>
-          Premium laptops, phones and
-          accessories.
+          Premium laptops, smartphones,
+          gaming gear and accessories.
         </p>
       </section>
 
@@ -245,9 +258,9 @@ function Products() {
           <input
             id="price-range"
             type="range"
-            min="100"
-            max="5000"
-            step="100"
+            min="0"
+            max={highestPrice}
+            step="50"
             value={maxPrice}
             onChange={(e) =>
               setMaxPrice(

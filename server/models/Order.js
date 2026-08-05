@@ -1,45 +1,54 @@
 import mongoose from "mongoose";
 
+
+
 /* ==========================================================
    ORDER ITEM SCHEMA
 ========================================================== */
 
 const orderItemSchema = new mongoose.Schema(
   {
+
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
       required: true,
     },
 
+
     name: {
       type: String,
       required: true,
-      trim: true,
     },
+
 
     image: {
       type: String,
-      default: "",
+      required: true,
     },
+
 
     price: {
       type: Number,
       required: true,
-      min: 0,
     },
+
 
     quantity: {
       type: Number,
       required: true,
-      min: 1,
       default: 1,
     },
+
+
   },
   {
     _id: false,
   }
 );
+
+
+
 
 /* ==========================================================
    SHIPPING ADDRESS SCHEMA
@@ -47,11 +56,13 @@ const orderItemSchema = new mongoose.Schema(
 
 const shippingAddressSchema = new mongoose.Schema(
   {
+
     fullName: {
       type: String,
       required: true,
       trim: true,
     },
+
 
     phone: {
       type: String,
@@ -59,11 +70,13 @@ const shippingAddressSchema = new mongoose.Schema(
       trim: true,
     },
 
+
     address: {
       type: String,
       required: true,
       trim: true,
     },
+
 
     city: {
       type: String,
@@ -71,151 +84,218 @@ const shippingAddressSchema = new mongoose.Schema(
       trim: true,
     },
 
+
     state: {
       type: String,
       required: true,
       trim: true,
     },
 
-    postalCode: {
-      type: String,
-      default: "",
-      trim: true,
-    },
 
     country: {
       type: String,
+      required: true,
       default: "Nigeria",
-      trim: true,
     },
+
+
   },
   {
     _id: false,
   }
 );
 
+
+
+
+
 /* ==========================================================
    ORDER SCHEMA
 ========================================================== */
 
 const orderSchema = new mongoose.Schema(
+
   {
-    // Customer
+
+
+    // User who placed order
+
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // Purchased products
-    orderItems: {
-      type: [orderItemSchema],
-      required: true,
-      validate: [
-        (items) => items.length > 0,
-        "Order must contain at least one product.",
-      ],
+
+
+    // Human readable order number
+
+    orderNumber: {
+      type: String,
+      unique: true,
     },
 
-    // Delivery Address
+
+
+    // Purchased products
+
+    items: [
+      {
+        type: orderItemSchema,
+        required: true,
+      }
+    ],
+
+
+
+    // Delivery information
+
     shippingAddress: {
       type: shippingAddressSchema,
       required: true,
     },
 
-    // Payment
+
+
+    // Payment method
+
     paymentMethod: {
+
       type: String,
+
       enum: [
-        "Cash on Delivery",
-        "Card",
-        "Bank Transfer",
+        "cash",
+        "card",
       ],
-      default: "Cash on Delivery",
+
+      default: "cash",
+
     },
 
-    // Pricing
-    itemsPrice: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
+
+
+    // Payment status
+
+    paymentStatus: {
+
+      type: String,
+
+      enum: [
+        "pending",
+        "paid",
+        "failed",
+      ],
+
+      default: "pending",
+
     },
 
-    shippingPrice: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
 
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
 
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
+    // Order status
 
-    // Payment Status
-    isPaid: {
-      type: Boolean,
-      default: false,
-    },
-
-    paidAt: {
-      type: Date,
-      default: null,
-    },
-
-    // Delivery Status
-    isDelivered: {
-      type: Boolean,
-      default: false,
-    },
-
-    deliveredAt: {
-      type: Date,
-      default: null,
-    },
-
-    // Order Status
     status: {
+
       type: String,
+
       enum: [
-        "Pending",
-        "Processing",
-        "Shipped",
-        "Delivered",
-        "Cancelled",
+        "pending",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled",
       ],
-      default: "Pending",
+
+      default: "pending",
+
     },
+
+
+
+    // Total price
+
+    totalAmount: {
+
+      type: Number,
+
+      required: true,
+
+      min: 0,
+
+    },
+
+
   },
+
   {
     timestamps: true,
-    versionKey: false,
+  }
+
+);
+
+
+
+
+
+
+/* ==========================================================
+   CREATE ORDER NUMBER
+========================================================== */
+
+orderSchema.pre(
+  "save",
+  function(next){
+
+    if(!this.orderNumber){
+
+      const timestamp =
+        Date.now()
+          .toString()
+          .slice(-8);
+
+
+      this.orderNumber =
+        `TS-${timestamp}`;
+
+    }
+
+
+    next();
+
   }
 );
+
+
+
+
+
 
 /* ==========================================================
    INDEXES
 ========================================================== */
 
-orderSchema.index({ user: 1 });
-orderSchema.index({ status: 1 });
-orderSchema.index({ createdAt: -1 });
+// Search orders by user quickly
 
-/* ==========================================================
-   MODEL
-========================================================== */
+orderSchema.index({
+  user: 1,
+});
 
-const Order = mongoose.model("Order", orderSchema);
+
+// Search orders by date
+
+orderSchema.index({
+  createdAt: -1,
+});
+
+
+
+
+
+
+const Order = mongoose.model(
+  "Order",
+  orderSchema
+);
+
 
 export default Order;

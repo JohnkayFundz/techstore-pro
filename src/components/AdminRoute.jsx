@@ -5,59 +5,93 @@ import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
 
 
-function AdminRoute({ children }) {
+
+function AdminRoute({
+  children,
+}) {
+
 
   const {
     user,
     loading,
+    isAdmin,
   } = useAuth();
 
 
 
+
+
   // Checking authentication state
+
   if (loading) {
+
     return <Loading />;
+
   }
+
+
 
 
 
   // User not logged in
+
   if (!user) {
 
     return (
+
       <Navigate
+
         to="/login"
+
         replace
+
       />
+
     );
 
   }
+
+
 
 
 
   // User logged in but not admin
-  if (user.role !== "admin") {
+
+  if (!isAdmin) {
 
     return (
+
       <Navigate
+
         to="/"
+
         replace
+
       />
+
     );
 
   }
 
 
 
+
+
   // Admin access granted
+
   return children;
+
 
 }
 
 
 
+
 AdminRoute.propTypes = {
-  children: PropTypes.node.isRequired,
+
+  children:
+    PropTypes.node.isRequired,
+
 };
 
 

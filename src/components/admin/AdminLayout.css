@@ -1,0 +1,56 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+
+/* Sidebar */
+
+.admin-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+
+
+/* Main Area */
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+
+
+/* Page Content */
+
+.admin-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+
+
+/* Responsive */
+
+@media (max-width: 900px) {
+
+  .admin-layout {
+    flex-direction: column;
+  }
+
+
+  .admin-sidebar {
+    width: 100%;
+  }
+
+
+  .admin-content {
+    padding: 16px;
+  }
+
+}

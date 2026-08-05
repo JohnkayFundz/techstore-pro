@@ -18,11 +18,16 @@ const CartContext = createContext(null);
 ========================================================== */
 
 const createCartId = () => {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+  if (
+    typeof crypto !== "undefined" &&
+    crypto.randomUUID
+  ) {
     return crypto.randomUUID();
   }
 
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  return `${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 9)}`;
 };
 
 /* ==========================================================
@@ -33,18 +38,27 @@ const getInitialState = () => {
   try {
     const savedCart = localStorage.getItem("cart");
 
-    const cart = savedCart ? JSON.parse(savedCart) : [];
+    const cart = savedCart
+      ? JSON.parse(savedCart)
+      : [];
 
     return {
       cart: cart.map((item) => ({
         ...item,
+        _id: item._id || item.id,
         cartId: item.cartId || createCartId(),
-        quantity: Math.max(item.quantity || 1, 1),
+        quantity: Math.max(
+          Number(item.quantity) || 1,
+          1
+        ),
       })),
       lastAddedId: null,
     };
   } catch (error) {
-    console.error("Failed to load cart:", error);
+    console.error(
+      "Failed to load cart:",
+      error
+    );
 
     return {
       cart: [],
@@ -58,27 +72,37 @@ const getInitialState = () => {
 ========================================================== */
 
 function cartReducer(state, action) {
-  switch (action.type) {
-    /* ==========================================
+  switch (action.type) {    /* ==========================================
        ADD TO CART
     ========================================== */
 
     case "ADD_TO_CART": {
       const product = action.payload;
 
-      const existingItem = state.cart.find(
-        (item) =>
-          item.id === product.id &&
-          item.selectedColor === product.selectedColor &&
-          item.selectedSize === product.selectedSize
-      );
+      const productId =
+        product._id || product.id;
+
+      const existingItem =
+        state.cart.find((item) => {
+          const itemId =
+            item._id || item.id;
+
+          return (
+            itemId === productId &&
+            item.selectedColor ===
+              product.selectedColor &&
+            item.selectedSize ===
+              product.selectedSize
+          );
+        });
 
       if (existingItem) {
         return {
           ...state,
 
           cart: state.cart.map((item) =>
-            item.cartId === existingItem.cartId
+            item.cartId ===
+            existingItem.cartId
               ? {
                   ...item,
                   quantity: Math.min(
@@ -89,68 +113,97 @@ function cartReducer(state, action) {
               : item
           ),
 
-          lastAddedId: existingItem.cartId,
+          lastAddedId:
+            existingItem.cartId,
         };
       }
 
       const newItem = {
         ...product,
+
+        _id:
+          product._id || product.id,
+
         cartId: createCartId(),
-        quantity: Math.max(product.quantity || 1, 1),
+
+        quantity: Math.max(
+          Number(product.quantity) || 1,
+          1
+        ),
       };
 
       return {
         ...state,
-        cart: [...state.cart, newItem],
-        lastAddedId: newItem.cartId,
+
+        cart: [
+          ...state.cart,
+          newItem,
+        ],
+
+        lastAddedId:
+          newItem.cartId,
       };
     }
 
     /* ==========================================
-       INCREASE
+       INCREASE QUANTITY
     ========================================== */
 
     case "INCREASE": {
       return {
         ...state,
 
-        cart: state.cart.map((item) =>
-          item.cartId === action.payload
-            ? {
-                ...item,
-                quantity: Math.min(
-                  item.quantity + 1,
-                  item.stock ?? Infinity
-                ),
-              }
-            : item
-        ),
-      };
-    }
+        cart: state.cart.map((item) => {
+          if (
+            item.cartId !== action.payload
+          ) {
+            return item;
+          }
 
-    /* ==========================================
-       DECREASE
+          return {
+            ...item,
+
+            quantity: Math.min(
+              item.quantity + 1,
+              item.stock ?? Infinity
+            ),
+          };
+        }),
+      };
+    }    /* ==========================================
+       DECREASE QUANTITY
     ========================================== */
 
     case "DECREASE": {
       return {
         ...state,
 
-        cart: state.cart.map((item) =>
-          item.cartId === action.payload && item.quantity > 1
-            ? {
-                ...item,
-                quantity: item.quantity - 1,
-              }
-            : item
-        ),
+        cart: state.cart.map((item) => {
+          if (
+            item.cartId !== action.payload
+          ) {
+            return item;
+          }
+
+          return {
+            ...item,
+
+            quantity: Math.max(
+              item.quantity - 1,
+              1
+            ),
+          };
+        }),
       };
-    }    /* ==========================================
+    }
+
+    /* ==========================================
        UPDATE QUANTITY
     ========================================== */
 
     case "UPDATE_QUANTITY": {
-      const { cartId, quantity } = action.payload;
+      const { cartId, quantity } =
+        action.payload;
 
       return {
         ...state,
@@ -160,13 +213,18 @@ function cartReducer(state, action) {
             return item;
           }
 
-          const maxStock = item.stock ?? Infinity;
+          const maxStock =
+            item.stock ?? Infinity;
 
           return {
             ...item,
+
             quantity: Math.max(
               1,
-              Math.min(quantity, maxStock)
+              Math.min(
+                Number(quantity) || 1,
+                maxStock
+              )
             ),
           };
         }),
@@ -182,11 +240,14 @@ function cartReducer(state, action) {
         ...state,
 
         cart: state.cart.filter(
-          (item) => item.cartId !== action.payload
+          (item) =>
+            item.cartId !==
+            action.payload
         ),
 
         lastAddedId:
-          state.lastAddedId === action.payload
+          state.lastAddedId ===
+          action.payload
             ? null
             : state.lastAddedId,
       };
@@ -205,9 +266,7 @@ function cartReducer(state, action) {
     default:
       return state;
   }
-}
-
-/* ==========================================================
+}/* ==========================================================
    CART PROVIDER
 ========================================================== */
 
@@ -229,7 +288,10 @@ export function CartProvider({ children }) {
         JSON.stringify(state.cart)
       );
     } catch (error) {
-      console.error("Failed to save cart:", error);
+      console.error(
+        "Failed to save cart:",
+        error
+      );
     }
   }, [state.cart]);
 
@@ -254,9 +316,11 @@ export function CartProvider({ children }) {
         total + Number(item.price) * item.quantity,
       0
     );
-  }, [state.cart]);  /* ==========================================================
-     CART ACTION HELPERS
-  ========================================================== */
+  }, [state.cart]);
+
+  /* ==========================================
+     ACTION HELPERS
+  ========================================== */
 
   const addToCart = (product) => {
     dispatch({
@@ -279,7 +343,10 @@ export function CartProvider({ children }) {
     });
   };
 
-  const updateQuantity = (cartId, quantity) => {
+  const updateQuantity = (
+    cartId,
+    quantity
+  ) => {
     dispatch({
       type: "UPDATE_QUANTITY",
       payload: {
@@ -302,9 +369,9 @@ export function CartProvider({ children }) {
     });
   };
 
-  /* ==========================================================
+  /* ==========================================
      CONTEXT VALUE
-  ========================================================== */
+  ========================================== */
 
   const value = useMemo(
     () => ({
@@ -334,16 +401,10 @@ export function CartProvider({ children }) {
   );
 }
 
-/* ==========================================================
-   PROP TYPES
-========================================================== */
-
 CartProvider.propTypes = {
   children: PropTypes.node.isRequired,
-};
-
-/* ==========================================================
-   CUSTOM HOOK
+};/* ==========================================================
+   USE CART HOOK
 ========================================================== */
 
 export function useCart() {
@@ -351,11 +412,9 @@ export function useCart() {
 
   if (!context) {
     throw new Error(
-      "useCart must be used inside CartProvider."
+      "useCart must be used within CartProvider"
     );
   }
 
   return context;
 }
-
-export default CartContext;

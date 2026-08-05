@@ -1,17 +1,38 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  Link,
+} from "react-router-dom";
+
 
 import Loading from "../../components/Loading";
 
-import {
-  getProducts,
-  deleteProduct,
-} from "../../api/productApi";
 
-import { useToast } from "../../context/ToastContext";
+import {
+  getAdminProducts,
+  deleteAdminProduct,
+} from "../../api/adminApi";
+
+
+import {
+  useToast,
+} from "../../context/ToastContext";
+
+
+import {
+  formatPrice,
+} from "../../utils/formatPrice";
+
+
+import "./AdminProducts.css";
+
 
 
 function AdminProducts() {
+
 
   const [products, setProducts] = useState([]);
 
@@ -20,7 +41,95 @@ function AdminProducts() {
   const [error, setError] = useState("");
 
 
-  const { showToast } = useToast();
+
+  const {
+    showToast,
+  } = useToast();
+
+
+
+
+
+
+  // ==========================================================
+  // FETCH PRODUCTS
+  // ==========================================================
+
+  const fetchProducts = async () => {
+
+    try {
+
+      setLoading(true);
+
+      setError("");
+
+
+
+      const result = await getAdminProducts();
+
+
+
+      if (result.success) {
+
+
+        setProducts(
+          result.products || []
+        );
+
+
+      } else {
+
+
+        setError(
+          result.message ||
+          "Failed to load products."
+        );
+
+
+        showToast(
+          result.message ||
+          "Failed to load products.",
+          "error"
+        );
+
+      }
+
+
+
+    } catch (error) {
+
+
+      console.error(
+        "Fetch Products Error:",
+        error
+      );
+
+
+      setError(
+        "Error loading products."
+      );
+
+
+      showToast(
+        "Error loading products.",
+        "error"
+      );
+
+
+
+    } finally {
+
+
+      setLoading(false);
+
+
+    }
+
+  };
+
+
+
+
 
 
 
@@ -32,99 +141,58 @@ function AdminProducts() {
 
 
 
-  const fetchProducts = async () => {
-
-    try {
-
-      setLoading(true);
-
-      const result = await getProducts();
-
-
-      if (result.success) {
-
-        setProducts(
-          result.products || []
-        );
-
-      } else {
-
-        setError(
-          result.message ||
-          "Failed to load products"
-        );
-
-        showToast(
-          result.message ||
-          "Failed to load products",
-          "error"
-        );
-
-      }
-
-
-    } catch (error) {
-
-      console.error(
-        "Fetch Products Error:",
-        error
-      );
-
-
-      setError(
-        "Error loading products"
-      );
-
-
-      showToast(
-        "Error loading products",
-        "error"
-      );
-
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  };
 
 
 
+
+
+
+  // ==========================================================
+  // DELETE PRODUCT
+  // ==========================================================
 
   const handleDelete = async (id) => {
 
 
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to delete this product?"
+      );
+
 
 
     if (!confirmDelete) return;
 
 
 
+
+
     try {
 
 
-      const result = await deleteProduct(id);
+      const result =
+        await deleteAdminProduct(id);
+
+
 
 
 
       if (result.success) {
 
 
+
         setProducts(
-          products.filter(
-            (product) =>
-              product._id !== id
-          )
+          (currentProducts) =>
+            currentProducts.filter(
+              (product) =>
+                product._id !== id
+            )
         );
 
 
+
         showToast(
-          "Product deleted successfully",
+          "Product deleted successfully.",
           "success"
         );
 
@@ -133,9 +201,10 @@ function AdminProducts() {
       } else {
 
 
+
         showToast(
           result.message ||
-          "Failed to delete product",
+          "Failed to delete product.",
           "error"
         );
 
@@ -144,7 +213,8 @@ function AdminProducts() {
 
 
 
-    } catch (error) {
+
+    } catch(error) {
 
 
       console.error(
@@ -153,15 +223,22 @@ function AdminProducts() {
       );
 
 
+
       showToast(
-        "Error deleting product",
+        "Error deleting product.",
         "error"
       );
 
 
     }
 
+
   };
+
+
+
+
+
 
 
 
@@ -175,6 +252,10 @@ function AdminProducts() {
 
 
 
+
+
+
+
   return (
 
     <section className="admin-products-page">
@@ -183,18 +264,40 @@ function AdminProducts() {
       <div className="container">
 
 
+
+
+
+
+
+        {/* HEADER */}
+
         <div className="page-header">
 
 
-          <h1>
-            Products
-          </h1>
+          <div>
+
+            <h1>
+              🛒 Products
+            </h1>
+
+
+            <p>
+              Manage store products
+            </p>
+
+          </div>
+
+
+
 
 
 
           <Link
+
             to="/admin/products/new"
+
             className="btn btn-primary"
+
           >
 
             Add Product
@@ -204,6 +307,10 @@ function AdminProducts() {
 
 
         </div>
+
+
+
+
 
 
 
@@ -224,26 +331,35 @@ function AdminProducts() {
 
 
 
+
+
+
         {products.length === 0 ? (
+
 
 
           <div className="empty-state">
 
 
             <p>
-              No products found
+              No products found.
             </p>
 
 
 
+
             <Link
+
               to="/admin/products/new"
+
               className="btn btn-primary"
+
             >
 
               Create First Product
 
             </Link>
+
 
 
           </div>
@@ -257,12 +373,20 @@ function AdminProducts() {
           <div className="products-table">
 
 
+
             <table>
+
 
 
               <thead>
 
+
                 <tr>
+
+                  <th>
+                    Image
+                  </th>
+
 
                   <th>
                     Name
@@ -297,87 +421,202 @@ function AdminProducts() {
 
 
 
+
+
+
               <tbody>
 
 
-                {products.map((product) => (
+                {
+
+                  products.map(
+
+                    (product) => (
 
 
-                  <tr
-                    key={product._id}
-                  >
+                      <tr
 
-
-                    <td>
-                      {product.name}
-                    </td>
-
-
-
-                    <td>
-                      {product.category}
-                    </td>
-
-
-
-                    <td>
-                      ${product.price}
-                    </td>
-
-
-
-                    <td>
-                      {product.stock}
-                    </td>
-
-
-
-
-                    <td>
-
-
-                      <Link
-                        to={`/admin/products/${product._id}`}
-                        className="btn btn-small btn-secondary"
-                      >
-
-                        Edit
-
-                      </Link>
-
-
-
-
-                      <button
-
-                        onClick={() =>
-                          handleDelete(product._id)
+                        key={
+                          product._id
                         }
 
-                        className="btn btn-small btn-danger"
-
                       >
 
-                        Delete
-
-                      </button>
 
 
-                    </td>
+                        <td>
 
 
 
-                  </tr>
+                          {
+
+                            product.image ? (
 
 
-                ))}
+                              <img
+
+                                src={
+                                  product.image
+                                }
+
+                                alt={
+                                  product.name
+                                }
+
+                                className="product-thumbnail"
+
+                              />
+
+
+                            ) : (
+
+
+                              <span>
+
+                                No Image
+
+                              </span>
+
+
+                            )
+
+
+                          }
+
+
+
+                        </td>
+
+
+
+
+
+
+
+                        <td>
+
+                          {product.name}
+
+                        </td>
+
+
+
+
+
+
+
+                        <td>
+
+                          {product.category}
+
+                        </td>
+
+
+
+
+
+
+
+                        <td>
+
+                          {
+                            formatPrice(
+                              product.price
+                            )
+                          }
+
+                        </td>
+
+
+
+
+
+
+
+                        <td>
+
+                          {product.stock}
+
+                        </td>
+
+
+
+
+
+
+
+                        <td>
+
+
+                          <Link
+
+                            to={
+                              `/admin/products/edit/${product._id}`
+                            }
+
+                            className="btn btn-small btn-secondary"
+
+                          >
+
+                            Edit
+
+                          </Link>
+
+
+
+
+
+
+
+                          <button
+
+                            onClick={() =>
+                              handleDelete(
+                                product._id
+                              )
+                            }
+
+                            className="btn btn-small btn-danger"
+
+                          >
+
+                            Delete
+
+                          </button>
+
+
+
+                        </td>
+
+
+
+
+
+
+
+                      </tr>
+
+
+                    )
+
+                  )
+
+                }
 
 
 
               </tbody>
 
 
+
+
+
+
+
             </table>
+
+
+
 
 
           </div>
@@ -388,10 +627,15 @@ function AdminProducts() {
 
 
 
+
+
+
       </div>
 
 
+
     </section>
+
 
   );
 

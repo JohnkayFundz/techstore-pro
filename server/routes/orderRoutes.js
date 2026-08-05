@@ -4,78 +4,68 @@ import {
   createOrder,
   getMyOrders,
   getOrderById,
-  getAllOrders,
-  updateOrderStatus,
-  markOrderAsPaid,
-  deleteOrder,
 } from "../controllers/orderController.js";
+
 
 import {
   protect,
-  adminOnly,
 } from "../middleware/authMiddleware.js";
+
+
 
 const router = express.Router();
 
+
+
+
+
 /* ==========================================================
-   USER ROUTES
+   USER ORDER ROUTES
 ========================================================== */
 
-// Create Order
+
+
+// Create order
+// POST /api/orders
+
 router.post(
   "/",
   protect,
   createOrder
 );
 
-// Get Logged-in User Orders
+
+
+
+
+
+// Get logged-in user orders
+// GET /api/orders/my-orders
+
 router.get(
   "/my-orders",
   protect,
   getMyOrders
 );
 
-// Get Single Order
+
+
+
+
+
+
+// Get single order
+// GET /api/orders/:id
+
 router.get(
   "/:id",
   protect,
   getOrderById
 );
 
-/* ==========================================================
-   ADMIN ROUTES
-========================================================== */
 
-// Get All Orders
-router.get(
-  "/admin/all",
-  protect,
-  adminOnly,
-  getAllOrders
-);
 
-// Update Order Status
-router.put(
-  "/:id/status",
-  protect,
-  adminOnly,
-  updateOrderStatus
-);
 
-// Mark Order as Paid
-router.put(
-  "/:id/pay",
-  protect,
-  adminOnly,
-  markOrderAsPaid
-);
 
-// Delete Order
-router.delete(
-  "/:id",
-  protect,
-  adminOnly,
-  deleteOrder
-);
 
 export default router;

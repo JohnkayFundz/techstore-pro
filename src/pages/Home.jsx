@@ -1,14 +1,37 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import SearchBar from "../components/SearchBar";
 import CategoryFilter from "../components/CategoryFilter";
 import ProductGrid from "../components/products/ProductGrid";
+import Loading from "../components/Loading";
 
-import { products } from "../data/products";
+import { getProducts } from "../api/productApi";
 
 import "./Home.css";
 
 function Home() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    setLoading(true);
+
+    const response = await getProducts({
+      featured: true,
+    });
+
+    if (response.success) {
+      setProducts(response.products || []);
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="home">
 
@@ -27,28 +50,21 @@ function Home() {
         </Link>
       </section>
 
-
       {/* Products Section */}
       <section className="products-section">
 
-        <h2>
-          Featured Products
-        </h2>
-
+        <h2>Featured Products</h2>
 
         <div className="product-controls">
-
           <SearchBar />
-
           <CategoryFilter />
-
         </div>
 
-
-        <ProductGrid 
-          products={products}
-        />
-
+        {loading ? (
+          <Loading />
+        ) : (
+          <ProductGrid products={products} />
+        )}
 
       </section>
 

@@ -1,74 +1,126 @@
 import api from "./axios";
 
+
+
 /* ==========================================================
-   CREATE ORDER
+   USER - CREATE ORDER
+
+   POST /api/orders
 ========================================================== */
 
 export const createOrder = async (orderData) => {
-  const { data } = await api.post("/orders", orderData);
-  return data;
+
+  const response = await api.post(
+    "/orders",
+    orderData
+  );
+
+  return response;
+
 };
 
+
+
+
+
 /* ==========================================================
-   GET MY ORDERS
+   USER - GET MY ORDERS
+
+   GET /api/orders/my-orders
 ========================================================== */
 
 export const getMyOrders = async () => {
-  const { data } = await api.get("/orders/my-orders");
-  return data;
+
+  const response = await api.get(
+    "/orders/my-orders"
+  );
+
+  return response;
+
 };
 
+
+
+
+
 /* ==========================================================
-   GET SINGLE ORDER
+   USER - GET SINGLE ORDER
+
+   GET /api/orders/:id
 ========================================================== */
 
-export const getOrderById = async (orderId) => {
-  const { data } = await api.get(`/orders/${orderId}`);
-  return data;
+export const getOrderById = async (id) => {
+
+  const response = await api.get(
+    `/orders/${id}`
+  );
+
+  return response;
+
 };
 
+
+
+
+
 /* ==========================================================
-   GET ALL ORDERS (ADMIN)
+   ADMIN - GET ALL ORDERS
+
+   GET /api/admin/orders
 ========================================================== */
 
 export const getAllOrders = async () => {
-  const { data } = await api.get("/orders/admin/all");
-  return data;
-};
 
-/* ==========================================================
-   UPDATE ORDER STATUS
-========================================================== */
-
-export const updateOrderStatus = async (orderId, status) => {
-  const { data } = await api.put(
-    `/orders/${orderId}/status`,
-    { status }
+  const response = await api.get(
+    "/admin/orders"
   );
 
-  return data;
+  return response;
+
 };
 
+
+
+
+
 /* ==========================================================
-   MARK ORDER AS PAID
+   ADMIN - UPDATE ORDER STATUS
+
+   PUT /api/admin/orders/:id
 ========================================================== */
 
-export const markOrderAsPaid = async (orderId) => {
-  const { data } = await api.put(
-    `/orders/${orderId}/pay`
+export const updateOrderStatus = async (
+  id,
+  data
+) => {
+
+  const response = await api.put(
+    `/admin/orders/${id}`,
+    data
   );
 
-  return data;
+  return response;
+
 };
 
+
+
+
+
 /* ==========================================================
-   DELETE ORDER
+   ADMIN - DELETE ORDER
+
+   DELETE /api/admin/orders/:id
 ========================================================== */
 
-export const deleteOrder = async (orderId) => {
-  const { data } = await api.delete(
-    `/orders/${orderId}`
+export const deleteOrder = async (
+  id
+) => {
+
+  const response = await api.delete(
+    `/admin/orders/${id}`
   );
 
-  return data;
+  return response;
+
 };

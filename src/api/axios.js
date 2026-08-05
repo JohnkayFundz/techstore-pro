@@ -1,6 +1,7 @@
 import axios from "axios";
 
 
+
 const api = axios.create({
 
   baseURL: import.meta.env.VITE_API_URL,
@@ -11,14 +12,26 @@ const api = axios.create({
 
 
 
-// Attach JWT automatically
+
+
+/* ==========================================================
+   REQUEST INTERCEPTOR
+   Attach JWT automatically
+========================================================== */
 
 api.interceptors.request.use(
 
   (config) => {
 
+
+    config.headers =
+      config.headers || {};
+
+
+
     const token =
       localStorage.getItem("token");
+
 
 
     if (
@@ -32,26 +45,46 @@ api.interceptors.request.use(
     }
 
 
-    if (config.data instanceof FormData) {
 
-      delete config.headers["Content-Type"];
+
+    // Allow browser to set FormData boundary
+
+    if (
+      config.data instanceof FormData
+    ) {
+
+      delete config.headers[
+        "Content-Type"
+      ];
 
     }
 
 
+
     return config;
+
 
   },
 
 
-  (error) =>
-    Promise.reject(error)
+  (error) => {
+
+    return Promise.reject(error);
+
+  }
 
 );
 
 
 
-// Handle expired sessions
+
+
+
+
+/* ==========================================================
+   RESPONSE INTERCEPTOR
+   Handle expired login
+========================================================== */
 
 api.interceptors.response.use(
 
@@ -65,7 +98,11 @@ api.interceptors.response.use(
       error.response?.status === 401
     ) {
 
-      localStorage.removeItem("token");
+
+      localStorage.removeItem(
+        "token"
+      );
+
 
       localStorage.removeItem(
         "techstore-user"
@@ -78,11 +115,14 @@ api.interceptors.response.use(
     }
 
 
+
     return Promise.reject(error);
+
 
   }
 
 );
+
 
 
 

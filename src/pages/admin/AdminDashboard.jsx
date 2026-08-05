@@ -1,73 +1,54 @@
 import {
+  useCallback,
   useEffect,
   useState,
 } from "react";
 
+import { Link } from "react-router-dom";
 
 import {
   getDashboardStats,
   getSalesAnalytics,
 } from "../../api/adminApi";
 
+import Loading from "../../components/Loading";
 
-import DashboardHeader from "../../components/admin/DashboardHeader";
-import StatsCards from "../../components/admin/StatsCards";
-import SalesChart from "../../components/admin/SalesChart";
-import QuickActions from "../../components/admin/QuickActions";
-import RecentOrders from "../../components/admin/RecentOrders";
+import { formatPrice } from "../../utils/formatPrice";
 
-
-import "../../components/admin/Dashboard.css";
-
+import "./AdminDashboard.css";
 
 
 function AdminDashboard() {
 
 
-  const initialStats = {
-
-    totalProducts: 0,
+  const [stats, setStats] = useState({
 
     totalUsers: 0,
 
+    totalProducts: 0,
+
     totalOrders: 0,
 
-    revenue: 0,
+    totalRevenue: 0,
 
-  };
+  });
 
-
-
-  const [stats, setStats] = useState(
-    initialStats
-  );
-
-
-  const [salesData, setSalesData] = useState([]);
 
 
   const [recentOrders, setRecentOrders] = useState([]);
 
+  const [sales, setSales] = useState([]);
+
+
 
   const [loading, setLoading] = useState(true);
-
 
   const [error, setError] = useState("");
 
 
 
 
-  useEffect(() => {
-
-    loadDashboard();
-
-  }, []);
-
-
-
-
-
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
 
 
     try {
@@ -81,18 +62,15 @@ function AdminDashboard() {
 
       const [
 
-        dashboardResponse,
+        dashboard,
 
-        analyticsResponse,
+        analytics,
 
       ] = await Promise.all([
 
-
         getDashboardStats(),
 
-
         getSalesAnalytics(),
-
 
       ]);
 
@@ -100,105 +78,63 @@ function AdminDashboard() {
 
 
 
-      const dashboard =
+      setStats({
 
-        dashboardResponse.data ||
-        dashboardResponse;
-
-
+        totalUsers:
+          dashboard.stats?.totalUsers || 0,
 
 
-
-      const analytics =
-
-        analyticsResponse.data ||
-        analyticsResponse;
+        totalProducts:
+          dashboard.stats?.totalProducts || 0,
 
 
+        totalOrders:
+          dashboard.stats?.totalOrders || 0,
 
 
+        totalRevenue:
+          dashboard.stats?.totalRevenue || 0,
 
-
-      if (dashboard.success) {
-
-
-
-        setStats({
-
-
-          totalProducts:
-
-            dashboard.stats?.totalProducts || 0,
-
-
-
-          totalUsers:
-
-            dashboard.stats?.totalUsers || 0,
-
-
-
-          totalOrders:
-
-            dashboard.stats?.totalOrders || 0,
-
-
-
-          revenue:
-
-            dashboard.stats?.revenue || 0,
-
-
-        });
+      });
 
 
 
 
 
-        setRecentOrders(
+      setRecentOrders(
 
-          dashboard.recentOrders || []
+        dashboard.recentOrders || []
 
-        );
-
-
-      }
+      );
 
 
 
 
 
-      if (analytics.success) {
+      setSales(
 
+        analytics?.sales || []
 
-        setSalesData(
-
-          analytics.salesData || []
-
-        );
-
-
-      }
+      );
 
 
 
 
-    } catch (error) {
+    } catch (err) {
 
 
       console.error(
-
         "Dashboard Error:",
-
-        error
-
+        err
       );
 
 
 
       setError(
 
-        "Failed to load dashboard data."
+        err.response?.data?.message ||
+
+        "Failed to load dashboard."
 
       );
 
@@ -213,7 +149,19 @@ function AdminDashboard() {
     }
 
 
-  };
+  }, []);
+
+
+
+
+
+  useEffect(() => {
+
+
+    loadDashboard();
+
+
+  }, [loadDashboard]);
 
 
 
@@ -223,25 +171,27 @@ function AdminDashboard() {
 
   if (loading) {
 
+    return <Loading />;
+
+  }
+
+
+
+
+
+
+  if (error) {
+
 
     return (
 
+      <div className="admin-error">
 
-      <div className="dashboard-loading">
-
-
-        <h2>
-
-          Loading Dashboard...
-
-        </h2>
-
+        {error}
 
       </div>
 
-
     );
-
 
   }
 
@@ -254,65 +204,210 @@ function AdminDashboard() {
   return (
 
 
-    <div className="admin-dashboard">
+    <section className="admin-dashboard">
 
 
 
 
 
-      <DashboardHeader
+      {/* Header */}
 
-        refresh={loadDashboard}
-
-      />
+      <header className="dashboard-title">
 
 
+        <h1>
 
+          Admin Dashboard
 
-
-
-      {error && (
-
-
-        <div className="error-message">
-
-
-          <p>
-
-            {error}
-
-          </p>
+        </h1>
 
 
 
-          <button
+        <p>
 
-            onClick={loadDashboard}
+          Welcome back, Administrator
 
-          >
+        </p>
 
-            Retry
 
-          </button>
+
+      </header>
+
+
+
+
+
+
+
+
+
+      {/* Statistics Cards */}
+
+
+      <div className="stats-grid">
+
+
+
+
+
+        <div className="stat-card">
+
+
+          <h3>
+
+            Users
+
+          </h3>
+
+
+          <strong>
+
+            {stats.totalUsers}
+
+          </strong>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="stat-card">
+
+
+          <h3>
+
+            Products
+
+          </h3>
+
+
+          <strong>
+
+            {stats.totalProducts}
+
+          </strong>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="stat-card">
+
+
+          <h3>
+
+            Orders
+
+          </h3>
+
+
+          <strong>
+
+            {stats.totalOrders}
+
+          </strong>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="stat-card">
+
+
+          <h3>
+
+            Revenue
+
+          </h3>
+
+
+          <strong>
+
+            {formatPrice(
+              stats.totalRevenue
+            )}
+
+          </strong>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      {/* Quick Actions */}
+
+
+      <section className="admin-actions">
+
+
+        <h2>
+
+          Quick Actions
+
+        </h2>
+
+
+
+        <div className="action-grid">
+
+
+
+          <Link to="/admin/products">
+
+            Manage Products
+
+          </Link>
+
+
+
+
+          <Link to="/admin/orders">
+
+            Manage Orders
+
+          </Link>
+
+
+
+
+          <Link to="/admin/users">
+
+            Manage Users
+
+          </Link>
 
 
 
         </div>
 
 
-      )}
-
-
-
-
-
-
-
-      <StatsCards
-
-        stats={stats}
-
-      />
+      </section>
 
 
 
@@ -321,38 +416,303 @@ function AdminDashboard() {
 
 
 
-      <SalesChart
 
-        salesData={salesData}
-
-      />
+      {/* Sales Analytics */}
 
 
+      <section className="sales-section">
 
 
+        <h2>
 
+          Sales Analytics
 
-
-
-      <QuickActions />
+        </h2>
 
 
 
 
 
+        {
+
+          sales.length === 0 ?
 
 
-      <RecentOrders
+          (
 
-        orders={recentOrders}
+            <p>
 
-      />
+              No sales data available.
+
+            </p>
+
+          )
+
+
+
+          :
+
+
+
+          (
+
+            <div className="sales-list">
+
+
+              {
+
+                sales.map((sale) => (
+
+
+                  <div
+
+                    className="sales-item"
+
+                    key={
+                      `${sale._id.year}-${sale._id.month}`
+                    }
+
+                  >
+
+
+                    <span>
+
+                      {sale._id.month}/
+
+                      {sale._id.year}
+
+                    </span>
+
+
+
+
+                    <strong>
+
+                      {formatPrice(
+                        sale.totalSales
+                      )}
+
+                    </strong>
+
+
+
+
+                    <small>
+
+                      {sale.totalOrders}
+
+                      {" "}Orders
+
+                    </small>
+
+
+
+                  </div>
+
+
+                ))
+
+              }
+
+
+
+            </div>
+
+          )
+
+
+        }
+
+
+
+      </section>
 
 
 
 
 
-    </div>
+
+
+
+
+      {/* Recent Orders */}
+
+
+      <section className="recent-orders">
+
+
+        <h2>
+
+          Recent Orders
+
+        </h2>
+
+
+
+
+
+        {
+
+          recentOrders.length === 0 ?
+
+
+          (
+
+            <p>
+
+              No recent orders.
+
+            </p>
+
+          )
+
+
+
+          :
+
+
+
+          (
+
+
+            <table className="admin-table">
+
+
+
+              <thead>
+
+
+                <tr>
+
+
+                  <th>
+
+                    Order
+
+                  </th>
+
+
+
+                  <th>
+
+                    Customer
+
+                  </th>
+
+
+
+                  <th>
+
+                    Status
+
+                  </th>
+
+
+
+                  <th>
+
+                    Total
+
+                  </th>
+
+
+                </tr>
+
+
+              </thead>
+
+
+
+
+
+
+
+              <tbody>
+
+
+
+                {
+
+                  recentOrders.map((order) => (
+
+
+
+                    <tr key={order._id}>
+
+
+                      <td>
+
+                        {order.orderNumber}
+
+                      </td>
+
+
+
+
+                      <td>
+
+                        {
+                          order.user?.name ||
+                          "Unknown"
+                        }
+
+                      </td>
+
+
+
+
+                      <td>
+
+                        {order.status}
+
+                      </td>
+
+
+
+
+                      <td>
+
+                        {formatPrice(
+                          order.totalAmount
+                        )}
+
+                      </td>
+
+
+
+                    </tr>
+
+
+                  ))
+
+
+                }
+
+
+
+              </tbody>
+
+
+
+
+            </table>
+
+
+          )
+
+
+        }
+
+
+
+      </section>
+
+
+
+
+
+
+    </section>
 
 
   );

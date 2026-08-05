@@ -1,0 +1,110 @@
+.topbar {
+  height: 70px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 24px;
+}
+
+.topbar-search {
+  width: 350px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  background: #f3f4f6;
+
+  padding: 10px 15px;
+
+  border-radius: 10px;
+}
+
+.topbar-search input {
+  flex: 1;
+
+  border: none;
+
+  background: transparent;
+
+  outline: none;
+
+  font-size: 15px;
+}
+
+.topbar-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.icon-btn {
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  cursor: pointer;
+
+  background: #f3f4f6;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+.icon-btn:hover {
+  background: #e5e7eb;
+}
+
+.admin-profile {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.profile-icon {
+  width: 45px;
+
+  height: 45px;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 20px;
+}
+
+.admin-profile h4 {
+  margin: 0;
+
+  font-size: 15px;
+}
+
+.admin-profile small {
+  color: #6b7280;
+}

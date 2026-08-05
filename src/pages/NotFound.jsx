@@ -8,7 +8,6 @@ function NotFound() {
 
     <section className="container not-found">
 
-
       <div className="not-found-content">
 
 
@@ -17,11 +16,9 @@ function NotFound() {
         </h1>
 
 
-
         <h2>
           Page Not Found
         </h2>
-
 
 
         <p>
@@ -31,13 +28,13 @@ function NotFound() {
 
 
 
-
         <div className="not-found-actions">
 
 
           <Link
             to="/"
             className="btn btn-primary"
+            aria-label="Return to homepage"
           >
 
             Back to Home
@@ -50,6 +47,7 @@ function NotFound() {
           <Link
             to="/products"
             className="btn btn-secondary"
+            aria-label="Browse available products"
           >
 
             Browse Products

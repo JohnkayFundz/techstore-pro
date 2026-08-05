@@ -1,15 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-
-import Loading from "../../components/Loading";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
-  getAllOrders,
+  getAdminOrders,
   updateOrderStatus,
-  deleteOrder,
-} from "../../api/orderApi";
+  deleteAdminOrder,
+} from "../../api/adminApi";
+
+import {
+  formatPrice,
+} from "../../utils/formatPrice";
+
+import "./AdminOrders.css";
+
 
 function AdminOrders() {
+
+
   const [orders, setOrders] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -18,438 +28,1008 @@ function AdminOrders() {
 
   const [search, setSearch] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("All");
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
+  const [deleting, setDeleting] = useState(null);
 
-  /* ==========================================================
-     LOAD ORDERS
-  ========================================================== */
+
+
+
+  // ==========================================================
+  // LOAD ORDERS
+  // ==========================================================
 
   const loadOrders = async () => {
+
     try {
+
       setLoading(true);
 
-      const data = await getAllOrders();
+      setError("");
 
-      setOrders(data.orders || []);
-    } catch (err) {
-      console.error(err);
+
+      const response = await getAdminOrders();
+
+
+      const orderList =
+        response?.data?.orders ||
+        response?.orders ||
+        response ||
+        [];
+
+
+      setOrders(orderList);
+
+
+    } catch (error) {
+
+      console.error(
+        "Load Orders Error:",
+        error
+      );
+
 
       setError(
-        err.response?.data?.message ||
-          "Failed to load orders."
+        error.response?.data?.message ||
+        "Failed to load orders."
       );
+
+
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
-  /* ==========================================================
-     UPDATE STATUS
-  ========================================================== */
 
-  const handleStatusChange = async (
-    orderId,
-    status
-  ) => {
-    try {
-      await updateOrderStatus(orderId, status);
 
-      setOrders((prev) =>
-        prev.map((order) =>
-          order._id === orderId
-            ? {
-                ...order,
-                status,
-              }
-            : order
-        )
-      );
-    } catch (err) {
-      console.error(err);
+  useEffect(() => {
 
-      alert(
-        err.response?.data?.message ||
-          "Failed to update status."
-      );
-    }
-  };
+    loadOrders();
 
-  /* ==========================================================
-     DELETE ORDER
-  ========================================================== */
+  }, []);
 
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Delete this order?"
+
+
+
+
+
+
+  // ==========================================================
+  // FORMAT STATUS
+  // ==========================================================
+
+  const formatStatus = (status) => {
+
+    if (!status) return "Pending";
+
+
+    return (
+
+      status.charAt(0).toUpperCase() +
+
+      status.slice(1).toLowerCase()
+
     );
 
-    if (!confirmed) return;
-
-    try {
-      await deleteOrder(id);
-
-      setOrders((prev) =>
-        prev.filter(
-          (order) => order._id !== id
-        )
-      );
-    } catch (err) {
-      console.error(err);
-
-      alert(
-        err.response?.data?.message ||
-          "Failed to delete order."
-      );
-    }
   };
 
-  /* ==========================================================
-     FILTERED ORDERS
-  ========================================================== */
+
+
+
+
+
+
+
+  // ==========================================================
+  // UPDATE STATUS
+  // ==========================================================
+
+  const handleStatusChange = async (
+
+    orderId,
+
+    status
+
+  ) => {
+
+
+    try {
+
+
+      await updateOrderStatus(
+
+        orderId,
+
+        status.toLowerCase()
+
+      );
+
+
+
+      setOrders(previous =>
+
+        previous.map(order =>
+
+          order._id === orderId
+
+            ? {
+
+                ...order,
+
+                status,
+
+              }
+
+            :
+
+              order
+
+        )
+
+      );
+
+
+    } catch (error) {
+
+
+      alert(
+
+        error.response?.data?.message ||
+
+        "Failed to update status."
+
+      );
+
+
+    }
+
+
+  };
+
+
+
+
+
+
+
+
+
+  // ==========================================================
+  // DELETE ORDER
+  // ==========================================================
+
+  const handleDelete = async (
+
+    orderId
+
+  ) => {
+
+
+    const confirmDelete =
+
+      window.confirm(
+
+        "Delete this order?"
+
+      );
+
+
+    if (!confirmDelete) return;
+
+
+
+    try {
+
+
+      setDeleting(orderId);
+
+
+
+      await deleteAdminOrder(
+
+        orderId
+
+      );
+
+
+
+      setOrders(previous =>
+
+        previous.filter(
+
+          order =>
+
+          order._id !== orderId
+
+        )
+
+      );
+
+
+
+    } catch(error){
+
+
+      alert(
+
+        error.response?.data?.message ||
+
+        "Failed to delete order."
+
+      );
+
+
+    } finally {
+
+
+      setDeleting(null);
+
+
+    }
+
+
+  };
+
+
+
+
+
+
+
+
+
+  // ==========================================================
+  // FILTER
+  // ==========================================================
 
   const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
+
+
+    return orders.filter(order => {
+
+
+      const customer =
+
+        order.user?.name?.toLowerCase() || "";
+
+
+
+      const email =
+
+        order.user?.email?.toLowerCase() || "";
+
+
+
+      const keyword =
+
+        search.toLowerCase();
+
+
+
+
       const matchesSearch =
-        order._id
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        order.user?.name
-          ?.toLowerCase()
-          .includes(search.toLowerCase()) ||
-        order.user?.email
-          ?.toLowerCase()
-          .includes(search.toLowerCase());
+
+        customer.includes(keyword) ||
+
+        email.includes(keyword);
+
+
+
+
+      const status =
+
+        formatStatus(order.status);
+
+
+
 
       const matchesStatus =
-        statusFilter === "all"
-          ? true
-          : order.status === statusFilter;
+
+        statusFilter === "All" ||
+
+        status === statusFilter;
+
+
 
       return (
+
         matchesSearch &&
+
         matchesStatus
+
       );
+
+
     });
-  }, [orders, search, statusFilter]);
 
-  if (loading) {
-    return <Loading />;
-  }  return (
-    <section className="container admin-orders-page">
 
-      {/* ==============================
-          Page Header
-      ============================== */}
+  }, [
+
+    orders,
+
+    search,
+
+    statusFilter,
+
+  ]);
+
+
+
+
+
+
+
+
+
+  // ==========================================================
+  // SUMMARY
+  // ==========================================================
+
+  const totalOrders = orders.length;
+
+
+
+  const pendingOrders =
+
+    orders.filter(
+
+      order =>
+
+      formatStatus(order.status) === "Pending"
+
+    ).length;
+
+
+
+  const deliveredOrders =
+
+    orders.filter(
+
+      order =>
+
+      formatStatus(order.status) === "Delivered"
+
+    ).length;
+
+
+
+  const cancelledOrders =
+
+    orders.filter(
+
+      order =>
+
+      formatStatus(order.status) === "Cancelled"
+
+    ).length;
+
+
+
+
+
+
+
+
+  if(loading){
+
+    return (
+
+      <div className="admin-loading">
+
+        Loading orders...
+
+      </div>
+
+    );
+
+  }
+
+
+
+
+
+
+  if(error){
+
+    return (
+
+      <div className="error-message">
+
+        {error}
+
+      </div>
+
+    );
+
+  }
+
+
+
+
+
+
+
+  return (
+
+    <section className="admin-orders-page">
+
+
 
       <div className="page-header">
-        <div>
-          <h1>📦 Admin Orders</h1>
-          <p>
-            Manage customer orders and update delivery status.
-          </p>
-        </div>
 
-        <Link
-          to="/admin"
-          className="btn-secondary"
-        >
-          ← Dashboard
-        </Link>
-      </div>
+        <h1>
+          Orders Management
+        </h1>
 
 
-      {/* ==============================
-          Error Message
-      ============================== */}
-
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-
-
-      {/* ==============================
-          Statistics
-      ============================== */}
-
-      <div className="admin-stats">
-
-        <div className="stat-card">
-          <h3>Total Orders</h3>
-
-          <span>
-            {orders.length}
-          </span>
-        </div>
-
-        <div className="stat-card">
-          <h3>Pending</h3>
-
-          <span>
-            {
-              orders.filter(
-                (order) =>
-                  order.status === "pending"
-              ).length
-            }
-          </span>
-        </div>
-
-        <div className="stat-card">
-          <h3>Processing</h3>
-
-          <span>
-            {
-              orders.filter(
-                (order) =>
-                  order.status === "processing"
-              ).length
-            }
-          </span>
-        </div>
-
-        <div className="stat-card">
-          <h3>Delivered</h3>
-
-          <span>
-            {
-              orders.filter(
-                (order) =>
-                  order.status === "delivered"
-              ).length
-            }
-          </span>
-        </div>
+        <p>
+          Manage customer orders and delivery status
+        </p>
 
       </div>
 
 
-      {/* ==============================
-          Search + Filter
-      ============================== */}
 
-      <div className="admin-toolbar">
+
+
+
+
+      <div className="orders-summary">
+
+
+        <div className="summary-card">
+
+          <h3>
+            {totalOrders}
+          </h3>
+
+          <span>
+            Total Orders
+          </span>
+
+        </div>
+
+
+
+
+        <div className="summary-card">
+
+          <h3>
+            {pendingOrders}
+          </h3>
+
+          <span>
+            Pending
+          </span>
+
+        </div>
+
+
+
+
+
+        <div className="summary-card">
+
+          <h3>
+            {deliveredOrders}
+          </h3>
+
+          <span>
+            Delivered
+          </span>
+
+        </div>
+
+
+
+
+
+        <div className="summary-card">
+
+          <h3>
+            {cancelledOrders}
+          </h3>
+
+          <span>
+            Cancelled
+          </span>
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <div className="orders-toolbar">
+
 
         <input
+
           type="text"
-          placeholder="Search by Order ID, Customer or Email..."
+
+          placeholder="Search customer..."
+
           value={search}
-          onChange={(e) =>
+
+          onChange={(e)=>
+
             setSearch(e.target.value)
+
           }
+
         />
 
+
+
+
+
         <select
+
           value={statusFilter}
-          onChange={(e) =>
-            setStatusFilter(e.target.value)
+
+          onChange={(e)=>
+
+            setStatusFilter(
+
+              e.target.value
+
+            )
+
           }
+
         >
-          <option value="all">
-            All Status
+
+          <option>
+            All
           </option>
 
-          <option value="pending">
+          <option>
             Pending
           </option>
 
-          <option value="processing">
+          <option>
             Processing
           </option>
 
-          <option value="shipped">
+          <option>
             Shipped
           </option>
 
-          <option value="delivered">
+          <option>
             Delivered
           </option>
 
-          <option value="cancelled">
+          <option>
             Cancelled
           </option>
 
+
         </select>
+
 
       </div>
 
 
-      {/* ==============================
-          Orders Table
-      ============================== */}
 
-      {filteredOrders.length === 0 ? (
 
-        <div className="empty-state">
 
-          <h2>No Orders Found</h2>
 
-          <p>
-            No customer orders match your search.
-          </p>
 
-        </div>
 
-      ) : (
 
-        <div className="table-responsive">
+      <div className="admin-orders-list">
 
-          <table className="admin-table">
 
-            <thead>
+      {
+        filteredOrders.length === 0 ?
 
-              <tr>
 
-                <th>Order</th>
+        (
 
-                <th>Customer</th>
+          <div className="empty-orders">
 
-                <th>Total</th>
+            No orders found
 
-                <th>Payment</th>
+          </div>
 
-                <th>Status</th>
+        )
 
-                <th>Date</th>
+        :
 
-                <th>Actions</th>
+        filteredOrders.map(order => {
 
-              </tr>
 
-            </thead>
+          const status = formatStatus(order.status);
 
-            <tbody>              {filteredOrders.map((order) => (
-                <tr key={order._id}>
 
-                  {/* Order ID */}
-                  <td>
+
+          return (
+
+          <div
+
+            className="admin-order-card"
+
+            key={order._id}
+
+          >
+
+
+
+
+
+            <div className="order-top">
+
+
+              <div>
+
+
+                <h3>
+
+                  Order #
+
+                  {order._id.slice(-8)}
+
+                </h3>
+
+
+
+                <p>
+
+                  Customer:
+
+                  {" "}
+
+                  {order.user?.name || "Guest"}
+
+                </p>
+
+
+
+                <p>
+
+                  {order.user?.email}
+
+                </p>
+
+
+
+                <p>
+
+                  Payment:
+
+                  {" "}
+
+                  {order.paymentMethod || "N/A"}
+
+                </p>
+
+
+
+                <p>
+
+                  Paid:
+
+                  {" "}
+
+                  {order.isPaid ? "Yes" : "No"}
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+
+              <select
+
+                value={status}
+
+                onChange={(e)=>
+
+                  handleStatusChange(
+
+                    order._id,
+
+                    e.target.value
+
+                  )
+
+                }
+
+              >
+
+                <option>Pending</option>
+
+                <option>Processing</option>
+
+                <option>Shipped</option>
+
+                <option>Delivered</option>
+
+                <option>Cancelled</option>
+
+
+              </select>
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <div className="shipping-info">
+
+
+              <h4>
+                Shipping Information
+              </h4>
+
+
+
+              <p>
+
+                {
+
+                order.shippingAddress?.address ||
+
+                "No address"
+
+                }
+
+              </p>
+
+
+
+              <p>
+
+                {
+
+                order.shippingAddress?.city ||
+
+                "No city"
+
+                }
+
+              </p>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <div className="order-items">
+
+
+              <h4>
+                Products
+              </h4>
+
+
+
+
+              {
+
+              order.orderItems?.map(item => (
+
+
+                <div
+
+                  className="admin-order-item"
+
+                  key={
+
+                    item._id ||
+
+                    item.product
+
+                  }
+
+                >
+
+
+                  <img
+
+                    src={
+
+                      item.image ||
+
+                      "/images/product-placeholder.png"
+
+                    }
+
+                    alt={item.name}
+
+                  />
+
+
+
+                  <div>
+
+
                     <strong>
-                      #{order._id.slice(-8).toUpperCase()}
+
+                      {item.name}
+
                     </strong>
-                  </td>
 
-                  {/* Customer */}
-                  <td>
-                    <div className="customer-info">
-                      <strong>
-                        {order.user?.name || "Unknown User"}
-                      </strong>
 
-                      <br />
 
-                      <small>
-                        {order.user?.email || "-"}
-                      </small>
-                    </div>
-                  </td>
+                    <p>
 
-                  {/* Total */}
-                  <td>
-                    ₦
-                    {(
-                      order.totalPrice ??
-                      order.totalAmount ??
-                      0
-                    ).toLocaleString()}
-                  </td>
+                      Quantity:
 
-                  {/* Payment */}
-                  <td>
-                    <span
-                      className={
-                        order.isPaid
-                          ? "badge badge-success"
-                          : "badge badge-warning"
-                      }
-                    >
-                      {order.isPaid
-                        ? "Paid"
-                        : "Unpaid"}
-                    </span>
-                  </td>
+                      {" "}
 
-                  {/* Status */}
-                  <td>
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          order._id,
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="pending">
-                        Pending
-                      </option>
+                      {item.quantity}
 
-                      <option value="processing">
-                        Processing
-                      </option>
+                    </p>
 
-                      <option value="shipped">
-                        Shipped
-                      </option>
 
-                      <option value="delivered">
-                        Delivered
-                      </option>
+                  </div>
 
-                      <option value="cancelled">
-                        Cancelled
-                      </option>
-                    </select>
-                  </td>
 
-                  {/* Date */}
-                  <td>
-                    {new Date(
-                      order.createdAt
-                    ).toLocaleDateString()}
-                  </td>
 
-                  {/* Actions */}
-                  <td>
-                    <div className="table-actions">
+                </div>
 
-                      <Link
-                        to={`/orders/${order._id}`}
-                        className="btn-small"
-                      >
-                        View
-                      </Link>
 
-                      <button
-                        className="btn-small btn-danger"
-                        onClick={() =>
-                          handleDelete(order._id)
-                        }
-                      >
-                        Delete
-                      </button>
+              ))
 
-                    </div>
-                  </td>
+              }
 
-                </tr>
-                            ))}
 
-            </tbody>
 
-          </table>
+            </div>
 
-        </div>
 
-      )}
+
+
+
+
+
+
+
+            <div className="admin-order-footer">
+
+
+              <div>
+
+
+                <strong>
+
+                  Total:
+
+                  {" "}
+
+                  {formatPrice(order.totalPrice)}
+
+                </strong>
+
+
+
+                <p>
+
+                  {
+
+                  new Date(order.createdAt)
+
+                  .toLocaleDateString()
+
+                  }
+
+                </p>
+
+
+
+                <span
+
+                  className={
+
+                  `status-badge ${status.toLowerCase()}`
+
+                  }
+
+                >
+
+                  {status}
+
+                </span>
+
+
+              </div>
+
+
+
+
+
+
+
+              <button
+
+                className="delete-btn"
+
+                disabled={deleting === order._id}
+
+                onClick={()=>
+
+                  handleDelete(order._id)
+
+                }
+
+              >
+
+                {
+
+                deleting === order._id
+
+                ?
+
+                "Deleting..."
+
+                :
+
+                "Delete"
+
+                }
+
+
+              </button>
+
+
+            </div>
+
+
+
+
+
+          </div>
+
+
+          );
+
+
+        })
+
+      }
+
+
+      </div>
+
+
+
+
 
     </section>
+
   );
+
 }
+
+
 
 export default AdminOrders;

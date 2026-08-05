@@ -17,45 +17,62 @@ const PLACEHOLDER_IMAGE =
 
 function ProductCard({ product }) {
   const { addToCart } = useCart();
-  const { wishlist, toggleWishlist } = useWishlist();
 
-  // Support both MongoDB (_id) and local data (id)
-  const productId = product._id || product.id;
+  const {
+    wishlist,
+    toggleWishlist,
+  } = useWishlist();
 
-  const isWishlisted = wishlist.some(
-    (item) => (item._id || item.id) === productId
-  );
+  const productId =
+    product._id || product.id;
 
-  const productImage =
+  const image =
     product.image ||
     product.images?.[0] ||
     PLACEHOLDER_IMAGE;
 
-  const inStock = (product.stock ?? 0) > 0;
+  const reviews =
+    product.numReviews ??
+    product.reviews ??
+    0;
+
+  const rating =
+    product.rating ?? 0;
+
+  const inStock =
+    (product.stock ?? 0) > 0;
+
+  const isWishlisted =
+    wishlist.some(
+      (item) =>
+        (item._id || item.id) ===
+        productId
+    );
 
   return (
     <article className="product-card">
 
-      {/* =========================
-          PRODUCT IMAGE
-      ========================== */}
+      {/* IMAGE */}
 
       <div className="product-image-wrapper">
 
         <Link to={`/products/${productId}`}>
+
           <img
-            src={productImage}
+            src={image}
             alt={product.name}
             className="product-image"
             loading="lazy"
             decoding="async"
             onError={(e) => {
-              e.currentTarget.src = PLACEHOLDER_IMAGE;
+              e.currentTarget.src =
+                PLACEHOLDER_IMAGE;
             }}
           />
+
         </Link>
 
-        {/* Product Badges */}
+        {/* BADGES */}
 
         <div className="product-badges">
 
@@ -71,7 +88,7 @@ function ProductCard({ product }) {
             </span>
           )}
 
-          {product.discount > 0 && (
+          {(product.discount ?? 0) > 0 && (
             <span className="badge discount">
               -{product.discount}%
             </span>
@@ -79,31 +96,36 @@ function ProductCard({ product }) {
 
         </div>
 
-        {/* Wishlist Button */}
+        {/* WISHLIST */}
 
         <button
           type="button"
+          className={`wishlist-btn ${
+            isWishlisted
+              ? "active"
+              : ""
+          }`}
           aria-label={
             isWishlisted
               ? "Remove from wishlist"
               : "Add to wishlist"
           }
-          className={`wishlist-btn ${
-            isWishlisted ? "active" : ""
-          }`}
-          onClick={() => toggleWishlist(product)}
+          onClick={() =>
+            toggleWishlist(product)
+          }
         >
           <FiHeart />
         </button>
 
-      </div>      {/* =========================
-          PRODUCT INFO
-      ========================== */}
+      </div>
+
+      {/* INFO */}
 
       <div className="product-info">
 
         <p className="product-brand">
-          {product.brand || "TechStore"}
+          {product.brand ||
+            "TechStore"}
         </p>
 
         <Link
@@ -113,38 +135,52 @@ function ProductCard({ product }) {
           {product.name}
         </Link>
 
-        {/* Rating */}
+        {/* RATING */}
 
         <div className="product-rating">
+
           <FiStar />
 
-          {product.reviews > 0 ? (
+          {reviews > 0 ? (
             <>
-              <span>{product.rating}</span>
-              <small>({product.reviews})</small>
+              <span>
+                {rating.toFixed(1)}
+              </span>
+
+              <small>
+                ({reviews})
+              </small>
             </>
           ) : (
-            <small>No reviews</small>
+            <small>
+              No reviews
+            </small>
           )}
+
         </div>
 
-        {/* Price */}
+        {/* PRICE */}
 
         <div className="product-price">
 
           <span className="current-price">
-            {formatPrice(product.price)}
+            {formatPrice(
+              product.price
+            )}
           </span>
 
-          {product.oldPrice && (
+          {(product.oldPrice ?? 0) >
+            product.price && (
             <span className="old-price">
-              {formatPrice(product.oldPrice)}
+              {formatPrice(
+                product.oldPrice
+              )}
             </span>
           )}
 
         </div>
 
-        {/* Stock */}
+        {/* STOCK */}
 
         <p
           className={
@@ -158,20 +194,23 @@ function ProductCard({ product }) {
             : "Out of stock"}
         </p>
 
-        {/* Add to Cart */}
+        {/* CART */}
 
         <button
           type="button"
-          aria-label="Add product to cart"
           className="add-cart-btn"
+          aria-label="Add product to cart"
           disabled={!inStock}
-          onClick={() => addToCart(product)}
+          onClick={() =>
+            addToCart(product)
+          }
         >
           <FiShoppingCart />
 
           {inStock
             ? "Add to Cart"
             : "Unavailable"}
+
         </button>
 
       </div>
@@ -189,17 +228,20 @@ ProductCard.propTypes = {
       PropTypes.number,
     ]),
 
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string
+      .isRequired,
 
     brand: PropTypes.string,
 
     image: PropTypes.string,
 
-    images: PropTypes.arrayOf(
-      PropTypes.string
-    ),
+    images:
+      PropTypes.arrayOf(
+        PropTypes.string
+      ),
 
-    price: PropTypes.number.isRequired,
+    price: PropTypes.number
+      .isRequired,
 
     oldPrice: PropTypes.number,
 
@@ -209,16 +251,25 @@ ProductCard.propTypes = {
 
     reviews: PropTypes.number,
 
+    numReviews:
+      PropTypes.number,
+
     stock: PropTypes.number,
 
-    category: PropTypes.string,
+    category:
+      PropTypes.string,
 
-    description: PropTypes.string,
+    description:
+      PropTypes.string,
 
-    newArrival: PropTypes.bool,
+    newArrival:
+      PropTypes.bool,
 
-    bestseller: PropTypes.bool,
+    bestseller:
+      PropTypes.bool,
   }).isRequired,
 };
 
-export default memo(ProductCard);
+export default memo(
+  ProductCard
+);

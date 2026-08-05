@@ -1,0 +1,402 @@
+.admin-dashboard {
+  width: 100%;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.dashboard-title {
+  margin-bottom: 30px;
+}
+
+
+.dashboard-title h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #111827;
+}
+
+
+.dashboard-title p {
+  margin-top: 8px;
+  color: #6b7280;
+}
+
+
+
+/* =========================
+   Stats Cards
+========================= */
+
+.stats-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 20px;
+
+  margin-bottom: 30px;
+
+}
+
+
+.stat-card {
+
+  background: #ffffff;
+
+  padding: 25px;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 4px 15px rgba(0,0,0,0.05);
+
+  transition: transform .3s ease,
+              box-shadow .3s ease;
+
+}
+
+
+.stat-card:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.08);
+
+}
+
+
+.stat-card h3 {
+
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+
+}
+
+
+.stat-card strong {
+
+  display: block;
+
+  margin-top: 12px;
+
+  font-size: 30px;
+
+  color: #111827;
+
+}
+
+
+
+/* =========================
+   Quick Actions
+========================= */
+
+.admin-actions {
+
+  background: #ffffff;
+
+  padding: 25px;
+
+  border-radius: 12px;
+
+  margin-bottom: 30px;
+
+}
+
+
+.admin-actions h2,
+.sales-section h2,
+.recent-orders h2 {
+
+  margin-top: 0;
+
+  margin-bottom: 20px;
+
+  font-size: 20px;
+
+}
+
+
+
+.action-grid {
+
+  display: flex;
+
+  gap: 15px;
+
+  flex-wrap: wrap;
+
+}
+
+
+
+.action-grid a {
+
+  text-decoration: none;
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 12px 20px;
+
+  border-radius: 8px;
+
+  transition: .3s;
+
+}
+
+
+
+.action-grid a:hover {
+
+  background: #1d4ed8;
+
+  transform: translateY(-2px);
+
+}
+
+
+
+/* =========================
+   Sales Analytics
+========================= */
+
+.sales-section {
+
+  background: #ffffff;
+
+  padding: 25px;
+
+  border-radius: 12px;
+
+  margin-bottom: 30px;
+
+}
+
+
+
+.sales-list {
+
+  display: grid;
+
+  gap: 15px;
+
+}
+
+
+
+.sales-item {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 15px;
+
+  background: #f8fafc;
+
+  border-radius: 8px;
+
+}
+
+
+
+.sales-item span {
+
+  font-weight: 600;
+
+}
+
+
+
+.sales-item strong {
+
+  color: #2563eb;
+
+}
+
+
+
+.sales-item small {
+
+  color: #6b7280;
+
+}
+
+
+
+/* =========================
+   Orders Table
+========================= */
+
+.recent-orders {
+
+  background: #ffffff;
+
+  padding: 25px;
+
+  border-radius: 12px;
+
+}
+
+
+
+.admin-table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+}
+
+
+
+.admin-table th {
+
+  text-align: left;
+
+  background: #f8fafc;
+
+  padding: 15px;
+
+  font-size: 14px;
+
+}
+
+
+
+.admin-table td {
+
+  padding: 15px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+
+.admin-table tbody tr:hover {
+
+  background: #f9fafb;
+
+}
+
+
+
+.admin-table tr:last-child td {
+
+  border-bottom: none;
+
+}
+
+
+
+/* =========================
+   Error
+========================= */
+
+.admin-error {
+
+  background: #fee2e2;
+
+  color: #b91c1c;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+}
+
+
+
+/* =========================
+   Responsive
+========================= */
+
+
+@media(max-width:1100px){
+
+  .stats-grid {
+
+    grid-template-columns: repeat(2, 1fr);
+
+  }
+
+}
+
+
+
+@media(max-width:600px){
+
+
+  .dashboard-title h1 {
+
+    font-size: 22px;
+
+  }
+
+
+
+  .stats-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+
+  .admin-actions,
+  .sales-section,
+  .recent-orders {
+
+    padding: 18px;
+
+  }
+
+
+
+  .admin-table {
+
+    display: block;
+
+    overflow-x: auto;
+
+    white-space: nowrap;
+
+  }
+
+
+
+  .sales-item {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+  }
+
+
+
+  .action-grid a {
+
+    width: 100%;
+
+    text-align: center;
+
+  }
+
+
+}

@@ -1,20 +1,14 @@
 import {
-  useEffect,
   useState,
 } from "react";
 
 import {
   useNavigate,
-  useParams,
 } from "react-router-dom";
 
 
-import Loading from "../../components/Loading";
-
-
 import {
-  getProductById,
-  updateProduct,
+  createProduct,
 } from "../../api/productApi";
 
 
@@ -24,17 +18,10 @@ import {
 
 
 
-function EditProduct() {
+function CreateProduct() {
 
 
-  const {
-    id,
-  } = useParams();
-
-
-  const navigate =
-    useNavigate();
-
+  const navigate = useNavigate();
 
 
   const {
@@ -69,168 +56,13 @@ function EditProduct() {
 
 
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const [saving, setSaving] = useState(false);
 
 
 
 
 
-
-
-
-
-  // ==========================================================
-  // LOAD PRODUCT
-  // ==========================================================
-
-  useEffect(() => {
-
-    fetchProduct();
-
-  }, [id]);
-
-
-
-
-
-
-  const fetchProduct = async () => {
-
-
-    try {
-
-
-      setLoading(true);
-
-
-
-      const result =
-        await getProductById(id);
-
-
-
-
-
-      if(result.success){
-
-
-        const product =
-          result.product;
-
-
-
-        setFormData({
-
-          name:
-            product.name || "",
-
-
-          brand:
-            product.brand || "",
-
-
-          category:
-            product.category || "",
-
-
-          price:
-            product.price || "",
-
-
-          oldPrice:
-            product.oldPrice || "",
-
-
-          stock:
-            product.stock || "",
-
-
-          image:
-            product.image || "",
-
-
-          description:
-            product.description || "",
-
-        });
-
-
-
-      } else {
-
-
-        showToast(
-
-          result.message ||
-
-          "Product not found.",
-
-          "error"
-
-        );
-
-
-        navigate(
-          "/admin/products"
-        );
-
-
-      }
-
-
-
-    } catch(error){
-
-
-      console.error(
-
-        "Load Product Error:",
-
-        error
-
-      );
-
-
-
-      showToast(
-
-        "Failed to load product.",
-
-        "error"
-
-      );
-
-
-      navigate(
-        "/admin/products"
-      );
-
-
-
-    } finally {
-
-
-      setLoading(false);
-
-
-    }
-
-
-  };
-
-
-
-
-
-
-
-
-
-  // ==========================================================
-  // INPUT CHANGE
-  // ==========================================================
 
   const handleChange = (e) => {
 
@@ -255,10 +87,6 @@ function EditProduct() {
 
 
 
-  // ==========================================================
-  // UPDATE PRODUCT
-  // ==========================================================
-
   const handleSubmit = async (
     e
   ) => {
@@ -271,38 +99,26 @@ function EditProduct() {
     try {
 
 
-      setSaving(true);
+      setLoading(true);
 
 
 
 
       const result =
-        await updateProduct(
+        await createProduct({
 
-          id,
+          ...formData,
 
-          {
+          price:
+            Number(formData.price),
 
-            ...formData,
+          oldPrice:
+            Number(formData.oldPrice),
 
+          stock:
+            Number(formData.stock),
 
-            price:
-              Number(formData.price),
-
-
-            oldPrice:
-              Number(formData.oldPrice),
-
-
-            stock:
-              Number(formData.stock),
-
-
-          }
-
-        );
-
-
+        });
 
 
 
@@ -314,7 +130,7 @@ function EditProduct() {
 
         showToast(
 
-          "Product updated successfully.",
+          "Product created successfully.",
 
           "success"
 
@@ -328,7 +144,6 @@ function EditProduct() {
 
 
 
-
       } else {
 
 
@@ -336,7 +151,7 @@ function EditProduct() {
 
           result.message ||
 
-          "Update failed.",
+          "Failed to create product.",
 
           "error"
 
@@ -348,13 +163,12 @@ function EditProduct() {
 
 
 
-
     } catch(error){
 
 
       console.error(
 
-        "Update Product Error:",
+        "Create Product Error:",
 
         error
 
@@ -366,7 +180,7 @@ function EditProduct() {
 
         error.response?.data?.message ||
 
-        "Failed to update product.",
+        "Failed to create product.",
 
         "error"
 
@@ -377,7 +191,7 @@ function EditProduct() {
     } finally {
 
 
-      setSaving(false);
+      setLoading(false);
 
 
     }
@@ -393,21 +207,8 @@ function EditProduct() {
 
 
 
-  if(loading){
-
-    return <Loading />;
-
-  }
-
-
-
-
-
-
-
-
-
   return (
+
 
     <section className="admin-form-page">
 
@@ -415,9 +216,11 @@ function EditProduct() {
       <div className="container">
 
 
+
         <h1>
-          ✏️ Edit Product
+          ➕ Create Product
         </h1>
+
 
 
 
@@ -432,8 +235,6 @@ function EditProduct() {
           className="product-form"
 
         >
-
-
 
 
 
@@ -463,7 +264,6 @@ function EditProduct() {
 
 
 
-
           <input
 
             type="text"
@@ -481,7 +281,6 @@ function EditProduct() {
             }
 
           />
-
 
 
 
@@ -570,7 +369,7 @@ function EditProduct() {
 
             name="stock"
 
-            placeholder="Stock"
+            placeholder="Stock Quantity"
 
             value={
               formData.stock
@@ -616,9 +415,10 @@ function EditProduct() {
 
           <textarea
 
+
             name="description"
 
-            placeholder="Description"
+            placeholder="Product description"
 
             value={
               formData.description
@@ -627,6 +427,7 @@ function EditProduct() {
             onChange={
               handleChange
             }
+
 
             rows="5"
 
@@ -645,16 +446,17 @@ function EditProduct() {
             className="btn btn-primary"
 
             disabled={
-              saving
+              loading
             }
 
           >
 
-            {saving
 
-              ? "Updating..."
+            {loading
 
-              : "Update Product"
+              ? "Creating..."
+
+              : "Create Product"
 
             }
 
@@ -668,10 +470,13 @@ function EditProduct() {
         </form>
 
 
+
       </div>
 
 
+
     </section>
+
 
   );
 
@@ -679,4 +484,4 @@ function EditProduct() {
 
 
 
-export default EditProduct;
+export default CreateProduct;

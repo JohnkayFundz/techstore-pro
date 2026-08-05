@@ -1,154 +1,329 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+
+
 /* ==========================================================
-   PROTECT ROUTES
+   GET TOKEN HELPER
 ========================================================== */
 
-export const protect = async (req, res, next) => {
+const getToken = (req) => {
+
+  let token = null;
+
+
+  // Authorization header
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+
+    token = req.headers.authorization.split(" ")[1];
+
+  }
+
+
+  // Cookie fallback
+
+  if (!token && req.cookies?.token) {
+
+    token = req.cookies.token;
+
+  }
+
+
+  return token;
+
+};
+
+
+
+
+/* ==========================================================
+   PROTECT ROUTES
+   Requires authentication
+========================================================== */
+
+export const protect = async (
+  req,
+  res,
+  next
+) => {
+
   try {
-    let token = null;
 
-    // Get token from Authorization header
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer ")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    }
 
-    // Fallback to cookie
-    if (!token && req.cookies?.token) {
-      token = req.cookies.token;
-    }
+    const token = getToken(req);
 
-    // No token
+
+
     if (!token) {
+
       return res.status(401).json({
+
         success: false,
-        message: "Authentication token is missing.",
+
+        message:
+          "Authentication token is missing.",
+
       });
+
     }
 
-    // Basic validation
+
+
+    // Validate JWT format
+
     if (
       typeof token !== "string" ||
       token.trim() === "" ||
       token.split(".").length !== 3
     ) {
+
       return res.status(401).json({
+
         success: false,
-        message: "Malformed authentication token.",
+
+        message:
+          "Malformed authentication token.",
+
       });
+
     }
 
-    // Verify JWT
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+
+    // Verify token
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+
 
     // Find user
-    const user = await User.findById(decoded.id)
+
+    const user = await User.findById(
+      decoded.id
+    )
       .select("-password")
       .lean();
 
+
+
     if (!user) {
+
       return res.status(401).json({
+
         success: false,
-        message: "User not found.",
+
+        message:
+          "User not found.",
+
       });
+
     }
+
+
+
+    // Attach user
 
     req.user = user;
 
+
+
     next();
+
+
+
   } catch (error) {
-    console.error("Protect Middleware Error:", error);
 
-    if (error.name === "TokenExpiredError") {
+
+    console.error(
+      "Protect Middleware Error:",
+      error
+    );
+
+
+
+    if (
+      error.name === "TokenExpiredError"
+    ) {
+
       return res.status(401).json({
+
         success: false,
-        message: "Token has expired.",
+
+        message:
+          "Token has expired.",
+
       });
+
     }
 
-    if (error.name === "JsonWebTokenError") {
+
+
+    if (
+      error.name === "JsonWebTokenError"
+    ) {
+
       return res.status(401).json({
+
         success: false,
-        message: "Invalid authentication token.",
+
+        message:
+          "Invalid authentication token.",
+
       });
+
     }
+
+
 
     return res.status(500).json({
+
       success: false,
-      message: "Authentication failed.",
+
+      message:
+        "Authentication failed.",
+
     });
+
+
   }
+
 };
+
+
+
 
 /* ==========================================================
    ADMIN ONLY
+   Requires admin role
 ========================================================== */
 
-export const adminOnly = (req, res, next) => {
+export const adminOnly = (
+  req,
+  res,
+  next
+) => {
+
+
   if (!req.user) {
+
     return res.status(401).json({
+
       success: false,
-      message: "Authentication required.",
+
+      message:
+        "Authentication required.",
+
     });
+
   }
 
-  if (req.user.role !== "admin") {
+
+
+  if (
+    req.user.role !== "admin"
+  ) {
+
     return res.status(403).json({
+
       success: false,
-      message: "Access denied. Admin privileges required.",
+
+      message:
+        "Access denied. Admin privileges required.",
+
     });
+
   }
+
+
 
   next();
+
 };
+
+
+
 
 /* ==========================================================
    OPTIONAL AUTH
+   Authentication if token exists
 ========================================================== */
 
-export const optionalAuth = async (req, res, next) => {
+export const optionalAuth = async (
+  req,
+  res,
+  next
+) => {
+
   try {
-    let token = null;
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer ")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    }
 
-    if (!token && req.cookies?.token) {
-      token = req.cookies.token;
-    }
+    const token = getToken(req);
+
+
+
+    // Continue without user
 
     if (!token) {
+
       return next();
+
     }
 
-    // Ignore malformed tokens for optional auth
+
+
+    // Ignore invalid token
+
     if (
       typeof token !== "string" ||
       token.split(".").length !== 3
     ) {
+
       return next();
+
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id)
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+
+
+    const user = await User.findById(
+      decoded.id
+    )
       .select("-password")
       .lean();
 
+
+
     if (user) {
+
       req.user = user;
+
     }
 
+
+
     next();
+
+
+
   } catch (error) {
+
+    // Optional auth should never block request
+
     next();
+
   }
+
 };
