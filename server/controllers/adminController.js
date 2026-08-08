@@ -19,7 +19,9 @@ export const getDashboardStats = async (req, res) => {
       recentOrders,
     ] = await Promise.all([
       Product.countDocuments(),
+
       User.countDocuments(),
+
       Order.countDocuments(),
 
       Order.aggregate([
@@ -61,15 +63,14 @@ export const getDashboardStats = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message:
-        "Failed to fetch dashboard statistics.",
+      message: "Failed to fetch dashboard statistics.",
     });
   }
 };
 
 /* ==========================================================
    SALES ANALYTICS
-   GET /api/admin/analytics
+   GET /api/admin/sales
 ========================================================== */
 
 export const getSalesAnalytics = async (req, res) => {
@@ -109,18 +110,16 @@ export const getSalesAnalytics = async (req, res) => {
       sales,
     });
   } catch (error) {
-    console.error(
-      "Sales Analytics Error:",
-      error
-    );
+    console.error("Sales Analytics Error:", error);
 
     res.status(500).json({
       success: false,
-      message:
-        "Failed to fetch sales analytics.",
+      message: "Failed to fetch sales analytics.",
     });
   }
-};/* ==========================================================
+};
+
+/* ==========================================================
    GET ALL USERS
    GET /api/admin/users
 ========================================================== */
@@ -182,10 +181,13 @@ export const updateUserRole = async (req, res) => {
 
     await user.save();
 
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
     res.status(200).json({
       success: true,
       message: "User role updated successfully.",
-      user,
+      user: safeUser,
     });
   } catch (error) {
     console.error("Update User Role Error:", error);
@@ -234,7 +236,9 @@ export const deleteUser = async (req, res) => {
       message: "Failed to delete user.",
     });
   }
-};/* ==========================================================
+};
+
+/* ==========================================================
    GET ALL ORDERS
    GET /api/admin/orders
 ========================================================== */
@@ -356,7 +360,9 @@ export const deleteOrder = async (req, res) => {
       message: "Failed to delete order.",
     });
   }
-};/* ==========================================================
+};
+
+/* ==========================================================
    GET ALL PRODUCTS
    GET /api/admin/products
 ========================================================== */

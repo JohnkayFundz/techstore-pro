@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
@@ -9,27 +9,49 @@ import {
 
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
-
 import { formatPrice } from "../../utils/formatPrice";
+
+import "./ProductCard.css";
 
 const PLACEHOLDER_IMAGE =
   "https://via.placeholder.com/400x400?text=No+Image";
 
+/**
+ * Cleans image URLs.
+ * Supports:
+ * - Plain URL
+ * - Markdown links
+ */
+function cleanImageUrl(url) {
+  if (!url) return PLACEHOLDER_IMAGE;
+
+  const markdown = url.match(/\((https?:\/\/[^)]+)\)/);
+
+  if (markdown) {
+    return markdown[1];
+  }
+
+  return url.trim();
+}
+
 function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { wishlist, toggleWishlist } =
+    useWishlist();
 
-  const {
-    wishlist,
-    toggleWishlist,
-  } = useWishlist();
+  const [imageError, setImageError] =
+    useState(false);
 
   const productId =
     product._id || product.id;
 
-  const image =
-    product.image ||
-    product.images?.[0] ||
-    PLACEHOLDER_IMAGE;
+  const image = imageError
+    ? PLACEHOLDER_IMAGE
+    : cleanImageUrl(
+        product.image ||
+          product.images?.[0] ||
+          PLACEHOLDER_IMAGE
+      );
 
   const reviews =
     product.numReviews ??
@@ -51,52 +73,45 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
-
       {/* IMAGE */}
 
-      <div className="product-image-wrapper">
-
-        <Link to={`/products/${productId}`}>
-
+      <div className="product-image-container">
+        <Link
+          to={`/products/${productId}`}
+          className="product-image-link"
+        >
           <img
             src={image}
             alt={product.name}
             className="product-image"
             loading="lazy"
             decoding="async"
-            onError={(e) => {
-              e.currentTarget.src =
-                PLACEHOLDER_IMAGE;
-            }}
+            onError={() =>
+              setImageError(true)
+            }
           />
-
         </Link>
 
-        {/* BADGES */}
-
         <div className="product-badges">
-
           {product.newArrival && (
-            <span className="badge new">
+            <span className="new-badge">
               New
             </span>
           )}
 
           {product.bestseller && (
-            <span className="badge best">
+            <span className="best-badge">
               Best Seller
             </span>
           )}
 
-          {(product.discount ?? 0) > 0 && (
-            <span className="badge discount">
+          {(product.discount ?? 0) >
+            0 && (
+            <span className="discount-badge">
               -{product.discount}%
             </span>
           )}
-
         </div>
-
-        {/* WISHLIST */}
 
         <button
           type="button"
@@ -105,40 +120,43 @@ function ProductCard({ product }) {
               ? "active"
               : ""
           }`}
-          aria-label={
-            isWishlisted
-              ? "Remove from wishlist"
-              : "Add to wishlist"
-          }
           onClick={() =>
             toggleWishlist(product)
+          }
+          aria-label={
+            isWishlisted
+              ? "Remove from Wishlist"
+              : "Add to Wishlist"
           }
         >
           <FiHeart />
         </button>
-
       </div>
 
-      {/* INFO */}
+      {/* PRODUCT INFO */}
 
       <div className="product-info">
+        <div className="product-meta">
+          <span className="product-brand">
+            {product.brand ||
+              "TechStore"}
+          </span>
 
-        <p className="product-brand">
-          {product.brand ||
-            "TechStore"}
-        </p>
+          {product.category && (
+            <span className="product-category">
+              {product.category}
+            </span>
+          )}
+        </div>
 
         <Link
           to={`/products/${productId}`}
-          className="product-title"
+          className="product-name"
         >
           {product.name}
         </Link>
 
-        {/* RATING */}
-
         <div className="product-rating">
-
           <FiStar />
 
           {reviews > 0 ? (
@@ -156,14 +174,10 @@ function ProductCard({ product }) {
               No reviews
             </small>
           )}
-
         </div>
 
-        {/* PRICE */}
-
-        <div className="product-price">
-
-          <span className="current-price">
+        <div className="price-box">
+          <span className="price">
             {formatPrice(
               product.price
             )}
@@ -177,44 +191,46 @@ function ProductCard({ product }) {
               )}
             </span>
           )}
-
         </div>
 
-        {/* STOCK */}
-
         <p
-          className={
+          className={`stock ${
             inStock
-              ? "stock available"
-              : "stock out"
-          }
+              ? "in-stock"
+              : "out-stock"
+          }`}
         >
           {inStock
             ? `${product.stock} in stock`
             : "Out of stock"}
         </p>
 
-        {/* CART */}
+        <div className="product-spacer" />
 
-        <button
-          type="button"
-          className="add-cart-btn"
-          aria-label="Add product to cart"
-          disabled={!inStock}
-          onClick={() =>
-            addToCart(product)
-          }
-        >
-          <FiShoppingCart />
+        <div className="product-actions">
+          <button
+            type="button"
+            className="cart-btn"
+            disabled={!inStock}
+            onClick={() =>
+              addToCart(product)
+            }
+          >
+            <FiShoppingCart />
 
-          {inStock
-            ? "Add to Cart"
-            : "Unavailable"}
+            {inStock
+              ? "Add to Cart"
+              : "Unavailable"}
+          </button>
 
-        </button>
-
+          <Link
+            to={`/products/${productId}`}
+            className="details-btn"
+          >
+            View Details
+          </Link>
+        </div>
       </div>
-
     </article>
   );
 }
@@ -222,54 +238,34 @@ function ProductCard({ product }) {
 ProductCard.propTypes = {
   product: PropTypes.shape({
     _id: PropTypes.string,
-
     id: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
     ]),
-
-    name: PropTypes.string
-      .isRequired,
-
+    name:
+      PropTypes.string.isRequired,
     brand: PropTypes.string,
-
+    category: PropTypes.string,
     image: PropTypes.string,
-
-    images:
-      PropTypes.arrayOf(
-        PropTypes.string
-      ),
-
-    price: PropTypes.number
-      .isRequired,
-
+    images: PropTypes.arrayOf(
+      PropTypes.string
+    ),
+    price:
+      PropTypes.number.isRequired,
     oldPrice: PropTypes.number,
-
     discount: PropTypes.number,
-
     rating: PropTypes.number,
-
     reviews: PropTypes.number,
-
     numReviews:
       PropTypes.number,
-
     stock: PropTypes.number,
-
-    category:
-      PropTypes.string,
-
     description:
       PropTypes.string,
-
     newArrival:
       PropTypes.bool,
-
     bestseller:
       PropTypes.bool,
   }).isRequired,
 };
 
-export default memo(
-  ProductCard
-);
+export default memo(ProductCard);

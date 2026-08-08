@@ -24,6 +24,8 @@ import OrderSuccess from "./pages/OrderSuccess.jsx";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
+import CreateProduct from "./pages/admin/CreateProduct.jsx";
+import EditProduct from "./pages/admin/EditProduct.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 
 
@@ -144,6 +146,26 @@ function App() {
           element={
             <AdminRoute>
               <AdminProducts />
+            </AdminRoute>
+          }
+        />
+
+
+        <Route
+          path="/admin/products/new"
+          element={
+            <AdminRoute>
+              <CreateProduct />
+            </AdminRoute>
+          }
+        />
+
+
+        <Route
+          path="/admin/products/edit/:id"
+          element={
+            <AdminRoute>
+              <EditProduct />
             </AdminRoute>
           }
         />

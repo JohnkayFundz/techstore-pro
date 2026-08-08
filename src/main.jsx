@@ -2,51 +2,29 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-import App from "./App.jsx";
-
-// Context Providers
-import { AuthProvider } from "./context/AuthContext.jsx";
-import { ProductProvider } from "./context/ProductContext.jsx";
-import { CartProvider } from "./context/CartContext.jsx";
-import { WishlistProvider } from "./context/WishlistContext.jsx";
-import { ToastProvider } from "./context/ToastContext.jsx";
-
-// Global CSS
 import "./index.css";
+import App from "./App";
 
+import { AuthProvider } from "./context/AuthContext";
+import { ProductProvider } from "./context/ProductContext";
+import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
+import { ToastProvider } from "./context/ToastContext";
 
-ReactDOM.createRoot(
-  document.getElementById("root")
-).render(
-
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-
     <BrowserRouter>
-
       <AuthProvider>
-
         <ProductProvider>
-
           <CartProvider>
-
             <WishlistProvider>
-
               <ToastProvider>
-
                 <App />
-
               </ToastProvider>
-
             </WishlistProvider>
-
           </CartProvider>
-
         </ProductProvider>
-
       </AuthProvider>
-
     </BrowserRouter>
-
   </React.StrictMode>
-
 );

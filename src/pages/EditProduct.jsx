@@ -1,3 +1,4 @@
+```jsx
 import {
   useEffect,
   useState,
@@ -8,591 +9,291 @@ import {
   useParams,
 } from "react-router-dom";
 
+import Loading from "../../components/Loading";
+
 import {
   getProduct,
   updateProduct,
 } from "../../api/adminProductApi";
 
+import {
+  useToast,
+} from "../../context/ToastContext";
 
 function EditProduct() {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
+  const { showToast } = useToast();
 
-  const {
-    id,
-  } = useParams();
+  const [formData, setFormData] = useState({
+    name: "",
+    brand: "",
+    category: "",
+    price: "",
+    oldPrice: "",
+    stock: "",
+    image: "",
+    description: "",
+  });
 
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const navigate =
-    useNavigate();
-
-
-
-  const [loading, setLoading] =
-    useState(true);
-
-
-  const [saving, setSaving] =
-    useState(false);
-
-
-  const [message, setMessage] =
-    useState("");
-
-
-  const [error, setError] =
-    useState("");
-
-
-
-  const [form, setForm] =
-    useState({
-
-      name: "",
-
-      brand: "",
-
-      category: "",
-
-      price: "",
-
-      stock: "",
-
-      description: "",
-
-      image: "",
-
-    });
-
-
-
-
-
-
+  // ==========================================================
+  // LOAD PRODUCT
+  // ==========================================================
 
   useEffect(() => {
+    if (!id) {
+      showToast("Product ID is missing.", "error");
+      navigate("/admin/products");
+      return;
+    }
 
-    loadProduct();
-
+    fetchProduct();
   }, [id]);
 
-
-
-
-
-
-
-  const loadProduct = async () => {
-
-
+  const fetchProduct = async () => {
     try {
+      setLoading(true);
 
+      const result = await getProduct(id);
 
-      const result =
-        await getProduct(id);
+      if (result.success && result.product) {
+        const product = result.product;
 
-
-
-      if (result.success) {
-
-
-        const product =
-          result.product;
-
-
-
-        setForm({
-
-          name:
-            product.name || "",
-
-          brand:
-            product.brand || "",
-
-          category:
-            product.category || "",
-
-          price:
-            product.price || "",
-
-          stock:
-            product.stock || "",
-
-          description:
-            product.description || "",
-
-          image:
-            product.image || "",
-
+        setFormData({
+          name: product.name || "",
+          brand: product.brand || "",
+          category: product.category || "",
+          price: product.price ?? "",
+          oldPrice: product.oldPrice ?? "",
+          stock: product.stock ?? "",
+          image: product.image || "",
+          description: product.description || "",
         });
-
-
       } else {
-
-
-        setError(
-          result.message
+        showToast(
+          result.message || "Product not found.",
+          "error"
         );
 
-
+        navigate("/admin/products");
       }
+    } catch (error) {
+      console.error("Load Product Error:", error);
 
-
-
-    } catch (err) {
-
-
-      console.error(err);
-
-
-      setError(
-        "Failed to load product."
+      showToast(
+        error.response?.data?.message ||
+          "Failed to load product.",
+        "error"
       );
 
-
+      navigate("/admin/products");
     } finally {
-
-
       setLoading(false);
-
-
     }
-
-
   };
 
-
-
-
-
-
-
+  // ==========================================================
+  // INPUT CHANGE
+  // ==========================================================
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
 
-
-    setForm((prev) => ({
-
+    setFormData((prev) => ({
       ...prev,
-
-      [e.target.name]:
-        e.target.value,
-
+      [name]: value,
     }));
-
-
   };
 
-
-
-
-
-
-
+  // ==========================================================
+  // UPDATE PRODUCT
+  // ==========================================================
 
   const handleSubmit = async (e) => {
-
-
     e.preventDefault();
 
-
-
-    try {
-
-
-      setSaving(true);
-
-      setError("");
-
-
-
-      const result =
-        await updateProduct(
-          id,
-          {
-            ...form,
-
-            price:
-              Number(form.price),
-
-            stock:
-              Number(form.stock),
-
-          }
-        );
-
-
-
-      if (result.success) {
-
-
-        setMessage(
-          "✅ Product updated successfully."
-        );
-
-
-
-        setTimeout(() => {
-
-          navigate(
-            "/admin/products"
-          );
-
-        }, 1000);
-
-
-
-      } else {
-
-
-        setError(
-          result.message
-        );
-
-
-      }
-
-
-
-
-    } catch (err) {
-
-
-      console.error(err);
-
-
-      setError(
-        "Update failed."
-      );
-
-
-    } finally {
-
-
-      setSaving(false);
-
-
+    if (!id) {
+      showToast("Product ID is missing.", "error");
+      return;
     }
 
+    try {
+      setSaving(true);
 
+      const productData = {
+        ...formData,
+        price: Number(formData.price),
+        oldPrice:
+          formData.oldPrice === ""
+            ? 0
+            : Number(formData.oldPrice),
+        stock: Number(formData.stock),
+      };
+
+      const result = await updateProduct(
+        id,
+        productData
+      );
+
+      if (result.success) {
+        showToast(
+          "Product updated successfully.",
+          "success"
+        );
+
+        navigate("/admin/products");
+      } else {
+        showToast(
+          result.message || "Update failed.",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Update Product Error:",
+        error
+      );
+
+      showToast(
+        error.response?.data?.message ||
+          "Failed to update product.",
+        "error"
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
-
-
-
-
-
+  // ==========================================================
+  // LOADING
+  // ==========================================================
 
   if (loading) {
-
-
-    return (
-
-      <section className="container">
-
-        <h2>
-          Loading Product...
-        </h2>
-
-      </section>
-
-    );
-
-
+    return <Loading />;
   }
 
-
-
-
-
-
+  // ==========================================================
+  // FORM
+  // ==========================================================
 
   return (
+    <section className="admin-form-page">
+      <div className="container">
+        <h1>✏️ Edit Product</h1>
 
-    <section className="container admin-form-page">
+        <form
+          onSubmit={handleSubmit}
+          className="product-form"
+        >
+          {/* PRODUCT NAME */}
 
-
-      <h1>
-        ✏️ Edit Product
-      </h1>
-
-
-
-
-
-      {message && (
-
-        <div className="message-box">
-
-          {message}
-
-        </div>
-
-      )}
-
-
-
-
-
-      {error && (
-
-        <div className="error-message">
-
-          {error}
-
-        </div>
-
-      )}
-
-
-
-
-
-
-
-      <form
-
-        className="admin-product-form"
-
-        onSubmit={handleSubmit}
-
-      >
-
-
-        <label>
-          Image URL
-        </label>
-
-
-        <input
-
-          type="text"
-
-          name="image"
-
-          value={form.image}
-
-          onChange={handleChange}
-
-        />
-
-
-
-        {form.image && (
-
-          <img
-
-            src={form.image}
-
-            alt={form.name}
-
-            className="product-preview"
-
+          <input
+            type="text"
+            name="name"
+            placeholder="Product name"
+            value={formData.name}
+            onChange={handleChange}
+            required
           />
 
-        )}
-
-
-
-
-
-
-        <label>
-          Product Name
-        </label>
-
-
-        <input
-
-          type="text"
-
-          name="name"
-
-          value={form.name}
-
-          onChange={handleChange}
-
-          required
-
-        />
-
-
-
-
-
-
-
-        <label>
-          Brand
-        </label>
-
-
-        <input
-
-          type="text"
-
-          name="brand"
-
-          value={form.brand}
-
-          onChange={handleChange}
-
-          required
-
-        />
-
-
-
-
-
-
-
-        <label>
-          Category
-        </label>
-
-
-        <select
-
-          name="category"
-
-          value={form.category}
-
-          onChange={handleChange}
-
-          required
-
-        >
-
-          <option value="">
-            Select Category
-          </option>
-
-          <option value="Laptop">
-            Laptop
-          </option>
-
-          <option value="Phone">
-            Phone
-          </option>
-
-          <option value="Accessories">
-            Accessories
-          </option>
-
-          <option value="Gaming">
-            Gaming
-          </option>
-
-
-        </select>
-
-
-
-
-
-
-
-        <label>
-          Price
-        </label>
-
-
-        <input
-
-          type="number"
-
-          name="price"
-
-          value={form.price}
-
-          onChange={handleChange}
-
-          required
-
-        />
-
-
-
-
-
-
-
-        <label>
-          Stock
-        </label>
-
-
-        <input
-
-          type="number"
-
-          name="stock"
-
-          value={form.stock}
-
-          onChange={handleChange}
-
-          required
-
-        />
-
-
-
-
-
-
-
-        <label>
-          Description
-        </label>
-
-
-        <textarea
-
-          name="description"
-
-          rows="5"
-
-          value={form.description}
-
-          onChange={handleChange}
-
-          required
-
-        />
-
-
-
-
-
-
-
-        <button
-
-          className="btn btn-primary"
-
-          disabled={saving}
-
-        >
-
-          {saving
-            ? "Updating..."
-            : "Update Product"}
-
-        </button>
-
-
-
-
-      </form>
-
-
-
+          {/* BRAND */}
+
+          <input
+            type="text"
+            name="brand"
+            placeholder="Brand"
+            value={formData.brand}
+            onChange={handleChange}
+          />
+
+          {/* CATEGORY */}
+
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          />
+
+          {/* PRICE */}
+
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            value={formData.price}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            required
+          />
+
+          {/* OLD PRICE */}
+
+          <input
+            type="number"
+            name="oldPrice"
+            placeholder="Old Price"
+            value={formData.oldPrice}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+          />
+
+          {/* STOCK */}
+
+          <input
+            type="number"
+            name="stock"
+            placeholder="Stock"
+            value={formData.stock}
+            onChange={handleChange}
+            min="0"
+            required
+          />
+
+          {/* IMAGE */}
+
+          <input
+            type="text"
+            name="image"
+            placeholder="Image URL"
+            value={formData.image}
+            onChange={handleChange}
+          />
+
+          {/* DESCRIPTION */}
+
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            rows="5"
+          />
+
+          {/* BUTTON */}
+
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={saving}
+          >
+            {saving
+              ? "Updating..."
+              : "Update Product"}
+          </button>
+        </form>
+      </div>
     </section>
-
   );
-
 }
 
-
 export default EditProduct;
+```

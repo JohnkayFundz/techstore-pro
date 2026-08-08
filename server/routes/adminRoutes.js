@@ -49,7 +49,7 @@ router.get(
 );
 
 /* ==========================================================
-   USER MANAGEMENT
+   USERS
 ========================================================== */
 
 router.get(
@@ -74,7 +74,7 @@ router.delete(
 );
 
 /* ==========================================================
-   ORDER MANAGEMENT
+   ORDERS
 ========================================================== */
 
 router.get(
@@ -99,9 +99,10 @@ router.delete(
 );
 
 /* ==========================================================
-   PRODUCT MANAGEMENT
+   PRODUCTS
 ========================================================== */
 
+// Get all products
 router.get(
   "/products",
   protect,
@@ -109,6 +110,7 @@ router.get(
   getProducts
 );
 
+// Get single product
 router.get(
   "/products/:id",
   protect,
@@ -116,6 +118,7 @@ router.get(
   getProduct
 );
 
+// Create product
 router.post(
   "/products",
   protect,
@@ -123,6 +126,7 @@ router.post(
   createProduct
 );
 
+// Update product
 router.put(
   "/products/:id",
   protect,
@@ -130,6 +134,7 @@ router.put(
   updateProduct
 );
 
+// Delete product
 router.delete(
   "/products/:id",
   protect,

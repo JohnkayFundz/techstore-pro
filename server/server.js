@@ -78,7 +78,7 @@ const startServer = async () => {
           process.env.NODE_ENV || "development"
         } mode`
       );
-      console.log(`🌍 http://localhost:${PORT}`);
+      console.log(`🚀 Server listening on port ${PORT}`);
       console.log("====================================");
     });
 

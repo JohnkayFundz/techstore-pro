@@ -21,21 +21,27 @@ function Home() {
   const loadProducts = async () => {
     setLoading(true);
 
-    const response = await getProducts({
-      featured: true,
-    });
+    try {
+      const response = await getProducts();
 
-    if (response.success) {
-      setProducts(response.products || []);
+      console.log("API Response:", response);
+
+      if (response.success) {
+        setProducts(response.products || []);
+      } else {
+        console.error(response.message);
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Failed to load products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="home">
-
-      {/* Hero Section */}
       <section className="hero">
         <h1>Welcome to TechStore Pro</h1>
 
@@ -44,16 +50,14 @@ function Home() {
         </p>
 
         <Link to="/products">
-          <button>
+          <button className="hero-btn">
             Shop Now
           </button>
         </Link>
       </section>
 
-      {/* Products Section */}
       <section className="products-section">
-
-        <h2>Featured Products</h2>
+        <h2>Products ({products.length})</h2>
 
         <div className="product-controls">
           <SearchBar />
@@ -63,11 +67,12 @@ function Home() {
         {loading ? (
           <Loading />
         ) : (
-          <ProductGrid products={products} />
+          <ProductGrid
+            products={products}
+            loading={loading}
+          />
         )}
-
       </section>
-
     </div>
   );
 }
