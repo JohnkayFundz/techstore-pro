@@ -1,134 +1,259 @@
-# 🛒 TechStore Pro
+🛒 TechStore Pro
 
-A modern full-stack ecommerce application built with **React, Node.js, Express, and MongoDB**.
+A modern full-stack MERN e-commerce application built with React, Node.js, Express, and MongoDB.
 
-TechStore Pro demonstrates how a complete online store works, from browsing products to placing orders, while providing an admin dashboard for managing products and orders.
-
----
-
-## 🚀 Features
-
-### Customer Features
-
-- User registration and login
-- Secure authentication
-- Browse products
-- Product search and filtering
-- Shopping cart
-- Checkout process
-- Responsive design
-
-### Admin Features
-
-- Admin dashboard
-- Product management
-- Order management
-- User management
-- Dashboard statistics
+TechStore Pro delivers a complete online shopping experience with secure authentication, product browsing, cart management, checkout, order tracking, and a powerful admin dashboard for store management.
 
 ---
 
-## 🛠️ Tech Stack
+🚀 Live Demo
 
-### Frontend
+🌐 Frontend:
+https://techstore-pro-two.vercel.app/
 
-- React.js
-- JavaScript (ES6+)
+⚙️ Backend API:
+https://techstore-pro-zonk.onrender.com
+
+---
+
+✨ Features
+
+👤 Customer Features
+
+✅ User registration and authentication
+✅ Secure JWT login system
+✅ Browse products
+✅ Product search
+✅ Category filtering
+✅ Product details pages
+✅ Shopping cart with persistent storage
+✅ Wishlist functionality
+✅ Checkout process
+✅ Order history
+✅ Responsive mobile-friendly design
+
+---
+
+🛠️ Admin Features
+
+✅ Admin dashboard
+✅ Product management
+✅ Create, update, and delete products
+✅ Order management
+✅ Update order status
+✅ User management
+✅ Store statistics overview
+
+---
+
+🧰 Tech Stack
+
+Frontend
+
+- React 19
+- Vite
 - React Router
 - Context API
 - Axios
 - CSS3
 
-### Backend
+Backend
 
 - Node.js
 - Express.js
 - MongoDB
 - Mongoose
 - JWT Authentication
+- bcryptjs
+- Cookie Parser
+- Helmet
+- Morgan
 
-### Tools
+Deployment & Tools
 
 - Git
 - GitHub
+- MongoDB Atlas
+- Cloudinary
 - Vercel
+- Render
 
 ---
 
-## 📂 Project Structure
+📂 Project Structure
 
-```text
 techstore-pro/
-├── src/
+
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── context/
+│   │   ├── api/
+│   │   └── utils/
+│
 ├── server/
-├── public/
-├── package.json
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   └── utils/
+│
 └── README.md
-```
 
 ---
 
-## ⚙️ Installation
+⚙️ Installation & Setup
 
-### Clone the repository
+Clone Repository
 
-```bash
 git clone https://github.com/JohnkayFundz/techstore-pro.git
-```
 
-### Install frontend dependencies
+cd techstore-pro
 
-```bash
+---
+
+Frontend Setup
+
+cd client
+
 npm install
-```
 
-### Install backend dependencies
+npm run dev
 
-```bash
+Create:
+
+client/.env
+
+Add:
+
+VITE_API_URL=http://localhost:5000/api
+
+---
+
+Backend Setup
+
+Open another terminal:
+
 cd server
+
 npm install
-```
 
-### Start the frontend
-
-```bash
 npm run dev
-```
 
-### Start the backend
+Create:
 
-```bash
-cd server
-npm run dev
-```
+server/.env
 
----
+Add:
 
-## 📸 Screenshots
+PORT=5000
 
-> Screenshots will be added soon.
+NODE_ENV=development
 
----
+MONGO_URI=your_mongodb_connection
 
-## 🎯 Learning Outcomes
+JWT_SECRET=your_secret_key
 
-This project helped me strengthen my skills in:
-
-- Building React applications
-- Creating REST APIs with Express
-- Working with MongoDB
-- Implementing user authentication
-- State management
-- Responsive web design
-- Git and GitHub workflows
+CLIENT_URL=http://localhost:5173
 
 ---
 
-## 👨‍💻 Developer
+🔐 Authentication
 
-**Johnkay Fundz**
+TechStore Pro uses:
 
-Frontend Developer passionate about building modern web applications with React, JavaScript, Node.js, and MongoDB.
+- JWT authentication
+- Protected routes
+- Role-based authorization
+- Admin middleware
 
-- GitHub: https://github.com/JohnkayFundz
-- Portfolio: https://johnkayfundz.github.io/
+User roles:
+
+customer
+admin
+
+---
+
+📦 API Overview
+
+Authentication
+
+POST   /api/auth/register
+POST   /api/auth/login
+POST   /api/auth/logout
+GET    /api/auth/me
+
+Products
+
+GET    /api/products
+GET    /api/products/:id
+POST   /api/products
+PUT    /api/products/:id
+DELETE /api/products/:id
+
+Orders
+
+GET    /api/orders
+POST   /api/orders
+PUT    /api/orders/:id
+
+---
+
+📸 Screenshots
+
+Coming soon.
+
+Recommended screenshots:
+
+- Homepage
+- Product details page
+- Cart page
+- Checkout page
+- Admin dashboard
+
+---
+
+🎯 Future Improvements
+
+- Stripe payment integration
+- Product reviews and ratings
+- Email notifications
+- Advanced analytics dashboard
+- Coupon system
+- Inventory alerts
+- Multi-vendor marketplace support
+
+---
+
+👨‍💻 Developer
+
+Johnkay Fundz
+
+Frontend Developer building modern web applications with React and JavaScript, with experience developing full-stack applications using Node.js, Express, and MongoDB.
+
+Skills
+
+- React
+- JavaScript
+- HTML
+- CSS
+- Node.js
+- Express
+- MongoDB
+- Git/GitHub
+
+Portfolio:
+https://johnkayfundz.github.io/
+
+GitHub:
+https://github.com/JohnkayFundz
+
+---
+
+⭐ Support
+
+If you find this project useful, consider giving it a ⭐ on GitHub.
+
+Thanks for exploring TechStore Pro!
