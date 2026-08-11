@@ -1,8 +1,10 @@
 🛒 TechStore Pro
 
-A modern full-stack MERN e-commerce application built with React, Node.js, Express, and MongoDB.
+A modern full-stack MERN e-commerce application built with React, Node.js, Express.js, and MongoDB.
 
-TechStore Pro delivers a complete online shopping experience with secure authentication, product browsing, cart management, checkout, order tracking, and a powerful admin dashboard for store management.
+TechStore Pro is a production-style online shopping platform that demonstrates real-world full-stack development. It provides customers with a complete shopping experience including authentication, product discovery, cart management, checkout, and order tracking.
+
+It also includes a powerful admin dashboard for managing products, orders, users, and store operations.
 
 ---
 
@@ -16,19 +18,37 @@ https://techstore-pro-zonk.onrender.com
 
 ---
 
+📸 Screenshots
+
+Coming soon.
+
+Recommended screenshots:
+
+- Homepage
+- Product listing page
+- Product details page
+- Shopping cart
+- Checkout page
+- Order history
+- Admin dashboard
+
+---
+
 ✨ Features
 
 👤 Customer Features
 
-✅ User registration and authentication
-✅ Secure JWT login system
+✅ User registration and login
+✅ Secure JWT authentication
+✅ Protected user routes
 ✅ Browse products
 ✅ Product search
 ✅ Category filtering
-✅ Product details pages
-✅ Shopping cart with persistent storage
+✅ Product details page
+✅ Shopping cart system
+✅ Persistent cart storage
 ✅ Wishlist functionality
-✅ Checkout process
+✅ Checkout workflow
 ✅ Order history
 ✅ Responsive mobile-friendly design
 
@@ -37,12 +57,59 @@ https://techstore-pro-zonk.onrender.com
 🛠️ Admin Features
 
 ✅ Admin dashboard
+✅ Store statistics overview
 ✅ Product management
-✅ Create, update, and delete products
+✅ Create products
+✅ Update products
+✅ Delete products
 ✅ Order management
 ✅ Update order status
 ✅ User management
-✅ Store statistics overview
+✅ Role-based authorization
+
+---
+
+🏗️ Application Architecture
+
+TechStore Pro follows a full-stack client-server architecture.
+
+Frontend
+
+The React frontend handles:
+
+- User interface
+- Routing
+- State management
+- API communication
+- Shopping experience
+
+Communication with the backend is handled through Axios REST API requests.
+
+---
+
+Backend
+
+The Node.js and Express.js backend handles:
+
+- Authentication
+- Business logic
+- Product management
+- Order processing
+- User authorization
+- Database operations
+
+---
+
+Database
+
+MongoDB stores:
+
+- Users
+- Products
+- Orders
+- Application data
+
+Mongoose is used for database modeling and queries.
 
 ---
 
@@ -57,6 +124,8 @@ Frontend
 - Axios
 - CSS3
 
+---
+
 Backend
 
 - Node.js
@@ -68,6 +137,8 @@ Backend
 - Cookie Parser
 - Helmet
 - Morgan
+
+---
 
 Deployment & Tools
 
@@ -116,11 +187,13 @@ cd techstore-pro
 
 Frontend Setup
 
+Navigate to client:
+
 cd client
 
-npm install
+Install dependencies:
 
-npm run dev
+npm install
 
 Create:
 
@@ -130,17 +203,27 @@ Add:
 
 VITE_API_URL=http://localhost:5000/api
 
+Start development server:
+
+npm run dev
+
+Frontend runs on:
+
+http://localhost:5173
+
 ---
 
 Backend Setup
 
-Open another terminal:
+Open another terminal.
+
+Navigate to server:
 
 cd server
 
-npm install
+Install dependencies:
 
-npm run dev
+npm install
 
 Create:
 
@@ -152,20 +235,29 @@ PORT=5000
 
 NODE_ENV=development
 
-MONGO_URI=your_mongodb_connection
+MONGO_URI=your_mongodb_connection_string
 
 JWT_SECRET=your_secret_key
 
 CLIENT_URL=http://localhost:5173
 
+Start backend:
+
+npm run dev
+
+Backend runs on:
+
+http://localhost:5000
+
 ---
 
-🔐 Authentication
+🔐 Authentication System
 
 TechStore Pro uses:
 
 - JWT authentication
 - Protected routes
+- Secure password hashing
 - Role-based authorization
 - Admin middleware
 
@@ -176,54 +268,66 @@ admin
 
 ---
 
-📦 API Overview
+📦 API Documentation
 
 Authentication
 
-POST   /api/auth/register
-POST   /api/auth/login
-POST   /api/auth/logout
-GET    /api/auth/me
+Method| Endpoint| Description
+POST| /api/auth/register| Register new user
+POST| /api/auth/login| Login user
+POST| /api/auth/logout| Logout user
+GET| /api/auth/me| Get current user
+
+---
 
 Products
 
-GET    /api/products
-GET    /api/products/:id
-POST   /api/products
-PUT    /api/products/:id
-DELETE /api/products/:id
+Method| Endpoint| Description
+GET| /api/products| Get all products
+GET| /api/products/:id| Get single product
+POST| /api/products| Create product
+PUT| /api/products/:id| Update product
+DELETE| /api/products/:id| Delete product
+
+---
 
 Orders
 
-GET    /api/orders
-POST   /api/orders
-PUT    /api/orders/:id
+Method| Endpoint| Description
+GET| /api/orders| Get user orders
+POST| /api/orders| Create order
+PUT| /api/orders/:id| Update order status
 
 ---
 
-📸 Screenshots
+🧪 Development Commands
 
-Coming soon.
+Frontend development:
 
-Recommended screenshots:
+npm run dev
 
-- Homepage
-- Product details page
-- Cart page
-- Checkout page
-- Admin dashboard
+Production build:
+
+npm run build
+
+Backend development:
+
+npm run dev
 
 ---
 
-🎯 Future Improvements
+🗺️ Future Improvements
 
-- Stripe payment integration
-- Product reviews and ratings
-- Email notifications
-- Advanced analytics dashboard
-- Coupon system
-- Inventory alerts
-- Multi-vendor marketplace support
+Planned features:
+
+⬜ Stripe payment integration
+⬜ Product reviews and ratings
+⬜ Email notifications
+⬜ Advanced analytics dashboard
+⬜ Coupon system
+⬜ Inventory alerts
+⬜ Multi-vendor marketplace
+⬜ AI product recommendations
 
 ---
 
@@ -231,7 +335,14 @@ Recommended screenshots:
 
 Johnkay Fundz
 
-Frontend Developer building modern web applications with React and JavaScript, with experience developing full-stack applications using Node.js, Express, and MongoDB.
+Frontend Developer building modern web applications with React and JavaScript.
+
+Experienced in developing full-stack applications using:
+
+- React
+- Node.js
+- Express.js
+- MongoDB
 
 Skills
 
@@ -240,14 +351,20 @@ Skills
 - HTML
 - CSS
 - Node.js
-- Express
+- Express.js
 - MongoDB
 - Git/GitHub
 
+---
+
+🌐 Links
+
 Portfolio:
+
 https://johnkayfundz.github.io/
 
 GitHub:
+
 https://github.com/JohnkayFundz
 
 ---
@@ -256,4 +373,4 @@ https://github.com/JohnkayFundz
 
 If you find this project useful, consider giving it a ⭐ on GitHub.
 
-Thanks for exploring TechStore Pro!
+Thank you for exploring TechStore Pro!
