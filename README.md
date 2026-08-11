@@ -1,5 +1,10 @@
 🛒 TechStore Pro
 
+"React" (https://img.shields.io/badge/React-19-blue)
+"Node.js" (https://img.shields.io/badge/Node.js-Express-green)
+"MongoDB" (https://img.shields.io/badge/MongoDB-Database-brightgreen)
+"License" (https://img.shields.io/badge/License-MIT-yellow)
+
 A modern full-stack MERN e-commerce application built with React, Node.js, Express.js, and MongoDB.
 
 TechStore Pro is a production-style online shopping platform that demonstrates real-world full-stack development. It provides customers with a complete shopping experience including authentication, product discovery, cart management, checkout, and order tracking.
@@ -34,6 +39,19 @@ Recommended screenshots:
 
 ---
 
+🎯 Project Purpose
+
+TechStore Pro was built to demonstrate practical full-stack development skills, including:
+
+- Building scalable React applications
+- Creating REST APIs with Express.js
+- Implementing secure authentication systems
+- Managing application state with Context API
+- Working with MongoDB databases
+- Deploying full-stack applications
+
+---
+
 ✨ Features
 
 👤 Customer Features
@@ -44,7 +62,7 @@ Recommended screenshots:
 ✅ Browse products
 ✅ Product search
 ✅ Category filtering
-✅ Product details page
+✅ Product details pages
 ✅ Shopping cart system
 ✅ Persistent cart storage
 ✅ Wishlist functionality
@@ -270,33 +288,53 @@ admin
 
 📦 API Documentation
 
-Authentication
+Authentication API
 
 Method| Endpoint| Description
-POST| /api/auth/register| Register new user
-POST| /api/auth/login| Login user
-POST| /api/auth/logout| Logout user
-GET| /api/auth/me| Get current user
+POST| "/api/auth/register"| Register new user
+POST| "/api/auth/login"| Login user
+POST| "/api/auth/logout"| Logout user
+GET| "/api/auth/me"| Get current user
 
 ---
 
-Products
+Products API
 
 Method| Endpoint| Description
-GET| /api/products| Get all products
-GET| /api/products/:id| Get single product
-POST| /api/products| Create product
-PUT| /api/products/:id| Update product
-DELETE| /api/products/:id| Delete product
+GET| "/api/products"| Get all products
+GET| "/api/products/:id"| Get single product
+POST| "/api/products"| Create product
+PUT| "/api/products/:id"| Update product
+DELETE| "/api/products/:id"| Delete product
 
 ---
 
-Orders
+Orders API
 
 Method| Endpoint| Description
-GET| /api/orders| Get user orders
-POST| /api/orders| Create order
-PUT| /api/orders/:id| Update order status
+GET| "/api/orders"| Get user orders
+POST| "/api/orders"| Create order
+PUT| "/api/orders/:id"| Update order status
+
+---
+
+🚀 Deployment
+
+Frontend:
+
+- Hosted on Vercel
+
+Backend:
+
+- Hosted on Render
+
+Database:
+
+- Hosted on MongoDB Atlas
+
+Images:
+
+- Managed with Cloudinary
 
 ---
 
@@ -344,6 +382,8 @@ Experienced in developing full-stack applications using:
 - Express.js
 - MongoDB
 
+---
+
 Skills
 
 - React
@@ -374,3 +414,9 @@ https://github.com/JohnkayFundz
 If you find this project useful, consider giving it a ⭐ on GitHub.
 
 Thank you for exploring TechStore Pro!
+
+---
+
+📄 License
+
+This project is licensed under the MIT License.
