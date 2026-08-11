@@ -1,11 +1,11 @@
-🛒 TechStore Pro
+# 🛒 TechStore Pro
 
-"React" (https://img.shields.io/badge/React-19-blue)
-"Node.js" (https://img.shields.io/badge/Node.js-Express-green)
-"MongoDB" (https://img.shields.io/badge/MongoDB-Database-brightgreen)
-"License" (https://img.shields.io/badge/License-MIT-yellow)
+![React](https://img.shields.io/badge/React-19-blue)
+![Node.js](https://img.shields.io/badge/Node.js-Express-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-A modern full-stack MERN e-commerce application built with React, Node.js, Express.js, and MongoDB.
+A **modern full-stack MERN e-commerce application** built with **React, Node.js, Express.js, and MongoDB**.
 
 TechStore Pro is a production-style online shopping platform that demonstrates real-world full-stack development. It provides customers with a complete shopping experience including authentication, product discovery, cart management, checkout, and order tracking.
 
@@ -13,17 +13,17 @@ It also includes a powerful admin dashboard for managing products, orders, users
 
 ---
 
-🚀 Live Demo
+# 🚀 Live Demo
 
-🌐 Frontend:
+🌐 Frontend:  
 https://techstore-pro-two.vercel.app/
 
-⚙️ Backend API:
+⚙️ Backend API:  
 https://techstore-pro-zonk.onrender.com
 
 ---
 
-📸 Screenshots
+# 📸 Screenshots
 
 Coming soon.
 
@@ -39,7 +39,7 @@ Recommended screenshots:
 
 ---
 
-🎯 Project Purpose
+# 🎯 Project Purpose
 
 TechStore Pro was built to demonstrate practical full-stack development skills, including:
 
@@ -52,46 +52,46 @@ TechStore Pro was built to demonstrate practical full-stack development skills, 
 
 ---
 
-✨ Features
+# ✨ Features
 
-👤 Customer Features
+## 👤 Customer Features
 
-✅ User registration and login
-✅ Secure JWT authentication
-✅ Protected user routes
-✅ Browse products
-✅ Product search
-✅ Category filtering
-✅ Product details pages
-✅ Shopping cart system
-✅ Persistent cart storage
-✅ Wishlist functionality
-✅ Checkout workflow
-✅ Order history
-✅ Responsive mobile-friendly design
-
----
-
-🛠️ Admin Features
-
-✅ Admin dashboard
-✅ Store statistics overview
-✅ Product management
-✅ Create products
-✅ Update products
-✅ Delete products
-✅ Order management
-✅ Update order status
-✅ User management
-✅ Role-based authorization
+✅ User registration and login  
+✅ Secure JWT authentication  
+✅ Protected user routes  
+✅ Browse products  
+✅ Product search  
+✅ Category filtering  
+✅ Product details pages  
+✅ Shopping cart system  
+✅ Persistent cart storage  
+✅ Wishlist functionality  
+✅ Checkout workflow  
+✅ Order history  
+✅ Responsive mobile-friendly design  
 
 ---
 
-🏗️ Application Architecture
+## 🛠️ Admin Features
+
+✅ Admin dashboard  
+✅ Store statistics overview  
+✅ Product management  
+✅ Create products  
+✅ Update products  
+✅ Delete products  
+✅ Order management  
+✅ Update order status  
+✅ User management  
+✅ Role-based authorization  
+
+---
+
+# 🏗️ Application Architecture
 
 TechStore Pro follows a full-stack client-server architecture.
 
-Frontend
+## Frontend
 
 The React frontend handles:
 
@@ -105,7 +105,7 @@ Communication with the backend is handled through Axios REST API requests.
 
 ---
 
-Backend
+## Backend
 
 The Node.js and Express.js backend handles:
 
@@ -118,7 +118,7 @@ The Node.js and Express.js backend handles:
 
 ---
 
-Database
+## Database
 
 MongoDB stores:
 
@@ -131,9 +131,9 @@ Mongoose is used for database modeling and queries.
 
 ---
 
-🧰 Tech Stack
+# 🧰 Tech Stack
 
-Frontend
+## Frontend
 
 - React 19
 - Vite
@@ -144,7 +144,7 @@ Frontend
 
 ---
 
-Backend
+## Backend
 
 - Node.js
 - Express.js
@@ -158,7 +158,7 @@ Backend
 
 ---
 
-Deployment & Tools
+## Deployment & Tools
 
 - Git
 - GitHub
@@ -169,8 +169,9 @@ Deployment & Tools
 
 ---
 
-📂 Project Structure
+# 📂 Project Structure
 
+```text
 techstore-pro/
 
 ├── client/
@@ -189,67 +190,13 @@ techstore-pro/
 │   ├── routes/
 │   └── utils/
 │
-└── README.md
-
----
+└── README.me
 
 ⚙️ Installation & Setup
-
 Clone Repository
-
 git clone https://github.com/JohnkayFundz/techstore-pro.git
 
 cd techstore-pro
-
----
-
-Frontend Setup
-
-Navigate to client:
-
-cd client
-
-Install dependencies:
-
-npm install
-
-Create:
-
-client/.env
-
-Add:
-
-VITE_API_URL=http://localhost:5000/api
-
-Start development server:
-
-npm run dev
-
-Frontend runs on:
-
-http://localhost:5173
-
----
-
-Backend Setup
-
-Open another terminal.
-
-Navigate to server:
-
-cd server
-
-Install dependencies:
-
-npm install
-
-Create:
-
-server/.env
-
-Add:
-
-PORT=5000
 
 NODE_ENV=development
 
@@ -258,106 +205,91 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 
 CLIENT_URL=http://localhost:5173
-
 Start backend:
-
 npm run dev
-
 Backend runs on:
-
 http://localhost:5000
-
----
-
 🔐 Authentication System
-
 TechStore Pro uses:
-
-- JWT authentication
-- Protected routes
-- Secure password hashing
-- Role-based authorization
-- Admin middleware
-
+JWT authentication
+Protected routes
+Secure password hashing
+Role-based authorization
+Admin middleware
 User roles:
-
 customer
 admin
-
----
-
 📦 API Documentation
-
 Authentication API
-
-Method| Endpoint| Description
-POST| "/api/auth/register"| Register new user
-POST| "/api/auth/login"| Login user
-POST| "/api/auth/logout"| Logout user
-GET| "/api/auth/me"| Get current user
-
----
-
+Method
+Endpoint
+Description
+POST
+/api/auth/register
+Register new user
+POST
+/api/auth/login
+Login user
+POST
+/api/auth/logout
+Logout user
+GET
+/api/auth/me
+Get current user
 Products API
-
-Method| Endpoint| Description
-GET| "/api/products"| Get all products
-GET| "/api/products/:id"| Get single product
-POST| "/api/products"| Create product
-PUT| "/api/products/:id"| Update product
-DELETE| "/api/products/:id"| Delete product
-
----
-
+Method
+Endpoint
+Description
+GET
+/api/products
+Get all products
+GET
+/api/products/:id
+Get single product
+POST
+/api/products
+Create product
+PUT
+/api/products/:id
+Update product
+DELETE
+/api/products/:id
+Delete product
 Orders API
-
-Method| Endpoint| Description
-GET| "/api/orders"| Get user orders
-POST| "/api/orders"| Create order
-PUT| "/api/orders/:id"| Update order status
-
----
-
+Method
+Endpoint
+Description
+GET
+/api/orders
+Get user orders
+POST
+/api/orders
+Create order
+PUT
+/api/orders/:id
+Update order status
 🚀 Deployment
-
-Frontend:
-
-- Hosted on Vercel
-
-Backend:
-
-- Hosted on Render
-
-Database:
-
-- Hosted on MongoDB Atlas
-
-Images:
-
-- Managed with Cloudinary
-
----
-
+Frontend
+Hosted on:
+Vercel
+Backend
+Hosted on:
+Render
+Database
+Hosted on:
+MongoDB Atlas
+Images
+Managed with:
+Cloudinary
 🧪 Development Commands
-
-Frontend development:
-
+Frontend Development
 npm run dev
-
-Production build:
-
+Production Build
 npm run build
-
-Backend development:
-
+Backend Development
 npm run dev
-
----
-
 🗺️ Future Improvements
-
 Planned features:
-
 ⬜ Stripe payment integration
 ⬜ Product reviews and ratings
 ⬜ Email notifications
@@ -366,57 +298,30 @@ Planned features:
 ⬜ Inventory alerts
 ⬜ Multi-vendor marketplace
 ⬜ AI product recommendations
-
----
-
 👨‍💻 Developer
-
 Johnkay Fundz
-
 Frontend Developer building modern web applications with React and JavaScript.
-
 Experienced in developing full-stack applications using:
-
-- React
-- Node.js
-- Express.js
-- MongoDB
-
----
-
+React
+Node.js
+Express.js
+MongoDB
 Skills
-
-- React
-- JavaScript
-- HTML
-- CSS
-- Node.js
-- Express.js
-- MongoDB
-- Git/GitHub
-
----
-
+React
+JavaScript
+HTML
+CSS
+Node.js
+Express.js
+MongoDB
+Git/GitHub
 🌐 Links
-
 Portfolio:
-
-https://johnkayfundz.github.io/
-
+https://johnkayfundz.github.io/⁠�
 GitHub:
-
-https://github.com/JohnkayFundz
-
----
-
+https://github.com/JohnkayFundz⁠�
 ⭐ Support
-
 If you find this project useful, consider giving it a ⭐ on GitHub.
-
 Thank you for exploring TechStore Pro!
-
----
-
 📄 License
-
 This project is licensed under the MIT License.
