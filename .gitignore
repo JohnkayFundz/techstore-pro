@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 router-test/
+
+# Local data backups
+server/data/products-backup.json

@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 
 import {
   registerUser,
@@ -11,36 +12,51 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-/* ==========================================================
-   AUTH ROUTES
-========================================================== */
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message:
+      "Too many login attempts. Please try again in 15 minutes.",
+  },
+});
 
-/**
- * @route   POST /api/auth/register
- * @desc    Register a new user
- * @access  Public
- */
-router.post("/register", registerUser);
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message:
+      "Too many registration attempts. Please try again later.",
+  },
+});
 
-/**
- * @route   POST /api/auth/login
- * @desc    Login user
- * @access  Public
- */
-router.post("/login", loginUser);
+router.post(
+  "/register",
+  registerLimiter,
+  registerUser
+);
 
-/**
- * @route   POST /api/auth/logout
- * @desc    Logout user
- * @access  Public
- */
-router.post("/logout", logoutUser);
+router.post(
+  "/login",
+  loginLimiter,
+  loginUser
+);
 
-/**
- * @route   GET /api/auth/me
- * @desc    Get currently authenticated user
- * @access  Private
- */
-router.get("/me", protect, getCurrentUser);
+router.post(
+  "/logout",
+  logoutUser
+);
+
+router.get(
+  "/me",
+  protect,
+  getCurrentUser
+);
 
 export default router;

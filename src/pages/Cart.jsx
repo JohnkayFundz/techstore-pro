@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { currency } from "../data/products";
 
 function CartPage() {
+  const navigate = useNavigate();
+
   const {
     cart = [],
     lastAddedId,
@@ -12,6 +14,10 @@ function CartPage() {
     removeFromCart,
     clearCart,
   } = useCart();
+
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
 
   if (cart.length === 0) {
     return (
@@ -32,118 +38,177 @@ function CartPage() {
 
   return (
     <section className="cart-page container">
-      <h1>🛒 Shopping Cart</h1>
+      <div className="section-header">
+        <h1>🛒 Shopping Cart</h1>
+
+        <button
+          type="button"
+          className="clear-btn"
+          onClick={clearCart}
+        >
+          Clear Cart
+        </button>
+      </div>
 
       <div className="cart-layout">
-        {/* Cart Items */}
+
+        {/* =====================================================
+            CART ITEMS
+        ====================================================== */}
+
         <div className="cart-items">
-          {cart.map((item) => (
-            <article
-              key={item.cartId}
-              className={
-                item.cartId === lastAddedId
-                  ? "cart-item highlight"
-                  : "cart-item"
-              }
-            >
-              <div className="cart-product">
-                <div className="cart-image">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                  />
+          {cart.map((item, index) => {
+            const itemId =
+              item.cartId ||
+              item.id ||
+              item._id ||
+              `${item.name}-${index}`;
+
+            return (
+              <article
+                key={itemId}
+                className={
+                  item.cartId === lastAddedId
+                    ? "cart-item highlight"
+                    : "cart-item"
+                }
+              >
+                {/* PRODUCT */}
+
+                <div className="cart-product">
+                  <div className="cart-image">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                    />
+                  </div>
+
+                  <div className="cart-details">
+                    <h2>{item.name}</h2>
+
+                    <p>{item.brand}</p>
+
+                    <strong>
+                      {currency}
+                      {Number(item.price).toLocaleString()}
+                    </strong>
+                  </div>
                 </div>
 
-                <div>
-                  <h2>{item.name}</h2>
+                {/* ACTIONS */}
 
-                  <p>{item.brand}</p>
+                <div className="cart-actions">
 
-                  <strong>
-                    {currency}
-                    {Number(item.price).toLocaleString()}
-                  </strong>
-                </div>
-              </div>
+                  {/* QUANTITY */}
 
-              <div className="cart-actions">
-                <div className="quantity-controls">
+                  <div className="quantity-controls">
+                    <button
+                      type="button"
+                      aria-label={`Decrease quantity of ${item.name}`}
+                      onClick={() =>
+                        decreaseQuantity(itemId)
+                      }
+                    >
+                      −
+                    </button>
+
+                    <span>
+                      {item.quantity}
+                    </span>
+
+                    <button
+                      type="button"
+                      aria-label={`Increase quantity of ${item.name}`}
+                      onClick={() =>
+                        increaseQuantity(itemId)
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* SUBTOTAL */}
+
+                  <p className="cart-subtotal">
+                    <span>Subtotal:</span>
+
+                    <strong>
+                      {currency}
+                      {(
+                        Number(item.price) *
+                        Number(item.quantity || 0)
+                      ).toLocaleString()}
+                    </strong>
+                  </p>
+
+                  {/* REMOVE */}
+
                   <button
+                    type="button"
+                    className="remove-btn"
                     onClick={() =>
-                      decreaseQuantity(
-                        item.cartId
-                      )
+                      removeFromCart(itemId)
                     }
                   >
-                    −
-                  </button>
-
-                  <span>
-                    {item.quantity}
-                  </span>
-
-                  <button
-                    onClick={() =>
-                      increaseQuantity(
-                        item.cartId
-                      )
-                    }
-                  >
-                    +
+                    🗑 Remove
                   </button>
                 </div>
-
-                <p>
-                  Subtotal:
-
-                  <strong>
-                    {currency}
-                    {(
-                      Number(item.price) *
-                      item.quantity
-                    ).toLocaleString()}
-                  </strong>
-                </p>
-
-                <button
-                  className="remove-btn"
-                  onClick={() =>
-                    removeFromCart(
-                      item.cartId
-                    )
-                  }
-                >
-                  🗑 Remove
-                </button>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
-        {/* Summary */}
+        {/* =====================================================
+            ORDER SUMMARY
+        ====================================================== */}
+
         <aside className="cart-summary">
           <h2>Order Summary</h2>
 
           <div className="summary-row">
-            <span>Items</span>
+            <span>Total Items</span>
 
-            <span>{cart.length}</span>
+            <strong>
+              {cart.reduce(
+                (total, item) =>
+                  total + Number(item.quantity || 0),
+                0
+              )}
+            </strong>
           </div>
 
-          <div className="summary-row">
+          <div className="summary-row total">
             <span>Total</span>
 
             <strong>
               {currency}
-              {cartTotal.toLocaleString()}
+              {Number(cartTotal).toLocaleString()}
             </strong>
           </div>
 
-          <button className="btn-primary">
-            💳 Checkout
-          </button>
+          {/* CHECKOUT */}
 
           <button
+            type="button"
+            className="btn-primary checkout-btn"
+            onClick={handleCheckout}
+          >
+            💳 Proceed to Checkout
+          </button>
+
+          {/* CONTINUE SHOPPING */}
+
+          <Link
+            to="/products"
+            className="continue-shopping"
+          >
+            Continue Shopping
+          </Link>
+
+          {/* CLEAR CART */}
+
+          <button
+            type="button"
             className="clear-btn"
             onClick={clearCart}
           >

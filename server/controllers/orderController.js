@@ -18,7 +18,6 @@ export const createOrder = async (req, res) => {
       paymentMethod = "cash",
     } = req.body;
 
-
     /* --------------------------------------------------------
        VALIDATE USER
     -------------------------------------------------------- */
@@ -30,7 +29,6 @@ export const createOrder = async (req, res) => {
       });
     }
 
-
     /* --------------------------------------------------------
        VALIDATE ITEMS
     -------------------------------------------------------- */
@@ -41,7 +39,6 @@ export const createOrder = async (req, res) => {
         message: "Order must contain at least one item.",
       });
     }
-
 
     /* --------------------------------------------------------
        VALIDATE PAYMENT METHOD
@@ -59,7 +56,6 @@ export const createOrder = async (req, res) => {
       });
     }
 
-
     /* --------------------------------------------------------
        VALIDATE SHIPPING ADDRESS
     -------------------------------------------------------- */
@@ -71,7 +67,6 @@ export const createOrder = async (req, res) => {
       });
     }
 
-
     const requiredAddressFields = [
       "fullName",
       "phone",
@@ -80,7 +75,6 @@ export const createOrder = async (req, res) => {
       "state",
       "country",
     ];
-
 
     for (const field of requiredAddressFields) {
       if (
@@ -93,7 +87,6 @@ export const createOrder = async (req, res) => {
         });
       }
     }
-
 
     /* --------------------------------------------------------
        VALIDATE PRODUCT IDS
@@ -110,7 +103,6 @@ export const createOrder = async (req, res) => {
         });
       }
 
-
       const quantity = Number(item.quantity);
 
       if (
@@ -119,20 +111,19 @@ export const createOrder = async (req, res) => {
       ) {
         return res.status(400).json({
           success: false,
-          message: "Product quantity must be at least 1.",
+          message:
+            "Product quantity must be at least 1.",
         });
       }
     }
 
-
     /* --------------------------------------------------------
-       LOAD PRODUCTS FROM DATABASE
+       LOAD PRODUCTS
     -------------------------------------------------------- */
 
     const productIds = items.map(
       (item) => item.product
     );
-
 
     const products = await Product.find({
       _id: {
@@ -140,9 +131,8 @@ export const createOrder = async (req, res) => {
       },
     });
 
-
     /* --------------------------------------------------------
-       MAKE PRODUCT LOOKUP MAP
+       PRODUCT LOOKUP MAP
     -------------------------------------------------------- */
 
     const productMap = new Map();
@@ -154,7 +144,6 @@ export const createOrder = async (req, res) => {
       );
     });
 
-
     /* --------------------------------------------------------
        BUILD SECURE ORDER ITEMS
     -------------------------------------------------------- */
@@ -163,12 +152,10 @@ export const createOrder = async (req, res) => {
 
     let totalAmount = 0;
 
-
     for (const item of items) {
       const product = productMap.get(
         item.product.toString()
       );
-
 
       /* ------------------------------------------------------
          PRODUCT EXISTS
@@ -177,10 +164,10 @@ export const createOrder = async (req, res) => {
       if (!product) {
         return res.status(404).json({
           success: false,
-          message: "One or more products were not found.",
+          message:
+            "One or more products were not found.",
         });
       }
-
 
       /* ------------------------------------------------------
          PRODUCT ACTIVE
@@ -194,13 +181,11 @@ export const createOrder = async (req, res) => {
         });
       }
 
-
       /* ------------------------------------------------------
          QUANTITY
       ------------------------------------------------------ */
 
       const quantity = Number(item.quantity);
-
 
       /* ------------------------------------------------------
          STOCK
@@ -214,20 +199,16 @@ export const createOrder = async (req, res) => {
         });
       }
 
-
       /* ------------------------------------------------------
          DATABASE PRICE
       ------------------------------------------------------ */
 
       const price = Number(product.price);
 
-
       const subtotal =
         price * quantity;
 
-
       totalAmount += subtotal;
-
 
       /* ------------------------------------------------------
          SNAPSHOT PRODUCT DATA
@@ -249,7 +230,6 @@ export const createOrder = async (req, res) => {
       });
     }
 
-
     /* --------------------------------------------------------
        ROUND TOTAL
     -------------------------------------------------------- */
@@ -258,7 +238,6 @@ export const createOrder = async (req, res) => {
       Math.round(
         totalAmount * 100
       ) / 100;
-
 
     /* --------------------------------------------------------
        CREATE ORDER
@@ -303,16 +282,12 @@ export const createOrder = async (req, res) => {
 
       paymentMethod,
 
-      paymentStatus:
-        paymentMethod === "cash"
-          ? "pending"
-          : "pending",
+      paymentStatus: "pending",
 
       status: "pending",
 
       totalAmount,
     });
-
 
     /* --------------------------------------------------------
        REDUCE STOCK
@@ -329,7 +304,6 @@ export const createOrder = async (req, res) => {
       );
     }
 
-
     /* --------------------------------------------------------
        RESPONSE
     -------------------------------------------------------- */
@@ -343,14 +317,11 @@ export const createOrder = async (req, res) => {
       order,
     });
 
-
   } catch (error) {
-
     console.error(
       "❌ Create Order Error:",
       error
     );
-
 
     return res.status(500).json({
       success: false,
@@ -372,18 +343,26 @@ export const createOrder = async (req, res) => {
 
 export const getMyOrders = async (req, res) => {
   try {
+    if (!req.user?._id) {
+      return res.status(401).json({
+        success: false,
+        orders: [],
+        message:
+          "Authentication required.",
+      });
+    }
+
     const orders =
       await Order.find({
         user: req.user._id,
       })
-      .populate(
-        "items.product",
-        "name image images price"
-      )
-      .sort({
-        createdAt: -1,
-      });
-
+        .populate(
+          "items.product",
+          "name image images price"
+        )
+        .sort({
+          createdAt: -1,
+        });
 
     return res.status(200).json({
       success: true,
@@ -393,14 +372,11 @@ export const getMyOrders = async (req, res) => {
       orders,
     });
 
-
   } catch (error) {
-
     console.error(
       "❌ Get My Orders Error:",
       error
     );
-
 
     return res.status(500).json({
       success: false,
@@ -427,89 +403,231 @@ export const getOrderById = async (
   try {
     const { id } = req.params;
 
+    console.log("");
+    console.log(
+      "=========================================="
+    );
+    console.log(
+      "🔎 GET SINGLE ORDER"
+    );
+    console.log(
+      "Order ID:",
+      id
+    );
+    console.log(
+      "Authenticated User:",
+      req.user?._id
+    );
+    console.log(
+      "User Role:",
+      req.user?.role
+    );
+    console.log(
+      "=========================================="
+    );
 
     /* --------------------------------------------------------
-       VALIDATE ID
+       VALIDATE USER
     -------------------------------------------------------- */
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!req.user?._id) {
+      return res.status(401).json({
+        success: false,
+        order: null,
+        message:
+          "Authentication required.",
+      });
+    }
+
+    /* --------------------------------------------------------
+       VALIDATE ORDER ID
+    -------------------------------------------------------- */
+
+    if (
+      !mongoose.Types.ObjectId.isValid(id)
+    ) {
+      console.log(
+        "❌ Invalid order ID"
+      );
+
       return res.status(400).json({
         success: false,
-
         order: null,
-
         message:
           "Invalid order ID.",
       });
     }
 
+    /* --------------------------------------------------------
+       FIND ORDER
+    -------------------------------------------------------- */
 
     const order =
       await Order.findById(id)
-      .populate(
-        "user",
-        "name email phone"
-      )
-      .populate(
-        "items.product",
-        "name image images price"
-      );
+        .populate(
+          "user",
+          "name email phone"
+        )
+        .populate(
+          "items.product",
+          "name image images price"
+        );
 
+    console.log(
+      "Found Order:",
+      order
+        ? order._id.toString()
+        : "NOT FOUND"
+    );
+
+    /* --------------------------------------------------------
+       ORDER NOT FOUND
+    -------------------------------------------------------- */
 
     if (!order) {
+      console.log(
+        "❌ Order not found"
+      );
+
       return res.status(404).json({
         success: false,
-
         order: null,
-
         message:
           "Order not found.",
       });
     }
 
-
     /* --------------------------------------------------------
-       OWNER OR ADMIN
+       GET ORDER USER ID
     -------------------------------------------------------- */
 
-    if (
-      order.user._id.toString() !==
-        req.user._id.toString() &&
-      req.user.role !== "admin"
-    ) {
+    let orderUserId = null;
+
+    if (order.user?._id) {
+      orderUserId =
+        order.user._id.toString();
+    } else if (order.user) {
+      orderUserId =
+        order.user.toString();
+    }
+
+    /* --------------------------------------------------------
+       GET CURRENT USER ID
+    -------------------------------------------------------- */
+
+    const currentUserId =
+      req.user?._id
+        ? req.user._id.toString()
+        : null;
+
+    /* --------------------------------------------------------
+       OWNER / ADMIN
+    -------------------------------------------------------- */
+
+    const isOwner =
+      Boolean(
+        orderUserId &&
+        currentUserId &&
+        orderUserId === currentUserId
+      );
+
+    const isAdmin =
+      req.user?.role === "admin";
+
+    console.log(
+      "Order User ID:",
+      orderUserId
+    );
+
+    console.log(
+      "Current User ID:",
+      currentUserId
+    );
+
+    console.log(
+      "Is Owner:",
+      isOwner
+    );
+
+    console.log(
+      "Is Admin:",
+      isAdmin
+    );
+
+    /* --------------------------------------------------------
+       AUTHORIZATION
+    -------------------------------------------------------- */
+
+    if (!isOwner && !isAdmin) {
+      console.log(
+        "❌ User is not authorized to view order"
+      );
+
       return res.status(403).json({
         success: false,
-
         order: null,
-
         message:
           "You are not allowed to view this order.",
       });
     }
 
+    /* --------------------------------------------------------
+       SUCCESS
+    -------------------------------------------------------- */
+
+    console.log(
+      "✅ Order successfully retrieved:",
+      order._id.toString()
+    );
+
+    console.log(
+      "Order status:",
+      order.status
+    );
+
+    console.log(
+      "Order total:",
+      order.totalAmount
+    );
+
+    console.log(
+      "Order items:",
+      order.items?.length || 0
+    );
+
+    console.log(
+      "=========================================="
+    );
+    console.log("");
 
     return res.status(200).json({
       success: true,
-
       order,
     });
 
-
   } catch (error) {
-
+    console.error("");
     console.error(
-      "❌ Get Order Error:",
+      "=========================================="
+    );
+    console.error(
+      "❌ Get Order Error"
+    );
+    console.error(
       error
     );
-
+    console.error(
+      "=========================================="
+    );
+    console.error("");
 
     return res.status(500).json({
       success: false,
-
       order: null,
-
       message:
-        "Failed to get order.",
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Failed to get order.",
     });
   }
 };
@@ -528,34 +646,53 @@ export const cancelOrder = async (
   try {
     const { id } = req.params;
 
+    /* --------------------------------------------------------
+       VALIDATE USER
+    -------------------------------------------------------- */
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!req.user?._id) {
+      return res.status(401).json({
+        success: false,
+        message:
+          "Authentication required.",
+      });
+    }
+
+    /* --------------------------------------------------------
+       VALIDATE ORDER ID
+    -------------------------------------------------------- */
+
+    if (
+      !mongoose.Types.ObjectId.isValid(id)
+    ) {
       return res.status(400).json({
         success: false,
-
         message:
           "Invalid order ID.",
       });
     }
 
+    /* --------------------------------------------------------
+       FIND USER'S ORDER
+    -------------------------------------------------------- */
 
     const order =
       await Order.findOne({
         _id: id,
-
         user: req.user._id,
       });
 
+    /* --------------------------------------------------------
+       ORDER NOT FOUND
+    -------------------------------------------------------- */
 
     if (!order) {
       return res.status(404).json({
         success: false,
-
         message:
           "Order not found.",
       });
     }
-
 
     /* --------------------------------------------------------
        ONLY PENDING ORDERS CAN BE CANCELLED
@@ -564,18 +701,18 @@ export const cancelOrder = async (
     if (order.status !== "pending") {
       return res.status(400).json({
         success: false,
-
         message:
           "Only pending orders can be cancelled.",
       });
     }
 
+    /* --------------------------------------------------------
+       CANCEL ORDER
+    -------------------------------------------------------- */
 
     order.status = "cancelled";
 
-
     await order.save();
-
 
     /* --------------------------------------------------------
        RESTORE STOCK
@@ -592,6 +729,9 @@ export const cancelOrder = async (
       );
     }
 
+    /* --------------------------------------------------------
+       RESPONSE
+    -------------------------------------------------------- */
 
     return res.status(200).json({
       success: true,
@@ -602,20 +742,19 @@ export const cancelOrder = async (
       order,
     });
 
-
   } catch (error) {
-
     console.error(
       "❌ Cancel Order Error:",
       error
     );
 
-
     return res.status(500).json({
       success: false,
 
       message:
-        "Failed to cancel order.",
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Failed to cancel order.",
     });
   }
 };

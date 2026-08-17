@@ -43,7 +43,11 @@ function Register() {
   ========================================================== */
 
   const getPasswordStrength = (password) => {
-    if (password.length < 6) return "Weak";
+    if (!password) return "";
+
+    if (password.length < 6) {
+      return "Weak";
+    }
 
     let score = 0;
 
@@ -52,7 +56,9 @@ function Register() {
     if (/\d/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
 
-    if (score <= 2) return "Medium";
+    if (score <= 2) {
+      return "Medium";
+    }
 
     return "Strong";
   };
@@ -70,6 +76,10 @@ function Register() {
     const email = formData.email.trim().toLowerCase();
     const password = formData.password;
     const confirmPassword = formData.confirmPassword;
+
+    /* --------------------------------------------------------
+       VALIDATION
+    -------------------------------------------------------- */
 
     if (!name || !email || !password || !confirmPassword) {
       setError("Please complete all fields.");
@@ -93,22 +103,60 @@ function Register() {
       return;
     }
 
+    /* --------------------------------------------------------
+       API REQUEST
+    -------------------------------------------------------- */
+
     try {
       setLoading(true);
 
-      const { data } = await register({
+      /*
+        authApi.register() already returns response.data.
+
+        Therefore DO NOT use:
+
+        const { data } = await register(...)
+
+        because that would incorrectly expect another
+        "data" property.
+      */
+
+      const data = await register({
         name,
         email,
         password,
       });
 
+      console.log("REGISTER RESPONSE:", data);
+
+      /* ------------------------------------------------------
+         CHECK API RESPONSE
+      ------------------------------------------------------ */
+
+      if (!data?.user || !data?.token) {
+        throw new Error(
+          "Registration succeeded, but the server did not return a user or token."
+        );
+      }
+
+      /* ------------------------------------------------------
+         SAVE AUTHENTICATION STATE
+      ------------------------------------------------------ */
+
       loginUser(data.user, data.token);
+
+      /* ------------------------------------------------------
+         REDIRECT
+      ------------------------------------------------------ */
 
       navigate("/");
     } catch (err) {
+      console.error("Registration Error:", err);
+
       setError(
         err.response?.data?.message ||
-          "Registration failed."
+          err.message ||
+          "Registration failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -117,27 +165,53 @@ function Register() {
 
   const strength = getPasswordStrength(formData.password);
 
+  /* ==========================================================
+     UI
+  ========================================================== */
+
   return (
     <section className="auth-page">
       <div className="container">
         <div className="auth-card">
 
+          {/* ==================================================
+             HEADER
+          ================================================== */}
+
           <div className="auth-header">
             <h1>Create Account</h1>
 
-            <p>Join TechStore Pro today.</p>
+            <p>
+              Join TechStore Pro today.
+            </p>
           </div>
+
+          {/* ==================================================
+             FORM
+          ================================================== */}
 
           <form
             className="auth-form"
             onSubmit={handleSubmit}
             noValidate
           >
+
+            {/* ------------------------------------------------
+               ERROR
+            ------------------------------------------------ */}
+
             {error && (
-              <div className="form-error">
+              <div
+                className="form-error"
+                role="alert"
+              >
                 {error}
               </div>
             )}
+
+            {/* ------------------------------------------------
+               NAME
+            ------------------------------------------------ */}
 
             <div className="form-group">
               <label htmlFor="name">
@@ -152,9 +226,14 @@ function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 autoComplete="name"
+                disabled={loading}
                 required
               />
             </div>
+
+            {/* ------------------------------------------------
+               EMAIL
+            ------------------------------------------------ */}
 
             <div className="form-group">
               <label htmlFor="email">
@@ -169,9 +248,14 @@ function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 autoComplete="email"
+                disabled={loading}
                 required
               />
             </div>
+
+            {/* ------------------------------------------------
+               PASSWORD
+            ------------------------------------------------ */}
 
             <div className="form-group">
               <label htmlFor="password">
@@ -191,6 +275,7 @@ function Register() {
                   value={formData.password}
                   onChange={handleChange}
                   autoComplete="new-password"
+                  disabled={loading}
                   required
                 />
 
@@ -198,7 +283,15 @@ function Register() {
                   type="button"
                   className="show-password"
                   onClick={() =>
-                    setShowPassword((prev) => !prev)
+                    setShowPassword(
+                      (prev) => !prev
+                    )
+                  }
+                  disabled={loading}
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
                   }
                 >
                   {showPassword
@@ -206,6 +299,8 @@ function Register() {
                     : "Show"}
                 </button>
               </div>
+
+              {/* PASSWORD STRENGTH */}
 
               {formData.password && (
                 <small
@@ -215,6 +310,10 @@ function Register() {
                 </small>
               )}
             </div>
+
+            {/* ------------------------------------------------
+               CONFIRM PASSWORD
+            ------------------------------------------------ */}
 
             <div className="form-group">
               <label htmlFor="confirmPassword">
@@ -234,6 +333,7 @@ function Register() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   autoComplete="new-password"
+                  disabled={loading}
                   required
                 />
 
@@ -241,7 +341,15 @@ function Register() {
                   type="button"
                   className="show-password"
                   onClick={() =>
-                    setShowConfirm((prev) => !prev)
+                    setShowConfirm(
+                      (prev) => !prev
+                    )
+                  }
+                  disabled={loading}
+                  aria-label={
+                    showConfirm
+                      ? "Hide password"
+                      : "Show password"
                   }
                 >
                   {showConfirm
@@ -251,6 +359,10 @@ function Register() {
               </div>
             </div>
 
+            {/* ------------------------------------------------
+               SUBMIT
+            ------------------------------------------------ */}
+
             <button
               type="submit"
               className="btn btn-primary auth-btn"
@@ -258,7 +370,11 @@ function Register() {
             >
               {loading ? (
                 <>
-                  <span className="spinner"></span>
+                  <span
+                    className="spinner"
+                    aria-hidden="true"
+                  ></span>
+
                   Creating Account...
                 </>
               ) : (
@@ -267,9 +383,14 @@ function Register() {
             </button>
           </form>
 
+          {/* ==================================================
+             FOOTER
+          ================================================== */}
+
           <div className="auth-footer">
             <p>
               Already have an account?{" "}
+
               <Link to="/login">
                 Login
               </Link>

@@ -1,52 +1,60 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { FiSearch } from "react-icons/fi";
 
-import SearchBar from "../components/SearchBar";
-import CategoryFilter from "../components/CategoryFilter";
-import ProductGrid from "../components/products/ProductGrid";
-import Loading from "../components/Loading";
-
-import { getProducts } from "../api/productApi";
+import { useProducts } from "../context/ProductContext";
+import ProductCard from "../components/products/ProductCard";
 
 import "./Home.css";
 
 function Home() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    products,
+    loading,
+    error,
+    pagination,
+  } = useProducts();
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("All");
 
-  const loadProducts = async () => {
-    setLoading(true);
+  const categories = [
+    "All",
+    "Laptop",
+    "Phone",
+    "Accessories",
+  ];
 
-    try {
-      const response = await getProducts();
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const search = searchTerm.toLowerCase().trim();
 
-      console.log("API Response:", response);
+      const matchesSearch =
+        !search ||
+        product.name?.toLowerCase().includes(search) ||
+        product.description?.toLowerCase().includes(search);
 
-      if (response.success) {
-        setProducts(response.products || []);
-      } else {
-        console.error(response.message);
-        setProducts([]);
-      }
-    } catch (error) {
-      console.error("Failed to load products:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const productCategory =
+        product.category?.toLowerCase() || "";
+
+      const matchesCategory =
+        category === "All" ||
+        productCategory.includes(category.toLowerCase());
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [products, searchTerm, category]);
 
   return (
     <div className="home">
+
+      {/* HERO */}
       <section className="hero">
         <h1>Welcome to TechStore Pro</h1>
 
         <p>
-          Discover premium laptops, phones, and accessories at the best prices.
+          Discover premium laptops, phones, and accessories
+          at the best prices.
         </p>
 
         <Link to="/products">
@@ -56,22 +64,96 @@ function Home() {
         </Link>
       </section>
 
+      {/* PRODUCTS */}
       <section className="products-section">
-        <h2>Products ({products.length})</h2>
 
+        <h2>
+          Products ({filteredProducts.length})
+        </h2>
+
+        {/* CONTROLS */}
         <div className="product-controls">
-          <SearchBar />
-          <CategoryFilter />
+
+          <div
+            className="search-bar"
+            role="search"
+            aria-label="Product search"
+          >
+            <FiSearch className="search-icon" />
+
+            <input
+              type="search"
+              placeholder="Search products..."
+              aria-label="Search products"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="category-filter">
+            {categories.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={
+                  category === item ? "active" : ""
+                }
+                onClick={() => setCategory(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
         </div>
 
-        {loading ? (
-          <Loading />
-        ) : (
-          <ProductGrid
-            products={products}
-            loading={loading}
-          />
+        {/* ERROR */}
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
         )}
+
+        {/* LOADING */}
+        {loading && (
+          <div className="loading-screen">
+            <div className="spinner"></div>
+            <p>Loading products...</p>
+          </div>
+        )}
+
+        {/* PRODUCTS */}
+        {!loading && !error && (
+          <>
+            {filteredProducts.length > 0 ? (
+              <div className="products-grid">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="empty-products">
+                <h3>No products found</h3>
+
+                <p>
+                  Try changing your search or category.
+                </p>
+              </div>
+            )}
+
+            {/* PAGINATION INFO */}
+            {pagination.totalPages > 1 && (
+              <div className="pagination-info">
+                Page {pagination.currentPage} of{" "}
+                {pagination.totalPages}
+              </div>
+            )}
+          </>
+        )}
+
       </section>
     </div>
   );

@@ -1,25 +1,22 @@
 import { Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout.jsx";
-
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
-
 
 // Public Pages
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
+import ProductDetails from "./pages/ProductDetails.jsx";
 import Cart from "./pages/Cart.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 
-
 // Customer Pages
 import Checkout from "./pages/Checkout.jsx";
 import MyOrders from "./pages/MyOrders.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
-
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -28,70 +25,49 @@ import CreateProduct from "./pages/admin/CreateProduct.jsx";
 import EditProduct from "./pages/admin/EditProduct.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 
-
 // Error Page
 import NotFound from "./pages/NotFound.jsx";
 
-
-
 function App() {
-
-
   return (
-
     <Routes>
-
-
       <Route element={<Layout />}>
 
+        {/* PUBLIC ROUTES */}
 
-        {/* ============================
-            PUBLIC ROUTES
-        ============================ */}
-
-
-        <Route
-          path="/"
-          element={<Home />}
-        />
-
+        <Route path="/" element={<Home />} />
 
         <Route
           path="/products"
           element={<Products />}
         />
 
+        <Route
+          path="/products/:id"
+          element={<ProductDetails />}
+        />
 
         <Route
           path="/cart"
           element={<Cart />}
         />
 
-
         <Route
           path="/wishlist"
           element={<Wishlist />}
         />
-
 
         <Route
           path="/login"
           element={<Login />}
         />
 
-
         <Route
           path="/register"
           element={<Register />}
         />
 
-
-
-
-        {/* ============================
-            CUSTOMER PROTECTED ROUTES
-        ============================ */}
-
+        {/* CUSTOMER PROTECTED ROUTES */}
 
         <Route
           path="/checkout"
@@ -102,7 +78,6 @@ function App() {
           }
         />
 
-
         <Route
           path="/my-orders"
           element={
@@ -111,7 +86,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
 
         <Route
           path="/order-success/:id"
@@ -122,14 +96,7 @@ function App() {
           }
         />
 
-
-
-
-
-        {/* ============================
-            ADMIN ROUTES
-        ============================ */}
-
+        {/* ADMIN ROUTES */}
 
         <Route
           path="/admin"
@@ -140,7 +107,6 @@ function App() {
           }
         />
 
-
         <Route
           path="/admin/products"
           element={
@@ -149,7 +115,6 @@ function App() {
             </AdminRoute>
           }
         />
-
 
         <Route
           path="/admin/products/new"
@@ -160,7 +125,6 @@ function App() {
           }
         />
 
-
         <Route
           path="/admin/products/edit/:id"
           element={
@@ -169,7 +133,6 @@ function App() {
             </AdminRoute>
           }
         />
-
 
         <Route
           path="/admin/orders"
@@ -180,30 +143,16 @@ function App() {
           }
         />
 
-
-
-
-
-        {/* ============================
-            404 ROUTE
-        ============================ */}
-
+        {/* 404 ROUTE */}
 
         <Route
           path="*"
           element={<NotFound />}
         />
 
-
       </Route>
-
-
     </Routes>
-
   );
-
 }
-
-
 
 export default App;

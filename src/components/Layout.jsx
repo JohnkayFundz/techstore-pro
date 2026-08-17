@@ -5,13 +5,9 @@ import Footer from "./Footer.jsx";
 import Toast from "./Toast.jsx";
 import ErrorBoundary from "./ErrorBoundary.jsx";
 
-
 function Layout() {
-
   return (
-
     <>
-
       {/* Accessibility Skip Link */}
       <a
         href="#main-content"
@@ -20,56 +16,26 @@ function Layout() {
         Skip to content
       </a>
 
-
-
       {/* Header */}
-      <header className="site-header">
-
-        <Navbar />
-
-      </header>
-
-
-
+      <Navbar />
 
       {/* Global Notifications */}
       <Toast />
-
-
-
 
       {/* Main Content */}
       <main
         id="main-content"
         className="container"
       >
-
         <ErrorBoundary>
-
           <Outlet />
-
         </ErrorBoundary>
-
       </main>
 
-
-
-
       {/* Footer */}
-      <footer className="site-footer">
-
-        <Footer />
-
-      </footer>
-
-
-
+      <Footer />
     </>
-
   );
-
 }
-
-
 
 export default Layout;

@@ -4,19 +4,14 @@ import {
   createOrder,
   getMyOrders,
   getOrderById,
+  cancelOrder,
 } from "../controllers/orderController.js";
-
 
 import {
   protect,
 } from "../middleware/authMiddleware.js";
 
-
-
 const router = express.Router();
-
-
-
 
 
 /* ==========================================================
@@ -24,9 +19,11 @@ const router = express.Router();
 ========================================================== */
 
 
+/* ----------------------------------------------------------
+   CREATE ORDER
 
-// Create order
-// POST /api/orders
+   POST /api/orders
+---------------------------------------------------------- */
 
 router.post(
   "/",
@@ -35,12 +32,11 @@ router.post(
 );
 
 
+/* ----------------------------------------------------------
+   GET LOGGED-IN USER ORDERS
 
-
-
-
-// Get logged-in user orders
-// GET /api/orders/my-orders
+   GET /api/orders/my-orders
+---------------------------------------------------------- */
 
 router.get(
   "/my-orders",
@@ -49,23 +45,30 @@ router.get(
 );
 
 
+/* ----------------------------------------------------------
+   CANCEL MY ORDER
+
+   PATCH /api/orders/:id/cancel
+---------------------------------------------------------- */
+
+router.patch(
+  "/:id/cancel",
+  protect,
+  cancelOrder
+);
 
 
+/* ----------------------------------------------------------
+   GET SINGLE ORDER
 
-
-
-// Get single order
-// GET /api/orders/:id
+   GET /api/orders/:id
+---------------------------------------------------------- */
 
 router.get(
   "/:id",
   protect,
   getOrderById
 );
-
-
-
-
 
 
 export default router;

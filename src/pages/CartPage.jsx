@@ -1,20 +1,12 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { currency } from "../data/products";
+import { formatPrice } from "../utils/formatPrice";
 
 function CartPage() {
-  const {
-    state,
-    dispatch,
-    cartTotal,
-  } = useCart();
+  const { state, dispatch, cartTotal } = useCart();
 
-  const {
-    success,
-    warning,
-    info,
-  } = useToast();
+  const { success, warning, info } = useToast();
 
   const { cart } = state;
 
@@ -99,6 +91,7 @@ function CartPage() {
         <h1>Shopping Cart</h1>
 
         <button
+          type="button"
           className="btn-danger"
           onClick={clearCart}
         >
@@ -125,13 +118,13 @@ function CartPage() {
                 <p>{item.brand}</p>
 
                 <strong>
-                  {currency}
-                  {item.price.toLocaleString()}
+                  {formatPrice(item.price)}
                 </strong>
               </div>
 
               <div className="cart-quantity">
                 <button
+                  type="button"
                   onClick={() =>
                     decreaseQuantity(
                       item.id,
@@ -145,6 +138,7 @@ function CartPage() {
                 <span>{item.quantity}</span>
 
                 <button
+                  type="button"
                   onClick={() =>
                     increaseQuantity(
                       item.id,
@@ -158,14 +152,14 @@ function CartPage() {
 
               <div className="cart-subtotal">
                 <strong>
-                  {currency}
-                  {(
+                  {formatPrice(
                     item.price * item.quantity
-                  ).toLocaleString()}
+                  )}
                 </strong>
               </div>
 
               <button
+                type="button"
                 className="remove-btn"
                 onClick={() =>
                   removeItem(
@@ -199,12 +193,12 @@ function CartPage() {
             <span>Total</span>
 
             <strong>
-              {currency}
-              {cartTotal.toLocaleString()}
+              {formatPrice(cartTotal)}
             </strong>
           </div>
 
           <button
+            type="button"
             className="btn-primary checkout-btn"
             onClick={handleCheckout}
           >
@@ -222,4 +216,5 @@ function CartPage() {
     </section>
   );
 }
+
 export default CartPage;
