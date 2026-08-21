@@ -3,9 +3,16 @@ import express from "express";
 import {
   getProducts,
   getProductById,
+
+  getAdminProducts,
+  getAdminProductById,
+
+  searchProducts,
+
   createProduct,
   updateProduct,
   deleteProduct,
+  restoreProduct,
 } from "../controllers/productController.js";
 
 import {
@@ -13,39 +20,136 @@ import {
   adminOnly,
 } from "../middleware/authMiddleware.js";
 
+
 const router = express.Router();
+
 
 /* ==========================================================
    PUBLIC PRODUCT ROUTES
 ========================================================== */
 
-// @route   GET /api/products
-// @desc    Get all products
-// @access  Public
-router.get("/", getProducts);
 
-// @route   GET /api/products/:id
-// @desc    Get single product by ID
-// @access  Public
-router.get("/:id", getProductById);
+/* ----------------------------------------------------------
+   SEARCH PRODUCTS
+   GET /api/products/search
+---------------------------------------------------------- */
+
+router.get(
+  "/search",
+  searchProducts
+);
+
+
+/* ----------------------------------------------------------
+   GET ALL PRODUCTS
+   GET /api/products
+---------------------------------------------------------- */
+
+router.get(
+  "/",
+  getProducts
+);
+
+
+/* ----------------------------------------------------------
+   GET SINGLE PRODUCT
+   GET /api/products/:id
+---------------------------------------------------------- */
+
+router.get(
+  "/:id",
+  getProductById
+);
+
 
 /* ==========================================================
    ADMIN PRODUCT ROUTES
 ========================================================== */
 
-// @route   POST /api/products
-// @desc    Create a new product
-// @access  Private/Admin
-router.post("/", protect, adminOnly, createProduct);
 
-// @route   PUT /api/products/:id
-// @desc    Update a product
-// @access  Private/Admin
-router.put("/:id", protect, adminOnly, updateProduct);
+/* ----------------------------------------------------------
+   GET ALL ADMIN PRODUCTS
+   GET /api/products/admin
+   PRIVATE / ADMIN
+---------------------------------------------------------- */
 
-// @route   DELETE /api/products/:id
-// @desc    Delete a product
-// @access  Private/Admin
-router.delete("/:id", protect, adminOnly, deleteProduct);
+router.get(
+  "/admin",
+  protect,
+  adminOnly,
+  getAdminProducts
+);
+
+
+/* ----------------------------------------------------------
+   GET ADMIN PRODUCT BY ID
+   GET /api/products/admin/:id
+   PRIVATE / ADMIN
+---------------------------------------------------------- */
+
+router.get(
+  "/admin/:id",
+  protect,
+  adminOnly,
+  getAdminProductById
+);
+
+
+/* ----------------------------------------------------------
+   CREATE PRODUCT
+   POST /api/products
+   PRIVATE / ADMIN
+---------------------------------------------------------- */
+
+router.post(
+  "/",
+  protect,
+  adminOnly,
+  createProduct
+);
+
+
+/* ----------------------------------------------------------
+   UPDATE PRODUCT
+   PUT /api/products/:id
+   PRIVATE / ADMIN
+---------------------------------------------------------- */
+
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  updateProduct
+);
+
+
+/* ----------------------------------------------------------
+   RESTORE PRODUCT
+   PUT /api/products/:id/restore
+   PRIVATE / ADMIN
+---------------------------------------------------------- */
+
+router.put(
+  "/:id/restore",
+  protect,
+  adminOnly,
+  restoreProduct
+);
+
+
+/* ----------------------------------------------------------
+   DELETE PRODUCT
+   DELETE /api/products/:id
+   PRIVATE / ADMIN
+   SOFT DELETE
+---------------------------------------------------------- */
+
+router.delete(
+  "/:id",
+  protect,
+  adminOnly,
+  deleteProduct
+);
+
 
 export default router;

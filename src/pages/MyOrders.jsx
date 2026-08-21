@@ -5,7 +5,6 @@ import {
   FiPackage,
   FiEye,
   FiXCircle,
-  FiShoppingBag,
   FiArrowRight,
   FiLoader,
   FiAlertCircle,
@@ -16,13 +15,51 @@ import {
   cancelOrder,
 } from "../api/orderApi";
 
-import { formatPrice } from "../utils/formatPrice";
-
 import "./MyOrders.css";
 
+/* ==========================================================
+   FORMAT PRICE
+========================================================== */
+
+const formatPrice = (value) => {
+  const amount = Number(value);
+
+  if (!Number.isFinite(amount)) {
+    return "$0.00";
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
 
 /* ==========================================================
-   HELPERS
+   FORMAT DATE
+========================================================== */
+
+const formatDate = (date) => {
+  if (!date) {
+    return "N/A";
+  }
+
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "N/A";
+  }
+
+  return parsedDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+/* ==========================================================
+   FORMAT STATUS
 ========================================================== */
 
 const formatStatus = (status) => {
@@ -39,46 +76,106 @@ const formatStatus = (status) => {
     );
 };
 
+/* ==========================================================
+   GET ERROR MESSAGE
+========================================================== */
+
+const getErrorMessage = (error) => {
+  if (error?.response?.data?.message) {
+    return error.response.data.message;
+  }
+
+  if (error?.response?.data?.error) {
+    return error.response.data.error;
+  }
+
+  if (error?.message) {
+    return error.message;
+  }
+
+  return "Something went wrong. Please try again.";
+};
+
+/* ==========================================================
+   EXTRACT ORDERS
+========================================================== */
+
+const extractOrders = (response) => {
+  const payload =
+    response?.data ?? response;
+
+  if (!payload) {
+    return [];
+  }
+
+  if (Array.isArray(payload.orders)) {
+    return payload.orders;
+  }
+
+  if (Array.isArray(payload.data)) {
+    return payload.data;
+  }
+
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  return [];
+};
+
+/* ==========================================================
+   GET ORDER ID
+========================================================== */
+
+const getOrderId = (order) => {
+  return (
+    order?._id ||
+    order?.id ||
+    null
+  );
+};
+
+/* ==========================================================
+   GET ORDER NUMBER
+========================================================== */
 
 const getOrderNumber = (order) => {
   return (
     order?.orderNumber ||
     order?.orderNo ||
-    order?.number ||
     order?.orderCode ||
-    `TS-${String(order?._id || "")
-      .slice(-8)
-      .toUpperCase()}`
+    getOrderId(order) ||
+    "N/A"
   );
 };
 
+/* ==========================================================
+   GET ORDER TOTAL
+========================================================== */
 
 const getOrderTotal = (order) => {
   const possibleTotals = [
     order?.totalAmount,
-    order?.totalPrice,
-    order?.grandTotal,
     order?.total,
+    order?.grandTotal,
     order?.amount,
   ];
 
-  const total = possibleTotals.find(
-    (value) =>
-      value !== undefined &&
-      value !== null &&
-      Number.isFinite(Number(value))
-  );
+  const validTotal =
+    possibleTotals.find((value) => {
+      return (
+        value !== undefined &&
+        value !== null &&
+        Number.isFinite(Number(value))
+      );
+    });
 
-  return Number(total) || 0;
+  return Number(validTotal) || 0;
 };
 
-
-const getOrderStatus = (order) => {
-  return String(
-    order?.status || "pending"
-  ).toLowerCase();
-};
-
+/* ==========================================================
+   GET ITEM COUNT
+========================================================== */
 
 const getItemCount = (order) => {
   if (!Array.isArray(order?.items)) {
@@ -90,51 +187,42 @@ const getItemCount = (order) => {
       const quantity =
         Number(item?.quantity);
 
-      return (
-        total +
-        (Number.isFinite(quantity)
-          ? quantity
-          : 1)
-      );
+      if (
+        Number.isFinite(quantity) &&
+        quantity > 0
+      ) {
+        return total + quantity;
+      }
+
+      return total + 1;
     },
     0
   );
 };
 
+/* ==========================================================
+   CAN CANCEL ORDER
+========================================================== */
 
-const formatOrderDate = (date) => {
-  if (!date) {
-    return "N/A";
-  }
+const canCancelOrder = (order) => {
+  const status = String(
+    order?.status || ""
+  ).toLowerCase();
 
-  const parsedDate = new Date(date);
+  /*
+    Backend currently allows cancellation
+    only when the order is pending.
+  */
 
-  if (
-    Number.isNaN(
-      parsedDate.getTime()
-    )
-  ) {
-    return "N/A";
-  }
-
-  return parsedDate.toLocaleDateString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }
-  );
+  return status === "pending";
 };
-
 
 /* ==========================================================
    MY ORDERS
 ========================================================== */
 
 function MyOrders() {
-  const [orders, setOrders] =
-    useState([]);
+  const [orders, setOrders] = useState([]);
 
   const [loading, setLoading] =
     useState(true);
@@ -145,7 +233,6 @@ function MyOrders() {
   const [cancellingId, setCancellingId] =
     useState(null);
 
-
   /* ========================================================
      LOAD ORDERS
   ======================================================== */
@@ -153,14 +240,14 @@ function MyOrders() {
   useEffect(() => {
     let mounted = true;
 
-    const loadOrders = async () => {
+    const fetchOrders = async () => {
       try {
-        setLoading(true);
-        setError("");
-
         console.log(
           "📦 MY ORDERS - Loading orders..."
         );
+
+        setLoading(true);
+        setError("");
 
         const response =
           await getMyOrders();
@@ -170,52 +257,57 @@ function MyOrders() {
           response
         );
 
-        if (!mounted) {
-          return;
-        }
-
         const payload =
           response?.data ?? response;
+
+        console.log(
+          "📋 MY ORDERS - API payload:",
+          payload
+        );
 
         if (
           payload?.success === false
         ) {
           throw new Error(
             payload?.message ||
-              "Failed to load orders."
+              "Unable to load orders."
           );
         }
 
-        const orderList =
-          Array.isArray(
-            payload?.orders
-          )
-            ? payload.orders
-            : [];
+        const fetchedOrders =
+          extractOrders(response);
 
         console.log(
           "📦 MY ORDERS - Orders:",
-          orderList
+          fetchedOrders
         );
 
-        setOrders(orderList);
+        console.log(
+          "🛒 MY ORDERS - First Item:",
+          fetchedOrders?.[0]?.items?.[0]
+        );
 
+        console.log(
+          "🛒 MY ORDERS - All Items:",
+          fetchedOrders?.[0]?.items
+        );
+
+        if (mounted) {
+          setOrders(fetchedOrders);
+        }
       } catch (err) {
         console.error(
-          "❌ MY ORDERS - Load error:",
+          "❌ MY ORDERS - Error:",
           err
         );
 
-        if (!mounted) {
-          return;
+        if (mounted) {
+          setError(
+            getErrorMessage(err)
+          );
+
+          setOrders([]);
         }
-
-        setError(
-          err?.response?.data?.message ||
-            err?.message ||
-            "Failed to load your orders."
-        );
-
       } finally {
         if (mounted) {
           setLoading(false);
@@ -223,92 +315,138 @@ function MyOrders() {
       }
     };
 
-    loadOrders();
+    fetchOrders();
 
     return () => {
       mounted = false;
     };
   }, []);
 
-
   /* ========================================================
      CANCEL ORDER
   ======================================================== */
 
-  const handleCancelOrder =
-    async (orderId) => {
-      if (!orderId) {
-        return;
-      }
+  const handleCancelOrder = async (
+    order
+  ) => {
+    const orderId =
+      getOrderId(order);
 
-      const confirmed =
-        window.confirm(
-          "Are you sure you want to cancel this order?"
-        );
+    if (!orderId) {
+      console.error(
+        "❌ Cannot cancel order: ID missing."
+      );
 
-      if (!confirmed) {
-        return;
-      }
+      window.alert(
+        "Unable to cancel this order because the order ID is missing."
+      );
 
-      try {
-        setCancellingId(orderId);
-        setError("");
+      return;
+    }
 
-        console.log(
-          "🚫 MY ORDERS - Cancelling order:",
-          orderId
-        );
+    /*
+      Double-check status before
+      sending the request.
+    */
 
-        const response =
-          await cancelOrder(orderId);
+    if (!canCancelOrder(order)) {
+      window.alert(
+        "Only pending orders can be cancelled."
+      );
 
-        console.log(
-          "🚫 MY ORDERS - Cancel response:",
-          response
-        );
+      return;
+    }
 
-        const payload =
-          response?.data ?? response;
+    const orderNumber =
+      getOrderNumber(order);
 
-        if (!payload?.success) {
-          throw new Error(
-            payload?.message ||
-              "Failed to cancel order."
-          );
-        }
+    const confirmed =
+      window.confirm(
+        `Are you sure you want to cancel order #${orderNumber}?`
+      );
 
-        setOrders(
-          (currentOrders) =>
-            currentOrders.map(
-              (order) =>
-                String(order?._id) ===
-                String(orderId)
-                  ? {
-                      ...order,
-                      status:
-                        "cancelled",
-                    }
-                  : order
-            )
-        );
+    if (!confirmed) {
+      return;
+    }
 
-      } catch (err) {
-        console.error(
-          "❌ MY ORDERS - Cancel error:",
-          err
-        );
+    try {
+      setCancellingId(orderId);
 
-        setError(
-          err?.response?.data?.message ||
-            err?.message ||
+      console.log(
+        "🚫 Cancelling order:",
+        orderId
+      );
+
+      const response =
+        await cancelOrder(orderId);
+
+      console.log(
+        "🚫 Cancel order response:",
+        response
+      );
+
+      /*
+        IMPORTANT:
+        Do not update the UI until
+        the backend confirms success.
+      */
+
+      if (!response?.success) {
+        throw new Error(
+          response?.message ||
             "Failed to cancel order."
         );
-
-      } finally {
-        setCancellingId(null);
       }
-    };
 
+      const cancelledOrder =
+        response?.order;
+
+      /*
+        Update the order locally.
+      */
+
+      setOrders((currentOrders) =>
+        currentOrders.map(
+          (currentOrder) => {
+            const currentId =
+              getOrderId(
+                currentOrder
+              );
+
+            if (
+              currentId !== orderId
+            ) {
+              return currentOrder;
+            }
+
+            return {
+              ...currentOrder,
+
+              status:
+                cancelledOrder?.status ||
+                "cancelled",
+            };
+          }
+        )
+      );
+
+      console.log(
+        "✅ Order cancelled successfully:",
+        orderId
+      );
+    } catch (err) {
+      console.error(
+        "❌ Cancel Order Error:",
+        err
+      );
+
+      window.alert(
+        getErrorMessage(err)
+      );
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   /* ========================================================
      LOADING STATE
@@ -316,47 +454,142 @@ function MyOrders() {
 
   if (loading) {
     return (
-      <section className="container my-orders-page">
-
+      <section className="my-orders-page">
         <div className="orders-loading">
-
           <FiLoader
             className="loading-spinner"
             aria-hidden="true"
           />
 
           <h2>
-            Loading Orders...
+            Loading your orders...
           </h2>
 
           <p>
             Please wait while we retrieve
-            your orders.
+            your order history.
           </p>
-
         </div>
-
       </section>
     );
   }
 
+  /* ========================================================
+     ERROR STATE
+  ======================================================== */
+
+  if (error) {
+    return (
+      <section className="my-orders-page">
+        <div className="orders-error">
+          <FiAlertCircle
+            className="error-icon"
+            aria-hidden="true"
+          />
+
+          <h1>
+            Unable to Load Orders
+          </h1>
+
+          <p>
+            {error}
+          </p>
+
+          <Link
+            to="/products"
+            className="continue-shopping-link"
+          >
+            Continue Shopping
+
+            <FiArrowRight
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   /* ========================================================
-     PAGE
+     EMPTY STATE
+  ======================================================== */
+
+  if (orders.length === 0) {
+    return (
+      <section className="my-orders-page">
+        <div className="my-orders-header">
+          <div>
+            <div className="page-title-icon">
+              <FiPackage
+                aria-hidden="true"
+              />
+            </div>
+
+            <h1>
+              My Orders
+            </h1>
+
+            <p>
+              View and manage your recent
+              orders.
+            </p>
+          </div>
+
+          <Link
+            to="/products"
+            className="continue-shopping-link"
+          >
+            Continue Shopping
+
+            <FiArrowRight
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+
+        <div className="empty-orders">
+          <FiPackage
+            className="empty-orders-icon"
+            aria-hidden="true"
+          />
+
+          <h2>
+            No Orders Yet
+          </h2>
+
+          <p>
+            You haven't placed any orders
+            yet.
+          </p>
+
+          <Link
+            to="/products"
+            className="btn btn-primary"
+          >
+            Start Shopping
+
+            <FiArrowRight
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  /* ========================================================
+     NORMAL PAGE
   ======================================================== */
 
   return (
-    <section className="container my-orders-page">
+    <section className="my-orders-page">
 
-
-      {/* ====================================================
+      {/* ==================================================
           PAGE HEADER
-      ==================================================== */}
+      ================================================== */}
 
       <div className="my-orders-header">
-
         <div>
-
           <div className="page-title-icon">
             <FiPackage
               aria-hidden="true"
@@ -368,9 +601,9 @@ function MyOrders() {
           </h1>
 
           <p>
-            View and manage your recent orders.
+            View and manage your recent
+            orders.
           </p>
-
         </div>
 
         <Link
@@ -383,124 +616,53 @@ function MyOrders() {
             aria-hidden="true"
           />
         </Link>
-
       </div>
 
+      {/* ==================================================
+          ORDERS LIST
+      ================================================== */}
 
-      {/* ====================================================
-          ERROR MESSAGE
-      ==================================================== */}
+      <div className="orders-list">
 
-      {error && (
-        <div
-          className="error-message"
-          role="alert"
-        >
-
-          <FiAlertCircle
-            aria-hidden="true"
-          />
-
-          <span>
-            {error}
-          </span>
-
-        </div>
-      )}
-
-
-      {/* ====================================================
-          EMPTY ORDERS
-      ==================================================== */}
-
-      {orders.length === 0 ? (
-
-        <div className="empty-orders">
-
-          <div className="empty-orders-icon">
-            <FiShoppingBag
-              aria-hidden="true"
-            />
-          </div>
-
-          <h2>
-            No Orders Yet
-          </h2>
-
-          <p>
-            You haven't placed any orders yet.
-            Start shopping and your orders will
-            appear here.
-          </p>
-
-          <Link
-            to="/products"
-            className="btn btn-primary"
-          >
-            Start Shopping
-
-            <FiArrowRight
-              aria-hidden="true"
-            />
-
-          </Link>
-
-        </div>
-
-      ) : (
-
-        <div className="orders-list">
-
-          {orders.map((order) => {
-
+        {orders.map(
+          (order, index) => {
             const orderId =
-              order?._id;
-
-            const status =
-              getOrderStatus(order);
+              getOrderId(order) ||
+              `order-${index}`;
 
             const orderNumber =
               getOrderNumber(order);
 
+            const status =
+              String(
+                order?.status ||
+                  "pending"
+              ).toLowerCase();
+
+            const totalAmount =
+              getOrderTotal(order);
+
             const itemCount =
               getItemCount(order);
 
-            const total =
-              getOrderTotal(order);
-
-            const orderDate =
-              order?.createdAt ||
-              order?.orderDate ||
-              order?.date;
-
-            const isCancelled =
-              status === "cancelled" ||
-              status === "canceled";
-
-            const canCancel =
-              status === "pending";
-
             const isCancelling =
-              cancellingId === orderId;
-
+              cancellingId ===
+              orderId;
 
             return (
               <article
-                key={
-                  orderId ||
-                  orderNumber
-                }
                 className={`order-card ${
-                  isCancelled
+                  status === "cancelled" ||
+                  status === "canceled"
                     ? "cancelled"
                     : ""
                 }`}
+                key={orderId}
               >
 
-
-                {/* ========================================
+                {/* ======================================
                     ORDER HEADER
-                ======================================== */}
+                ====================================== */}
 
                 <div className="order-header">
 
@@ -513,7 +675,6 @@ function MyOrders() {
                     </div>
 
                     <div>
-
                       <span className="order-label">
                         Order Number
                       </span>
@@ -521,44 +682,41 @@ function MyOrders() {
                       <h2>
                         #{orderNumber}
                       </h2>
-
                     </div>
 
                   </div>
 
-
                   <span
                     className={`status ${status}`}
                   >
-                    {formatStatus(status)}
+                    {formatStatus(
+                      status
+                    )}
                   </span>
 
                 </div>
 
-
-                {/* ========================================
+                {/* ======================================
                     ORDER INFORMATION
-                ======================================== */}
+                ====================================== */}
 
                 <div className="order-info">
 
                   <div className="order-info-item">
-
                     <span>
                       Date
                     </span>
 
                     <strong>
-                      {formatOrderDate(
-                        orderDate
+                      {formatDate(
+                        order?.createdAt ||
+                          order?.date ||
+                          order?.orderDate
                       )}
                     </strong>
-
                   </div>
 
-
                   <div className="order-info-item">
-
                     <span>
                       Items
                     </span>
@@ -569,28 +727,25 @@ function MyOrders() {
                         ? "item"
                         : "items"}
                     </strong>
-
                   </div>
 
-
                   <div className="order-info-item">
-
                     <span>
                       Total
                     </span>
 
                     <strong className="order-total">
-                      {formatPrice(total)}
+                      {formatPrice(
+                        totalAmount
+                      )}
                     </strong>
-
                   </div>
 
                 </div>
 
-
-                {/* ========================================
+                {/* ======================================
                     ACTIONS
-                ======================================== */}
+                ====================================== */}
 
                 <div className="order-actions">
 
@@ -598,27 +753,26 @@ function MyOrders() {
                     to={`/order-success/${orderId}`}
                     className="btn btn-secondary"
                   >
-
                     <FiEye
                       aria-hidden="true"
                     />
 
                     View Details
-
                   </Link>
 
-
-                  {canCancel && (
+                  {canCancelOrder(
+                    order
+                  ) && (
                     <button
                       type="button"
                       className="btn btn-danger"
-                      onClick={() =>
-                        handleCancelOrder(
-                          orderId
-                        )
-                      }
                       disabled={
                         isCancelling
+                      }
+                      onClick={() =>
+                        handleCancelOrder(
+                          order
+                        )
                       }
                     >
 
@@ -648,15 +802,13 @@ function MyOrders() {
 
               </article>
             );
-          })}
+          }
+        )}
 
-        </div>
-
-      )}
+      </div>
 
     </section>
   );
 }
-
 
 export default MyOrders;

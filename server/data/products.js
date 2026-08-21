@@ -1,5 +1,6 @@
 // ==========================================================
-// TECHSTORE PRO - PRODUCT SEED DATA
+// TECHSTORE PRO
+// PRODUCT SEED DATA
 // ==========================================================
 
 const products = [
@@ -9,31 +10,24 @@ const products = [
 
   {
     name: "MacBook Pro M4 16-inch",
+
     description:
       "Apple MacBook Pro powered by the M4 chip, featuring exceptional performance, a stunning Liquid Retina XDR display, and long battery life.",
 
     price: 2499,
     oldPrice: 2699,
     discount: 7,
-
     currency: "USD",
 
     category: "Laptops",
     brand: "Apple",
-
     sku: "APP-MBP-M4-16",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 5,
-    reviews: 0,
-
-    stock: 12,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Apple Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Apple M4 Chip",
@@ -42,6 +36,14 @@ const products = [
       "512GB SSD",
       "Up to 24 hours battery life",
     ],
+
+    stock: 12,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 5,
+    numReviews: 0,
 
     featured: true,
     bestseller: true,
@@ -54,31 +56,24 @@ const products = [
 
   {
     name: "Dell XPS 15",
+
     description:
       "Premium Dell XPS 15 laptop designed for professionals, creators, and demanding everyday workloads.",
 
     price: 1899,
     oldPrice: 2099,
     discount: 10,
-
     currency: "USD",
 
     category: "Laptops",
     brand: "Dell",
-
     sku: "DEL-XPS15-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.8,
-    reviews: 0,
-
-    stock: 18,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Dell Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Intel Core i7 Processor",
@@ -87,6 +82,14 @@ const products = [
       "1TB SSD",
       "Premium Aluminum Design",
     ],
+
+    stock: 18,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Dell Warranty",
+
+    rating: 4.8,
+    numReviews: 0,
 
     featured: true,
     bestseller: true,
@@ -99,31 +102,24 @@ const products = [
 
   {
     name: "Samsung Galaxy S25",
+
     description:
       "Samsung Galaxy S25 flagship smartphone with powerful performance, advanced cameras, and a premium display.",
 
     price: 1199,
     oldPrice: 1299,
     discount: 8,
-
     currency: "USD",
 
     category: "Smartphones",
     brand: "Samsung",
-
     sku: "SAM-S25-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.7,
-    reviews: 0,
-
-    stock: 30,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Samsung Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "6.2-inch AMOLED Display",
@@ -132,6 +128,14 @@ const products = [
       "12GB RAM",
       "5G Connectivity",
     ],
+
+    stock: 30,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Samsung Warranty",
+
+    rating: 4.7,
+    numReviews: 0,
 
     featured: true,
     bestseller: true,
@@ -144,31 +148,24 @@ const products = [
 
   {
     name: "iPhone 16 Pro",
+
     description:
       "Apple iPhone 16 Pro with titanium design, powerful performance, professional camera system, and advanced features.",
 
     price: 1299,
     oldPrice: 1399,
     discount: 7,
-
     currency: "USD",
 
     category: "Smartphones",
     brand: "Apple",
-
     sku: "APP-IP16P-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.9,
-    reviews: 0,
-
-    stock: 0,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Apple Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "A18 Pro Chip",
@@ -178,42 +175,43 @@ const products = [
       "5G Connectivity",
     ],
 
+    stock: 0,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.9,
+    numReviews: 0,
+
     featured: true,
     bestseller: true,
     newArrival: true,
   },
 
   // ========================================================
-  // 5. SONY HEADPHONES
+  // 5. SONY WH-1000XM6
   // ========================================================
 
   {
     name: "Sony WH-1000XM6 Wireless Headphones",
+
     description:
       "Premium wireless noise-cancelling headphones with immersive sound, comfortable design, and long battery life.",
 
     price: 449,
     oldPrice: 499,
     discount: 10,
-
     currency: "USD",
 
     category: "Audio",
     brand: "Sony",
-
     sku: "SON-WH1000XM6",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.8,
-    reviews: 0,
-
-    stock: 25,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Sony Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Advanced Noise Cancellation",
@@ -223,42 +221,43 @@ const products = [
       "Premium Comfort",
     ],
 
+    stock: 25,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Sony Warranty",
+
+    rating: 4.8,
+    numReviews: 0,
+
     featured: true,
     bestseller: true,
     newArrival: true,
   },
 
   // ========================================================
-  // 6. APPLE WATCH
+  // 6. APPLE WATCH SERIES 10
   // ========================================================
 
   {
     name: "Apple Watch Series 10",
+
     description:
       "Apple Watch Series 10 with a sleek design, advanced health features, fitness tracking, and smart notifications.",
 
     price: 499,
     oldPrice: 549,
     discount: 9,
-
     currency: "USD",
 
     category: "Wearables",
     brand: "Apple",
-
     sku: "APP-WATCH10-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.7,
-    reviews: 0,
-
-    stock: 20,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Apple Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Advanced Fitness Tracking",
@@ -268,42 +267,43 @@ const products = [
       "Smart Notifications",
     ],
 
+    stock: 20,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.7,
+    numReviews: 0,
+
     featured: true,
     bestseller: false,
     newArrival: true,
   },
 
   // ========================================================
-  // 7. AIRPODS PRO
+  // 7. AIRPODS PRO 2
   // ========================================================
 
   {
     name: "AirPods Pro 2",
+
     description:
       "Apple AirPods Pro with active noise cancellation, immersive audio, and a compact wireless charging case.",
 
     price: 249,
     oldPrice: 279,
     discount: 11,
-
     currency: "USD",
 
     category: "Audio",
     brand: "Apple",
-
     sku: "APP-APP2-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.8,
-    reviews: 0,
-
-    stock: 35,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Apple Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Active Noise Cancellation",
@@ -313,42 +313,43 @@ const products = [
       "Wireless Charging Case",
     ],
 
+    stock: 35,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.8,
+    numReviews: 0,
+
     featured: true,
     bestseller: true,
     newArrival: false,
   },
 
   // ========================================================
-  // 8. ASUS ROG GAMING LAPTOP
+  // 8. ASUS ROG STRIX G16
   // ========================================================
 
   {
     name: "ASUS ROG Strix G16",
+
     description:
       "High-performance ASUS gaming laptop designed for serious gamers with powerful graphics and fast refresh rates.",
 
     price: 1799,
     oldPrice: 1999,
     discount: 10,
-
     currency: "USD",
 
     category: "Gaming",
     brand: "ASUS",
-
     sku: "ASU-ROG-G16",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.8,
-    reviews: 0,
-
-    stock: 15,
-
-    shipping: "Free shipping",
-    warranty: "1 Year ASUS Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Intel Core i9 Processor",
@@ -358,42 +359,43 @@ const products = [
       "165Hz Gaming Display",
     ],
 
+    stock: 15,
+
+    shipping: "Free shipping",
+    warranty: "1 Year ASUS Warranty",
+
+    rating: 4.8,
+    numReviews: 0,
+
     featured: true,
     bestseller: true,
     newArrival: true,
   },
 
   // ========================================================
-  // 9. LOGITECH MOUSE
+  // 9. LOGITECH MX MASTER 3S
   // ========================================================
 
   {
     name: "Logitech MX Master 3S",
+
     description:
       "Advanced wireless mouse designed for productivity with precision tracking, ergonomic comfort, and multi-device support.",
 
     price: 99,
     oldPrice: 119,
     discount: 17,
-
     currency: "USD",
 
     category: "Accessories",
     brand: "Logitech",
-
     sku: "LOG-MX3S-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.7,
-    reviews: 0,
-
-    stock: 40,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Logitech Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "8K DPI Tracking",
@@ -402,6 +404,14 @@ const products = [
       "Ergonomic Design",
       "USB-C Charging",
     ],
+
+    stock: 40,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Logitech Warranty",
+
+    rating: 4.7,
+    numReviews: 0,
 
     featured: false,
     bestseller: true,
@@ -414,31 +424,24 @@ const products = [
 
   {
     name: "iPad Pro M4",
+
     description:
       "Powerful Apple iPad Pro powered by the M4 chip with an advanced display and professional-level performance.",
 
     price: 1099,
     oldPrice: 1199,
     discount: 8,
-
     currency: "USD",
 
-    category: "Accessories",
+    category: "Tablets",
     brand: "Apple",
-
     sku: "APP-IPAD-M4",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.9,
-    reviews: 0,
-
-    stock: 16,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Apple Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Apple M4 Chip",
@@ -448,42 +451,43 @@ const products = [
       "USB-C Connectivity",
     ],
 
+    stock: 16,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.9,
+    numReviews: 0,
+
     featured: true,
     bestseller: false,
     newArrival: true,
   },
 
   // ========================================================
-  // 11. GALAXY WATCH
+  // 11. SAMSUNG GALAXY WATCH 7
   // ========================================================
 
   {
     name: "Samsung Galaxy Watch 7",
+
     description:
       "Smartwatch with advanced health monitoring, fitness tracking, GPS, and seamless Android integration.",
 
     price: 349,
     oldPrice: 399,
     discount: 13,
-
     currency: "USD",
 
     category: "Wearables",
     brand: "Samsung",
-
     sku: "SAM-WATCH7-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.6,
-    reviews: 0,
-
-    stock: 22,
-
-    shipping: "Free shipping",
-    warranty: "1 Year Samsung Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "Advanced Health Tracking",
@@ -493,42 +497,43 @@ const products = [
       "Water Resistant",
     ],
 
+    stock: 22,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Samsung Warranty",
+
+    rating: 4.6,
+    numReviews: 0,
+
     featured: false,
     bestseller: false,
     newArrival: true,
   },
 
   // ========================================================
-  // 12. USB-C HUB
+  // 12. ANKER USB-C 7-IN-1 HUB
   // ========================================================
 
   {
     name: "Anker USB-C 7-in-1 Hub",
+
     description:
       "Compact USB-C hub with multiple ports for connecting displays, storage devices, accessories, and peripherals.",
 
     price: 69,
     oldPrice: 89,
     discount: 22,
-
     currency: "USD",
 
     category: "Accessories",
     brand: "Anker",
-
     sku: "ANK-USBC7-001",
 
     image: "/placeholder-product.png",
 
-    gallery: ["/placeholder-product.png"],
-
-    rating: 4.6,
-    reviews: 0,
-
-    stock: 50,
-
-    shipping: "Free shipping",
-    warranty: "18 Month Anker Warranty",
+    images: [
+      "/placeholder-product.png",
+    ],
 
     features: [
       "7-in-1 Connectivity",
@@ -538,10 +543,22 @@ const products = [
       "SD Card Reader",
     ],
 
+    stock: 50,
+
+    shipping: "Free shipping",
+    warranty: "18 Month Anker Warranty",
+
+    rating: 4.6,
+    numReviews: 0,
+
     featured: false,
     bestseller: true,
     newArrival: false,
   },
 ];
+
+// ==========================================================
+// EXPORT
+// ==========================================================
 
 export default products;

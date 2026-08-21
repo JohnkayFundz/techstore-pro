@@ -8,44 +8,278 @@ import User from "../models/User.js";
    HELPERS
 ========================================================== */
 
+/**
+ * Convert a value to a number when possible.
+ */
+const parseNumber = (value, fallback = undefined) => {
+  if (value === undefined || value === null || value === "") {
+    return fallback;
+  }
+
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : fallback;
+};
+
+
+/**
+ * Convert incoming values to boolean safely.
+ */
+const parseBoolean = (value, fallback = undefined) => {
+  if (value === undefined || value === null) {
+    return fallback;
+  }
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value
+      .trim()
+      .toLowerCase();
+
+    if (normalized === "true") {
+      return true;
+    }
+
+    if (normalized === "false") {
+      return false;
+    }
+  }
+
+  return Boolean(value);
+};
+
+
+/**
+ * Parse arrays coming from:
+ *
+ * - JSON requests
+ * - multipart/form-data
+ * - JSON-stringified arrays
+ */
+const parseArray = (value) => {
+  if (value === undefined || value === null || value === "") {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+
+      if (Array.isArray(parsed)) {
+        return parsed.filter(Boolean);
+      }
+    } catch {
+      return value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+  }
+
+  return [];
+};
+
+
+/**
+ * Prepare product data for MongoDB.
+ *
+ * Supports:
+ *
+ * - JSON
+ * - multipart/form-data
+ * - image
+ * - images
+ * - features
+ * - numeric fields
+ * - boolean fields
+ */
 const prepareProductData = (req) => {
   const body = {
     ...req.body,
   };
 
-  // --------------------------------------------------------
-  // Parse features
-  // --------------------------------------------------------
+  /* ========================================================
+     BASIC STRING FIELDS
+  ======================================================== */
 
-  if (body.features) {
-    try {
-      body.features =
-        typeof body.features === "string"
-          ? JSON.parse(body.features)
-          : body.features;
-    } catch {
-      body.features = [];
-    }
+  if (body.name !== undefined) {
+    body.name = String(body.name).trim();
   }
 
-  // --------------------------------------------------------
-  // Uploaded images
-  // --------------------------------------------------------
+  if (body.description !== undefined) {
+    body.description = String(
+      body.description
+    ).trim();
+  }
+
+  if (body.brand !== undefined) {
+    body.brand = String(body.brand).trim();
+  }
+
+  if (body.category !== undefined) {
+    body.category = String(
+      body.category
+    ).trim();
+  }
+
+  if (body.warranty !== undefined) {
+    body.warranty = String(
+      body.warranty
+    ).trim();
+  }
+
+  /* ========================================================
+     NUMERIC FIELDS
+  ======================================================== */
+
+  const numericFields = [
+    "price",
+    "oldPrice",
+    "discount",
+    "stock",
+    "rating",
+    "numReviews",
+  ];
+
+  numericFields.forEach((field) => {
+    if (body[field] !== undefined) {
+      const parsed = parseNumber(
+        body[field]
+      );
+
+      if (parsed !== undefined) {
+        body[field] = parsed;
+      } else {
+        delete body[field];
+      }
+    }
+  });
+
+  /* ========================================================
+     BOOLEAN FIELDS
+  ======================================================== */
+
+  const booleanFields = [
+    "featured",
+    "bestseller",
+    "newArrival",
+    "isActive",
+  ];
+
+  booleanFields.forEach((field) => {
+    if (body[field] !== undefined) {
+      const parsed = parseBoolean(
+        body[field]
+      );
+
+      if (parsed !== undefined) {
+        body[field] = parsed;
+      }
+    }
+  });
+
+  /* ========================================================
+     FEATURES
+  ======================================================== */
+
+  if (body.features !== undefined) {
+    body.features = parseArray(
+      body.features
+    );
+  }
+
+  /* ========================================================
+     IMAGES
+  ======================================================== */
 
   let images = [];
 
-  if (req.files?.length) {
-    images = req.files.map(
-      (file) => file.path
-    );
-  } else if (body.image) {
-    images = [body.image];
+  /*
+   * Current upload route uses:
+   *
+   * upload.single("image")
+   *
+   * Therefore req.file is the main uploaded image.
+   */
+
+  if (req.file) {
+    const uploadedUrl =
+      req.file.path ||
+      req.file.secure_url ||
+      req.file.url;
+
+    if (uploadedUrl) {
+      images.push(uploadedUrl);
+    }
   }
 
-  body.images = images;
-  body.image = images[0] || "";
+  /* ========================================================
+     IMAGE FIELD
+  ======================================================== */
+
+  if (
+    !images.length &&
+    body.image
+  ) {
+    images.push(
+      String(body.image).trim()
+    );
+  }
+
+  /* ========================================================
+     IMAGES ARRAY
+  ======================================================== */
+
+  if (
+    body.images !== undefined
+  ) {
+    const existingImages =
+      parseArray(body.images);
+
+    if (existingImages.length) {
+      images = existingImages;
+    }
+  }
+
+  /* ========================================================
+     PRIMARY IMAGE
+  ======================================================== */
+
+  if (images.length > 0) {
+    body.image = images[0];
+    body.images = images;
+  } else if (
+    body.image !== undefined
+  ) {
+    body.image = String(
+      body.image
+    ).trim();
+
+    body.images = body.image
+      ? [body.image]
+      : [];
+  }
 
   return body;
+};
+
+
+/**
+ * Validate MongoDB ObjectId.
+ */
+const isValidObjectId = (id) => {
+  return mongoose.Types.ObjectId.isValid(
+    id
+  );
 };
 
 
@@ -90,9 +324,11 @@ export const getDashboardStats = async (
             },
           },
         },
+
         {
           $group: {
             _id: null,
+
             totalSales: {
               $sum: "$totalAmount",
             },
@@ -100,11 +336,13 @@ export const getDashboardStats = async (
         },
       ]);
 
-    const totalSales =
-      salesResult[0]?.totalSales || 0;
+    const totalSales = Number(
+      salesResult[0]?.totalSales || 0
+    );
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       stats: {
         totalProducts,
         totalUsers,
@@ -116,12 +354,13 @@ export const getDashboardStats = async (
     });
   } catch (error) {
     console.error(
-      "Dashboard Stats Error:",
+      "❌ Dashboard Stats Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
       message:
         "Failed to load dashboard statistics.",
     });
@@ -139,56 +378,62 @@ export const getSalesAnalytics = async (
   res
 ) => {
   try {
-    const sales = await Order.aggregate([
-      {
-        $match: {
-          status: {
-            $ne: "cancelled",
-          },
-        },
-      },
-
-      {
-        $group: {
-          _id: {
-            year: {
-              $year: "$createdAt",
-            },
-            month: {
-              $month: "$createdAt",
+    const sales =
+      await Order.aggregate([
+        {
+          $match: {
+            status: {
+              $ne: "cancelled",
             },
           },
+        },
 
-          totalSales: {
-            $sum: "$totalAmount",
-          },
+        {
+          $group: {
+            _id: {
+              year: {
+                $year: "$createdAt",
+              },
 
-          orderCount: {
-            $sum: 1,
+              month: {
+                $month: "$createdAt",
+              },
+            },
+
+            totalSales: {
+              $sum: "$totalAmount",
+            },
+
+            orderCount: {
+              $sum: 1,
+            },
           },
         },
-      },
 
-      {
-        $sort: {
-          "_id.year": 1,
-          "_id.month": 1,
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.month": 1,
+          },
         },
-      },
-    ]);
+      ]);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       sales,
     });
   } catch (error) {
     console.error(
-      "Sales Analytics Error:",
+      "❌ Sales Analytics Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
+      sales: [],
+
       message:
         "Failed to load sales analytics.",
     });
@@ -197,44 +442,55 @@ export const getSalesAnalytics = async (
 
 
 /* ==========================================================
+   USERS
+========================================================== */
+
+/* ----------------------------------------------------------
    GET USERS
    GET /api/admin/users
-========================================================== */
+---------------------------------------------------------- */
 
 export const getUsers = async (
   req,
   res
 ) => {
   try {
-    const users = await User.find()
-      .select("-password")
-      .sort({
-        createdAt: -1,
-      });
+    const users =
+      await User.find()
+        .select("-password")
+        .sort({
+          createdAt: -1,
+        });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       count: users.length,
+
       users,
     });
   } catch (error) {
     console.error(
-      "Get Users Error:",
+      "❌ Get Users Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: "Failed to load users.",
+
+      users: [],
+
+      message:
+        "Failed to load users.",
     });
   }
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    UPDATE USER ROLE
    PUT /api/admin/users/:id/role
-========================================================== */
+---------------------------------------------------------- */
 
 export const updateUserRole = async (
   req,
@@ -242,31 +498,53 @@ export const updateUserRole = async (
 ) => {
   try {
     const { id } = req.params;
+
     const { role } = req.body;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID.",
+
+        message:
+          "Invalid user ID.",
       });
     }
 
-    if (!["user", "admin"].includes(role)) {
+    if (
+      !["user", "admin"].includes(
+        role
+      )
+    ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Role must be either user or admin.",
       });
     }
 
-    const user = await User.findById(id);
+    if (
+      req.user?._id?.toString() ===
+        id &&
+      role !== "admin"
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "You cannot remove your own admin role.",
+      });
+    }
+
+    const user =
+      await User.findById(id);
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found.",
+
+        message:
+          "User not found.",
       });
     }
 
@@ -274,20 +552,27 @@ export const updateUserRole = async (
 
     await user.save();
 
-    res.status(200).json({
+    const safeUser =
+      await User.findById(id)
+        .select("-password");
+
+    return res.status(200).json({
       success: true,
+
       message:
         "User role updated successfully.",
-      user,
+
+      user: safeUser,
     });
   } catch (error) {
     console.error(
-      "Update User Role Error:",
+      "❌ Update User Role Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
       message:
         "Failed to update user role.",
     });
@@ -295,10 +580,10 @@ export const updateUserRole = async (
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    DELETE USER
    DELETE /api/admin/users/:id
-========================================================== */
+---------------------------------------------------------- */
 
 export const deleteUser = async (
   req,
@@ -307,100 +592,120 @@ export const deleteUser = async (
   try {
     const { id } = req.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID.",
+
+        message:
+          "Invalid user ID.",
       });
     }
 
     if (
-      req.user?._id?.toString() === id
+      req.user?._id?.toString() ===
+      id
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "You cannot delete your own admin account.",
       });
     }
 
-    const user = await User.findById(id);
+    const user =
+      await User.findById(id);
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found.",
+
+        message:
+          "User not found.",
       });
     }
 
     await User.findByIdAndDelete(id);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "User deleted successfully.",
+
+      message:
+        "User deleted successfully.",
     });
   } catch (error) {
     console.error(
-      "Delete User Error:",
+      "❌ Delete User Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: "Failed to delete user.",
+
+      message:
+        "Failed to delete user.",
     });
   }
 };
 
 
 /* ==========================================================
+   ORDERS
+========================================================== */
+
+/* ----------------------------------------------------------
    GET ORDERS
    GET /api/admin/orders
-========================================================== */
+---------------------------------------------------------- */
 
 export const getOrders = async (
   req,
   res
 ) => {
   try {
-    const orders = await Order.find()
-      .populate(
-        "user",
-        "name email phone"
-      )
-      .populate(
-        "items.product",
-        "name image price"
-      )
-      .sort({
-        createdAt: -1,
-      });
+    const orders =
+      await Order.find()
+        .populate(
+          "user",
+          "name email phone"
+        )
+        .populate(
+          "items.product",
+          "name image images price"
+        )
+        .sort({
+          createdAt: -1,
+        });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       count: orders.length,
+
       orders,
     });
   } catch (error) {
     console.error(
-      "Get Orders Error:",
+      "❌ Get Orders Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: "Failed to load orders.",
+
+      orders: [],
+
+      message:
+        "Failed to load orders.",
     });
   }
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    UPDATE ORDER STATUS
    PUT /api/admin/orders/:id
-========================================================== */
+---------------------------------------------------------- */
 
 export const updateOrderStatus = async (
   req,
@@ -408,14 +713,15 @@ export const updateOrderStatus = async (
 ) => {
   try {
     const { id } = req.params;
+
     const { status } = req.body;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid order ID.",
+
+        message:
+          "Invalid order ID.",
       });
     }
 
@@ -428,55 +734,92 @@ export const updateOrderStatus = async (
     ];
 
     if (
-      !allowedStatuses.includes(status)
+      !allowedStatuses.includes(
+        status
+      )
     ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid order status.",
+
+        message:
+          "Invalid order status.",
       });
     }
 
     const order =
-      await Order.findByIdAndUpdate(
-        id,
-        {
-          status,
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      )
-        .populate(
-          "user",
-          "name email phone"
-        )
-        .populate(
-          "items.product",
-          "name image price"
-        );
+      await Order.findById(id);
 
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: "Order not found.",
+
+        message:
+          "Order not found.",
       });
     }
 
-    res.status(200).json({
+    if (
+      order.status === status
+    ) {
+      await order.populate([
+        {
+          path: "user",
+          select:
+            "name email phone",
+        },
+
+        {
+          path: "items.product",
+          select:
+            "name image images price",
+        },
+      ]);
+
+      return res.status(200).json({
+        success: true,
+
+        message:
+          "Order status is already set to this value.",
+
+        order,
+      });
+    }
+
+    order.status = status;
+
+    await order.save();
+
+    await order.populate([
+      {
+        path: "user",
+        select:
+          "name email phone",
+      },
+
+      {
+        path: "items.product",
+        select:
+          "name image images price",
+      },
+    ]);
+
+    return res.status(200).json({
       success: true,
+
       message:
         "Order status updated successfully.",
+
       order,
     });
   } catch (error) {
     console.error(
-      "Update Order Status Error:",
+      "❌ Update Order Status Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
       message:
         "Failed to update order status.",
     });
@@ -484,10 +827,10 @@ export const updateOrderStatus = async (
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    DELETE ORDER
    DELETE /api/admin/orders/:id
-========================================================== */
+---------------------------------------------------------- */
 
 export const deleteOrder = async (
   req,
@@ -496,75 +839,96 @@ export const deleteOrder = async (
   try {
     const { id } = req.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid order ID.",
+
+        message:
+          "Invalid order ID.",
       });
     }
 
     const order =
-      await Order.findByIdAndDelete(id);
+      await Order.findById(id);
 
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: "Order not found.",
+
+        message:
+          "Order not found.",
       });
     }
 
-    res.status(200).json({
+    await Order.findByIdAndDelete(id);
+
+    return res.status(200).json({
       success: true,
-      message: "Order deleted successfully.",
+
+      message:
+        "Order deleted successfully.",
     });
   } catch (error) {
     console.error(
-      "Delete Order Error:",
+      "❌ Delete Order Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: "Failed to delete order.",
+
+      message:
+        "Failed to delete order.",
     });
   }
 };
 
 
 /* ==========================================================
+   PRODUCTS
+========================================================== */
+
+/* ----------------------------------------------------------
    GET ALL PRODUCTS
    GET /api/admin/products
-========================================================== */
+---------------------------------------------------------- */
 
 export const getProducts = async (
   req,
   res
 ) => {
   try {
-    const products = await Product.find()
-      .sort({
-        createdAt: -1,
-      });
+    const products =
+      await Product.find()
+        .sort({
+          createdAt: -1,
+        });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       count: products.length,
-      totalProducts: products.length,
+
+      totalProducts:
+        products.length,
+
       currentPage: 1,
+
       totalPages: 1,
+
       products,
     });
   } catch (error) {
     console.error(
-      "Get Admin Products Error:",
+      "❌ Get Admin Products Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
       products: [],
+
       message:
         "Failed to load products.",
     });
@@ -572,10 +936,10 @@ export const getProducts = async (
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    GET SINGLE PRODUCT
    GET /api/admin/products/:id
-========================================================== */
+---------------------------------------------------------- */
 
 export const getProduct = async (
   req,
@@ -584,13 +948,14 @@ export const getProduct = async (
   try {
     const { id } = req.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
+
         product: null,
-        message: "Invalid product ID.",
+
+        message:
+          "Invalid product ID.",
       });
     }
 
@@ -600,24 +965,30 @@ export const getProduct = async (
     if (!product) {
       return res.status(404).json({
         success: false,
+
         product: null,
-        message: "Product not found.",
+
+        message:
+          "Product not found.",
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       product,
     });
   } catch (error) {
     console.error(
-      "Get Product Error:",
+      "❌ Get Product Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
       product: null,
+
       message:
         "Failed to load product.",
     });
@@ -625,10 +996,134 @@ export const getProduct = async (
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
+   VALIDATE PRODUCT DATA
+---------------------------------------------------------- */
+
+const validateProductData = (
+  productData
+) => {
+  if (
+    productData.name !==
+      undefined &&
+    !String(
+      productData.name
+    ).trim()
+  ) {
+    return "Product name is required.";
+  }
+
+  if (
+    productData.price !==
+      undefined &&
+    (
+      !Number.isFinite(
+        Number(
+          productData.price
+        )
+      ) ||
+      Number(
+        productData.price
+      ) < 0
+    )
+  ) {
+    return "Product price must be a valid non-negative number.";
+  }
+
+  if (
+    productData.oldPrice !==
+      undefined &&
+    (
+      !Number.isFinite(
+        Number(
+          productData.oldPrice
+        )
+      ) ||
+      Number(
+        productData.oldPrice
+      ) < 0
+    )
+  ) {
+    return "Old price must be a valid non-negative number.";
+  }
+
+  if (
+    productData.discount !==
+      undefined &&
+    (
+      Number(
+        productData.discount
+      ) < 0 ||
+      Number(
+        productData.discount
+      ) > 100
+    )
+  ) {
+    return "Discount must be between 0 and 100.";
+  }
+
+  if (
+    productData.stock !==
+      undefined &&
+    (
+      !Number.isFinite(
+        Number(
+          productData.stock
+        )
+      ) ||
+      Number(
+        productData.stock
+      ) < 0
+    )
+  ) {
+    return "Stock must be a valid non-negative number.";
+  }
+
+  if (
+    productData.rating !==
+      undefined &&
+    (
+      !Number.isFinite(
+        Number(
+          productData.rating
+        )
+      ) ||
+      Number(
+        productData.rating
+      ) < 0 ||
+      Number(
+        productData.rating
+      ) > 5
+    )
+  ) {
+    return "Rating must be between 0 and 5.";
+  }
+
+  if (
+    productData.numReviews !==
+      undefined &&
+    (
+      !Number.isFinite(
+        Number(
+          productData.numReviews
+        )
+      ) ||
+      Number(
+        productData.numReviews
+      ) < 0
+    )
+  ) {
+    return "Number of reviews cannot be negative.";
+  }
+
+  return null;
+};
+
+
+/* ----------------------------------------------------------
    CREATE PRODUCT
    POST /api/admin/products
-========================================================== */
+---------------------------------------------------------- */
 
 export const createProduct = async (
   req,
@@ -638,38 +1133,156 @@ export const createProduct = async (
     const productData =
       prepareProductData(req);
 
-    const product =
-      await Product.create({
-        ...productData,
-        createdBy: req.user._id,
-      });
+    /* ======================================================
+       REQUIRED FIELDS
+    ====================================================== */
 
-    res.status(201).json({
+    if (
+      !productData.name
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Product name is required.",
+      });
+    }
+
+    if (
+      productData.price ===
+        undefined ||
+      !Number.isFinite(
+        Number(
+          productData.price
+        )
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Valid product price is required.",
+      });
+    }
+
+    if (
+      !productData.description
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Product description is required.",
+      });
+    }
+
+    if (
+      !productData.category
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Product category is required.",
+      });
+    }
+
+    /* ======================================================
+       VALIDATION
+    ====================================================== */
+
+    const validationError =
+      validateProductData(
+        productData
+      );
+
+    if (validationError) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          validationError,
+      });
+    }
+
+    /* ======================================================
+       CREATED BY
+    ====================================================== */
+
+    if (
+      req.user?._id
+    ) {
+      productData.createdBy =
+        req.user._id;
+    }
+
+    /* ======================================================
+       CREATE
+    ====================================================== */
+
+    const product =
+      await Product.create(
+        productData
+      );
+
+    return res.status(201).json({
       success: true,
+
       message:
         "Product created successfully.",
+
       product,
     });
   } catch (error) {
     console.error(
-      "Create Product Error:",
+      "❌ Create Product Error:",
       error
     );
 
-    res.status(500).json({
+    if (
+      error.name ===
+      "ValidationError"
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          Object.values(
+            error.errors
+          )
+            .map(
+              (item) =>
+                item.message
+            )
+            .join(", "),
+      });
+    }
+
+    if (
+      error.code === 11000
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "A product with this information already exists.",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
+
       message:
         "Failed to create product.",
-      error: error.message,
     });
   }
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    UPDATE PRODUCT
    PUT /api/admin/products/:id
-========================================================== */
+---------------------------------------------------------- */
 
 export const updateProduct = async (
   req,
@@ -678,12 +1291,12 @@ export const updateProduct = async (
   try {
     const { id } = req.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product ID.",
+
+        message:
+          "Invalid product ID.",
       });
     }
 
@@ -693,26 +1306,96 @@ export const updateProduct = async (
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found.",
+
+        message:
+          "Product not found.",
       });
     }
 
     const productData =
       prepareProductData(req);
 
-    // ------------------------------------------------------
-    // Keep existing images if no new images were uploaded
-    // ------------------------------------------------------
+    /* ======================================================
+       PROTECTED FIELDS
+    ====================================================== */
 
-    if (!req.files?.length) {
-      productData.images =
-        product.images || [];
+    delete productData._id;
+    delete productData.createdBy;
+    delete productData.createdAt;
+    delete productData.updatedAt;
 
+    /* ======================================================
+       KEEP EXISTING IMAGE
+    ====================================================== */
+
+    const imageWasProvided =
+      Object.prototype.hasOwnProperty.call(
+        productData,
+        "image"
+      );
+
+    const imagesWereProvided =
+      Object.prototype.hasOwnProperty.call(
+        productData,
+        "images"
+      );
+
+    if (
+      !imageWasProvided &&
+      !imagesWereProvided
+    ) {
       productData.image =
-        product.image ||
-        product.images?.[0] ||
-        "";
+        product.image || "";
+
+      productData.images =
+        Array.isArray(
+          product.images
+        )
+          ? product.images
+          : product.image
+            ? [product.image]
+            : [];
     }
+
+    /* ======================================================
+       KEEP EXISTING FEATURES
+    ====================================================== */
+
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        productData,
+        "features"
+      )
+    ) {
+      productData.features =
+        Array.isArray(
+          product.features
+        )
+          ? product.features
+          : [];
+    }
+
+    /* ======================================================
+       VALIDATE
+    ====================================================== */
+
+    const validationError =
+      validateProductData(
+        productData
+      );
+
+    if (validationError) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          validationError,
+      });
+    }
+
+    /* ======================================================
+       UPDATE
+    ====================================================== */
 
     Object.assign(
       product,
@@ -721,32 +1404,64 @@ export const updateProduct = async (
 
     await product.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       message:
         "Product updated successfully.",
+
       product,
     });
   } catch (error) {
     console.error(
-      "Update Product Error:",
+      "❌ Update Product Error:",
       error
     );
 
-    res.status(500).json({
+    if (
+      error.name ===
+      "ValidationError"
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          Object.values(
+            error.errors
+          )
+            .map(
+              (item) =>
+                item.message
+            )
+            .join(", "),
+      });
+    }
+
+    if (
+      error.code === 11000
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "A product with this information already exists.",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
+
       message:
         "Failed to update product.",
-      error: error.message,
     });
   }
 };
 
 
-/* ==========================================================
+/* ----------------------------------------------------------
    DELETE PRODUCT
    DELETE /api/admin/products/:id
-========================================================== */
+---------------------------------------------------------- */
 
 export const deleteProduct = async (
   req,
@@ -755,12 +1470,12 @@ export const deleteProduct = async (
   try {
     const { id } = req.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product ID.",
+
+        message:
+          "Invalid product ID.",
       });
     }
 
@@ -770,25 +1485,31 @@ export const deleteProduct = async (
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found.",
+
+        message:
+          "Product not found.",
       });
     }
 
-    await Product.findByIdAndDelete(id);
+    await Product.findByIdAndDelete(
+      id
+    );
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+
       message:
         "Product deleted successfully.",
     });
   } catch (error) {
     console.error(
-      "Delete Product Error:",
+      "❌ Delete Product Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+
       message:
         "Failed to delete product.",
     });

@@ -1,300 +1,540 @@
-import { useMemo, useState } from "react";
+import {
+  memo,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiHeart,
+} from "react-icons/fi";
+
+import { useWishlist } from "../../context/WishlistContext";
 
 import "./ProductGallery.css";
 
+/* ==========================================================
+   LOCAL FALLBACK IMAGE
+
+   File:
+   public/placeholder-product.png
+========================================================== */
+
 const FALLBACK_IMAGE =
-  "https://via.placeholder.com/700x700?text=TechStore+Pro";
+  "/placeholder-product.png";
+
+/* ==========================================================
+   GET PRODUCT ID
+========================================================== */
+
+const getProductId = (product) => {
+  return (
+    product?._id ||
+    product?.id ||
+    ""
+  );
+};
+
+/* ==========================================================
+   GET IMAGE URL
+
+   Supports:
+   - string
+   - { url: "..." }
+========================================================== */
+
+const getImageUrl = (image) => {
+  if (typeof image === "string") {
+    return image.trim();
+  }
+
+  if (
+    image &&
+    typeof image === "object" &&
+    typeof image.url === "string"
+  ) {
+    return image.url.trim();
+  }
+
+  return "";
+};
+
+/* ==========================================================
+   BUILD PRODUCT IMAGES
+========================================================== */
+
+const getProductImages = (product) => {
+  if (!product) {
+    return [FALLBACK_IMAGE];
+  }
+
+  const candidates = [];
+
+  /* Main image */
+
+  if (product.image) {
+    candidates.push(product.image);
+  }
+
+  /* images array */
+
+  if (Array.isArray(product.images)) {
+    candidates.push(...product.images);
+  }
+
+  /* gallery array */
+
+  if (Array.isArray(product.gallery)) {
+    candidates.push(...product.gallery);
+  }
+
+  /* imageUrl */
+
+  if (product.imageUrl) {
+    candidates.push(product.imageUrl);
+  }
+
+  /* Normalize */
+
+  const normalized = candidates
+    .map(getImageUrl)
+    .filter(Boolean);
+
+  /* Remove duplicates */
+
+  const uniqueImages = [
+    ...new Set(normalized),
+  ];
+
+  return uniqueImages.length > 0
+    ? uniqueImages
+    : [FALLBACK_IMAGE];
+};
+
+/* ==========================================================
+   PRODUCT GALLERY
+========================================================== */
 
 function ProductGallery({ product }) {
-  /* ===========================================
-     BUILD GALLERY
-  =========================================== */
+  /* ========================================================
+     PRODUCT ID
+  ======================================================== */
 
-  const images = useMemo(() => {
+  const productId =
+    getProductId(product);
+
+  /* ========================================================
+     WISHLIST
+  ======================================================== */
+
+  const {
+    isWishlisted,
+    toggleWishlist,
+  } = useWishlist();
+
+  const liked =
+    typeof isWishlisted === "function"
+      ? isWishlisted(productId)
+      : false;
+
+  /* ========================================================
+     BUILD GALLERY
+  ======================================================== */
+
+  const images = useMemo(
+    () => getProductImages(product),
+    [product]
+  );
+
+  /* ========================================================
+     ACTIVE IMAGE
+  ======================================================== */
+
+  const [activeIndex, setActiveIndex] =
+    useState(0);
+
+  /* ========================================================
+     RESET ACTIVE IMAGE WHEN PRODUCT CHANGES
+  ======================================================== */
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [productId]);
+
+  /* ========================================================
+     SAFETY
+  ======================================================== */
+
+  const safeIndex =
+    activeIndex >= 0 &&
+    activeIndex < images.length
+      ? activeIndex
+      : 0;
+
+  const activeImage =
+    images[safeIndex] ||
+    FALLBACK_IMAGE;
+
+  /* ========================================================
+     IMAGE ERROR HANDLER
+  ======================================================== */
+
+  const handleImageError = (event) => {
     if (
-      Array.isArray(product.gallery) &&
-      product.gallery.length > 0
+      event.currentTarget.src.endsWith(
+        FALLBACK_IMAGE
+      )
     ) {
-      return product.gallery;
+      return;
     }
 
-    return [product.image || FALLBACK_IMAGE];
-  }, [product]);
-
-  /* ===========================================
-     ACTIVE IMAGE
-  =========================================== */
-
-  const [activeImage, setActiveImage] = useState(images[0]);
-
-  /* ===========================================
-     CHANGE IMAGE
-  =========================================== */
-
-  const changeImage = (image) => {
-    setActiveImage(image);
+    event.currentTarget.src =
+      FALLBACK_IMAGE;
   };
 
-  return (    <article className="product-card">
+  /* ========================================================
+     PREVIOUS IMAGE
+  ======================================================== */
 
-      {/* ===========================================
-          IMAGE SECTION
-      =========================================== */}
+  const handlePrevious = () => {
+    setActiveIndex((current) => {
+      if (current <= 0) {
+        return images.length - 1;
+      }
 
-      <div className="product-image-container">
+      return current - 1;
+    });
+  };
 
-        {/* Product Badges */}
-        <div className="product-badges">
+  /* ========================================================
+     NEXT IMAGE
+  ======================================================== */
 
-          {product.discount > 0 && (
-            <span className="discount-badge">
+  const handleNext = () => {
+    setActiveIndex((current) => {
+      if (current >= images.length - 1) {
+        return 0;
+      }
+
+      return current + 1;
+    });
+  };
+
+  /* ========================================================
+     THUMBNAIL
+  ======================================================== */
+
+  const handleThumbnailClick = (index) => {
+    setActiveIndex(index);
+  };
+
+  /* ========================================================
+     WISHLIST
+  ======================================================== */
+
+  const handleWishlist = () => {
+    if (!productId) {
+      console.warn(
+        "⚠️ Cannot add product without ID."
+      );
+
+      return;
+    }
+
+    if (
+      typeof toggleWishlist ===
+      "function"
+    ) {
+      toggleWishlist(product);
+    }
+  };
+
+  /* ========================================================
+     NO PRODUCT
+  ======================================================== */
+
+  if (!product) {
+    return (
+      <section className="product-gallery">
+        <div className="product-gallery__empty">
+          Product not available.
+        </div>
+      </section>
+    );
+  }
+
+  /* ========================================================
+     RENDER
+  ======================================================== */
+
+  return (
+    <section
+      className="product-gallery"
+      aria-label="Product images"
+    >
+
+      {/* ==================================================
+          MAIN IMAGE
+      ================================================== */}
+
+      <div className="product-gallery__main">
+
+        {/* BADGES */}
+
+        <div className="product-gallery__badges">
+
+          {Number(product.discount) > 0 && (
+            <span className="product-gallery__discount">
               -{product.discount}%
             </span>
           )}
 
           {product.featured && (
-            <span className="featured-badge">
-              FEATURED
+            <span className="product-gallery__featured">
+              Featured
             </span>
           )}
 
           {product.newArrival && (
-            <span className="new-badge">
-              NEW
+            <span className="product-gallery__new">
+              New
             </span>
           )}
 
           {product.bestseller && (
-            <span className="best-badge">
-              BEST SELLER
+            <span className="product-gallery__bestseller">
+              Best Seller
             </span>
           )}
 
         </div>
 
-        {/* Wishlist Button */}
+        {/* WISHLIST */}
 
         <button
           type="button"
-          className={`wishlist-btn ${liked ? "active" : ""}`}
+          className={`product-gallery__wishlist ${
+            liked
+              ? "product-gallery__wishlist--active"
+              : ""
+          }`}
           onClick={handleWishlist}
-          aria-label="Toggle Wishlist"
+          aria-label={
+            liked
+              ? `Remove ${
+                  product.name || "product"
+                } from wishlist`
+              : `Add ${
+                  product.name || "product"
+                } to wishlist`
+          }
           aria-pressed={liked}
         >
-          {liked ? "❤" : "♡"}
+          <FiHeart
+            size={22}
+            fill={
+              liked
+                ? "currentColor"
+                : "none"
+            }
+          />
         </button>
 
-        {/* Product Image */}
+        {/* PREVIOUS */}
+
+        {images.length > 1 && (
+          <button
+            type="button"
+            className="product-gallery__nav product-gallery__nav--previous"
+            onClick={handlePrevious}
+            aria-label="Previous product image"
+          >
+            <FiChevronLeft
+              size={24}
+            />
+          </button>
+        )}
+
+        {/* IMAGE */}
 
         <Link
-          to={`/products/${product.id}`}
-          className="product-image-link"
+          to={
+            productId
+              ? `/products/${productId}`
+              : "#"
+          }
+          className="product-gallery__image-link"
+          onClick={(event) => {
+            if (!productId) {
+              event.preventDefault();
+            }
+          }}
         >
           <img
-            src={product.image || FALLBACK_IMAGE}
-            alt={product.name}
-            className="product-image"
-            loading="lazy"
+            src={
+              activeImage ||
+              FALLBACK_IMAGE
+            }
+            alt={
+              product.name ||
+              "Product"
+            }
+            className="product-gallery__image"
+            loading="eager"
+            decoding="async"
             referrerPolicy="no-referrer"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = FALLBACK_IMAGE;
-            }}
+            onError={handleImageError}
           />
         </Link>
 
-        {/* Quick View */}
+        {/* NEXT */}
 
-        <Link
-          to={`/products/${product.id}`}
-          className="quick-view"
-        >
-          Quick View
-        </Link>
+        {images.length > 1 && (
+          <button
+            type="button"
+            className="product-gallery__nav product-gallery__nav--next"
+            onClick={handleNext}
+            aria-label="Next product image"
+          >
+            <FiChevronRight
+              size={24}
+            />
+          </button>
+        )}
 
       </div>
 
-      {/* ===========================================
-          PRODUCT INFO
-      =========================================== */}
+      {/* ==================================================
+          THUMBNAILS
+      ================================================== */}
 
-      <div className="product-info">        {/* ===========================================
-            PRODUCT META
-        =========================================== */}
-
-        <div className="product-meta">
-          <span className="product-brand">
-            {product.brand}
-          </span>
-
-          <span className="product-category">
-            {product.category}
-          </span>
-        </div>
-
-        {product.sku && (
-          <span className="product-sku">
-            SKU: {product.sku}
-          </span>
-        )}
-
-        {/* ===========================================
-            PRODUCT NAME
-        =========================================== */}
-
-        <Link
-          to={`/products/${product.id}`}
-          className="product-name"
+      {images.length > 1 && (
+        <div
+          className="product-gallery__thumbnails"
+          aria-label="Product image thumbnails"
         >
-          {product.name}
-        </Link>
 
-        {/* ===========================================
-            RATING
-        =========================================== */}
-
-        <RatingStars
-          rating={product.rating}
-          reviews={product.reviews}
-        />
-
-        {/* ===========================================
-            DESCRIPTION
-        =========================================== */}
-
-        <p className="product-description">
-          {shortDescription(product.description)}
-        </p>
-
-        {/* ===========================================
-            PRICE
-        =========================================== */}
-
-        <div className="price-box">
-
-          <span className="price">
-            {formattedPrice}
-          </span>
-
-          {formattedOldPrice && (
-            <span className="old-price">
-              {formattedOldPrice}
-            </span>
+          {images.map(
+            (image, index) => (
+              <button
+                type="button"
+                key={`${image}-${index}`}
+                className={`product-gallery__thumbnail ${
+                  index === safeIndex
+                    ? "product-gallery__thumbnail--active"
+                    : ""
+                }`}
+                onClick={() =>
+                  handleThumbnailClick(
+                    index
+                  )
+                }
+                aria-label={`View product image ${
+                  index + 1
+                }`}
+                aria-current={
+                  index === safeIndex
+                    ? "true"
+                    : undefined
+                }
+              >
+                <img
+                  src={
+                    image ||
+                    FALLBACK_IMAGE
+                  }
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                  onError={
+                    handleImageError
+                  }
+                />
+              </button>
+            )
           )}
 
         </div>
+      )}
 
-        {/* ===========================================
-            STOCK STATUS
-        =========================================== */}
+      {/* ==================================================
+          IMAGE COUNTER
+      ================================================== */}
 
-        <div
-          className={`stock ${
-            product.stock > 0
-              ? "in-stock"
-              : "out-stock"
-          }`}
-        >
-          {product.stock > 0
-            ? "✔ In Stock"
-            : "✖ Out of Stock"}
+      {images.length > 1 && (
+        <div className="product-gallery__counter">
+          {safeIndex + 1} /{" "}
+          {images.length}
         </div>
+      )}
 
-        {/* ===========================================
-            SHIPPING
-        =========================================== */}
-
-        {product.shipping && (
-          <div className="shipping">
-            🚚 {product.shipping}
-          </div>
-        )}
-
-        {/* ===========================================
-            WARRANTY
-        =========================================== */}
-
-        {product.warranty && (
-          <div className="warranty">
-            🛡 {product.warranty}
-          </div>
-        )}
-
-        {/* Push buttons to the bottom */}
-        <div className="product-spacer" />
-
-        {/* ===========================================
-            ACTION BUTTONS
-        =========================================== */}
-
-        <div className="product-actions">
-
-          <button
-            type="button"
-            className={`cart-btn ${
-              added ? "added" : ""
-            }`}
-            onClick={addToCart}
-            disabled={product.stock <= 0}
-          >
-            {added
-              ? "✓ Added"
-              : "Add To Cart"}
-          </button>
-
-          <Link
-            to={`/products/${product.id}`}
-            className="details-btn"
-          >
-            View Details
-          </Link>
-
-        </div>
-
-      </div>    </article>
+    </section>
   );
 }
 
-/* ===========================================
+/* ==========================================================
    PROP TYPES
-=========================================== */
+========================================================== */
 
-ProductCard.propTypes = {
-  product: PropTypes.shape({
-    id: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
+ProductGallery.propTypes = {
+  product:
+    PropTypes.shape({
+      _id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
 
-    name: PropTypes.string.isRequired,
-    brand: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
+      id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
 
-    sku: PropTypes.string,
-    description: PropTypes.string,
+      name: PropTypes.string,
 
-    image: PropTypes.string,
+      image: PropTypes.string,
 
-    price: PropTypes.number.isRequired,
-    oldPrice: PropTypes.number,
+      imageUrl: PropTypes.string,
 
-    discount: PropTypes.number,
+      images:
+        PropTypes.arrayOf(
+          PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+              url: PropTypes.string,
+            }),
+          ])
+        ),
 
-    currency: PropTypes.string,
+      gallery:
+        PropTypes.arrayOf(
+          PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+              url: PropTypes.string,
+            }),
+          ])
+        ),
 
-    rating: PropTypes.number,
-    reviews: PropTypes.number,
+      discount:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
 
-    stock: PropTypes.number.isRequired,
+      featured: PropTypes.bool,
 
-    shipping: PropTypes.string,
-    warranty: PropTypes.string,
+      newArrival: PropTypes.bool,
 
-    featured: PropTypes.bool,
-    newArrival: PropTypes.bool,
-    bestseller: PropTypes.bool,
-  }).isRequired,
+      bestseller: PropTypes.bool,
+    }).isRequired,
 };
 
-export default memo(ProductCard);
+/* ==========================================================
+   EXPORT
+========================================================== */
+
+export default memo(ProductGallery);

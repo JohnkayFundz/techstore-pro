@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 
@@ -9,152 +9,454 @@ import "./Home.css";
 
 function Home() {
   const {
-    products,
+    products = [],
     loading,
     error,
-    pagination,
+    pagination = {},
+    fetchProducts,
   } = useProducts();
+
+  /* ==========================================================
+     STATE
+  ========================================================== */
 
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("All");
 
   const categories = [
     "All",
-    "Laptop",
-    "Phone",
+    "Laptops",
+    "Smartphones",
+    "Audio",
+    "Wearables",
     "Accessories",
+    "Gaming",
+    "Tablets",
   ];
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const search = searchTerm.toLowerCase().trim();
+  /* ==========================================================
+     LOAD PRODUCTS FROM BACKEND
+  ========================================================== */
 
-      const matchesSearch =
-        !search ||
-        product.name?.toLowerCase().includes(search) ||
-        product.description?.toLowerCase().includes(search);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = {
+        page: 1,
+        limit: 10,
+      };
 
-      const productCategory =
-        product.category?.toLowerCase() || "";
+      /* ------------------------------------------------------
+         SEARCH
+      ------------------------------------------------------ */
 
-      const matchesCategory =
-        category === "All" ||
-        productCategory.includes(category.toLowerCase());
+      if (searchTerm.trim()) {
+        params.search = searchTerm.trim();
+      }
 
-      return matchesSearch && matchesCategory;
+      /* ------------------------------------------------------
+         CATEGORY
+      ------------------------------------------------------ */
+
+      if (
+        category &&
+        category !== "All"
+      ) {
+        params.category = category;
+      }
+
+      fetchProducts(params);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [
+    searchTerm,
+    category,
+    fetchProducts,
+  ]);
+
+  /* ==========================================================
+     CLEAR FILTERS
+  ========================================================== */
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setCategory("All");
+  };
+
+  /* ==========================================================
+     CHANGE PAGE
+  ========================================================== */
+
+  const changePage = (page) => {
+    if (
+      page < 1 ||
+      page > (pagination.totalPages || 1)
+    ) {
+      return;
+    }
+
+    const params = {
+      page,
+      limit: 10,
+    };
+
+    if (searchTerm.trim()) {
+      params.search = searchTerm.trim();
+    }
+
+    if (
+      category &&
+      category !== "All"
+    ) {
+      params.category = category;
+    }
+
+    fetchProducts(params);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
-  }, [products, searchTerm, category]);
+  };
+
+  /* ==========================================================
+     RENDER
+  ========================================================== */
 
   return (
     <div className="home">
 
-      {/* HERO */}
+      {/* ======================================================
+          HERO
+      ====================================================== */}
+
       <section className="hero">
-        <h1>Welcome to TechStore Pro</h1>
+        <div className="hero-content">
 
-        <p>
-          Discover premium laptops, phones, and accessories
-          at the best prices.
-        </p>
+          <span className="hero-badge">
+            Premium Technology
+          </span>
 
-        <Link to="/products">
-          <button className="hero-btn">
-            Shop Now
-          </button>
-        </Link>
+          <h1>
+            Welcome to TechStore Pro
+          </h1>
+
+          <p>
+            Discover premium laptops,
+            smartphones, audio devices,
+            gaming gear, and accessories
+            at competitive prices.
+          </p>
+
+          <Link to="/products">
+            <button
+              type="button"
+              className="hero-btn"
+            >
+              Shop Now
+            </button>
+          </Link>
+
+        </div>
       </section>
 
-      {/* PRODUCTS */}
+      {/* ======================================================
+          PRODUCTS SECTION
+      ====================================================== */}
+
       <section className="products-section">
 
-        <h2>
-          Products ({filteredProducts.length})
-        </h2>
+        {/* ====================================================
+            HEADER
+        ==================================================== */}
 
-        {/* CONTROLS */}
+        <div className="products-header">
+
+          <div>
+            <h2>
+              Featured Products
+            </h2>
+
+            {!loading && !error && (
+              <p>
+                {pagination.totalProducts || 0}{" "}
+                {pagination.totalProducts === 1
+                  ? "product"
+                  : "products"}{" "}
+                available
+              </p>
+            )}
+          </div>
+
+          <Link
+            to="/products"
+            className="view-all-link"
+          >
+            View All Products →
+          </Link>
+
+        </div>
+
+        {/* ====================================================
+            CONTROLS
+        ==================================================== */}
+
         <div className="product-controls">
+
+          {/* SEARCH */}
 
           <div
             className="search-bar"
             role="search"
             aria-label="Product search"
           >
-            <FiSearch className="search-icon" />
+
+            <FiSearch
+              className="search-icon"
+              aria-hidden="true"
+            />
 
             <input
               type="search"
               placeholder="Search products..."
               aria-label="Search products"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(event) =>
+                setSearchTerm(
+                  event.target.value
+                )
+              }
             />
+
+            {searchTerm && (
+              <button
+                type="button"
+                className="clear-search"
+                onClick={() =>
+                  setSearchTerm("")
+                }
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            )}
+
           </div>
 
-          <div className="category-filter">
+          {/* CATEGORY */}
+
+          <div
+            className="category-filter"
+            aria-label="Product categories"
+          >
+
             {categories.map((item) => (
               <button
                 key={item}
                 type="button"
                 className={
-                  category === item ? "active" : ""
+                  category === item
+                    ? "active"
+                    : ""
                 }
-                onClick={() => setCategory(item)}
+                onClick={() =>
+                  setCategory(item)
+                }
               >
                 {item}
               </button>
             ))}
+
           </div>
 
         </div>
 
-        {/* ERROR */}
+        {/* ====================================================
+            ACTIVE FILTER
+        ==================================================== */}
+
+        {(searchTerm ||
+          category !== "All") && (
+          <div className="active-filter">
+
+            <span>
+
+              {searchTerm && (
+                <>
+                  Search: "
+                  {searchTerm}
+                  "
+                </>
+              )}
+
+              {searchTerm &&
+                category !== "All" && (
+                  <> • </>
+                )}
+
+              {category !== "All" && (
+                <>
+                  Category: {category}
+                </>
+              )}
+
+            </span>
+
+            <button
+              type="button"
+              onClick={clearFilters}
+            >
+              Clear filters
+            </button>
+
+          </div>
+        )}
+
+        {/* ====================================================
+            ERROR
+        ==================================================== */}
+
         {error && (
-          <div className="error-message">
-            {error}
+          <div
+            className="error-message"
+            role="alert"
+          >
+
+            <h3>
+              Unable to load products
+            </h3>
+
+            <p>
+              {error}
+            </p>
+
+            <button
+              type="button"
+              onClick={() =>
+                fetchProducts({
+                  page: 1,
+                  limit: 10,
+                })
+              }
+            >
+              Try Again
+            </button>
+
           </div>
         )}
 
-        {/* LOADING */}
+        {/* ====================================================
+            LOADING
+        ==================================================== */}
+
         {loading && (
-          <div className="loading-screen">
+          <div
+            className="loading-screen"
+            aria-live="polite"
+          >
+
             <div className="spinner"></div>
-            <p>Loading products...</p>
+
+            <p>
+              Loading products...
+            </p>
+
           </div>
         )}
 
-        {/* PRODUCTS */}
+        {/* ====================================================
+            PRODUCTS
+        ==================================================== */}
+
         {!loading && !error && (
           <>
-            {filteredProducts.length > 0 ? (
+
+            {products.length > 0 ? (
               <div className="products-grid">
-                {filteredProducts.map((product) => (
+
+                {products.map((product) => (
                   <ProductCard
                     key={product._id}
                     product={product}
                   />
                 ))}
+
               </div>
             ) : (
               <div className="empty-products">
-                <h3>No products found</h3>
+
+                <h3>
+                  No products found
+                </h3>
 
                 <p>
-                  Try changing your search or category.
+                  Try changing your search
+                  or category.
                 </p>
+
+                {(searchTerm ||
+                  category !== "All") && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                  >
+                    Clear Filters
+                  </button>
+                )}
+
               </div>
             )}
 
-            {/* PAGINATION INFO */}
+            {/* ==================================================
+                PAGINATION
+            ================================================== */}
+
             {pagination.totalPages > 1 && (
-              <div className="pagination-info">
-                Page {pagination.currentPage} of{" "}
-                {pagination.totalPages}
+              <div className="pagination">
+
+                <button
+                  type="button"
+                  disabled={
+                    !pagination.hasPreviousPage
+                  }
+                  onClick={() =>
+                    changePage(
+                      pagination.currentPage - 1
+                    )
+                  }
+                >
+                  ← Previous
+                </button>
+
+                <span>
+                  Page{" "}
+                  {pagination.currentPage}{" "}
+                  of{" "}
+                  {pagination.totalPages}
+                </span>
+
+                <button
+                  type="button"
+                  disabled={
+                    !pagination.hasNextPage
+                  }
+                  onClick={() =>
+                    changePage(
+                      pagination.currentPage + 1
+                    )
+                  }
+                >
+                  Next →
+                </button>
+
               </div>
             )}
+
           </>
         )}
 
       </section>
+
     </div>
   );
 }

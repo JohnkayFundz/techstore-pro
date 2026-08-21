@@ -5,6 +5,103 @@ import { createOrder } from "../api/orderApi";
 import { useCart } from "../context/CartContext";
 import { formatPrice } from "../utils/formatPrice";
 
+import "./Checkout.css";
+
+/* ==========================================================
+   CONSTANTS
+========================================================== */
+
+const FALLBACK_IMAGE = "/placeholder-product.png";
+
+/* ==========================================================
+   IMAGE HELPERS
+========================================================== */
+
+/**
+ * Check whether an image URL is usable.
+ */
+const isValidImage = (value) => {
+  if (
+    typeof value !== "string" ||
+    value.trim() === ""
+  ) {
+    return false;
+  }
+
+  const cleanValue = value.trim();
+
+  // Reject the old external placeholder.
+  if (
+    cleanValue.includes(
+      "via.placeholder.com"
+    )
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
+ * Safely get a product image from a cart item.
+ */
+const getItemImage = (item) => {
+  if (!item) {
+    return FALLBACK_IMAGE;
+  }
+
+  const candidates = [
+    item.image,
+    item.productImage,
+    item.thumbnail,
+
+    ...(Array.isArray(item.images)
+      ? item.images
+      : []),
+
+    item.product?.image,
+    item.product?.imageUrl,
+
+    ...(Array.isArray(item.product?.images)
+      ? item.product.images
+      : []),
+  ];
+
+  const validImage = candidates.find(
+    (candidate) => {
+      if (typeof candidate === "string") {
+        return isValidImage(candidate);
+      }
+
+      if (
+        candidate &&
+        typeof candidate.url === "string"
+      ) {
+        return isValidImage(candidate.url);
+      }
+
+      return false;
+    }
+  );
+
+  if (typeof validImage === "string") {
+    return validImage;
+  }
+
+  if (
+    validImage &&
+    typeof validImage.url === "string"
+  ) {
+    return validImage.url;
+  }
+
+  return FALLBACK_IMAGE;
+};
+
+/* ==========================================================
+   CHECKOUT COMPONENT
+========================================================== */
+
 function Checkout() {
   const navigate = useNavigate();
 
@@ -13,6 +110,10 @@ function Checkout() {
     cartTotal,
     clearCart,
   } = useCart();
+
+  /* ========================================================
+     FORM STATE
+  ======================================================== */
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -24,52 +125,105 @@ function Checkout() {
     paymentMethod: "cash",
   });
 
+  /* ========================================================
+     UI STATE
+  ======================================================== */
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /* ==========================================================
+  /* ========================================================
      HANDLE INPUT
-  ========================================================== */
+  ======================================================== */
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
     setFormData((previous) => ({
       ...previous,
       [name]: value,
     }));
+
+    // Clear previous error while the user edits.
+    if (error) {
+      setError("");
+    }
   };
 
-  /* ==========================================================
+  /* ========================================================
+     HANDLE IMAGE ERROR
+  ======================================================== */
+
+  const handleImageError = (event) => {
+    const imageElement =
+      event.currentTarget;
+
+    const fallbackAlreadyUsed =
+      imageElement.src.endsWith(
+        FALLBACK_IMAGE
+      );
+
+    if (!fallbackAlreadyUsed) {
+      imageElement.src =
+        FALLBACK_IMAGE;
+    }
+  };
+
+  /* ========================================================
      SUBMIT ORDER
-  ========================================================== */
+  ======================================================== */
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setError("");
 
-    /* --------------------------------------------------------
-       CHECK CART
-    -------------------------------------------------------- */
+    /* ------------------------------------------------------
+       PREVENT DUPLICATE SUBMISSION
+    ------------------------------------------------------ */
 
-    if (!Array.isArray(cart) || cart.length === 0) {
-      setError("Your cart is empty.");
+    if (loading) {
       return;
     }
 
-    /* --------------------------------------------------------
-       VALIDATE SHIPPING INFORMATION
-    -------------------------------------------------------- */
+    /* ------------------------------------------------------
+       CHECK CART
+    ------------------------------------------------------ */
 
     if (
-      !formData.fullName.trim() ||
-      !formData.phone.trim() ||
-      !formData.address.trim() ||
-      !formData.city.trim() ||
-      !formData.state.trim() ||
-      !formData.country.trim()
+      !Array.isArray(cart) ||
+      cart.length === 0
     ) {
+      setError(
+        "Your cart is empty."
+      );
+
+      return;
+    }
+
+    /* ------------------------------------------------------
+       VALIDATE DELIVERY INFORMATION
+    ------------------------------------------------------ */
+
+    const requiredFields = [
+      formData.fullName,
+      formData.phone,
+      formData.address,
+      formData.city,
+      formData.state,
+      formData.country,
+    ];
+
+    const hasEmptyField =
+      requiredFields.some(
+        (value) =>
+          !String(value || "").trim()
+      );
+
+    if (hasEmptyField) {
       setError(
         "Please fill in all delivery information."
       );
@@ -77,7 +231,7 @@ function Checkout() {
       return;
     }
 
-    /* --------------------------------------------------------
+    /* ------------------------------------------------------
        PREPARE ORDER ITEMS
 
        Backend expects:
@@ -86,20 +240,29 @@ function Checkout() {
          product: productId,
          quantity: number
        }
-    -------------------------------------------------------- */
+    ------------------------------------------------------ */
 
-    const items = cart.map((item) => ({
-      product: item._id || item.id,
-      quantity: Number(item.quantity) || 1,
-    }));
+    const items = cart.map(
+      (item) => ({
+        product:
+          item?._id ||
+          item?.id ||
+          item?.product?._id ||
+          item?.product?.id,
 
-    /* --------------------------------------------------------
-       CHECK PRODUCT IDS
-    -------------------------------------------------------- */
-
-    const invalidItem = items.find(
-      (item) => !item.product
+        quantity:
+          Number(item?.quantity) || 1,
+      })
     );
+
+    /* ------------------------------------------------------
+       CHECK PRODUCT IDS
+    ------------------------------------------------------ */
+
+    const invalidItem =
+      items.find(
+        (item) => !item.product
+      );
 
     if (invalidItem) {
       setError(
@@ -109,9 +272,9 @@ function Checkout() {
       return;
     }
 
-    /* --------------------------------------------------------
+    /* ------------------------------------------------------
        PREPARE ORDER DATA
-    -------------------------------------------------------- */
+    ------------------------------------------------------ */
 
     const orderData = {
       items,
@@ -141,117 +304,130 @@ function Checkout() {
     };
 
     console.log(
-      "ORDER DATA:",
+      "🛒 ORDER DATA:",
       orderData
     );
 
-    /* --------------------------------------------------------
+    /* ------------------------------------------------------
        CREATE ORDER
-    -------------------------------------------------------- */
+    ------------------------------------------------------ */
 
     try {
       setLoading(true);
 
       const response =
-        await createOrder(orderData);
+        await createOrder(
+          orderData
+        );
 
       console.log(
-        "CREATE ORDER RESPONSE:",
-        response.data
+        "📦 CREATE ORDER RESPONSE:",
+        response?.data
       );
 
-      /* ------------------------------------------------------
+      /* ----------------------------------------------------
+         GET API PAYLOAD
+      ---------------------------------------------------- */
+
+      const payload =
+        response?.data ?? response;
+
+      /* ----------------------------------------------------
          VERIFY RESPONSE
-      ------------------------------------------------------ */
+      ---------------------------------------------------- */
 
       if (
-        !response.data ||
-        !response.data.success ||
-        !response.data.order
+        !payload ||
+        payload.success === false
       ) {
         throw new Error(
-          response.data?.message ||
+          payload?.message ||
             "Order was not created successfully."
         );
       }
 
+      /* ----------------------------------------------------
+         EXTRACT CREATED ORDER
+      ---------------------------------------------------- */
+
       const createdOrder =
-        response.data.order;
+        payload?.order ||
+        payload?.data?.order ||
+        payload?.data;
+
+      if (!createdOrder) {
+        throw new Error(
+          "Order was created, but the server did not return the order details."
+        );
+      }
 
       console.log(
-        "CREATED ORDER:",
+        "✅ CREATED ORDER:",
         createdOrder
       );
 
-      /* ------------------------------------------------------
+      /* ----------------------------------------------------
          VERIFY ORDER ID
-      ------------------------------------------------------ */
+      ---------------------------------------------------- */
 
-      if (!createdOrder._id) {
+      const orderId =
+        createdOrder?._id ||
+        createdOrder?.id;
+
+      if (!orderId) {
         throw new Error(
           "Order was created, but no order ID was returned."
         );
       }
 
       console.log(
-        "ORDER ID:",
-        createdOrder._id
+        "🆔 ORDER ID:",
+        orderId
       );
 
-      /* ------------------------------------------------------
+      /* ----------------------------------------------------
          CLEAR CART
-      ------------------------------------------------------ */
+      ---------------------------------------------------- */
 
       clearCart();
 
-      /* ------------------------------------------------------
-         NAVIGATE TO SUCCESS PAGE
-
-         IMPORTANT:
-
-         Backend response:
-
-         response.data.order._id
-
-         NOT:
-
-         response.data._id
-      ------------------------------------------------------ */
+      /* ----------------------------------------------------
+         NAVIGATE TO ORDER SUCCESS
+      ---------------------------------------------------- */
 
       navigate(
-        `/order-success/${createdOrder._id}`
+        `/order-success/${orderId}`
       );
-
     } catch (error) {
       console.error(
-        "CREATE ORDER ERROR:",
+        "❌ CREATE ORDER ERROR:",
         error
       );
 
       const message =
-        error.response?.data?.message ||
-        error.message ||
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
         "Unable to place your order. Please try again.";
 
       setError(message);
-
     } finally {
       setLoading(false);
     }
   };
 
-  /* ==========================================================
+  /* ========================================================
      EMPTY CART
-  ========================================================== */
+  ======================================================== */
 
-  if (!Array.isArray(cart) || cart.length === 0) {
+  if (
+    !Array.isArray(cart) ||
+    cart.length === 0
+  ) {
     return (
       <div className="checkout-page">
-
         <div className="checkout-container">
-
           <div className="checkout-card">
-
             <h1>
               Checkout
             </h1>
@@ -264,57 +440,65 @@ function Checkout() {
               type="button"
               className="checkout-btn"
               onClick={() =>
-                navigate("/products")
+                navigate(
+                  "/products"
+                )
               }
             >
               Continue Shopping
             </button>
-
           </div>
-
         </div>
-
       </div>
     );
   }
 
-  /* ==========================================================
+  /* ========================================================
      RENDER
-  ========================================================== */
+  ======================================================== */
 
   return (
     <div className="checkout-page">
-
       <div className="checkout-container">
 
-        <div className="checkout-header">
+        {/* ==================================================
+            HEADER
+        ================================================== */}
 
+        <div className="checkout-header">
           <h1>
             Checkout
           </h1>
 
           <p>
-            Complete your delivery information
-            to place your order.
+            Complete your delivery
+            information to place
+            your order.
           </p>
-
         </div>
 
-        {/* ====================================================
+        {/* ==================================================
             ERROR MESSAGE
-        ==================================================== */}
+        ================================================== */}
 
         {error && (
-          <div className="checkout-error">
+          <div
+            className="checkout-error"
+            role="alert"
+          >
             {error}
           </div>
         )}
 
+        {/* ==================================================
+            CONTENT
+        ================================================== */}
+
         <div className="checkout-content">
 
-          {/* ==================================================
+          {/* ================================================
               DELIVERY FORM
-          ================================================== */}
+          ================================================ */}
 
           <div className="checkout-form-card">
 
@@ -322,13 +506,21 @@ function Checkout() {
               Delivery Information
             </h2>
 
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={
+                handleSubmit
+              }
+              noValidate
+            >
 
-              {/* FULL NAME */}
+              {/* ============================================
+                  FULL NAME
+              ============================================ */}
 
               <div className="form-group">
-
-                <label htmlFor="fullName">
+                <label
+                  htmlFor="fullName"
+                >
                   Full Name
                 </label>
 
@@ -336,20 +528,27 @@ function Checkout() {
                   id="fullName"
                   name="fullName"
                   type="text"
-                  value={formData.fullName}
-                  onChange={handleChange}
+                  value={
+                    formData.fullName
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Enter your full name"
+                  autoComplete="name"
                   disabled={loading}
                   required
                 />
-
               </div>
 
-              {/* PHONE */}
+              {/* ============================================
+                  PHONE
+              ============================================ */}
 
               <div className="form-group">
-
-                <label htmlFor="phone">
+                <label
+                  htmlFor="phone"
+                >
                   Phone Number
                 </label>
 
@@ -357,43 +556,57 @@ function Checkout() {
                   id="phone"
                   name="phone"
                   type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
+                  value={
+                    formData.phone
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Enter your phone number"
+                  autoComplete="tel"
                   disabled={loading}
                   required
                 />
-
               </div>
 
-              {/* ADDRESS */}
+              {/* ============================================
+                  ADDRESS
+              ============================================ */}
 
               <div className="form-group">
-
-                <label htmlFor="address">
+                <label
+                  htmlFor="address"
+                >
                   Delivery Address
                 </label>
 
                 <textarea
                   id="address"
                   name="address"
-                  value={formData.address}
-                  onChange={handleChange}
+                  value={
+                    formData.address
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Enter your delivery address"
+                  autoComplete="street-address"
                   rows="4"
                   disabled={loading}
                   required
                 />
-
               </div>
 
-              {/* CITY + STATE */}
+              {/* ============================================
+                  CITY + STATE
+              ============================================ */}
 
               <div className="form-row">
 
                 <div className="form-group">
-
-                  <label htmlFor="city">
+                  <label
+                    htmlFor="city"
+                  >
                     City
                   </label>
 
@@ -401,18 +614,23 @@ function Checkout() {
                     id="city"
                     name="city"
                     type="text"
-                    value={formData.city}
-                    onChange={handleChange}
+                    value={
+                      formData.city
+                    }
+                    onChange={
+                      handleChange
+                    }
                     placeholder="City"
+                    autoComplete="address-level2"
                     disabled={loading}
                     required
                   />
-
                 </div>
 
                 <div className="form-group">
-
-                  <label htmlFor="state">
+                  <label
+                    htmlFor="state"
+                  >
                     State
                   </label>
 
@@ -420,22 +638,29 @@ function Checkout() {
                     id="state"
                     name="state"
                     type="text"
-                    value={formData.state}
-                    onChange={handleChange}
+                    value={
+                      formData.state
+                    }
+                    onChange={
+                      handleChange
+                    }
                     placeholder="State"
+                    autoComplete="address-level1"
                     disabled={loading}
                     required
                   />
-
                 </div>
 
               </div>
 
-              {/* COUNTRY */}
+              {/* ============================================
+                  COUNTRY
+              ============================================ */}
 
               <div className="form-group">
-
-                <label htmlFor="country">
+                <label
+                  htmlFor="country"
+                >
                   Country
                 </label>
 
@@ -443,31 +668,41 @@ function Checkout() {
                   id="country"
                   name="country"
                   type="text"
-                  value={formData.country}
-                  onChange={handleChange}
+                  value={
+                    formData.country
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Country"
+                  autoComplete="country-name"
                   disabled={loading}
                   required
                 />
-
               </div>
 
-              {/* PAYMENT METHOD */}
+              {/* ============================================
+                  PAYMENT METHOD
+              ============================================ */}
 
               <div className="form-group">
-
-                <label htmlFor="paymentMethod">
+                <label
+                  htmlFor="paymentMethod"
+                >
                   Payment Method
                 </label>
 
                 <select
                   id="paymentMethod"
                   name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
+                  value={
+                    formData.paymentMethod
+                  }
+                  onChange={
+                    handleChange
+                  }
                   disabled={loading}
                 >
-
                   <option value="cash">
                     Cash on Delivery
                   </option>
@@ -475,32 +710,29 @@ function Checkout() {
                   <option value="card">
                     Card Payment
                   </option>
-
                 </select>
-
               </div>
 
-              {/* SUBMIT */}
+              {/* ============================================
+                  SUBMIT
+              ============================================ */}
 
               <button
                 type="submit"
                 className="checkout-btn"
                 disabled={loading}
               >
-
                 {loading
                   ? "Placing Order..."
                   : "Place Order"}
-
               </button>
 
             </form>
-
           </div>
 
-          {/* ==================================================
+          {/* ================================================
               ORDER SUMMARY
-          ================================================== */}
+          ================================================ */}
 
           <div className="checkout-summary">
 
@@ -511,68 +743,103 @@ function Checkout() {
             <div className="summary-items">
 
               {cart.map(
-                (item, index) => (
-                  <div
-                    className="summary-item"
-                    key={
-                      item.cartId ||
-                      item._id ||
-                      item.id ||
-                      index
-                    }
-                  >
+                (item, index) => {
+                  const image =
+                    getItemImage(
+                      item
+                    );
 
-                    {/* IMAGE */}
+                  const productName =
+                    item?.name ||
+                    item?.product?.name ||
+                    "Product";
 
-                    <div className="summary-item-image">
+                  const quantity =
+                    Number(
+                      item?.quantity
+                    ) || 1;
 
-                      <img
-                        src={
-                          item.image ||
-                          item.images?.[0] ||
-                          "/placeholder-product.png"
-                        }
-                        alt={
-                          item.name ||
-                          "Product"
-                        }
-                      />
+                  const price =
+                    Number(
+                      item?.price ??
+                      item?.product
+                        ?.price ??
+                      0
+                    ) || 0;
+
+                  const itemTotal =
+                    price *
+                    quantity;
+
+                  const itemKey =
+                    item?.cartId ||
+                    item?._id ||
+                    item?.id ||
+                    item?.product?._id ||
+                    `checkout-item-${index}`;
+
+                  return (
+                    <div
+                      className="summary-item"
+                      key={itemKey}
+                    >
+
+                      {/* ==================================
+                          IMAGE
+                      ================================== */}
+
+                      <div className="summary-item-image">
+
+                        <img
+                          src={
+                            image ||
+                            FALLBACK_IMAGE
+                          }
+                          alt={
+                            productName
+                          }
+                          loading="eager"
+                          decoding="async"
+                          onError={
+                            handleImageError
+                          }
+                        />
+
+                      </div>
+
+                      {/* ==================================
+                          DETAILS
+                      ================================== */}
+
+                      <div className="summary-item-info">
+
+                        <h3>
+                          {productName}
+                        </h3>
+
+                        <p>
+                          Quantity:{" "}
+                          {quantity}
+                        </p>
+
+                        <strong>
+                          {formatPrice(
+                            itemTotal
+                          )}
+                        </strong>
+
+                      </div>
 
                     </div>
-
-                    {/* DETAILS */}
-
-                    <div className="summary-item-info">
-
-                      <h3>
-                        {item.name}
-                      </h3>
-
-                      <p>
-                        Quantity:{" "}
-                        {item.quantity}
-                      </p>
-
-                      <strong>
-                        {formatPrice(
-                          Number(
-                            item.price
-                          ) *
-                            Number(
-                              item.quantity
-                            )
-                        )}
-                      </strong>
-
-                    </div>
-
-                  </div>
-                )
+                  );
+                }
               )}
 
             </div>
 
-            {/* TOTAL */}
+            {/* ==============================================
+                TOTAL
+            ============================================== */}
 
             <div className="summary-total">
 
@@ -591,9 +858,7 @@ function Checkout() {
           </div>
 
         </div>
-
       </div>
-
     </div>
   );
 }

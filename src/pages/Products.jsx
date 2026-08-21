@@ -4,6 +4,10 @@ import {
   useState,
 } from "react";
 
+import {
+  useSearchParams,
+} from "react-router-dom";
+
 import debounce from "lodash.debounce";
 import { toast } from "react-toastify";
 
@@ -14,62 +18,159 @@ import Loading from "../components/Loading";
 
 import { getProducts } from "../api/productApi";
 
+
 function Products() {
-  const [products, setProducts] = useState([]);
+  /* ==========================================================
+     URL SEARCH PARAMETERS
+  ========================================================== */
 
-  const [search, setSearch] = useState("");
+  const [
+    searchParams,
+    setSearchParams,
+  ] = useSearchParams();
 
-  const [category, setCategory] = useState("All");
 
-  const [sortBy, setSortBy] = useState("default");
+  /* ==========================================================
+     STATE
+  ========================================================== */
 
-  const [maxPrice, setMaxPrice] = useState(5000);
+  const [
+    products,
+    setProducts,
+  ] = useState([]);
 
-  const [loading, setLoading] = useState(true);
 
-  /*
-    Load Products
-  */
+  const [
+    search,
+    setSearch,
+  ] = useState(
+    searchParams.get("search") || ""
+  );
+
+
+  const [
+    category,
+    setCategory,
+  ] = useState("All");
+
+
+  const [
+    sortBy,
+    setSortBy,
+  ] = useState("default");
+
+
+  const [
+    maxPrice,
+    setMaxPrice,
+  ] = useState(5000);
+
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+
+  /* ==========================================================
+     LOAD PRODUCTS
+  ========================================================== */
 
   useEffect(() => {
     loadProducts();
   }, []);
 
+
   const loadProducts = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const response = await getProducts();
+      const response =
+        await getProducts();
 
-    if (response.success) {
-      const items = response.products || [];
 
-      setProducts(items);
+      if (response.success) {
+        const items =
+          response.products || [];
 
-      if (items.length > 0) {
-        setMaxPrice(
-          Math.max(
-            ...items.map((product) => product.price)
-          )
+
+        setProducts(items);
+
+
+        if (items.length > 0) {
+          setMaxPrice(
+            Math.max(
+              ...items.map(
+                (product) =>
+                  Number(product.price) || 0
+              )
+            )
+          );
+        }
+      } else {
+        toast.error(
+          response.message ||
+            "Failed to load products."
         );
+
+        setProducts([]);
       }
-    } else {
-      toast.error(response.message);
+    } catch (error) {
+      console.error(
+        "Products Page Error:",
+        error
+      );
+
+      toast.error(
+        "Failed to load products."
+      );
 
       setProducts([]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
-  /*
-    Debounced Search
-  */
+
+  /* ==========================================================
+     SYNC SEARCH WITH URL
+  ========================================================== */
+
+  useEffect(() => {
+    const urlSearch =
+      searchParams.get("search") || "";
+
+
+    setSearch(urlSearch);
+  }, [searchParams]);
+
+
+  /* ==========================================================
+     DEBOUNCED SEARCH
+  ========================================================== */
 
   const handleSearch = useMemo(() => {
     return debounce((value) => {
       setSearch(value);
+
+      const trimmedValue =
+        value.trim();
+
+
+      if (trimmedValue) {
+        setSearchParams({
+          search: trimmedValue,
+        });
+      } else {
+        setSearchParams({});
+      }
     }, 300);
-  }, []);
+  }, [setSearchParams]);
+
+
+  /* ==========================================================
+     CLEANUP DEBOUNCE
+  ========================================================== */
 
   useEffect(() => {
     return () => {
@@ -77,112 +178,176 @@ function Products() {
     };
   }, [handleSearch]);
 
-  /*
-    Categories
-  */
+
+  /* ==========================================================
+     CATEGORIES
+  ========================================================== */
 
   const categories = useMemo(() => {
     return [
       "All",
       ...new Set(
-        products.map(
-          (product) => product.category
-        )
+        products
+          .map(
+            (product) =>
+              product.category
+          )
+          .filter(Boolean)
       ),
     ];
   }, [products]);
 
-  /*
-    Highest Price
-  */
+
+  /* ==========================================================
+     HIGHEST PRODUCT PRICE
+  ========================================================== */
 
   const highestPrice = useMemo(() => {
-    if (!products.length) return 5000;
+    if (!products.length) {
+      return 5000;
+    }
+
 
     return Math.max(
-      ...products.map((product) => product.price)
+      ...products.map(
+        (product) =>
+          Number(product.price) || 0
+      )
     );
   }, [products]);
 
-  /*
-    Filter + Sort
-  */
 
-  const filteredProducts = useMemo(() => {
-    let result = [...products];
+  /* ==========================================================
+     FILTER + SORT PRODUCTS
+  ========================================================== */
 
-    if (search.trim()) {
-      result = result.filter((product) => {
-        const keyword = search.toLowerCase();
+  const filteredProducts =
+    useMemo(() => {
+      let result = [...products];
 
-        return (
-          product.name
-            ?.toLowerCase()
-            .includes(keyword) ||
-          product.brand
-            ?.toLowerCase()
-            .includes(keyword) ||
-          product.description
-            ?.toLowerCase()
-            .includes(keyword)
+
+      /* ------------------------------------------------------
+         SEARCH
+      ------------------------------------------------------ */
+
+      if (search.trim()) {
+        const keyword =
+          search
+            .trim()
+            .toLowerCase();
+
+
+        result =
+          result.filter(
+            (product) => {
+              return (
+                product.name
+                  ?.toLowerCase()
+                  .includes(keyword) ||
+
+                product.brand
+                  ?.toLowerCase()
+                  .includes(keyword) ||
+
+                product.description
+                  ?.toLowerCase()
+                  .includes(keyword) ||
+
+                product.category
+                  ?.toLowerCase()
+                  .includes(keyword)
+              );
+            }
+          );
+      }
+
+
+      /* ------------------------------------------------------
+         CATEGORY
+      ------------------------------------------------------ */
+
+      if (category !== "All") {
+        result =
+          result.filter(
+            (product) =>
+              product.category ===
+              category
+          );
+      }
+
+
+      /* ------------------------------------------------------
+         MAX PRICE
+      ------------------------------------------------------ */
+
+      result =
+        result.filter(
+          (product) =>
+            Number(product.price) <=
+            maxPrice
         );
-      });
-    }
 
-    if (category !== "All") {
-      result = result.filter(
-        (product) =>
-          product.category === category
-      );
-    }
 
-    result = result.filter(
-      (product) => product.price <= maxPrice
-    );
+      /* ------------------------------------------------------
+         SORT
+      ------------------------------------------------------ */
 
-    switch (sortBy) {
-      case "price-low":
-        result.sort(
-          (a, b) => a.price - b.price
-        );
-        break;
+      switch (sortBy) {
+        case "price-low":
+          result.sort(
+            (a, b) =>
+              Number(a.price) -
+              Number(b.price)
+          );
+          break;
 
-      case "price-high":
-        result.sort(
-          (a, b) => b.price - a.price
-        );
-        break;
 
-      case "rating":
-        result.sort(
-          (a, b) =>
-            (b.rating || 0) -
-            (a.rating || 0)
-        );
-        break;
+        case "price-high":
+          result.sort(
+            (a, b) =>
+              Number(b.price) -
+              Number(a.price)
+          );
+          break;
 
-      case "name":
-        result.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
-        break;
 
-      default:
-        break;
-    }
+        case "rating":
+          result.sort(
+            (a, b) =>
+              (Number(b.rating) || 0) -
+              (Number(a.rating) || 0)
+          );
+          break;
 
-    return result;
-  }, [
-    products,
-    search,
-    category,
-    sortBy,
-    maxPrice,
-  ]);
 
-  /*
-    Clear Filters
-  */
+        case "name":
+          result.sort(
+            (a, b) =>
+              (a.name || "").localeCompare(
+                b.name || ""
+              )
+          );
+          break;
+
+
+        default:
+          break;
+      }
+
+
+      return result;
+    }, [
+      products,
+      search,
+      category,
+      sortBy,
+      maxPrice,
+    ]);
+
+
+  /* ==========================================================
+     CLEAR FILTERS
+  ========================================================== */
 
   const clearFilters = () => {
     setSearch("");
@@ -192,28 +357,61 @@ function Products() {
     setSortBy("default");
 
     setMaxPrice(highestPrice);
+
+    setSearchParams({});
   };
+
+
+  /* ==========================================================
+     LOADING STATE
+  ========================================================== */
 
   if (loading) {
     return <Loading />;
   }
 
+
+  /* ==========================================================
+     RENDER
+  ========================================================== */
+
   return (
     <main className="products-page">
+
+      {/* ======================================================
+          HEADER
+      ====================================================== */}
+
       <section className="products-header">
-        <h1>TechStore Products</h1>
+
+        <h1>
+          TechStore Products
+        </h1>
 
         <p>
-          Premium laptops, smartphones,
-          gaming gear and accessories.
+          Premium laptops,
+          smartphones, gaming gear
+          and accessories.
         </p>
+
       </section>
 
+
+      {/* ======================================================
+          CONTROLS
+      ====================================================== */}
+
       <section className="products-controls">
+
+        {/* SEARCH */}
+
         <SearchBar
           search={search}
           setSearch={handleSearch}
         />
+
+
+        {/* CATEGORY */}
 
         <CategoryFilter
           category={category}
@@ -221,13 +419,19 @@ function Products() {
           categories={categories}
         />
 
+
+        {/* SORT */}
+
         <select
           className="sort-select"
           value={sortBy}
-          onChange={(e) =>
-            setSortBy(e.target.value)
+          onChange={(event) =>
+            setSortBy(
+              event.target.value
+            )
           }
         >
+
           <option value="default">
             Sort By
           </option>
@@ -247,13 +451,22 @@ function Products() {
           <option value="name">
             Name A-Z
           </option>
+
         </select>
 
+
+        {/* PRICE FILTER */}
+
         <div className="price-filter">
+
           <label htmlFor="price-range">
+
             Max Price: $
+
             {maxPrice.toLocaleString()}
+
           </label>
+
 
           <input
             id="price-range"
@@ -262,40 +475,63 @@ function Products() {
             max={highestPrice}
             step="50"
             value={maxPrice}
-            onChange={(e) =>
+            onChange={(event) =>
               setMaxPrice(
-                Number(e.target.value)
+                Number(
+                  event.target.value
+                )
               )
             }
           />
+
         </div>
 
+
+        {/* CLEAR FILTERS */}
+
         <button
+          type="button"
           className="clear-filter-btn"
           onClick={clearFilters}
         >
           Clear Filters
         </button>
+
       </section>
 
+
+      {/* ======================================================
+          RESULTS
+      ====================================================== */}
+
       <section className="products-results">
+
         <div className="products-count">
+
           Showing{" "}
+
           <strong>
             {filteredProducts.length}
           </strong>{" "}
+
           product
+
           {filteredProducts.length !== 1 &&
             "s"}
+
         </div>
+
 
         <ProductGrid
           products={filteredProducts}
           loading={loading}
         />
+
       </section>
+
     </main>
   );
 }
+
 
 export default Products;

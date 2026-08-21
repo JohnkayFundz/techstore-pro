@@ -1,12 +1,22 @@
 import api from "./axios";
 
 /* ==========================================================
+   ORDER API
+   TechStore Pro
+========================================================== */
+
+
+/* ==========================================================
    USER - CREATE ORDER
 
    POST /api/orders
 ========================================================== */
 
 export const createOrder = async (orderData) => {
+  if (!orderData) {
+    throw new Error("Order data is required.");
+  }
+
   const response = await api.post(
     "/orders",
     orderData
@@ -38,6 +48,10 @@ export const getMyOrders = async () => {
 ========================================================== */
 
 export const getOrderById = async (id) => {
+  if (!id) {
+    throw new Error("Order ID is required.");
+  }
+
   const response = await api.get(
     `/orders/${id}`
   );
@@ -53,6 +67,10 @@ export const getOrderById = async (id) => {
 ========================================================== */
 
 export const cancelOrder = async (id) => {
+  if (!id) {
+    throw new Error("Order ID is required.");
+  }
+
   const response = await api.patch(
     `/orders/${id}/cancel`
   );
@@ -86,6 +104,14 @@ export const updateOrderStatus = async (
   id,
   data
 ) => {
+  if (!id) {
+    throw new Error("Order ID is required.");
+  }
+
+  if (!data) {
+    throw new Error("Update data is required.");
+  }
+
   const response = await api.put(
     `/admin/orders/${id}`,
     data
@@ -102,6 +128,10 @@ export const updateOrderStatus = async (
 ========================================================== */
 
 export const deleteOrder = async (id) => {
+  if (!id) {
+    throw new Error("Order ID is required.");
+  }
+
   const response = await api.delete(
     `/admin/orders/${id}`
   );

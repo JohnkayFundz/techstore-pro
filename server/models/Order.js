@@ -1,54 +1,45 @@
 import mongoose from "mongoose";
 
-
-
 /* ==========================================================
    ORDER ITEM SCHEMA
 ========================================================== */
 
 const orderItemSchema = new mongoose.Schema(
   {
-
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
       required: true,
     },
 
-
     name: {
       type: String,
       required: true,
+      trim: true,
     },
-
 
     image: {
       type: String,
-      required: true,
+      default: "",
     },
-
 
     price: {
       type: Number,
       required: true,
+      min: 0,
     },
-
 
     quantity: {
       type: Number,
       required: true,
+      min: 1,
       default: 1,
     },
-
-
   },
   {
     _id: false,
   }
 );
-
-
-
 
 /* ==========================================================
    SHIPPING ADDRESS SCHEMA
@@ -56,13 +47,11 @@ const orderItemSchema = new mongoose.Schema(
 
 const shippingAddressSchema = new mongoose.Schema(
   {
-
     fullName: {
       type: String,
       required: true,
       trim: true,
     },
-
 
     phone: {
       type: String,
@@ -70,13 +59,11 @@ const shippingAddressSchema = new mongoose.Schema(
       trim: true,
     },
 
-
     address: {
       type: String,
       required: true,
       trim: true,
     },
-
 
     city: {
       type: String,
@@ -84,41 +71,33 @@ const shippingAddressSchema = new mongoose.Schema(
       trim: true,
     },
 
-
     state: {
       type: String,
       required: true,
       trim: true,
     },
 
-
     country: {
       type: String,
       required: true,
+      trim: true,
       default: "Nigeria",
     },
-
-
   },
   {
     _id: false,
   }
 );
 
-
-
-
-
 /* ==========================================================
    ORDER SCHEMA
 ========================================================== */
 
 const orderSchema = new mongoose.Schema(
-
   {
-
-
-    // User who placed order
+    /* --------------------------------------------------------
+       USER WHO PLACED THE ORDER
+    -------------------------------------------------------- */
 
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -126,41 +105,47 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-
-
-    // Human readable order number
+    /* --------------------------------------------------------
+       HUMAN-READABLE ORDER NUMBER
+    -------------------------------------------------------- */
 
     orderNumber: {
       type: String,
       unique: true,
+      index: true,
     },
 
+    /* --------------------------------------------------------
+       PURCHASED PRODUCTS
+    -------------------------------------------------------- */
 
+    items: {
+      type: [orderItemSchema],
+      required: true,
 
-    // Purchased products
+      validate: {
+        validator: function (items) {
+          return Array.isArray(items) && items.length > 0;
+        },
 
-    items: [
-      {
-        type: orderItemSchema,
-        required: true,
-      }
-    ],
+        message: "Order must contain at least one item.",
+      },
+    },
 
-
-
-    // Delivery information
+    /* --------------------------------------------------------
+       SHIPPING ADDRESS
+    -------------------------------------------------------- */
 
     shippingAddress: {
       type: shippingAddressSchema,
       required: true,
     },
 
-
-
-    // Payment method
+    /* --------------------------------------------------------
+       PAYMENT METHOD
+    -------------------------------------------------------- */
 
     paymentMethod: {
-
       type: String,
 
       enum: [
@@ -169,15 +154,13 @@ const orderSchema = new mongoose.Schema(
       ],
 
       default: "cash",
-
     },
 
-
-
-    // Payment status
+    /* --------------------------------------------------------
+       PAYMENT STATUS
+    -------------------------------------------------------- */
 
     paymentStatus: {
-
       type: String,
 
       enum: [
@@ -187,15 +170,13 @@ const orderSchema = new mongoose.Schema(
       ],
 
       default: "pending",
-
     },
 
-
-
-    // Order status
+    /* --------------------------------------------------------
+       ORDER STATUS
+    -------------------------------------------------------- */
 
     status: {
-
       type: String,
 
       enum: [
@@ -207,95 +188,85 @@ const orderSchema = new mongoose.Schema(
       ],
 
       default: "pending",
-
     },
 
-
-
-    // Total price
+    /* --------------------------------------------------------
+       TOTAL ORDER AMOUNT
+    -------------------------------------------------------- */
 
     totalAmount: {
-
       type: Number,
-
       required: true,
-
       min: 0,
-
     },
-
-
   },
 
   {
     timestamps: true,
   }
-
 );
-
-
-
-
-
 
 /* ==========================================================
-   CREATE ORDER NUMBER
+   CREATE UNIQUE ORDER NUMBER
 ========================================================== */
 
-orderSchema.pre(
-  "save",
-  function(next){
+orderSchema.pre("save", function (next) {
+  if (!this.orderNumber) {
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/\D/g, "")
+      .slice(0, 14);
 
-    if(!this.orderNumber){
+    const random = Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase();
 
-      const timestamp =
-        Date.now()
-          .toString()
-          .slice(-8);
-
-
-      this.orderNumber =
-        `TS-${timestamp}`;
-
-    }
-
-
-    next();
-
+    this.orderNumber = `TS-${timestamp}-${random}`;
   }
-);
 
-
-
-
-
+  next();
+});
 
 /* ==========================================================
    INDEXES
 ========================================================== */
 
-// Search orders by user quickly
-
+/*
+   Find user's orders quickly.
+*/
 orderSchema.index({
   user: 1,
 });
 
-
-// Search orders by date
-
+/*
+   Sort newest orders first.
+*/
 orderSchema.index({
   createdAt: -1,
 });
 
+/*
+   Useful for admin order management.
+*/
+orderSchema.index({
+  status: 1,
+});
 
+/*
+   Useful for payment management.
+*/
+orderSchema.index({
+  paymentStatus: 1,
+});
 
-
-
+/* ==========================================================
+   CREATE ORDER MODEL
+========================================================== */
 
 const Order = mongoose.model(
   "Order",
   orderSchema
 );
-
 
 export default Order;

@@ -4,7 +4,10 @@
 
 .my-orders-page {
   width: 100%;
-  padding: 40px 0 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  box-sizing: border-box;
 }
 
 
@@ -18,10 +21,10 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 30px;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
 }
 
-.my-orders-header > div {
+.my-orders-header > div:first-child {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -55,6 +58,23 @@
   line-height: 1.6;
 }
 
+
+/* ==========================================================
+   HEADER ACTIONS
+========================================================== */
+
+.orders-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+
+/* ==========================================================
+   CONTINUE SHOPPING
+========================================================== */
+
 .continue-shopping-link {
   display: inline-flex;
   align-items: center;
@@ -69,6 +89,7 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -86,7 +107,84 @@
 }
 
 .continue-shopping-link svg {
+  flex-shrink: 0;
   font-size: 17px;
+}
+
+
+/* ==========================================================
+   REFRESH BUTTON
+========================================================== */
+
+.refresh-orders-btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.refresh-orders-btn:hover {
+  border-color: #4f46e5;
+  background: #f5f3ff;
+  color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.1);
+}
+
+.refresh-orders-btn:active {
+  transform: translateY(0);
+}
+
+.refresh-orders-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.refresh-orders-btn svg {
+  flex-shrink: 0;
+}
+
+
+/* ==========================================================
+   ORDERS COUNT
+========================================================== */
+
+.orders-count {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 20px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #f5f3ff;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.orders-count svg {
+  font-size: 15px;
 }
 
 
@@ -107,11 +205,64 @@
   color: #b91c1c;
   font-size: 14px;
   font-weight: 500;
+  box-sizing: border-box;
 }
 
 .error-message svg {
   flex-shrink: 0;
   font-size: 20px;
+}
+
+
+/* ==========================================================
+   ERROR STATE
+========================================================== */
+
+.orders-error {
+  width: 100%;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 25px;
+  text-align: center;
+  border: 1px solid #fecaca;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+}
+
+.orders-error .error-icon {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
+  color: #dc2626;
+}
+
+.orders-error h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.orders-error p {
+  max-width: 520px;
+  margin: 10px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.error-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
 }
 
 
@@ -132,6 +283,7 @@
   border-radius: 18px;
   background: #ffffff;
   box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
 }
 
 .orders-loading .loading-spinner {
@@ -175,6 +327,7 @@
   border-radius: 18px;
   background: #ffffff;
   box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
 }
 
 .empty-orders-icon {
@@ -184,10 +337,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
+  padding: 20px;
   border-radius: 50%;
   background: #f3f4f6;
   color: #6b7280;
-  font-size: 36px;
+  box-sizing: border-box;
 }
 
 .empty-orders h2 {
@@ -392,8 +546,7 @@
 
 .order-info {
   display: grid;
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
   padding: 22px 24px;
   border-bottom: 1px solid #f1f5f9;
@@ -497,6 +650,10 @@
   transform: none;
 }
 
+.btn svg {
+  flex-shrink: 0;
+}
+
 
 /* ==========================================================
    PRIMARY BUTTON
@@ -562,6 +719,15 @@
 
 
 /* ==========================================================
+   REFRESH SPINNER
+========================================================== */
+
+.refresh-spinner {
+  animation: my-orders-spin 1s linear infinite;
+}
+
+
+/* ==========================================================
    ANIMATIONS
 ========================================================== */
 
@@ -581,24 +747,30 @@
 ========================================================== */
 
 @media (max-width: 768px) {
-
   .my-orders-page {
-    padding: 30px 0 60px;
+    padding: 30px 16px 60px;
   }
 
   .my-orders-header {
     align-items: flex-start;
     flex-direction: column;
     gap: 20px;
-    margin-bottom: 28px;
+    margin-bottom: 22px;
+  }
+
+  .orders-header-actions {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .refresh-orders-btn,
+  .orders-header-actions .continue-shopping-link {
+    width: 100%;
   }
 
   .my-orders-header h1 {
     font-size: 30px;
-  }
-
-  .continue-shopping-link {
-    width: 100%;
   }
 
   .order-header {
@@ -632,7 +804,12 @@
     border-bottom: 1px solid #e5e7eb;
   }
 
+  .order-info-item:first-child {
+    padding-left: 0;
+  }
+
   .order-info-item:last-child {
+    padding-right: 0;
     padding-bottom: 0;
     border-bottom: none;
   }
@@ -647,6 +824,16 @@
   .order-actions .btn {
     width: 100%;
   }
+
+  .error-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .error-actions .btn,
+  .error-actions .continue-shopping-link {
+    width: 100%;
+  }
 }
 
 
@@ -655,13 +842,12 @@
 ========================================================== */
 
 @media (max-width: 480px) {
-
   .my-orders-page {
-    padding: 22px 0 50px;
+    padding: 22px 12px 50px;
   }
 
   .my-orders-header {
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
 
   .page-title-icon {
@@ -678,6 +864,11 @@
 
   .my-orders-header p {
     font-size: 14px;
+  }
+
+  .orders-count {
+    margin-bottom: 15px;
+    font-size: 12px;
   }
 
   .orders-list {
@@ -709,6 +900,12 @@
 
   .order-header h2 {
     font-size: 15px;
+  }
+
+  .status {
+    min-height: 28px;
+    padding: 5px 10px;
+    font-size: 11px;
   }
 
   .order-info {
@@ -749,7 +946,7 @@
   .empty-orders-icon {
     width: 70px;
     height: 70px;
-    font-size: 30px;
+    padding: 17px;
   }
 
   .empty-orders h2 {
@@ -764,6 +961,25 @@
     min-height: 320px;
     border-radius: 15px;
   }
+
+  .orders-error {
+    min-height: 360px;
+    padding: 40px 20px;
+    border-radius: 15px;
+  }
+
+  .orders-error .error-icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .orders-error h1 {
+    font-size: 22px;
+  }
+
+  .orders-error p {
+    font-size: 14px;
+  }
 }
 
 
@@ -772,15 +988,16 @@
 ========================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-
   .order-card,
   .btn,
-  .continue-shopping-link {
+  .continue-shopping-link,
+  .refresh-orders-btn {
     transition: none;
   }
 
   .orders-loading .loading-spinner,
-  .button-spinner {
+  .button-spinner,
+  .refresh-spinner {
     animation: none;
   }
 }

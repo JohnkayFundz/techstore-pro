@@ -21,9 +21,7 @@ import "./OrderSuccess.css";
    CONSTANTS
 ========================================================== */
 
-const FALLBACK_IMAGE =
-  "https://via.placeholder.com/300x300?text=Product";
-
+const FALLBACK_IMAGE = "/placeholder-product.png";
 
 /* ==========================================================
    FORMAT PRICE
@@ -43,7 +41,6 @@ const formatPrice = (value) => {
     maximumFractionDigits: 2,
   }).format(amount);
 };
-
 
 /* ==========================================================
    FORMAT DATE
@@ -69,43 +66,24 @@ const formatDate = (date) => {
   });
 };
 
-
 /* ==========================================================
-   FORMAT PAYMENT METHOD
+   FORMAT TEXT
 ========================================================== */
 
-const formatPaymentMethod = (method) => {
-  if (!method) {
+const formatText = (value) => {
+  if (!value) {
     return "N/A";
   }
 
-  return String(method)
+  return String(value)
     .replace(/[-_]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 };
 
-
 /* ==========================================================
-   FORMAT STATUS
-========================================================== */
-
-const formatStatus = (status) => {
-  if (!status) {
-    return "Unknown";
-  }
-
-  return String(status)
-    .replace(/[-_]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-};
-
-
-/* ==========================================================
-   GET API ERROR MESSAGE
+   API ERROR
 ========================================================== */
 
 const getErrorMessage = (error) => {
@@ -124,30 +102,11 @@ const getErrorMessage = (error) => {
   return "Failed to load order details.";
 };
 
-
 /* ==========================================================
-   GET ORDER FROM API RESPONSE
+   EXTRACT ORDER
 ========================================================== */
 
 const extractOrder = (response) => {
-  /*
-    Expected Axios response:
-
-    {
-      data: {
-        success: true,
-        order: {...}
-      }
-    }
-
-    But this also safely supports:
-
-    {
-      success: true,
-      order: {...}
-    }
-  */
-
   const payload = response?.data ?? response;
 
   if (!payload) {
@@ -157,10 +116,6 @@ const extractOrder = (response) => {
   if (payload.order) {
     return payload.order;
   }
-
-  /*
-    Some APIs may return the order directly.
-  */
 
   if (
     payload._id ||
@@ -173,7 +128,6 @@ const extractOrder = (response) => {
   return null;
 };
 
-
 /* ==========================================================
    GET ORDER ID
 ========================================================== */
@@ -185,10 +139,10 @@ const getOrderId = (order, fallbackId) => {
     order?.orderCode ||
     order?._id ||
     order?.id ||
-    fallbackId
+    fallbackId ||
+    "N/A"
   );
 };
-
 
 /* ==========================================================
    GET ORDER TOTAL
@@ -202,17 +156,15 @@ const getOrderTotal = (order) => {
     order?.amount,
   ];
 
-  const validTotal = possibleTotals.find((value) => {
-    return (
+  const validTotal = possibleTotals.find(
+    (value) =>
       value !== undefined &&
       value !== null &&
       Number.isFinite(Number(value))
-    );
-  });
+  );
 
   return Number(validTotal) || 0;
 };
-
 
 /* ==========================================================
    GET SHIPPING ADDRESS
@@ -227,6 +179,34 @@ const getShippingAddress = (order) => {
   );
 };
 
+/* ==========================================================
+   VALID IMAGE
+========================================================== */
+
+const isValidImage = (value) => {
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  const image = value.trim();
+
+  if (!image) {
+    return false;
+  }
+
+  /*
+    Never use the old external placeholder.
+  */
+
+  if (
+    image.includes("via.placeholder.com") ||
+    image.includes("placeholder.com")
+  ) {
+    return false;
+  }
+
+  return true;
+};
 
 /* ==========================================================
    GET ITEM IMAGE
@@ -235,29 +215,31 @@ const getShippingAddress = (order) => {
 const getItemImage = (item) => {
   const product = item?.product;
 
-  const imageCandidates = [
+  const candidates = [
     item?.image,
-    item?.images?.[0],
-
-    product?.image,
-    product?.images?.[0],
-
+    item?.imageUrl,
     item?.productImage,
+    item?.productImageUrl,
     item?.thumbnail,
 
-    item?.product?.imageUrl,
-    item?.product?.images?.[0],
+    ...(Array.isArray(item?.images)
+      ? item.images
+      : []),
+
+    product?.image,
+    product?.imageUrl,
+    product?.imageURL,
+    product?.thumbnail,
+
+    ...(Array.isArray(product?.images)
+      ? product.images
+      : []),
   ];
 
-  const image = imageCandidates.find(
-    (value) =>
-      typeof value === "string" &&
-      value.trim().length > 0
-  );
+  const validImage = candidates.find(isValidImage);
 
-  return image || FALLBACK_IMAGE;
+  return validImage || FALLBACK_IMAGE;
 };
-
 
 /* ==========================================================
    GET ITEM NAME
@@ -267,34 +249,34 @@ const getItemName = (item) => {
   return (
     item?.name ||
     item?.productName ||
+    item?.title ||
     item?.product?.name ||
+    item?.product?.title ||
     "Product"
   );
 };
-
 
 /* ==========================================================
    GET ITEM PRICE
 ========================================================== */
 
 const getItemPrice = (item) => {
-  const possiblePrices = [
+  const prices = [
     item?.price,
     item?.unitPrice,
+    item?.salePrice,
     item?.product?.price,
   ];
 
-  const price = possiblePrices.find((value) => {
-    return (
+  const validPrice = prices.find(
+    (value) =>
       value !== undefined &&
       value !== null &&
       Number.isFinite(Number(value))
-    );
-  });
+  );
 
-  return Number(price) || 0;
+  return Number(validPrice) || 0;
 };
-
 
 /* ==========================================================
    GET ITEM QUANTITY
@@ -310,7 +292,6 @@ const getItemQuantity = (item) => {
   return quantity;
 };
 
-
 /* ==========================================================
    ORDER SUCCESS
 ========================================================== */
@@ -319,11 +300,8 @@ function OrderSuccess() {
   const { id } = useParams();
 
   const [order, setOrder] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
-
 
   /* ========================================================
      FETCH ORDER
@@ -334,19 +312,22 @@ function OrderSuccess() {
 
     const fetchOrder = async () => {
       try {
-        setLoading(true);
-        setError("");
-        setOrder(null);
-
         if (!id) {
           throw new Error("Order ID is missing.");
         }
+
+        setLoading(true);
+        setError("");
+        setOrder(null);
 
         console.log("🔎 Fetching order:", id);
 
         const response = await getOrderById(id);
 
-        console.log("📦 Order API response:", response);
+        console.log(
+          "📦 Order API response:",
+          response
+        );
 
         const payload = response?.data ?? response;
 
@@ -355,9 +336,7 @@ function OrderSuccess() {
           payload
         );
 
-        if (
-          payload?.success === false
-        ) {
+        if (payload?.success === false) {
           throw new Error(
             payload?.message ||
               "Order could not be found."
@@ -374,10 +353,14 @@ function OrderSuccess() {
           );
         }
 
+        console.log(
+          "✅ Order loaded:",
+          fetchedOrder
+        );
+
         if (mounted) {
           setOrder(fetchedOrder);
         }
-
       } catch (err) {
         console.error(
           "❌ Get Order Error:",
@@ -385,11 +368,8 @@ function OrderSuccess() {
         );
 
         if (mounted) {
-          setError(
-            getErrorMessage(err)
-          );
+          setError(getErrorMessage(err));
         }
-
       } finally {
         if (mounted) {
           setLoading(false);
@@ -404,93 +384,80 @@ function OrderSuccess() {
     };
   }, [id]);
 
-
   /* ========================================================
-     LOADING STATE
+     LOADING
   ======================================================== */
 
   if (loading) {
     return (
       <section className="order-success-page">
+        <div className="order-success">
+          <div className="order-loading">
+            <FiLoader
+              className="loading-spinner"
+              aria-hidden="true"
+            />
 
-        <div className="order-loading">
+            <h2>Loading your order...</h2>
 
-          <FiLoader
-            className="loading-spinner"
-            aria-hidden="true"
-          />
-
-          <h2>
-            Loading your order...
-          </h2>
-
-          <p>
-            Please wait while we retrieve
-            your order details.
-          </p>
-
+            <p>
+              Please wait while we retrieve
+              your order details.
+            </p>
+          </div>
         </div>
-
       </section>
     );
   }
 
-
   /* ========================================================
-     ERROR STATE
+     ERROR
   ======================================================== */
 
   if (error || !order) {
     return (
       <section className="order-success-page">
+        <div className="order-success">
+          <div className="order-error">
+            <FiAlertCircle
+              className="error-icon"
+              aria-hidden="true"
+            />
 
-        <div className="order-error">
+            <h1>Unable to Load Order</h1>
 
-          <FiAlertCircle
-            className="error-icon"
-            aria-hidden="true"
-          />
+            <p>
+              {error ||
+                "We could not find this order."}
+            </p>
 
-          <h1>
-            Unable to Load Order
-          </h1>
+            <div className="order-actions">
+              <Link
+                to="/my-orders"
+                className="btn btn-secondary"
+              >
+                View My Orders
+              </Link>
 
-          <p>
-            {error ||
-              "We could not find this order."}
-          </p>
+              <Link
+                to="/products"
+                className="continue-btn"
+              >
+                Continue Shopping
 
-          <div className="order-actions">
-
-            <Link
-              to="/my-orders"
-              className="btn btn-secondary"
-            >
-              View My Orders
-            </Link>
-
-            <Link
-              to="/products"
-              className="continue-btn"
-            >
-              Continue Shopping
-
-              <FiArrowRight
-                aria-hidden="true"
-              />
-            </Link>
-
+                <FiArrowRight
+                  aria-hidden="true"
+                />
+              </Link>
+            </div>
           </div>
-
         </div>
-
       </section>
     );
   }
 
-
   /* ========================================================
-     NORMALIZE ORDER DATA
+     NORMALIZE ORDER
   ======================================================== */
 
   const status = String(
@@ -509,9 +476,7 @@ function OrderSuccess() {
     order?.paymentType ||
     "N/A";
 
-  const items = Array.isArray(
-    order?.items
-  )
+  const items = Array.isArray(order?.items)
     ? order.items
     : [];
 
@@ -524,9 +489,8 @@ function OrderSuccess() {
   const orderNumber =
     getOrderId(order, id);
 
-
   /* ========================================================
-     DETERMINE ORDER STATE
+     STATUS
   ======================================================== */
 
   const isCancelled =
@@ -547,68 +511,52 @@ function OrderSuccess() {
     status === "pending";
 
   const isCompleted =
-    status === "completed" ||
-    isDelivered;
-
-
-  /* ========================================================
-     STATUS ICON
-  ======================================================== */
+    status === "completed";
 
   const StatusIcon = isCancelled
     ? FiXCircle
     : FiCheckCircle;
 
-
   /* ========================================================
-     STATUS TITLE
+     STATUS TEXT
   ======================================================== */
 
-  let statusTitle =
-    "Order Confirmed";
+  let statusTitle = "Order Confirmed";
 
   let statusMessage =
     "Your order has been placed successfully.";
 
-
   if (isCancelled) {
-    statusTitle =
-      "Order Cancelled";
+    statusTitle = "Order Cancelled";
 
     statusMessage =
       "This order has been cancelled.";
   } else if (isDelivered) {
-    statusTitle =
-      "Order Delivered";
+    statusTitle = "Order Delivered";
 
     statusMessage =
       "Your order has been delivered successfully.";
   } else if (isShipped) {
-    statusTitle =
-      "Order Shipped";
+    statusTitle = "Order Shipped";
 
     statusMessage =
       "Your order has been shipped and is on its way.";
   } else if (isProcessing) {
-    statusTitle =
-      "Order Processing";
+    statusTitle = "Order Processing";
 
     statusMessage =
       "Your order is currently being processed.";
   } else if (isPending) {
-    statusTitle =
-      "Order Pending";
+    statusTitle = "Order Pending";
 
     statusMessage =
       "Your order has been received and is awaiting processing.";
   } else if (isCompleted) {
-    statusTitle =
-      "Order Completed";
+    statusTitle = "Order Completed";
 
     statusMessage =
       "Your order has been completed successfully.";
   }
-
 
   /* ========================================================
      STATUS CLASS
@@ -628,19 +576,16 @@ function OrderSuccess() {
     ? "completed"
     : "success";
 
-
   /* ========================================================
      RENDER
   ======================================================== */
 
   return (
     <section className="order-success-page">
-
       <div className="order-success">
 
-
         {/* ==================================================
-            SUCCESS / STATUS CARD
+            SUCCESS HEADER
         ================================================== */}
 
         <section className="success-card">
@@ -652,38 +597,27 @@ function OrderSuccess() {
             <StatusIcon />
           </div>
 
-
-          <h1>
-            {statusTitle}
-          </h1>
-
+          <h1>{statusTitle}</h1>
 
           <p className="success-message">
             {statusMessage}
           </p>
 
-
           <div className="order-number">
-
-            <span>
-              Order Number
-            </span>
+            <span>Order Number</span>
 
             <strong>
-              {orderNumber}
+              #{orderNumber}
             </strong>
-
           </div>
 
         </section>
 
-
         {/* ==================================================
-            ORDER DETAILS GRID
+            DETAILS GRID
         ================================================== */}
 
         <div className="order-details-grid">
-
 
           {/* ==================================================
               ORDER INFORMATION
@@ -692,81 +626,57 @@ function OrderSuccess() {
           <section className="details-card">
 
             <div className="details-card-header">
-
-              <FiPackage
-                aria-hidden="true"
-              />
+              <FiPackage />
 
               <h2>
                 Order Information
               </h2>
-
             </div>
-
 
             <div className="details-list">
 
               <div className="detail-row">
-
-                <span>
-                  Order Number
-                </span>
+                <span>Order Number</span>
 
                 <strong>
-                  {orderNumber}
+                  #{orderNumber}
                 </strong>
-
               </div>
 
-
               <div className="detail-row">
-
-                <span>
-                  Order Date
-                </span>
+                <span>Order Date</span>
 
                 <strong>
                   {formatDate(
                     order?.createdAt ||
-                    order?.date ||
-                    order?.orderDate
+                      order?.date ||
+                      order?.orderDate
                   )}
                 </strong>
-
               </div>
 
-
               <div className="detail-row">
-
-                <span>
-                  Order Status
-                </span>
+                <span>Order Status</span>
 
                 <span
                   className={`status ${status}`}
                 >
-                  {formatStatus(status)}
+                  {formatText(status)}
                 </span>
-
               </div>
 
-
               <div className="detail-row">
-
-                <span>
-                  Total Amount
-                </span>
+                <span>Total Amount</span>
 
                 <strong className="order-total">
-                  {formatPrice(totalAmount)}
+                  {formatPrice(
+                    totalAmount
+                  )}
                 </strong>
-
               </div>
 
             </div>
-
           </section>
-
 
           {/* ==================================================
               PAYMENT
@@ -775,37 +685,26 @@ function OrderSuccess() {
           <section className="details-card">
 
             <div className="details-card-header">
+              <FiCreditCard />
 
-              <FiCreditCard
-                aria-hidden="true"
-              />
-
-              <h2>
-                Payment
-              </h2>
-
+              <h2>Payment</h2>
             </div>
-
 
             <div className="details-list">
 
               <div className="detail-row">
-
                 <span>
                   Payment Method
                 </span>
 
                 <strong>
-                  {formatPaymentMethod(
+                  {formatText(
                     paymentMethod
                   )}
                 </strong>
-
               </div>
 
-
               <div className="detail-row">
-
                 <span>
                   Payment Status
                 </span>
@@ -813,36 +712,28 @@ function OrderSuccess() {
                 <span
                   className={`status ${paymentStatus}`}
                 >
-                  {formatStatus(
+                  {formatText(
                     paymentStatus
                   )}
                 </span>
-
               </div>
 
             </div>
-
           </section>
 
-
           {/* ==================================================
-              SHIPPING ADDRESS
+              SHIPPING
           ================================================== */}
 
           <section className="details-card">
 
             <div className="details-card-header">
-
-              <FiMapPin
-                aria-hidden="true"
-              />
+              <FiMapPin />
 
               <h2>
                 Shipping Address
               </h2>
-
             </div>
-
 
             <div className="address-details">
 
@@ -852,13 +743,11 @@ function OrderSuccess() {
                   "N/A"}
               </strong>
 
-
               {shippingAddress?.phone && (
                 <p>
                   {shippingAddress.phone}
                 </p>
               )}
-
 
               {shippingAddress?.address && (
                 <p>
@@ -866,13 +755,11 @@ function OrderSuccess() {
                 </p>
               )}
 
-
               {shippingAddress?.street && (
                 <p>
                   {shippingAddress.street}
                 </p>
               )}
-
 
               {(shippingAddress?.city ||
                 shippingAddress?.state) && (
@@ -886,13 +773,11 @@ function OrderSuccess() {
                 </p>
               )}
 
-
               {shippingAddress?.postalCode && (
                 <p>
                   {shippingAddress.postalCode}
                 </p>
               )}
-
 
               {shippingAddress?.country && (
                 <p>
@@ -901,11 +786,9 @@ function OrderSuccess() {
               )}
 
             </div>
-
           </section>
 
         </div>
-
 
         {/* ==================================================
             ORDER ITEMS
@@ -917,16 +800,13 @@ function OrderSuccess() {
 
             <div className="details-card-header">
 
-              <FiShoppingBag
-                aria-hidden="true"
-              />
+              <FiShoppingBag />
 
               <h2>
                 Order Items
               </h2>
 
             </div>
-
 
             <span>
               {items.length}{" "}
@@ -937,25 +817,19 @@ function OrderSuccess() {
 
           </div>
 
-
           <div className="order-items">
 
             {items.length === 0 ? (
-
               <div className="empty-order-items">
 
-                <FiShoppingBag
-                  aria-hidden="true"
-                />
+                <FiShoppingBag />
 
                 <p>
                   No items found for this order.
                 </p>
 
               </div>
-
             ) : (
-
               items.map((item, index) => {
 
                 const quantity =
@@ -977,43 +851,41 @@ function OrderSuccess() {
                   item?._id ||
                   item?.product?._id ||
                   item?.product?.id ||
-                  item?.product ||
-                  index;
-
+                  `order-item-${index}`;
 
                 return (
                   <div
                     className="order-item"
-                    key={productId}
+                    key={`${productId}-${index}`}
                   >
 
-                    {/* ======================================
-                        IMAGE
-                    ====================================== */}
+                    {/* IMAGE */}
 
                     <div className="item-image">
 
                       <img
                         src={image}
                         alt={productName}
-                        loading="lazy"
+                        loading="eager"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
                         onError={(event) => {
                           if (
-                            event.currentTarget.src !==
-                            FALLBACK_IMAGE
+                            event.currentTarget.src.includes(
+                              FALLBACK_IMAGE
+                            )
                           ) {
-                            event.currentTarget.src =
-                              FALLBACK_IMAGE;
+                            return;
                           }
+
+                          event.currentTarget.src =
+                            FALLBACK_IMAGE;
                         }}
                       />
 
                     </div>
 
-
-                    {/* ======================================
-                        PRODUCT INFORMATION
-                    ====================================== */}
+                    {/* INFORMATION */}
 
                     <div className="item-info">
 
@@ -1021,11 +893,9 @@ function OrderSuccess() {
                         {productName}
                       </h3>
 
-
                       <p>
                         Quantity: {quantity}
                       </p>
-
 
                       <p>
                         Price:{" "}
@@ -1034,15 +904,14 @@ function OrderSuccess() {
 
                     </div>
 
-
-                    {/* ======================================
-                        ITEM TOTAL
-                    ====================================== */}
+                    {/* TOTAL */}
 
                     <div className="item-total">
 
                       <strong>
-                        {formatPrice(itemTotal)}
+                        {formatPrice(
+                          itemTotal
+                        )}
                       </strong>
 
                     </div>
@@ -1050,30 +919,27 @@ function OrderSuccess() {
                   </div>
                 );
               })
-
             )}
 
           </div>
 
-
           {/* ==================================================
-              ORDER TOTAL
+              TOTAL
           ================================================== */}
 
           <div className="order-summary-total">
 
-            <span>
-              Total
-            </span>
+            <span>Total</span>
 
             <strong>
-              {formatPrice(totalAmount)}
+              {formatPrice(
+                totalAmount
+              )}
             </strong>
 
           </div>
 
         </section>
-
 
         {/* ==================================================
             ACTIONS
@@ -1085,9 +951,10 @@ function OrderSuccess() {
             to="/my-orders"
             className="btn btn-secondary"
           >
+            <FiPackage />
+
             View My Orders
           </Link>
-
 
           <Link
             to="/products"
@@ -1095,19 +962,14 @@ function OrderSuccess() {
           >
             Continue Shopping
 
-            <FiArrowRight
-              aria-hidden="true"
-            />
-
+            <FiArrowRight />
           </Link>
 
         </div>
 
       </div>
-
     </section>
   );
 }
-
 
 export default OrderSuccess;

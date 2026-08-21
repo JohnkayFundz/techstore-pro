@@ -1,71 +1,160 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import { getProducts } from "../api/productApi";
 
 const ProductContext = createContext(null);
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState("");
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
     totalProducts: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
   });
 
-  const fetchProducts = async (params = {}) => {
+  /* ========================================================
+     FETCH PRODUCTS
+  ======================================================== */
+
+  const fetchProducts = useCallback(async (params = {}) => {
     try {
       setLoading(true);
       setError("");
 
       const response = await getProducts(params);
 
-      console.log("ProductContext API Response:", response);
-
-      if (response?.success) {
-        setProducts(response.products || []);
+      if (!response?.success) {
+        setProducts([]);
 
         setPagination({
-          currentPage: response.currentPage || 1,
-          totalPages: response.totalPages || 1,
-          totalProducts: response.totalProducts || 0,
+          currentPage: 1,
+          totalPages: 1,
+          totalProducts: 0,
+          hasNextPage: false,
+          hasPreviousPage: false,
         });
-      } else {
-        setProducts([]);
-        setError(response?.message || "Failed to load products");
+
+        setError(
+          response?.message ||
+            "Failed to load products."
+        );
+
+        return;
       }
-    } catch (err) {
-      console.error("ProductContext Error:", err);
+
+      setProducts(
+        Array.isArray(response.products)
+          ? response.products
+          : []
+      );
+
+      setPagination({
+        currentPage:
+          response.currentPage || 1,
+
+        totalPages:
+          response.totalPages || 1,
+
+        totalProducts:
+          response.totalProducts || 0,
+
+        hasNextPage:
+          Boolean(response.hasNextPage),
+
+        hasPreviousPage:
+          Boolean(response.hasPreviousPage),
+      });
+    } catch (error) {
+      console.error(
+        "ProductContext Error:",
+        error
+      );
 
       setProducts([]);
+
+      setPagination({
+        currentPage: 1,
+        totalPages: 1,
+        totalProducts: 0,
+        hasNextPage: false,
+        hasPreviousPage: false,
+      });
+
       setError(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Failed to load products"
+        error?.message ||
+          "Failed to load products."
       );
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  /* ========================================================
+     INITIAL LOAD
+  ======================================================== */
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts({
+      page: 1,
+      limit: 10,
+    });
+  }, [fetchProducts]);
+
+  /* ========================================================
+     REFRESH PRODUCTS
+  ======================================================== */
+
+  const refreshProducts = useCallback(
+    (params = {}) => {
+      return fetchProducts(params);
+    },
+    [fetchProducts]
+  );
+
+  /* ========================================================
+     CONTEXT VALUE
+  ======================================================== */
 
   const value = {
     products,
-    loading,
-    error,
 
-    currentPage: pagination.currentPage,
-    totalPages: pagination.totalPages,
-    totalProducts: pagination.totalProducts,
+    loading,
+
+    error,
 
     pagination,
 
+    currentPage:
+      pagination.currentPage,
+
+    totalPages:
+      pagination.totalPages,
+
+    totalProducts:
+      pagination.totalProducts,
+
+    hasNextPage:
+      pagination.hasNextPage,
+
+    hasPreviousPage:
+      pagination.hasPreviousPage,
+
     fetchProducts,
-    refreshProducts: fetchProducts,
+
+    refreshProducts,
   };
 
   return (
@@ -80,7 +169,8 @@ export function ProductProvider({ children }) {
 ========================================================== */
 
 export function useProducts() {
-  const context = useContext(ProductContext);
+  const context =
+    useContext(ProductContext);
 
   if (!context) {
     throw new Error(
@@ -93,7 +183,6 @@ export function useProducts() {
 
 /* ==========================================================
    COMPATIBILITY HOOK
-   Allows existing components using useProduct()
 ========================================================== */
 
 export function useProduct() {

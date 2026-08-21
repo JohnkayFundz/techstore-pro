@@ -14,16 +14,126 @@ import { formatPrice } from "../../utils/formatPrice";
 import "./ProductCard.css";
 
 /* ==========================================================
-   LOCAL PLACEHOLDER IMAGE
-
-   File location:
-   public/placeholder-product.png
-
-   Browser URL:
-   http://localhost:5173/placeholder-product.png
+   CONSTANTS
 ========================================================== */
 
 const PLACEHOLDER_IMAGE = "/placeholder-product.png";
+
+/* ==========================================================
+   GET SAFE IMAGE URL
+========================================================== */
+
+const getSafeImageUrl = (value) => {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const image = value.trim();
+
+  if (!image) {
+    return null;
+  }
+
+  /*
+    Reject old external placeholder URLs.
+  */
+  if (image.includes("via.placeholder.com")) {
+    return null;
+  }
+
+  /*
+    Reject javascript/data/blob URLs.
+    This keeps the image source predictable.
+  */
+  if (
+    image.startsWith("javascript:") ||
+    image.startsWith("data:") ||
+    image.startsWith("blob:")
+  ) {
+    return null;
+  }
+
+  return image;
+};
+
+/* ==========================================================
+   GET PRODUCT IMAGE
+========================================================== */
+
+const getProductImage = (product) => {
+  if (!product) {
+    return PLACEHOLDER_IMAGE;
+  }
+
+  /*
+    1. Main image
+  */
+
+  const mainImage = getSafeImageUrl(
+    product.image
+  );
+
+  if (mainImage) {
+    return mainImage;
+  }
+
+  /*
+    2. imageUrl
+  */
+
+  const imageUrl = getSafeImageUrl(
+    product.imageUrl
+  );
+
+  if (imageUrl) {
+    return imageUrl;
+  }
+
+  /*
+    3. images array
+  */
+
+  if (Array.isArray(product.images)) {
+    for (const image of product.images) {
+      /*
+        String image
+      */
+
+      if (typeof image === "string") {
+        const safeImage =
+          getSafeImageUrl(image);
+
+        if (safeImage) {
+          return safeImage;
+        }
+      }
+
+      /*
+        Object image
+      */
+
+      if (
+        image &&
+        typeof image === "object"
+      ) {
+        const safeImage =
+          getSafeImageUrl(
+            image.url
+          );
+
+        if (safeImage) {
+          return safeImage;
+        }
+      }
+    }
+  }
+
+  /*
+    4. Always use local fallback.
+  */
+
+  return PLACEHOLDER_IMAGE;
+};
 
 /* ==========================================================
    PRODUCT CARD
@@ -37,12 +147,6 @@ const ProductCard = ({ product }) => {
   if (!product) {
     return null;
   }
-
-  /* ========================================================
-     DEBUG
-  ======================================================== */
-
-  console.log("PRODUCT CARD DATA:", product);
 
   /* ========================================================
      CONTEXTS
@@ -60,57 +164,26 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   const productId =
-    product._id || product.id;
+    product._id ||
+    product.id;
+
+  /*
+    Do not create broken product URLs.
+  */
+
+  if (!productId) {
+    return null;
+  }
 
   /* ========================================================
      PRODUCT IMAGE
-
-     Support both:
-     product.image
-     product.images[0]
   ======================================================== */
 
-  const getProductImage = () => {
-    if (
-      typeof product.image === "string" &&
-      product.image.trim() !== ""
-    ) {
-      return product.image;
-    }
-
-    if (
-      Array.isArray(product.images) &&
-      product.images.length > 0
-    ) {
-      const firstImage = product.images[0];
-
-      if (typeof firstImage === "string") {
-        return firstImage;
-      }
-
-      if (
-        firstImage &&
-        typeof firstImage.url === "string"
-      ) {
-        return firstImage.url;
-      }
-    }
-
-    return PLACEHOLDER_IMAGE;
-  };
-
-  const initialImage = getProductImage();
-
-  /* ========================================================
-     IMAGE STATE
-  ======================================================== */
+  const initialImage =
+    getProductImage(product);
 
   const [imageSrc, setImageSrc] =
     useState(initialImage);
-
-  /* ========================================================
-     IMAGE ERROR STATE
-  ======================================================== */
 
   const [imageError, setImageError] =
     useState(false);
@@ -120,7 +193,8 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   useEffect(() => {
-    const nextImage = getProductImage();
+    const nextImage =
+      getProductImage(product);
 
     setImageSrc(nextImage);
     setImageError(false);
@@ -128,37 +202,35 @@ const ProductCard = ({ product }) => {
     product._id,
     product.id,
     product.image,
+    product.imageUrl,
     product.images,
   ]);
 
   /* ========================================================
      IMAGE ERROR HANDLER
-
-     If the actual product image fails:
-     → use local placeholder
-
-     If the placeholder itself fails:
-     → do not create an infinite error loop
   ======================================================== */
 
   const handleImageError = () => {
-    console.warn(
-      "Product image failed:",
-      imageSrc
-    );
+    /*
+      Prevent an infinite fallback loop.
+    */
 
-    if (imageSrc !== PLACEHOLDER_IMAGE) {
+    if (
+      imageSrc ===
+      PLACEHOLDER_IMAGE
+    ) {
       setImageError(true);
-      setImageSrc(PLACEHOLDER_IMAGE);
       return;
     }
 
-    /*
-      Placeholder itself failed.
+    console.warn(
+      "⚠️ Product image failed to load:",
+      imageSrc
+    );
 
-      Do not keep changing state because that
-      can create an infinite image error loop.
-    */
+    setImageSrc(
+      PLACEHOLDER_IMAGE
+    );
 
     setImageError(true);
   };
@@ -168,7 +240,8 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   const productName =
-    product.name || "Unnamed Product";
+    product.name ||
+    "Unnamed Product";
 
   const productPrice =
     Number(product.price) || 0;
@@ -182,33 +255,34 @@ const ProductCard = ({ product }) => {
   const productReviews =
     Number(
       product.numReviews ??
-      product.reviewsCount ??
-      0
+        product.reviewsCount ??
+        product.reviews ??
+        0
     );
 
   const productStock =
     Number(product.stock ?? 0);
 
   const productCategory =
-    product.category || "Tech";
+    product.category ||
+    "Tech";
 
   const productBrand =
     product.brand || "";
 
   /* ========================================================
      DISCOUNT
-
-     Use backend discount if available.
-     Otherwise calculate from oldPrice and price.
   ======================================================== */
 
   const discount =
     Number(product.discount) ||
     (
-      productOldPrice > productPrice
+      productOldPrice >
+      productPrice
         ? Math.round(
             (
-              (productOldPrice - productPrice) /
+              (productOldPrice -
+                productPrice) /
               productOldPrice
             ) * 100
           )
@@ -228,7 +302,8 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   const wishlistActive =
-    typeof isInWishlist === "function"
+    typeof isInWishlist ===
+    "function"
       ? isInWishlist(productId)
       : false;
 
@@ -236,7 +311,9 @@ const ProductCard = ({ product }) => {
      ADD TO CART
   ======================================================== */
 
-  const handleAddToCart = (event) => {
+  const handleAddToCart = (
+    event
+  ) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -251,12 +328,15 @@ const ProductCard = ({ product }) => {
      WISHLIST
   ======================================================== */
 
-  const handleWishlist = (event) => {
+  const handleWishlist = (
+    event
+  ) => {
     event.preventDefault();
     event.stopPropagation();
 
     if (
-      typeof toggleWishlist === "function"
+      typeof toggleWishlist ===
+      "function"
     ) {
       toggleWishlist(product);
     }
@@ -269,9 +349,9 @@ const ProductCard = ({ product }) => {
   return (
     <article className="product-card">
 
-      {/* ====================================================
+      {/* ==================================================
           IMAGE SECTION
-      ==================================================== */}
+      ================================================== */}
 
       <div className="product-card__image-wrapper">
 
@@ -298,6 +378,9 @@ const ProductCard = ({ product }) => {
               ? `Remove ${productName} from wishlist`
               : `Add ${productName} to wishlist`
           }
+          aria-pressed={
+            wishlistActive
+          }
         >
           <FiHeart
             size={19}
@@ -316,7 +399,10 @@ const ProductCard = ({ product }) => {
           className="product-card__image-link"
         >
           <img
-            src={imageSrc || PLACEHOLDER_IMAGE}
+            src={
+              imageSrc ||
+              PLACEHOLDER_IMAGE
+            }
             alt={productName}
             className={`product-card__image ${
               imageError
@@ -325,7 +411,9 @@ const ProductCard = ({ product }) => {
             }`}
             loading="eager"
             decoding="async"
-            onError={handleImageError}
+            onError={
+              handleImageError
+            }
           />
         </Link>
 
@@ -336,11 +424,12 @@ const ProductCard = ({ product }) => {
             Out of Stock
           </span>
         )}
+
       </div>
 
-      {/* ====================================================
+      {/* ==================================================
           PRODUCT CONTENT
-      ==================================================== */}
+      ================================================== */}
 
       <div className="product-card__content">
 
@@ -361,14 +450,14 @@ const ProductCard = ({ product }) => {
         {/* PRODUCT NAME */}
 
         <h3 className="product-card__title">
-          <Link to={`/products/${productId}`}>
+          <Link
+            to={`/products/${productId}`}
+          >
             {productName}
           </Link>
         </h3>
 
-        {/* ==================================================
-            RATING
-        ================================================== */}
+        {/* RATING */}
 
         <div className="product-card__rating">
 
@@ -380,7 +469,8 @@ const ProductCard = ({ product }) => {
                   key={star}
                   size={14}
                   fill={
-                    star <= productRating
+                    star <=
+                    productRating
                       ? "currentColor"
                       : "none"
                   }
@@ -396,45 +486,53 @@ const ProductCard = ({ product }) => {
 
         </div>
 
-        {/* ==================================================
-            PRICE
-        ================================================== */}
+        {/* PRICE */}
 
         <div className="product-card__price-wrapper">
 
           <span className="product-card__price">
-            {formatPrice(productPrice)}
+            {formatPrice(
+              productPrice
+            )}
           </span>
 
           {productOldPrice >
             productPrice && (
             <span className="product-card__old-price">
-              {formatPrice(productOldPrice)}
+              {formatPrice(
+                productOldPrice
+              )}
             </span>
           )}
 
         </div>
 
-        {/* ==================================================
-            ADD TO CART
-        ================================================== */}
+        {/* ADD TO CART */}
 
         <button
           type="button"
           className="product-card__cart-btn"
-          onClick={handleAddToCart}
-          disabled={isOutOfStock}
+          onClick={
+            handleAddToCart
+          }
+          disabled={
+            isOutOfStock
+          }
         >
-          <FiShoppingCart size={18} />
+          <FiShoppingCart
+            size={18}
+          />
 
           <span>
             {isOutOfStock
               ? "Out of Stock"
               : "Add to Cart"}
           </span>
+
         </button>
 
       </div>
+
     </article>
   );
 };
@@ -444,75 +542,93 @@ const ProductCard = ({ product }) => {
 ========================================================== */
 
 ProductCard.propTypes = {
-  product: PropTypes.shape({
-    _id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-
-    name: PropTypes.string,
-
-    image: PropTypes.string,
-
-    images: PropTypes.arrayOf(
-      PropTypes.oneOfType([
+  product:
+    PropTypes.shape({
+      _id: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.shape({
-          url: PropTypes.string,
-        }),
-      ])
-    ),
+        PropTypes.number,
+      ]),
 
-    price: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+      id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
 
-    oldPrice: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+      name: PropTypes.string,
 
-    discount: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+      image: PropTypes.string,
 
-    rating: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+      imageUrl:
+        PropTypes.string,
 
-    numReviews: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+      images:
+        PropTypes.arrayOf(
+          PropTypes.oneOfType([
+            PropTypes.string,
 
-    reviewsCount: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+            PropTypes.shape({
+              url: PropTypes.string,
+            }),
+          ])
+        ),
 
-    stock: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+      price:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
 
-    inStock: PropTypes.bool,
+      oldPrice:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
 
-    category: PropTypes.string,
+      discount:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
 
-    brand: PropTypes.string,
-  }),
+      rating:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
+
+      numReviews:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
+
+      reviewsCount:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
+
+      reviews:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
+
+      stock:
+        PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]),
+
+      inStock:
+        PropTypes.bool,
+
+      category:
+        PropTypes.string,
+
+      brand:
+        PropTypes.string,
+    }),
 };
-
-/* ==========================================================
-   EXPORT
-========================================================== */
 
 export default memo(ProductCard);

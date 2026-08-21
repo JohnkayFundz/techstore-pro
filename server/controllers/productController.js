@@ -1,728 +1,1142 @@
+// ==========================================================
+// TECHSTORE PRO
+// PRODUCT CONTROLLER
+// ==========================================================
+
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 
+// ==========================================================
+// HELPERS
+// ==========================================================
 
+const isValidObjectId = (id) => {
+  return mongoose.Types.ObjectId.isValid(id);
+};
 
-/* ==========================================================
-   GET ALL ACTIVE PRODUCTS
-   GET /api/products
-========================================================== */
+const escapeRegex = (value = "") => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
+const buildSearchFilter = (searchTerm = "") => {
+  const term = searchTerm.trim();
+
+  if (!term) {
+    return null;
+  }
+
+  const safeSearch = escapeRegex(term);
+
+  return {
+    $or: [
+      {
+        name: {
+          $regex: safeSearch,
+          $options: "i",
+        },
+      },
+      {
+        brand: {
+          $regex: safeSearch,
+          $options: "i",
+        },
+      },
+      {
+        category: {
+          $regex: safeSearch,
+          $options: "i",
+        },
+      },
+      {
+        description: {
+          $regex: safeSearch,
+          $options: "i",
+        },
+      },
+      {
+        sku: {
+          $regex: safeSearch,
+          $options: "i",
+        },
+      },
+    ],
+  };
+};
+
+const buildSortOption = (sort = "newest") => {
+  switch (sort) {
+    case "price-low":
+    case "price_asc":
+    case "price-low-to-high":
+      return { price: 1 };
+
+    case "price-high":
+    case "price_desc":
+    case "price-high-to-low":
+      return { price: -1 };
+
+    case "name":
+    case "name-asc":
+      return { name: 1 };
+
+    case "name-desc":
+      return { name: -1 };
+
+    case "rating":
+      return { rating: -1 };
+
+    case "oldest":
+      return { createdAt: 1 };
+
+    case "newest":
+    default:
+      return { createdAt: -1 };
+  }
+};
+
+const getPagination = (page, limit) => {
+  const parsedPage = Number(page);
+  const parsedLimit = Number(limit);
+
+  const currentPage = Math.max(
+    Number.isFinite(parsedPage)
+      ? Math.floor(parsedPage)
+      : 1,
+    1
+  );
+
+  const pageSize = Math.min(
+    Math.max(
+      Number.isFinite(parsedLimit)
+        ? Math.floor(parsedLimit)
+        : 10,
+      1
+    ),
+    100
+  );
+
+  const skip = (currentPage - 1) * pageSize;
+
+  return {
+    currentPage,
+    pageSize,
+    skip,
+  };
+};
+
+const buildPriceFilter = (minPrice, maxPrice) => {
+  const parsedMinPrice = Number(minPrice);
+  const parsedMaxPrice = Number(maxPrice);
+
+  const hasMinPrice =
+    minPrice !== undefined &&
+    minPrice !== "" &&
+    Number.isFinite(parsedMinPrice);
+
+  const hasMaxPrice =
+    maxPrice !== undefined &&
+    maxPrice !== "" &&
+    Number.isFinite(parsedMaxPrice);
+
+  if (
+    hasMinPrice &&
+    hasMaxPrice &&
+    parsedMinPrice > parsedMaxPrice
+  ) {
+    return {
+      error:
+        "Minimum price cannot be greater than maximum price.",
+    };
+  }
+
+  if (!hasMinPrice && !hasMaxPrice) {
+    return {
+      filter: null,
+    };
+  }
+
+  const priceFilter = {};
+
+  if (hasMinPrice) {
+    priceFilter.$gte = Math.max(parsedMinPrice, 0);
+  }
+
+  if (hasMaxPrice) {
+    priceFilter.$lte = Math.max(parsedMaxPrice, 0);
+  }
+
+  return {
+    filter: priceFilter,
+  };
+};
+
+const getValidationMessage = (error) => {
+  if (error?.name === "ValidationError") {
+    return Object.values(error.errors)
+      .map((item) => item.message)
+      .join(", ");
+  }
+
+  return null;
+};
+
+// ==========================================================
+// GET ALL ACTIVE PRODUCTS
+// GET /api/products
+// PUBLIC
+// ==========================================================
 
 export const getProducts = async (req, res) => {
-
   try {
-
     const {
       keyword,
+      search,
       category,
       featured,
       bestseller,
       newArrival,
+      minPrice,
+      maxPrice,
       sort = "newest",
       page = 1,
       limit = 10,
     } = req.query;
 
-
+    // --------------------------------------------------------
+    // BASE FILTER
+    // --------------------------------------------------------
 
     const filter = {
       isActive: true,
     };
 
+    // --------------------------------------------------------
+    // SEARCH
+    // --------------------------------------------------------
 
+    const searchTerm = (
+      search ||
+      keyword ||
+      ""
+    ).trim();
 
-    // Search
-    if (keyword) {
+    const searchFilter =
+      buildSearchFilter(searchTerm);
 
-      filter.$or = [
-
-        {
-          name: {
-            $regex: keyword,
-            $options: "i",
-          },
-        },
-
-        {
-          brand: {
-            $regex: keyword,
-            $options: "i",
-          },
-        },
-
-      ];
-
+    if (searchFilter) {
+      Object.assign(filter, searchFilter);
     }
 
+    // --------------------------------------------------------
+    // CATEGORY
+    // --------------------------------------------------------
 
-
-    // Category
-    if (category) {
-
-      filter.category = category;
-
+    if (
+      category &&
+      category.trim() &&
+      category.trim() !== "All"
+    ) {
+      filter.category = category.trim();
     }
 
+    // --------------------------------------------------------
+    // FEATURED
+    // --------------------------------------------------------
 
-
-    // Featured
     if (featured === "true") {
-
       filter.featured = true;
-
     }
 
+    // --------------------------------------------------------
+    // BESTSELLER
+    // --------------------------------------------------------
 
-
-    // Bestseller
     if (bestseller === "true") {
-
       filter.bestseller = true;
-
     }
 
+    // --------------------------------------------------------
+    // NEW ARRIVAL
+    // --------------------------------------------------------
 
-
-    // New arrival
     if (newArrival === "true") {
-
       filter.newArrival = true;
-
     }
 
+    // --------------------------------------------------------
+    // PRICE FILTER
+    // --------------------------------------------------------
 
+    const priceResult = buildPriceFilter(
+      minPrice,
+      maxPrice
+    );
 
-
-    let sortOption = {
-      createdAt: -1,
-    };
-
-
-    switch(sort){
-
-      case "price-low":
-
-        sortOption = {
-          price:1,
-        };
-
-        break;
-
-
-      case "price-high":
-
-        sortOption = {
-          price:-1,
-        };
-
-        break;
-
-
-      case "name":
-
-        sortOption = {
-          name:1,
-        };
-
-        break;
-
-
-      case "rating":
-
-        sortOption = {
-          rating:-1,
-        };
-
-        break;
-
-
-      default:
-
-        sortOption = {
-          createdAt:-1,
-        };
-
+    if (priceResult.error) {
+      return res.status(400).json({
+        success: false,
+        message: priceResult.error,
+        products: [],
+      });
     }
 
+    if (priceResult.filter) {
+      filter.price = priceResult.filter;
+    }
 
+    // --------------------------------------------------------
+    // SORT
+    // --------------------------------------------------------
 
-    const currentPage = Number(page);
+    const sortOption = buildSortOption(sort);
 
-    const pageSize = Number(limit);
+    // --------------------------------------------------------
+    // PAGINATION
+    // --------------------------------------------------------
 
-
-
-    const skip =
-      (currentPage - 1) * pageSize;
-
-
-
-
-    const products =
-      await Product.find(filter)
-      .sort(sortOption)
-      .skip(skip)
-      .limit(pageSize);
-
-
-
-    const totalProducts =
-      await Product.countDocuments(filter);
-
-
-
-    res.status(200).json({
-
-      success:true,
-
-      count:products.length,
-
-      totalProducts,
-
+    const {
       currentPage,
+      pageSize,
+      skip,
+    } = getPagination(page, limit);
 
-      totalPages:
-        Math.ceil(
-          totalProducts / pageSize
-        ),
+    // --------------------------------------------------------
+    // DATABASE QUERY
+    // --------------------------------------------------------
 
+    const [products, totalProducts] =
+      await Promise.all([
+        Product.find(filter)
+          .sort(sortOption)
+          .skip(skip)
+          .limit(pageSize)
+          .lean(),
+
+        Product.countDocuments(filter),
+      ]);
+
+    // --------------------------------------------------------
+    // PAGINATION INFO
+    // --------------------------------------------------------
+
+    const totalPages = Math.ceil(
+      totalProducts / pageSize
+    );
+
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      totalProducts,
+      currentPage,
+      totalPages,
+      hasNextPage:
+        currentPage < totalPages,
+      hasPreviousPage:
+        currentPage > 1,
       products,
-
     });
-
-
-
-  } catch(error){
-
-
+  } catch (error) {
     console.error(
       "Get Products Error:",
       error
     );
 
-
-    res.status(500).json({
-
-      success:false,
-
-      message:
-        "Failed to fetch products",
-
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch products.",
+      products: [],
     });
-
-
   }
-
 };
 
-
-
-
-
-
-
-/* ==========================================================
-   GET ADMIN PRODUCTS
-   GET /api/admin/products
-========================================================== */
+// ==========================================================
+// GET ADMIN PRODUCTS
+// GET /api/products/admin
+// ADMIN
+// ==========================================================
 
 export const getAdminProducts = async (
   req,
   res
 ) => {
-
-
   try {
-
-
     const products =
       await Product.find({})
-      .sort({
-        createdAt:-1,
-      });
+        .sort({
+          createdAt: -1,
+        })
+        .lean();
 
-
-
-    res.status(200).json({
-
-      success:true,
-
-      count:
-        products.length,
-
+    return res.status(200).json({
+      success: true,
+      count: products.length,
       products,
-
     });
-
-
-
-  } catch(error){
-
-
+  } catch (error) {
     console.error(
       "Admin Products Error:",
       error
     );
 
-
-    res.status(500).json({
-
-      success:false,
-
+    return res.status(500).json({
+      success: false,
       message:
-        "Failed to fetch admin products",
-
+        "Failed to fetch admin products.",
+      products: [],
     });
-
-
   }
-
-
 };
 
+// ==========================================================
+// SEARCH PRODUCTS
+// GET /api/products/search
+// PUBLIC
+// ==========================================================
 
+export const searchProducts = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      q = "",
+      search = "",
+      keyword = "",
+      category,
+      minPrice,
+      maxPrice,
+      sort = "newest",
+    } = req.query;
 
+    // --------------------------------------------------------
+    // SEARCH TERM
+    // --------------------------------------------------------
 
+    const searchTerm = (
+      q ||
+      search ||
+      keyword ||
+      ""
+    ).trim();
 
+    // --------------------------------------------------------
+    // BASE FILTER
+    // --------------------------------------------------------
 
+    const filter = {
+      isActive: true,
+    };
 
+    // --------------------------------------------------------
+    // SEARCH
+    // --------------------------------------------------------
 
-/* ==========================================================
-   GET SINGLE PRODUCT
-   GET /api/products/:id
-========================================================== */
+    const searchFilter =
+      buildSearchFilter(searchTerm);
 
+    if (searchFilter) {
+      Object.assign(filter, searchFilter);
+    }
+
+    // --------------------------------------------------------
+    // CATEGORY
+    // --------------------------------------------------------
+
+    if (
+      category &&
+      category.trim() &&
+      category.trim() !== "All"
+    ) {
+      filter.category = category.trim();
+    }
+
+    // --------------------------------------------------------
+    // PRICE FILTER
+    // --------------------------------------------------------
+
+    const priceResult = buildPriceFilter(
+      minPrice,
+      maxPrice
+    );
+
+    if (priceResult.error) {
+      return res.status(400).json({
+        success: false,
+        message: priceResult.error,
+        products: [],
+      });
+    }
+
+    if (priceResult.filter) {
+      filter.price = priceResult.filter;
+    }
+
+    // --------------------------------------------------------
+    // SORT
+    // --------------------------------------------------------
+
+    const sortOption = buildSortOption(sort);
+
+    // --------------------------------------------------------
+    // QUERY
+    // --------------------------------------------------------
+
+    const products =
+      await Product.find(filter)
+        .sort(sortOption)
+        .lean();
+
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    console.error(
+      "Search Products Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to search products.",
+      products: [],
+    });
+  }
+};
+
+// ==========================================================
+// GET SINGLE PRODUCT
+// GET /api/products/:id
+// PUBLIC
+// ==========================================================
 
 export const getProductById = async (
   req,
   res
-)=>{
+) => {
+  try {
+    const { id } = req.params;
 
+    // --------------------------------------------------------
+    // VALIDATE ID
+    // --------------------------------------------------------
 
-  try{
-
-
-    if(
-      !mongoose.Types.ObjectId.isValid(
-        req.params.id
-      )
-    ){
-
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
-
-        success:false,
-
-        message:
-          "Invalid product ID",
-
+        success: false,
+        message: "Invalid product ID.",
       });
-
     }
 
-
+    // --------------------------------------------------------
+    // FIND ACTIVE PRODUCT
+    // --------------------------------------------------------
 
     const product =
       await Product.findOne({
+        _id: id,
+        isActive: true,
+      }).lean();
 
-        _id:req.params.id,
-
-        isActive:true,
-
-      });
-
-
-
-    if(!product){
-
+    if (!product) {
       return res.status(404).json({
-
-        success:false,
-
-        message:
-          "Product not found",
-
+        success: false,
+        message: "Product not found.",
       });
-
     }
 
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
 
-
-    res.status(200).json({
-
-      success:true,
-
+    return res.status(200).json({
+      success: true,
       product,
-
     });
-
-
-
-  }catch(error){
-
-
+  } catch (error) {
     console.error(
       "Get Product Error:",
       error
     );
 
-
-    res.status(500).json({
-
-      success:false,
-
-      message:
-        "Failed to fetch product",
-
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch product.",
     });
-
-
   }
-
-
 };
 
+// ==========================================================
+// GET ADMIN PRODUCT BY ID
+// GET /api/products/admin/:id
+// ADMIN
+// ==========================================================
 
+export const getAdminProductById = async (
+  req,
+  res
+) => {
+  try {
+    const { id } = req.params;
 
+    // --------------------------------------------------------
+    // VALIDATE ID
+    // --------------------------------------------------------
 
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // FIND PRODUCT
+    // --------------------------------------------------------
 
+    const product =
+      await Product.findById(id).lean();
 
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
 
-/* ==========================================================
-   CREATE PRODUCT
-   POST /api/products
-   ADMIN
-========================================================== */
+    return res.status(200).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    console.error(
+      "Get Admin Product Error:",
+      error
+    );
 
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to fetch product.",
+    });
+  }
+};
+
+// ==========================================================
+// CREATE PRODUCT
+// POST /api/products
+// ADMIN
+// ==========================================================
 
 export const createProduct = async (
   req,
   res
-)=>{
+) => {
+  try {
+    const {
+      name,
+      description,
+      price,
+      oldPrice,
+      discount,
+      currency,
+      category,
+      brand,
+      sku,
+      image,
+      images,
+      features,
+      stock,
+      shipping,
+      rating,
+      numReviews,
+      warranty,
+      featured,
+      bestseller,
+      newArrival,
+      isActive,
+    } = req.body;
 
+    // --------------------------------------------------------
+    // BASIC SKU CHECK
+    // --------------------------------------------------------
 
- try{
-
-
-  const product =
-    await Product.create({
-
-      ...req.body,
-
-      createdBy:
-        req.user._id,
-
-    });
-
-
-
-  res.status(201).json({
-
-    success:true,
-
-    message:
-      "Product created successfully",
-
-    product,
-
-  });
-
-
-
- }catch(error){
-
-
-  console.error(
-    "Create Product Error:",
-    error
-  );
-
-
-  res.status(500).json({
-
-    success:false,
-
-    message:
-      "Failed to create product",
-
-  });
-
-
- }
-
-
-};
-
-
-
-
-
-
-
-
-
-
-/* ==========================================================
-   UPDATE PRODUCT
-   PUT /api/products/:id
-   ADMIN
-========================================================== */
-
-
-export const updateProduct = async (
- req,
- res
-)=>{
-
-
-try{
-
-
- const product =
-  await Product.findByIdAndUpdate(
-
-    req.params.id,
-
-    req.body,
-
-    {
-      new:true,
-      runValidators:true,
+    if (!sku || !String(sku).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "SKU is required.",
+      });
     }
 
-  );
+    const normalizedSku = String(sku)
+      .trim()
+      .toUpperCase();
 
+    // --------------------------------------------------------
+    // CHECK DUPLICATE SKU
+    // --------------------------------------------------------
 
+    const existingProduct =
+      await Product.findOne({
+        sku: normalizedSku,
+      }).lean();
 
- if(!product){
+    if (existingProduct) {
+      return res.status(409).json({
+        success: false,
+        message:
+          "A product with this SKU already exists.",
+      });
+    }
 
-  return res.status(404).json({
+    // --------------------------------------------------------
+    // CREATE PRODUCT
+    // --------------------------------------------------------
 
-    success:false,
+    const product =
+      await Product.create({
+        name,
+        description,
+        price,
+        oldPrice,
+        discount,
+        currency,
+        category,
+        brand,
+        sku: normalizedSku,
+        image,
+        images,
+        features,
+        stock,
+        shipping,
+        rating,
+        numReviews,
+        warranty,
+        featured,
+        bestseller,
+        newArrival,
+        isActive,
+        createdBy:
+          req.user?._id || null,
+      });
 
-    message:
-      "Product not found",
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
 
-  });
+    return res.status(201).json({
+      success: true,
+      message:
+        "Product created successfully.",
+      product,
+    });
+  } catch (error) {
+    console.error(
+      "Create Product Error:",
+      error
+    );
 
- }
+    // --------------------------------------------------------
+    // DUPLICATE KEY ERROR
+    // --------------------------------------------------------
 
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message:
+          "A product with this SKU already exists.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // VALIDATION ERROR
+    // --------------------------------------------------------
 
- res.status(200).json({
+    const validationMessage =
+      getValidationMessage(error);
 
-  success:true,
+    if (validationMessage) {
+      return res.status(400).json({
+        success: false,
+        message: validationMessage,
+      });
+    }
 
-  message:
-    "Product updated successfully",
+    // --------------------------------------------------------
+    // SERVER ERROR
+    // --------------------------------------------------------
 
-  product,
-
- });
-
-
-
-}catch(error){
-
-
- console.error(
-  "Update Product Error:",
-  error
- );
-
-
- res.status(500).json({
-
-  success:false,
-
-  message:
-    "Failed to update product",
-
- });
-
-
-}
-
-
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to create product.",
+    });
+  }
 };
 
+// ==========================================================
+// UPDATE PRODUCT
+// PUT /api/products/:id
+// ADMIN
+// ==========================================================
 
+export const updateProduct = async (
+  req,
+  res
+) => {
+  try {
+    const { id } = req.params;
 
+    // --------------------------------------------------------
+    // VALIDATE ID
+    // --------------------------------------------------------
 
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // ALLOWED FIELDS
+    // --------------------------------------------------------
 
+    const allowedFields = [
+      "name",
+      "description",
+      "price",
+      "oldPrice",
+      "discount",
+      "currency",
+      "category",
+      "brand",
+      "sku",
+      "image",
+      "images",
+      "features",
+      "stock",
+      "shipping",
+      "rating",
+      "numReviews",
+      "warranty",
+      "featured",
+      "bestseller",
+      "newArrival",
+      "isActive",
+    ];
 
+    // --------------------------------------------------------
+    // BUILD UPDATE DATA
+    // --------------------------------------------------------
 
+    const updateData = {};
 
+    allowedFields.forEach((field) => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          req.body,
+          field
+        )
+      ) {
+        updateData[field] =
+          req.body[field];
+      }
+    });
 
-/* ==========================================================
-   DELETE PRODUCT (SOFT DELETE)
-   DELETE /api/products/:id
-   ADMIN
-========================================================== */
+    // --------------------------------------------------------
+    // PREVENT EMPTY UPDATE
+    // --------------------------------------------------------
 
+    if (
+      Object.keys(updateData).length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "No valid product fields provided for update.",
+      });
+    }
+
+    // --------------------------------------------------------
+    // NORMALIZE SKU
+    // --------------------------------------------------------
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        updateData,
+        "sku"
+      )
+    ) {
+      if (
+        !updateData.sku ||
+        !String(updateData.sku).trim()
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "SKU cannot be empty.",
+        });
+      }
+
+      updateData.sku = String(
+        updateData.sku
+      )
+        .trim()
+        .toUpperCase();
+
+      // ------------------------------------------------------
+      // CHECK SKU BELONGS TO ANOTHER PRODUCT
+      // ------------------------------------------------------
+
+      const duplicateSku =
+        await Product.findOne({
+          sku: updateData.sku,
+          _id: {
+            $ne: id,
+          },
+        }).lean();
+
+      if (duplicateSku) {
+        return res.status(409).json({
+          success: false,
+          message:
+            "Another product with this SKU already exists.",
+        });
+      }
+    }
+
+    // --------------------------------------------------------
+    // UPDATE PRODUCT
+    // --------------------------------------------------------
+
+    const product =
+      await Product.findByIdAndUpdate(
+        id,
+        {
+          $set: updateData,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+    // --------------------------------------------------------
+    // PRODUCT NOT FOUND
+    // --------------------------------------------------------
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
+
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Product updated successfully.",
+      product,
+    });
+  } catch (error) {
+    console.error(
+      "Update Product Error:",
+      error
+    );
+
+    // --------------------------------------------------------
+    // DUPLICATE KEY ERROR
+    // --------------------------------------------------------
+
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message:
+          "A product with this SKU already exists.",
+      });
+    }
+
+    // --------------------------------------------------------
+    // VALIDATION ERROR
+    // --------------------------------------------------------
+
+    const validationMessage =
+      getValidationMessage(error);
+
+    if (validationMessage) {
+      return res.status(400).json({
+        success: false,
+        message: validationMessage,
+      });
+    }
+
+    // --------------------------------------------------------
+    // SERVER ERROR
+    // --------------------------------------------------------
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to update product.",
+    });
+  }
+};
+
+// ==========================================================
+// DELETE PRODUCT
+// SOFT DELETE
+// DELETE /api/products/:id
+// ADMIN
+// ==========================================================
 
 export const deleteProduct = async (
- req,
- res
-)=>{
+  req,
+  res
+) => {
+  try {
+    const { id } = req.params;
 
+    // --------------------------------------------------------
+    // VALIDATE ID
+    // --------------------------------------------------------
 
-try{
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // FIND PRODUCT
+    // --------------------------------------------------------
 
- const product =
-  await Product.findById(
-    req.params.id
-  );
+    const product =
+      await Product.findById(id);
 
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // SOFT DELETE
+    // --------------------------------------------------------
 
- if(!product){
+    product.isActive = false;
 
-  return res.status(404).json({
+    await product.save();
 
-   success:false,
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
 
-   message:
-    "Product not found",
+    return res.status(200).json({
+      success: true,
+      message:
+        "Product deleted successfully.",
+      product,
+    });
+  } catch (error) {
+    console.error(
+      "Delete Product Error:",
+      error
+    );
 
-  });
-
- }
-
-
-
- product.isActive = false;
-
-
- await product.save();
-
-
-
-
- res.status(200).json({
-
-  success:true,
-
-  message:
-   "Product deleted successfully",
-
- });
-
-
-
-}catch(error){
-
-
- console.error(
-  "Delete Product Error:",
-  error
- );
-
-
- res.status(500).json({
-
-  success:false,
-
-  message:
-   "Failed to delete product",
-
- });
-
-
-}
-
-
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to delete product.",
+    });
+  }
 };
 
-
-
-
-
-
-
-
-
-/* ==========================================================
-   RESTORE PRODUCT
-   PUT /api/products/:id/restore
-   ADMIN
-========================================================== */
-
+// ==========================================================
+// RESTORE PRODUCT
+// PUT /api/products/:id/restore
+// ADMIN
+// ==========================================================
 
 export const restoreProduct = async (
- req,
- res
-)=>{
+  req,
+  res
+) => {
+  try {
+    const { id } = req.params;
 
+    // --------------------------------------------------------
+    // VALIDATE ID
+    // --------------------------------------------------------
 
-try{
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // FIND PRODUCT
+    // --------------------------------------------------------
 
- const product =
-  await Product.findById(
-    req.params.id
-  );
+    const product =
+      await Product.findById(id);
 
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
 
+    // --------------------------------------------------------
+    // RESTORE
+    // --------------------------------------------------------
 
- if(!product){
+    product.isActive = true;
 
-  return res.status(404).json({
+    await product.save();
 
-   success:false,
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
 
-   message:
-    "Product not found",
+    return res.status(200).json({
+      success: true,
+      message:
+        "Product restored successfully.",
+      product,
+    });
+  } catch (error) {
+    console.error(
+      "Restore Product Error:",
+      error
+    );
 
-  });
-
- }
-
-
-
- product.isActive = true;
-
-
- await product.save();
-
-
-
- res.status(200).json({
-
-  success:true,
-
-  message:
-   "Product restored successfully",
-
-  product,
-
- });
-
-
-
-}catch(error){
-
-
- console.error(
-  "Restore Product Error:",
-  error
- );
-
-
- res.status(500).json({
-
-  success:false,
-
-  message:
-   "Failed to restore product",
-
- });
-
-
-}
-
-
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to restore product.",
+    });
+  }
 };

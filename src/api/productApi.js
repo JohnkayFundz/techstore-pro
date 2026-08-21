@@ -1,7 +1,24 @@
 import api from "./axios";
 
 /* ==========================================================
+   ERROR HELPER
+========================================================== */
+
+const getErrorMessage = (
+  error,
+  fallback = "Something went wrong."
+) => {
+  return (
+    error.response?.data?.message ||
+    error.message ||
+    fallback
+  );
+};
+
+
+/* ==========================================================
    GET ALL PRODUCTS
+   GET /api/products
 ========================================================== */
 
 export const getProducts = async (params = {}) => {
@@ -16,21 +33,29 @@ export const getProducts = async (params = {}) => {
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to fetch products.",
+      message: getErrorMessage(
+        error,
+        "Failed to fetch products."
+      ),
       products: [],
+      totalProducts: 0,
+      currentPage: 1,
+      totalPages: 0,
     };
   }
 };
 
+
 /* ==========================================================
-   GET SINGLE PRODUCT
+   GET SINGLE PUBLIC PRODUCT
+   GET /api/products/:id
 ========================================================== */
 
 export const getProductById = async (id) => {
   try {
-    const { data } = await api.get(`/products/${id}`);
+    const { data } = await api.get(
+      `/products/${id}`
+    );
 
     return data;
   } catch (error) {
@@ -38,16 +63,80 @@ export const getProductById = async (id) => {
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to fetch product.",
+      message: getErrorMessage(
+        error,
+        "Failed to fetch product."
+      ),
       product: null,
     };
   }
 };
 
+
 /* ==========================================================
-   CREATE PRODUCT (ADMIN ONLY)
+   GET ALL ADMIN PRODUCTS
+   GET /api/products/admin
+========================================================== */
+
+export const getAdminProducts = async () => {
+  try {
+    const { data } = await api.get(
+      "/products/admin"
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Get Admin Products Error:",
+      error
+    );
+
+    return {
+      success: false,
+      message: getErrorMessage(
+        error,
+        "Failed to fetch admin products."
+      ),
+      products: [],
+    };
+  }
+};
+
+
+/* ==========================================================
+   GET ADMIN PRODUCT BY ID
+   GET /api/products/admin/:id
+========================================================== */
+
+export const getAdminProductById = async (id) => {
+  try {
+    const { data } = await api.get(
+      `/products/admin/${id}`
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Get Admin Product By ID Error:",
+      error
+    );
+
+    return {
+      success: false,
+      message: getErrorMessage(
+        error,
+        "Failed to fetch product."
+      ),
+      product: null,
+    };
+  }
+};
+
+
+/* ==========================================================
+   CREATE PRODUCT
+   POST /api/products
+   ADMIN ONLY
 ========================================================== */
 
 export const createProduct = async (productData) => {
@@ -59,19 +148,27 @@ export const createProduct = async (productData) => {
 
     return data;
   } catch (error) {
-    console.error("Create Product Error:", error);
+    console.error(
+      "Create Product Error:",
+      error
+    );
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to create product.",
+      message: getErrorMessage(
+        error,
+        "Failed to create product."
+      ),
+      product: null,
     };
   }
 };
 
+
 /* ==========================================================
-   UPDATE PRODUCT (ADMIN ONLY)
+   UPDATE PRODUCT
+   PUT /api/products/:id
+   ADMIN ONLY
 ========================================================== */
 
 export const updateProduct = async (
@@ -86,49 +183,103 @@ export const updateProduct = async (
 
     return data;
   } catch (error) {
-    console.error("Update Product Error:", error);
+    console.error(
+      "Update Product Error:",
+      error
+    );
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to update product.",
+      message: getErrorMessage(
+        error,
+        "Failed to update product."
+      ),
+      product: null,
     };
   }
 };
 
+
 /* ==========================================================
-   DELETE PRODUCT (ADMIN ONLY)
+   DELETE PRODUCT
+   DELETE /api/products/:id
+   SOFT DELETE
+   ADMIN ONLY
 ========================================================== */
 
 export const deleteProduct = async (id) => {
   try {
-    const { data } = await api.delete(`/products/${id}`);
+    const { data } = await api.delete(
+      `/products/${id}`
+    );
 
     return data;
   } catch (error) {
-    console.error("Delete Product Error:", error);
+    console.error(
+      "Delete Product Error:",
+      error
+    );
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to delete product.",
+      message: getErrorMessage(
+        error,
+        "Failed to delete product."
+      ),
     };
   }
 };
 
+
 /* ==========================================================
-   GET FEATURED PRODUCTS
+   RESTORE PRODUCT
+   PUT /api/products/:id/restore
+   ADMIN ONLY
 ========================================================== */
 
-export const getFeaturedProducts = async () => {
+export const restoreProduct = async (id) => {
   try {
-    const { data } = await api.get("/products", {
-      params: {
-        featured: true,
-      },
-    });
+    const { data } = await api.put(
+      `/products/${id}/restore`
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Restore Product Error:",
+      error
+    );
+
+    return {
+      success: false,
+      message: getErrorMessage(
+        error,
+        "Failed to restore product."
+      ),
+      product: null,
+    };
+  }
+};
+
+
+/* ==========================================================
+   GET FEATURED PRODUCTS
+   GET /api/products?featured=true
+========================================================== */
+
+export const getFeaturedProducts = async (
+  params = {}
+) => {
+  try {
+    const { data } = await api.get(
+      "/products",
+      {
+        params: {
+          ...params,
+          featured: true,
+        },
+      }
+    );
 
     return data;
   } catch (error) {
@@ -139,16 +290,95 @@ export const getFeaturedProducts = async () => {
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to fetch featured products.",
+      message: getErrorMessage(
+        error,
+        "Failed to fetch featured products."
+      ),
       products: [],
     };
   }
 };
 
+
+/* ==========================================================
+   GET BESTSELLER PRODUCTS
+   GET /api/products?bestseller=true
+========================================================== */
+
+export const getBestSellerProducts = async (
+  params = {}
+) => {
+  try {
+    const { data } = await api.get(
+      "/products",
+      {
+        params: {
+          ...params,
+          bestseller: true,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Best Seller Products Error:",
+      error
+    );
+
+    return {
+      success: false,
+      message: getErrorMessage(
+        error,
+        "Failed to fetch bestseller products."
+      ),
+      products: [],
+    };
+  }
+};
+
+
+/* ==========================================================
+   GET NEW ARRIVAL PRODUCTS
+   GET /api/products?newArrival=true
+========================================================== */
+
+export const getNewArrivalProducts = async (
+  params = {}
+) => {
+  try {
+    const { data } = await api.get(
+      "/products",
+      {
+        params: {
+          ...params,
+          newArrival: true,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "New Arrival Products Error:",
+      error
+    );
+
+    return {
+      success: false,
+      message: getErrorMessage(
+        error,
+        "Failed to fetch new arrival products."
+      ),
+      products: [],
+    };
+  }
+};
+
+
 /* ==========================================================
    SEARCH PRODUCTS
+   GET /api/products/search?q=...
 ========================================================== */
 
 export const searchProducts = async (
@@ -160,8 +390,8 @@ export const searchProducts = async (
       "/products/search",
       {
         params: {
-          q: query,
           ...params,
+          q: query,
         },
       }
     );
@@ -175,16 +405,19 @@ export const searchProducts = async (
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to search products.",
+      message: getErrorMessage(
+        error,
+        "Failed to search products."
+      ),
       products: [],
     };
   }
 };
 
+
 /* ==========================================================
    GET PRODUCTS BY CATEGORY
+   GET /api/products?category=...
 ========================================================== */
 
 export const getProductsByCategory = async (
@@ -192,12 +425,15 @@ export const getProductsByCategory = async (
   params = {}
 ) => {
   try {
-    const { data } = await api.get("/products", {
-      params: {
-        category,
-        ...params,
-      },
-    });
+    const { data } = await api.get(
+      "/products",
+      {
+        params: {
+          ...params,
+          category,
+        },
+      }
+    );
 
     return data;
   } catch (error) {
@@ -208,67 +444,136 @@ export const getProductsByCategory = async (
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to fetch category products.",
+      message: getErrorMessage(
+        error,
+        "Failed to fetch category products."
+      ),
       products: [],
     };
   }
 };
 
+
 /* ==========================================================
-   GET BESTSELLERS
+   GET PRODUCTS WITH PAGINATION
+   GET /api/products?page=&limit=
 ========================================================== */
 
-export const getBestSellerProducts = async () => {
+export const getProductsPaginated = async (
+  page = 1,
+  limit = 10,
+  params = {}
+) => {
   try {
-    const { data } = await api.get("/products", {
-      params: {
-        bestseller: true,
-      },
-    });
+    const { data } = await api.get(
+      "/products",
+      {
+        params: {
+          ...params,
+          page,
+          limit,
+        },
+      }
+    );
 
     return data;
   } catch (error) {
     console.error(
-      "Best Seller Products Error:",
+      "Paginated Products Error:",
       error
     );
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to fetch bestseller products.",
+      message: getErrorMessage(
+        error,
+        "Failed to fetch products."
+      ),
+      products: [],
+      totalProducts: 0,
+      currentPage: page,
+      totalPages: 0,
+    };
+  }
+};
+
+
+/* ==========================================================
+   SORT PRODUCTS
+   GET /api/products?sort=...
+   
+   Supported:
+   newest
+   oldest
+   price-low
+   price-high
+   name
+   rating
+========================================================== */
+
+export const getSortedProducts = async (
+  sort = "newest",
+  params = {}
+) => {
+  try {
+    const { data } = await api.get(
+      "/products",
+      {
+        params: {
+          ...params,
+          sort,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Sorted Products Error:",
+      error
+    );
+
+    return {
+      success: false,
+      message: getErrorMessage(
+        error,
+        "Failed to sort products."
+      ),
       products: [],
     };
   }
 };
 
+
 /* ==========================================================
-   GET NEW ARRIVALS
+   FILTER PRODUCTS
+   GET /api/products
 ========================================================== */
 
-export const getNewArrivalProducts = async () => {
+export const filterProducts = async (
+  filters = {}
+) => {
   try {
-    const { data } = await api.get("/products", {
-      params: {
-        newArrival: true,
-      },
-    });
+    const { data } = await api.get(
+      "/products",
+      {
+        params: filters,
+      }
+    );
 
     return data;
   } catch (error) {
     console.error(
-      "New Arrival Products Error:",
+      "Filter Products Error:",
       error
     );
 
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to fetch new arrival products.",
+      message: getErrorMessage(
+        error,
+        "Failed to filter products."
+      ),
       products: [],
     };
   }
