@@ -1,17 +1,21 @@
 # 🛒 TechStore Pro
 
-![React](https://img.shields.io/badge/React-19-blue)
-![Vite](https://img.shields.io/badge/Vite-8-purple)
-![Node.js](https://img.shields.io/badge/Node.js-Express-green)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
+### Full-Stack MERN E-Commerce Application
+
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react\&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite\&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js\&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb\&logoColor=white)
 ![JWT](https://img.shields.io/badge/Auth-JWT-orange)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)
+![Render](https://img.shields.io/badge/Backend-Render-46E3B7)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 **TechStore Pro** is a modern full-stack **MERN e-commerce application** built with React, Node.js, Express.js, and MongoDB.
 
-The project demonstrates real-world full-stack development through customer authentication, product discovery, shopping cart management, checkout, order tracking, wishlist functionality, and an administrative dashboard.
+The project demonstrates practical full-stack development through authentication, product discovery, shopping cart management, wishlist functionality, checkout, order management, role-based authorization, and an administrative dashboard.
 
-It was designed as a production-style application to demonstrate practical frontend, backend, database, authentication, API, and deployment skills.
+It was built as a production-style project to demonstrate skills across **frontend development, backend APIs, databases, authentication, security, state management, and cloud deployment**.
 
 ---
 
@@ -19,23 +23,23 @@ It was designed as a production-style application to demonstrate practical front
 
 ### 🌐 Frontend
 
-https://techstore-pro-two.vercel.app/
+**[Open TechStore Pro](https://techstore-pro-two.vercel.app/)**
 
 ### ⚙️ Backend API
 
-https://techstore-pro-zonk.onrender.com
+**[Open Backend API](https://techstore-pro-zonk.onrender.com)**
 
-### 💻 GitHub Repository
+### 💻 Repository
 
-https://github.com/JohnkayFundz/techstore-pro
+**[View Source Code](https://github.com/JohnkayFundz/techstore-pro)**
 
 ---
 
 ## 📸 Screenshots
 
-> Screenshots coming soon.
+> Screenshots will be added soon.
 
-Recommended screenshots:
+Planned screenshots include:
 
 * 🏠 Homepage
 * 🛍️ Product listing
@@ -48,20 +52,23 @@ Recommended screenshots:
 
 ---
 
-## 🎯 Project Purpose
+## 🎯 Project Highlights
 
-TechStore Pro was built to demonstrate practical full-stack development skills, including:
+TechStore Pro was created to demonstrate the ability to build a complete full-stack application from frontend to backend and database.
 
-* Building scalable React applications
-* Creating RESTful APIs with Express.js
-* Implementing JWT authentication
-* Protecting routes and resources
-* Managing application state with React Context API
-* Designing MongoDB data models
-* Building CRUD functionality
-* Implementing role-based authorization
-* Connecting frontend applications to backend APIs
-* Deploying full-stack applications
+### What this project demonstrates
+
+* ⚛️ Modern React application development
+* 🔌 RESTful API development with Express.js
+* 🔐 JWT-based authentication
+* 👮 Protected routes and role-based authorization
+* 🗄️ MongoDB database design with Mongoose
+* 🛒 State management with React Context API
+* ✏️ Full CRUD functionality
+* 📦 Order and user management
+* 🔗 Frontend/backend API integration
+* 🛡️ Backend security middleware
+* ☁️ Full-stack cloud deployment
 
 ---
 
@@ -85,7 +92,7 @@ TechStore Pro was built to demonstrate practical full-stack development skills, 
 * ✅ Order history
 * ✅ Order details
 * ✅ Order cancellation
-* ✅ Responsive design
+* ✅ Responsive interface
 
 ---
 
@@ -107,7 +114,7 @@ TechStore Pro was built to demonstrate practical full-stack development skills, 
 
 # 🏗️ Application Architecture
 
-TechStore Pro uses a **client-server architecture**.
+TechStore Pro follows a **client-server architecture**.
 
 ```text
 ┌──────────────────────────────┐
@@ -199,9 +206,7 @@ The Express.js backend provides the REST API and handles:
 
 # 🗄️ Database
 
-MongoDB is used as the primary database.
-
-Mongoose provides schema modeling and database interaction.
+MongoDB is used as the primary database, with Mongoose providing schema modeling and database interaction.
 
 ### Main Collections
 
@@ -270,9 +275,6 @@ techstore-pro/
 
 ```bash
 git clone https://github.com/JohnkayFundz/techstore-pro.git
-```
-
-```bash
 cd techstore-pro
 ```
 
@@ -280,14 +282,14 @@ cd techstore-pro
 
 ## 2. Install dependencies
 
-Install frontend dependencies:
+### Frontend
 
 ```bash
 cd client
 npm install
 ```
 
-Install backend dependencies:
+### Backend
 
 ```bash
 cd ../server
@@ -298,7 +300,7 @@ npm install
 
 ## 3. Configure environment variables
 
-Create a `.env` file inside the `server` directory.
+Create a `.env` file inside the `server` directory:
 
 ```env
 PORT=5000
@@ -312,7 +314,7 @@ JWT_SECRET=your_secret_key
 JWT_EXPIRES_IN=7d
 ```
 
-Never commit your real `.env` file to GitHub.
+> ⚠️ Never commit real environment variables or secrets to GitHub.
 
 ---
 
@@ -334,9 +336,10 @@ http://localhost:5000
 
 ## 5. Start the frontend
 
-From the `client` directory:
+Open another terminal:
 
 ```bash
+cd client
 npm run dev
 ```
 
@@ -350,7 +353,7 @@ http://localhost:5173
 
 # 🔐 Authentication & Authorization
 
-TechStore Pro implements a JWT-based authentication system.
+TechStore Pro implements JWT-based authentication and role-based authorization.
 
 ### Security Features
 
@@ -362,6 +365,7 @@ TechStore Pro implements a JWT-based authentication system.
 * Role-based access control
 * HTTP security headers with Helmet
 * Environment-based secret configuration
+* CORS configuration
 
 ### User Roles
 
@@ -416,13 +420,13 @@ admin
 
 **Vercel**
 
-https://techstore-pro-two.vercel.app/
+**[TechStore Pro Frontend](https://techstore-pro-two.vercel.app/)**
 
 ### Backend
 
 **Render**
 
-https://techstore-pro-zonk.onrender.com
+**[TechStore Pro Backend API](https://techstore-pro-zonk.onrender.com)**
 
 ### Database
 
@@ -436,19 +440,19 @@ https://techstore-pro-zonk.onrender.com
 
 # 🧪 Development Commands
 
-### Start frontend
+### Frontend development
 
 ```bash
 npm run dev
 ```
 
-### Create production build
+### Production build
 
 ```bash
 npm run build
 ```
 
-### Start backend development server
+### Backend development
 
 ```bash
 npm run dev
@@ -456,9 +460,9 @@ npm run dev
 
 ---
 
-# 🗺️ Future Improvements
+# 🗺️ Roadmap
 
-The following features are planned for future versions:
+Planned improvements for future versions:
 
 * ⬜ Stripe payment integration
 * ⬜ Product reviews and ratings
@@ -477,9 +481,9 @@ The following features are planned for future versions:
 
 ## John Kalumba
 
-**Frontend Developer | React & JavaScript**
+**Full-Stack JavaScript Developer | MERN Stack**
 
-I build modern web applications with a focus on clean user interfaces, practical functionality, and full-stack development.
+I build modern web applications with a focus on clean interfaces, practical functionality, and full-stack development.
 
 ### Technical Skills
 
@@ -499,17 +503,9 @@ I build modern web applications with a focus on clean user interfaces, practical
 
 # 🌐 Links
 
-### Portfolio
-
-https://johnkayfundz.github.io/
-
-### GitHub
-
-https://github.com/JohnkayFundz
-
-### TechStore Pro
-
-https://techstore-pro-two.vercel.app/
+* 🌐 **[Portfolio](https://johnkayfundz.github.io/portfolio-website/)**
+* 💻 **[GitHub](https://github.com/JohnkayFundz)**
+* 🛒 **[TechStore Pro Live Demo](https://techstore-pro-two.vercel.app/)**
 
 ---
 
