@@ -1,38 +1,37 @@
 # 🛒 TechStore Pro
 
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react\&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js\&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb\&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-Backend-000000?logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-Images-3448C5?logo=cloudinary&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?logo=vite\&logoColor=white)
 
-A modern **full-stack MERN eCommerce application** built with **React**, **Node.js**, **Express**, and **MongoDB**.
+A modern full-stack MERN eCommerce application built with **React, Node.js, Express, and MongoDB**.
 
-TechStore Pro is a responsive online shopping platform that demonstrates real-world full-stack development. Customers can browse products, search by category, manage their shopping cart and wishlist, securely place orders, and view their order history. Administrators can manage products, users, and orders through a protected admin dashboard.
-
----
-
-# 🌐 Live Demo
-
-### Frontend
-
-https://techstore-pro-two.vercel.app/
-
-### Backend API
-
-https://techstore-pro-zonk.onrender.com/
+TechStore Pro demonstrates real-world full-stack development with authentication, product management, shopping cart functionality, wishlists, checkout, order management, admin features, image uploads, and responsive UI.
 
 ---
 
-# 📸 Preview
+## 🌐 Live Demo
 
-> Screenshots will be added soon.
+- **Frontend:** https://techstore-pro-two.vercel.app/
+- **Backend API:** https://techstore-pro-zonk.onrender.com/
 
-* Home Page
-* Product Details
-* Shopping Cart
-* Checkout
-* Admin Dashboard
+---
+
+## 📸 Preview
+
+Screenshots will be added soon.
+
+Planned screenshots:
+
+- Home Page
+- Product Details
+- Shopping Cart
+- Checkout
+- Admin Dashboard
 
 ---
 
@@ -40,33 +39,33 @@ https://techstore-pro-zonk.onrender.com/
 
 ## 👤 Customer Features
 
-* User Registration
-* Secure Login
-* JWT Authentication
-* Protected Routes
-* Browse Products
-* Product Search
-* Category Filtering
-* Product Details Page
-* Shopping Cart
-* Wishlist
-* Checkout
-* Place Orders
-* Order History
-* Cancel Orders
-* Responsive Design
-* Toast Notifications
-
----
+- User registration
+- Secure login and logout
+- JWT authentication
+- Protected routes
+- Browse products
+- Product search
+- Category filtering
+- Product details
+- Shopping cart
+- Wishlist
+- Checkout
+- Place orders
+- Order history
+- Order cancellation
+- Responsive design
+- Toast notifications
 
 ## 🛠 Admin Features
 
-* Admin Dashboard
-* Dashboard Statistics
-* Product Management (CRUD)
-* User Management
-* Order Management
-* Protected Admin Routes
+- Admin dashboard
+- Dashboard statistics
+- Product CRUD
+- Product image uploads
+- User management
+- Order management
+- Protected admin routes
+- Role-based authorization
 
 ---
 
@@ -74,37 +73,217 @@ https://techstore-pro-zonk.onrender.com/
 
 ## Frontend
 
-* React 19
-* Vite
-* JavaScript (ES6+)
-* React Router DOM
-* Context API
-* Axios
-* CSS3
-* Responsive Design
+- React 19
+- Vite
+- JavaScript ES6+
+- React Router DOM
+- Context API
+- Axios
+- Framer Motion
+- Chart.js
+- Recharts
+- Swiper
+- Lucide React
+- React Icons
+- CSS3
+- Responsive Design
 
 ## Backend
 
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JWT Authentication
-* bcryptjs
-* Cookie Parser
-* Helmet
-* Morgan
-* Multer
-* Cloudinary
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcryptjs
+- Cookie Parser
+- Helmet
+- CORS
+- Compression
+- Morgan
+- Express Rate Limit
+- Multer
+- Cloudinary
+- Validator
 
-## Development Tools
+## Development & Deployment Tools
 
-* Git
-* GitHub
-* VS Code
-* Postman
-* Render
-* Vercel
+- Git
+- GitHub
+- VS Code
+- Postman
+- Vercel
+- Render
+- MongoDB Atlas
+- Cloudinary
+
+---
+
+# 🚀 Getting Started
+
+Follow these steps to run TechStore Pro locally.
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/JohnkayFundz/techstore-pro.git
+cd techstore-pro
+```
+
+---
+
+## 2. Install Frontend Dependencies
+
+From the project root:
+
+```bash
+npm install
+```
+
+---
+
+## 3. Install Backend Dependencies
+
+Move into the server directory:
+
+```bash
+cd server
+npm install
+```
+
+---
+
+# 🔐 Environment Variables
+
+TechStore Pro uses environment variables for:
+
+- Frontend API configuration
+- MongoDB database connection
+- JWT authentication
+- Cloudinary image storage
+- Server configuration
+
+## 4. Configure Frontend Environment Variables
+
+From the project root, create:
+
+```text
+.env
+```
+
+Add:
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+---
+
+## 5. Configure Backend Environment Variables
+
+Inside the `server` directory, create:
+
+```text
+server/.env
+```
+
+Add:
+
+```env
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:5173
+
+MONGODB_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=7d
+
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+### ⚠️ Important
+
+Never commit `.env` files or real credentials to GitHub.
+
+Use the provided `.env.example` files as templates.
+
+---
+
+# 🗄️ Database Seeding
+
+## 6. Seed the Database
+
+From the `server` directory:
+
+```bash
+npm run seed
+```
+
+The seed command:
+
+1. Connects to MongoDB.
+2. Validates the seed data.
+3. Removes existing product records.
+4. Inserts the seed product dataset.
+5. Displays the inserted products.
+6. Closes the MongoDB connection.
+
+### ⚠️ Warning
+
+The seed command **deletes existing product records** before inserting the seed data.
+
+Do not run the seed command against a production database unless you intentionally want to replace the existing product records.
+
+---
+
+# ▶️ Running the Application
+
+## 7. Start the Backend
+
+From the `server` directory:
+
+```bash
+npm run dev
+```
+
+The backend API will run at:
+
+```text
+http://localhost:5000
+```
+
+### Health Check
+
+```text
+http://localhost:5000/health
+```
+
+---
+
+## 8. Start the Frontend
+
+Open a **second terminal**.
+
+Return to the project root:
+
+```bash
+cd ..
+```
+
+Then start the frontend:
+
+```bash
+npm run dev
+```
+
+The frontend will run at:
+
+```text
+http://localhost:5173
+```
 
 ---
 
@@ -113,25 +292,25 @@ https://techstore-pro-zonk.onrender.com/
 ```text
 techstore-pro/
 │
-├── client/
-│   ├── public/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   ├── routes/
-│   │   ├── utils/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   └── package.json
+├── public/
+│
+├── src/
+│   ├── api/
+│   ├── assets/
+│   ├── components/
+│   ├── context/
+│   ├── hooks/
+│   ├── layouts/
+│   ├── pages/
+│   ├── routes/
+│   ├── utils/
+│   ├── App.jsx
+│   └── main.jsx
 │
 ├── server/
 │   ├── config/
 │   ├── controllers/
+│   ├── data/
 │   ├── middleware/
 │   ├── models/
 │   ├── routes/
@@ -139,100 +318,110 @@ techstore-pro/
 │   ├── uploads/
 │   ├── utils/
 │   ├── .env.example
+│   ├── app.js
 │   ├── package.json
+│   ├── seeder.js
 │   └── server.js
 │
+├── .env.example
 ├── .gitignore
 ├── package.json
+├── package-lock.json
 └── README.md
 ```
 
 ---
 
-# 🚀 Getting Started
+# 🔐 Authentication
 
-## Prerequisites
+TechStore Pro uses **JWT-based authentication**.
 
-Before running this project, ensure you have:
+Authentication includes:
 
-* Node.js (v18 or later)
-* npm
-* MongoDB Atlas account
-* Cloudinary account
-* Git
-
----
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/JohnkayFundz/techstore-pro.git
-
-cd techstore-pro
-```
+- User registration
+- User login
+- User logout
+- JWT token generation
+- HTTP-only authentication cookies
+- Bearer token authentication
+- Protected API routes
+- Admin authorization
+- Role-based authorization
+- Session restoration
+- Login rate limiting
+- Registration rate limiting
 
 ---
 
-## Install Dependencies
+# 📦 API Overview
 
-### Install Frontend
+## Authentication
 
-```bash
-cd client
-npm install
-```
-
-### Install Backend
-
-```bash
-cd ../server
-npm install
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Login user |
+| `POST` | `/api/auth/logout` | Logout user |
+| `GET` | `/api/auth/me` | Get current authenticated user |
 
 ---
 
-# ⚙ Environment Variables
+## Products
 
-Inside the **server** folder, create a `.env` file.
-
-The easiest way is:
-
-### Linux / macOS
-
-```bash
-cp .env.example .env
-```
-
-### Windows PowerShell
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Then update the values:
-
-```env
-# Server
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-
-# Database
-MONGODB_URI=your_mongodb_connection_string
-
-# Authentication
-JWT_SECRET=your_super_secret_key
-JWT_EXPIRES_IN=7d
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/products` | Get all products |
+| `GET` | `/api/products/:id` | Get a single product |
+| `POST` | `/api/products` | Create product |
+| `PUT` | `/api/products/:id` | Update product |
+| `DELETE` | `/api/products/:id` | Delete product |
 
 ---
 
-# ▶ Running the Application
+## Orders
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/orders` | Create order |
+| `GET` | `/api/orders/my-orders` | Get current user's orders |
+| `GET` | `/api/orders/:id` | Get a specific order |
+| `PATCH` | `/api/orders/:id/cancel` | Cancel an order |
+
+---
+
+## Health Check
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | API health check |
+
+---
+
+# ☁️ Deployment
+
+## Frontend
+
+The frontend is deployed using **Vercel**.
+
+https://techstore-pro-two.vercel.app/
+
+## Backend
+
+The backend is deployed using **Render**.
+
+https://techstore-pro-zonk.onrender.com/
+
+## Database
+
+**MongoDB Atlas** is used for database hosting.
+
+## Image Storage
+
+**Cloudinary** is used for product image storage and uploads.
+
+---
+
+# 🧪 Development
 
 ## Start Backend
 
@@ -241,158 +430,46 @@ cd server
 npm run dev
 ```
 
-Server runs at:
-
-```text
-http://localhost:5000
-```
-
----
-
 ## Start Frontend
 
+Open another terminal from the project root:
+
 ```bash
-cd client
 npm run dev
 ```
 
-Application runs at:
+## Create Production Build
 
-```text
-http://localhost:5173
+```bash
+npm run build
+```
+
+## Preview Production Build
+
+```bash
+npm run preview
 ```
 
 ---
 
-# 🔌 REST API
+# 🔒 Security
 
-## Authentication
+The backend includes several security and performance measures:
 
-| Method | Endpoint             |
-| ------ | -------------------- |
-| POST   | `/api/auth/register` |
-| POST   | `/api/auth/login`    |
-| POST   | `/api/auth/logout`   |
-| GET    | `/api/auth/me`       |
-
----
-
-## Products
-
-| Method | Endpoint                      |
-| ------ | ----------------------------- |
-| GET    | `/api/products`               |
-| GET    | `/api/products/:id`           |
-| POST   | `/api/products` *(Admin)*     |
-| PUT    | `/api/products/:id` *(Admin)* |
-| DELETE | `/api/products/:id` *(Admin)* |
-
----
-
-## Orders
-
-| Method | Endpoint                 |
-| ------ | ------------------------ |
-| POST   | `/api/orders`            |
-| GET    | `/api/orders/my-orders`  |
-| GET    | `/api/orders/:id`        |
-| PATCH  | `/api/orders/:id/cancel` |
-
----
-
-## Users
-
-Protected user management endpoints are available for administrators.
-
----
-
-# 🔒 Authentication
-
-The application uses:
-
-* JSON Web Tokens (JWT)
-* Protected Routes
-* Role-Based Authorization
-* HTTP Cookies
-* Password Hashing with bcryptjs
-
----
-
-# 🚀 Deployment
-
-## Frontend
-
-Hosted on **Vercel**
-
-## Backend
-
-Hosted on **Render**
-
-## Database
-
-MongoDB Atlas
-
-## Image Storage
-
-Cloudinary
-
----
-
-# 🧪 Future Improvements
-
-* Stripe Payment Integration
-* Paystack Payment Integration
-* Product Reviews & Ratings
-* Email Verification
-* Forgot Password via Email
-* Coupon & Discount System
-* Inventory Management
-* Sales Analytics Dashboard
-* Product Recommendations
-* Recently Viewed Products
-* Multi-language Support
-* Dark Mode
-
----
-
-# 📚 Learning Outcomes
-
-This project strengthened my understanding of:
-
-* React Architecture
-* Component-Based Development
-* Context API
-* State Management
-* REST API Development
-* Express.js
-* MongoDB & Mongoose
-* Authentication & Authorization
-* CRUD Operations
-* File Uploads
-* Cloudinary Integration
-* Responsive Web Design
-* Git & GitHub Workflow
-* Full-Stack Application Deployment
-
----
-
-# 👨‍💻 Developer
-
-## John Kalumba
-
-Full-Stack JavaScript Developer passionate about building scalable, responsive, and user-friendly web applications using React, Node.js, Express, and MongoDB.
-
-### Portfolio
-
-https://johnkayfundz.github.io/
-
-### GitHub
-
-https://github.com/JohnkayFundz
-
-### LinkedIn
-
-https://www.linkedin.com/in/john-kalumba-96b437323/
+- Helmet security headers
+- CORS configuration
+- JWT authentication
+- HTTP-only cookies
+- Password hashing with bcryptjs
+- Login rate limiting
+- Registration rate limiting
+- Global API rate limiting
+- Request compression
+- Input validation
+- Protected API routes
+- Protected admin routes
+- Role-based authorization
+- Environment variables for sensitive credentials
 
 ---
 
@@ -402,15 +479,19 @@ Contributions, issues, and feature requests are welcome.
 
 1. Fork the repository.
 2. Create a new feature branch.
-3. Commit your changes.
-4. Push your branch.
-5. Open a Pull Request.
+3. Make your changes.
+4. Test your changes.
+5. Commit your changes.
+6. Push your branch.
+7. Open a Pull Request.
 
 ---
 
 # ⭐ Support
 
-If you found this project useful, please consider giving it a **⭐ Star** on GitHub. It helps others discover the project and motivates continued development.
+If you found this project useful, please consider giving it a ⭐ **Star on GitHub**.
+
+It helps others discover the project and supports continued development.
 
 ---
 
@@ -420,4 +501,18 @@ This project is licensed under the **MIT License**.
 
 ---
 
-Thank you for checking out **TechStore Pro**! 🚀
+# 👨‍💻 Author
+
+## John Kalumba
+
+### GitHub
+
+https://github.com/JohnkayFundz
+
+### Portfolio
+
+https://johnkayfundz.github.io/
+
+---
+
+Thank you for checking out **TechStore Pro!** 🚀
