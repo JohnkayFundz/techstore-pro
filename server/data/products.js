@@ -23,11 +23,9 @@ const products = [
     brand: "Apple",
     sku: "APP-MBP-M4-16",
 
-    image: "/placeholder-product.png",
+    image: "/products/macbook-pro-m4.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/macbook-pro-m4.jpg"],
 
     features: [
       "Apple M4 Chip",
@@ -69,11 +67,9 @@ const products = [
     brand: "Dell",
     sku: "DEL-XPS15-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/dell-xps-15.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/dell-xps-15.jpg"],
 
     features: [
       "Intel Core i7 Processor",
@@ -115,11 +111,9 @@ const products = [
     brand: "Samsung",
     sku: "SAM-S25-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/galaxy-s25.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/galaxy-s25.jpg"],
 
     features: [
       "6.2-inch AMOLED Display",
@@ -161,11 +155,9 @@ const products = [
     brand: "Apple",
     sku: "APP-IP16P-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/iphone-16-pro.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/iphone-16-pro.jpg"],
 
     features: [
       "A18 Pro Chip",
@@ -207,11 +199,9 @@ const products = [
     brand: "Sony",
     sku: "SON-WH1000XM6",
 
-    image: "/placeholder-product.png",
+    image: "/products/sony-wh1000xm6.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/sony-wh1000xm6.jpg"],
 
     features: [
       "Advanced Noise Cancellation",
@@ -253,11 +243,9 @@ const products = [
     brand: "Apple",
     sku: "APP-WATCH10-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/apple-watch-series-10.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/apple-watch-series-10.jpg"],
 
     features: [
       "Advanced Fitness Tracking",
@@ -299,11 +287,9 @@ const products = [
     brand: "Apple",
     sku: "APP-APP2-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/airpods-pro-2.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/airpods-pro-2.jpg"],
 
     features: [
       "Active Noise Cancellation",
@@ -345,11 +331,9 @@ const products = [
     brand: "ASUS",
     sku: "ASU-ROG-G16",
 
-    image: "/placeholder-product.png",
+    image: "/products/asus-rog-strix-g16.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/asus-rog-strix-g16.jpg"],
 
     features: [
       "Intel Core i9 Processor",
@@ -391,11 +375,9 @@ const products = [
     brand: "Logitech",
     sku: "LOG-MX3S-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/logitech-mx-master-3s.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/logitech-mx-master-3s.jpg"],
 
     features: [
       "8K DPI Tracking",
@@ -437,11 +419,9 @@ const products = [
     brand: "Apple",
     sku: "APP-IPAD-M4",
 
-    image: "/placeholder-product.png",
+    image: "/products/ipad-pro-m4.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/ipad-pro-m4.jpg"],
 
     features: [
       "Apple M4 Chip",
@@ -483,11 +463,9 @@ const products = [
     brand: "Samsung",
     sku: "SAM-WATCH7-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/galaxy-watch-7.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/galaxy-watch-7.jpg"],
 
     features: [
       "Advanced Health Tracking",
@@ -529,11 +507,9 @@ const products = [
     brand: "Anker",
     sku: "ANK-USBC7-001",
 
-    image: "/placeholder-product.png",
+    image: "/products/anker-usbc-hub.jpg",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/products/anker-usbc-hub.jpg"],
 
     features: [
       "7-in-1 Connectivity",

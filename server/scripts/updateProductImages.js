@@ -2,52 +2,54 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import Product from "../models/Product.js";
 
-dotenv.config();
+// ==========================================================
+// LOAD SERVER ENVIRONMENT VARIABLES
+// ==========================================================
 
-/*
-==========================================================
-TECHSTORE PRO
-UPDATE EXISTING PRODUCT IMAGES
-==========================================================
-*/
+dotenv.config({ path: "./server/.env" });
+
+// ==========================================================
+// TECHSTORE PRO
+// UPDATE EXISTING PRODUCT IMAGES
+// ==========================================================
 
 const productImages = {
-  "MacBook Pro M4 16-inch":
-    "https://images.unsplash.com/photo-1517336714739-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+  "MacBook Pro M4 16-inch": "/products/macbook-pro-m4.jpg",
 
-  "Dell XPS 15":
-    "https://images.unsplash.com/photo-1593642702749-b7d2a804fbcf?auto=format&fit=crop&w=1200&q=80",
+  "Dell XPS 15": "/products/dell-xps-15.jpg",
 
-  "Samsung Galaxy S25":
-    "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=1200&q=80",
+  "Samsung Galaxy S25": "/products/galaxy-s25.jpg",
 
-  "iPhone 16 Pro":
-    "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=1200&q=80",
+  "iPhone 16 Pro": "/products/iphone-16-pro.jpg",
 
   "Sony WH-1000XM6 Wireless Headphones":
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80",
+    "/products/sony-wh1000xm6.jpg",
 
   "Apple Watch Series 10":
-    "https://images.unsplash.com/photo-1546868871-7041f2a55e0c?auto=format&fit=crop&w=1200&q=80",
+    "/products/apple-watch-series-10.jpg",
 
   "AirPods Pro 2":
-    "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=1200&q=80",
+    "/products/airpods-pro-2.jpg",
 
   "ASUS ROG Strix G16":
-    "https://images.unsplash.com/photo-1593640495253-23196b27a87f?auto=format&fit=crop&w=1200&q=80",
+    "/products/asus-rog-strix-g16.jpg",
 
   "Logitech MX Master 3S":
-    "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=1200&q=80",
+    "/products/logitech-mx-master-3s.jpg",
 
   "iPad Pro M4":
-    "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=1200&q=80",
+    "/products/ipad-pro-m4.jpg",
 
   "Samsung Galaxy Watch 7":
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80",
+    "/products/galaxy-watch-7.jpg",
 
   "Anker USB-C 7-in-1 Hub":
-    "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=80",
+    "/products/anker-usbc-hub.jpg",
 };
+
+// ==========================================================
+// UPDATE PRODUCT IMAGES
+// ==========================================================
 
 const updateProductImages = async () => {
   try {
@@ -55,9 +57,27 @@ const updateProductImages = async () => {
     console.log("TECHSTORE PRO - PRODUCT IMAGE UPDATE");
     console.log("==================================================");
 
-await mongoose.connect(process.env.MONGODB_URI);
+    // ------------------------------------------------------
+    // CHECK MONGODB URI
+    // ------------------------------------------------------
 
-    console.log("✅ MongoDB Connected");
+    if (!process.env.MONGODB_URI) {
+      throw new Error(
+        "MONGODB_URI is not defined. Check server/.env."
+      );
+    }
+
+    // ------------------------------------------------------
+    // CONNECT TO MONGODB
+    // ------------------------------------------------------
+
+    await mongoose.connect(process.env.MONGODB_URI);
+
+    console.log("MongoDB Connected");
+
+    // ------------------------------------------------------
+    // UPDATE PRODUCTS
+    // ------------------------------------------------------
 
     let updated = 0;
     let notFound = 0;
@@ -66,44 +86,69 @@ await mongoose.connect(process.env.MONGODB_URI);
       const product = await Product.findOne({ name });
 
       if (!product) {
-        console.log(`❌ Product not found: ${name}`);
+        console.log(`Product not found: ${name}`);
         notFound++;
         continue;
       }
 
+      // Main product image
       product.image = image;
-      product.gallery = [image];
+
+      // Product gallery/images
+      product.images = [image];
 
       await product.save();
 
-      console.log(`✅ Updated: ${name}`);
+      console.log(`Updated: ${name}`);
+      console.log(`   Image: ${image}`);
 
       updated++;
     }
+
+    // ------------------------------------------------------
+    // SUMMARY
+    // ------------------------------------------------------
 
     console.log("");
     console.log("==================================================");
     console.log("UPDATE COMPLETE");
     console.log("==================================================");
-    console.log(`✅ Updated: ${updated}`);
-    console.log(`❌ Not found: ${notFound}`);
-    console.log(`📦 Total targeted: ${Object.keys(productImages).length}`);
+    console.log(`Updated: ${updated}`);
+    console.log(`Not found: ${notFound}`);
+    console.log(
+      `Total targeted: ${Object.keys(productImages).length}`
+    );
     console.log("==================================================");
+
+    // ------------------------------------------------------
+    // DISCONNECT
+    // ------------------------------------------------------
 
     await mongoose.disconnect();
 
-    console.log("✅ MongoDB Disconnected");
+    console.log("MongoDB Disconnected");
 
     process.exit(0);
   } catch (error) {
     console.error("");
-    console.error("❌ IMAGE UPDATE FAILED");
-    console.error(error);
+    console.error("==================================================");
+    console.error("IMAGE UPDATE FAILED");
+    console.error("==================================================");
+    console.error(error.message);
+    console.error("==================================================");
 
-    await mongoose.disconnect();
+    try {
+      await mongoose.disconnect();
+    } catch {
+      // Ignore disconnect errors
+    }
 
     process.exit(1);
   }
 };
+
+// ==========================================================
+// RUN SCRIPT
+// ==========================================================
 
 updateProductImages();
