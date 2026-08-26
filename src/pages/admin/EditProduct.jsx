@@ -11,7 +11,7 @@ import {
 import Loading from "../../components/Loading";
 
 import {
-  getProductById,
+  getAdminProductById,
   updateProduct,
 } from "../../api/productApi";
 
@@ -57,6 +57,15 @@ function EditProduct() {
 
 
   /* ==========================================================
+     IMAGE STATE
+  ========================================================== */
+
+  const [imageFile, setImageFile] = useState(null);
+
+  const [imagePreview, setImagePreview] = useState("");
+
+
+  /* ==========================================================
      UI STATE
   ========================================================== */
 
@@ -80,18 +89,29 @@ function EditProduct() {
     try {
       setLoading(true);
 
-      const result = await getProductById(id);
+      const result =
+        await getAdminProductById(id);
 
-      console.log("Edit Product Response:", result);
+      console.log(
+        "Edit Product Response:",
+        result
+      );
 
 
-      if (result?.success && result?.product) {
-        const product = result.product;
+      if (
+        result?.success &&
+        result?.product
+      ) {
+        const product =
+          result.product;
+
 
         setFormData({
-          name: product.name || "",
+          name:
+            product.name || "",
 
-          description: product.description || "",
+          description:
+            product.description || "",
 
           price:
             product.price !== undefined &&
@@ -111,11 +131,14 @@ function EditProduct() {
               ? product.discount
               : "",
 
-          category: product.category || "",
+          category:
+            product.category || "",
 
-          brand: product.brand || "",
+          brand:
+            product.brand || "",
 
-          image: product.image || "",
+          image:
+            product.image || "",
 
           stock:
             product.stock !== undefined &&
@@ -135,26 +158,42 @@ function EditProduct() {
               ? product.numReviews
               : "",
 
-          warranty: product.warranty || "",
+          warranty:
+            product.warranty || "",
 
-          featured: Boolean(product.featured),
+          featured:
+            Boolean(product.featured),
 
-          bestseller: Boolean(product.bestseller),
+          bestseller:
+            Boolean(product.bestseller),
 
-          newArrival: Boolean(product.newArrival),
+          newArrival:
+            Boolean(product.newArrival),
 
           isActive:
             product.isActive !== undefined
               ? Boolean(product.isActive)
               : true,
         });
+
+
+        /* ------------------------------------------------------
+           EXISTING IMAGE
+        ------------------------------------------------------ */
+
+        setImagePreview(
+          product.image || ""
+        );
       } else {
         showToast(
-          result?.message || "Product not found.",
+          result?.message ||
+            "Product not found.",
           "error"
         );
 
-        navigate("/admin/products");
+        navigate(
+          "/admin/products"
+        );
       }
     } catch (error) {
       console.error(
@@ -163,12 +202,15 @@ function EditProduct() {
       );
 
       showToast(
-        error.response?.data?.message ||
+        error?.response?.data?.message ||
+          error?.message ||
           "Failed to load product.",
         "error"
       );
 
-      navigate("/admin/products");
+      navigate(
+        "/admin/products"
+      );
     } finally {
       setLoading(false);
     }
@@ -188,14 +230,104 @@ function EditProduct() {
     } = e.target;
 
 
-    setFormData((previous) => ({
-      ...previous,
+    setFormData(
+      (previous) => ({
+        ...previous,
 
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
-    }));
+        [name]:
+          type === "checkbox"
+            ? checked
+            : value,
+      })
+    );
+  };
+
+
+  /* ==========================================================
+     HANDLE IMAGE CHANGE
+  ========================================================== */
+
+  const handleImageChange = (e) => {
+    const file =
+      e.target.files?.[0];
+
+
+    if (!file) {
+      return;
+    }
+
+
+    /* --------------------------------------------------------
+       IMAGE TYPE VALIDATION
+    -------------------------------------------------------- */
+
+    if (!file.type.startsWith("image/")) {
+      showToast(
+        "Please select a valid image file.",
+        "error"
+      );
+
+      e.target.value = "";
+
+      return;
+    }
+
+
+    /* --------------------------------------------------------
+       IMAGE SIZE VALIDATION
+    -------------------------------------------------------- */
+
+    const maxSize =
+      5 * 1024 * 1024;
+
+
+    if (file.size > maxSize) {
+      showToast(
+        "Image must be smaller than 5MB.",
+        "error"
+      );
+
+      e.target.value = "";
+
+      return;
+    }
+
+
+    setImageFile(file);
+
+
+    /* --------------------------------------------------------
+       CREATE LOCAL PREVIEW
+    -------------------------------------------------------- */
+
+    const previewUrl =
+      URL.createObjectURL(file);
+
+    setImagePreview(previewUrl);
+  };
+
+
+  /* ==========================================================
+     REMOVE NEW IMAGE SELECTION
+  ========================================================== */
+
+  const handleRemoveSelectedImage = () => {
+    setImageFile(null);
+
+    setImagePreview(
+      formData.image || ""
+    );
+
+
+    const fileInput =
+      document.getElementById(
+        "product-image"
+      );
+
+
+    if (fileInput) {
+      fileInput.value = "";
+    }
   };
 
 
@@ -257,88 +389,194 @@ function EditProduct() {
     }
 
 
+    /* --------------------------------------------------------
+       IMAGE VALIDATION
+    -------------------------------------------------------- */
+
+    if (
+      !formData.image &&
+      !imageFile
+    ) {
+      showToast(
+        "Product image is required.",
+        "error"
+      );
+
+      return;
+    }
+
+
     try {
       setSaving(true);
 
 
+      /* ======================================================
+         FORM DATA
+      ====================================================== */
+
+      const productData =
+        new FormData();
+
+
       /* ------------------------------------------------------
-         PREPARE PRODUCT DATA
+         BASIC INFORMATION
       ------------------------------------------------------ */
 
-      const productData = {
-        name: formData.name.trim(),
+      productData.append(
+        "name",
+        formData.name.trim()
+      );
 
-        description:
-          formData.description.trim(),
+      productData.append(
+        "description",
+        formData.description.trim()
+      );
 
-        price:
-          Number(formData.price),
+      productData.append(
+        "price",
+        String(Number(formData.price))
+      );
 
-        oldPrice:
+      productData.append(
+        "oldPrice",
+        String(
           formData.oldPrice === ""
             ? 0
-            : Number(formData.oldPrice),
+            : Number(formData.oldPrice)
+        )
+      );
 
-        discount:
+      productData.append(
+        "discount",
+        String(
           formData.discount === ""
             ? 0
-            : Number(formData.discount),
+            : Number(formData.discount)
+        )
+      );
 
-        category:
-          formData.category.trim(),
+      productData.append(
+        "category",
+        formData.category.trim()
+      );
 
-        brand:
-          formData.brand.trim() ||
-          "TechStore Pro",
+      productData.append(
+        "brand",
+        formData.brand.trim() ||
+          "TechStore Pro"
+      );
 
-        image:
-          formData.image.trim(),
 
-        stock:
-          Number(formData.stock),
+      /* ------------------------------------------------------
+         EXISTING IMAGE
+      ------------------------------------------------------ */
 
-        rating:
+      if (formData.image) {
+        productData.append(
+          "image",
+          formData.image
+        );
+      }
+
+
+      /* ------------------------------------------------------
+         INVENTORY
+      ------------------------------------------------------ */
+
+      productData.append(
+        "stock",
+        String(Number(formData.stock))
+      );
+
+      productData.append(
+        "rating",
+        String(
           formData.rating === ""
             ? 0
-            : Number(formData.rating),
+            : Number(formData.rating)
+        )
+      );
 
-        numReviews:
+      productData.append(
+        "numReviews",
+        String(
           formData.numReviews === ""
             ? 0
-            : Number(formData.numReviews),
+            : Number(formData.numReviews)
+        )
+      );
 
-        warranty:
-          formData.warranty.trim() ||
-          "No warranty",
+      productData.append(
+        "warranty",
+        formData.warranty.trim() ||
+          "No warranty"
+      );
 
-        featured:
-          Boolean(formData.featured),
 
-        bestseller:
-          Boolean(formData.bestseller),
+      /* ------------------------------------------------------
+         PRODUCT STATUS
+      ------------------------------------------------------ */
 
-        newArrival:
-          Boolean(formData.newArrival),
+      productData.append(
+        "featured",
+        String(
+          Boolean(formData.featured)
+        )
+      );
 
-        isActive:
-          Boolean(formData.isActive),
-      };
+      productData.append(
+        "bestseller",
+        String(
+          Boolean(formData.bestseller)
+        )
+      );
+
+      productData.append(
+        "newArrival",
+        String(
+          Boolean(formData.newArrival)
+        )
+      );
+
+      productData.append(
+        "isActive",
+        String(
+          Boolean(formData.isActive)
+        )
+      );
+
+
+      /* ------------------------------------------------------
+         NEW CLOUDINARY IMAGE
+      ------------------------------------------------------ */
+
+      if (imageFile) {
+        productData.append(
+          "image",
+          imageFile
+        );
+      }
 
 
       console.log(
         "Updating Product:",
-        productData
+        {
+          ...formData,
+          imageFile:
+            imageFile?.name || null,
+        }
       );
 
 
-      /* ------------------------------------------------------
+      /* ======================================================
          API REQUEST
-      ------------------------------------------------------ */
+      ====================================================== */
 
-      const result = await updateProduct(
-        id,
-        productData
-      );
+      const result =
+        await updateProduct(
+          id,
+          productData
+        );
 
 
       console.log(
@@ -347,9 +585,9 @@ function EditProduct() {
       );
 
 
-      /* ------------------------------------------------------
+      /* ======================================================
          SUCCESS
-      ------------------------------------------------------ */
+      ====================================================== */
 
       if (result?.success) {
         showToast(
@@ -357,21 +595,23 @@ function EditProduct() {
           "success"
         );
 
-        navigate("/admin/products");
-      }
-
-
-      /* ------------------------------------------------------
-         API ERROR
-      ------------------------------------------------------ */
-
-      else {
-        showToast(
-          result?.message ||
-            "Failed to update product.",
-          "error"
+        navigate(
+          "/admin/products"
         );
+
+        return;
       }
+
+
+      /* ======================================================
+         API ERROR
+      ====================================================== */
+
+      showToast(
+        result?.message ||
+          "Failed to update product.",
+        "error"
+      );
     } catch (error) {
       console.error(
         "Update Product Error:",
@@ -379,8 +619,8 @@ function EditProduct() {
       );
 
       showToast(
-        error.response?.data?.message ||
-          error.message ||
+        error?.response?.data?.message ||
+          error?.message ||
           "Failed to update product.",
         "error"
       );
@@ -408,9 +648,9 @@ function EditProduct() {
 
       <div className="container">
 
-        {/* ----------------------------------------------------
+        {/* ====================================================
             HEADER
-        ---------------------------------------------------- */}
+        ==================================================== */}
 
         <div className="admin-form-header">
 
@@ -425,11 +665,14 @@ function EditProduct() {
             </p>
           </div>
 
+
           <button
             type="button"
             className="btn btn-secondary"
             onClick={() =>
-              navigate("/admin/products")
+              navigate(
+                "/admin/products"
+              )
             }
             disabled={saving}
           >
@@ -439,18 +682,17 @@ function EditProduct() {
         </div>
 
 
-        {/* ----------------------------------------------------
+        {/* ====================================================
             FORM
-        ---------------------------------------------------- */}
+        ==================================================== */}
 
         <form
           onSubmit={handleSubmit}
           className="product-form"
         >
 
-
           {/* ==================================================
-              BASIC INFORMATION
+              PRODUCT INFORMATION
           ================================================== */}
 
           <div className="form-section">
@@ -562,7 +804,6 @@ function EditProduct() {
 
             <div className="form-row">
 
-
               {/* PRICE */}
 
               <div className="form-group">
@@ -651,7 +892,6 @@ function EditProduct() {
 
             <div className="form-row">
 
-
               {/* STOCK */}
 
               <div className="form-group">
@@ -702,7 +942,7 @@ function EditProduct() {
 
 
           {/* ==================================================
-              IMAGE
+              PRODUCT IMAGE
           ================================================== */}
 
           <div className="form-section">
@@ -712,10 +952,12 @@ function EditProduct() {
             </h2>
 
 
+            {/* EXISTING IMAGE URL */}
+
             <div className="form-group">
 
               <label htmlFor="image">
-                Image URL
+                Current Image URL
               </label>
 
               <input
@@ -731,13 +973,43 @@ function EditProduct() {
             </div>
 
 
+            {/* NEW IMAGE */}
+
+            <div className="form-group">
+
+              <label htmlFor="product-image">
+                Replace Image
+              </label>
+
+              <input
+                id="product-image"
+                type="file"
+                accept="image/*"
+                onChange={
+                  handleImageChange
+                }
+                disabled={saving}
+              />
+
+              <p className="form-help">
+                Select a new image only if
+                you want to replace the current
+                Cloudinary image. Maximum size:
+                5MB.
+              </p>
+
+            </div>
+
+
             {/* IMAGE PREVIEW */}
 
-            {formData.image && (
-              <div className="product-image-preview">
+            {imagePreview && (
+              <div
+                className="product-image-preview"
+              >
 
                 <img
-                  src={formData.image}
+                  src={imagePreview}
                   alt={
                     formData.name ||
                     "Product preview"
@@ -747,6 +1019,31 @@ function EditProduct() {
                       "none";
                   }}
                 />
+
+              </div>
+            )}
+
+
+            {/* REMOVE SELECTED IMAGE */}
+
+            {imageFile && (
+              <div
+                className="form-actions"
+                style={{
+                  marginTop: "1rem",
+                }}
+              >
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={
+                    handleRemoveSelectedImage
+                  }
+                  disabled={saving}
+                >
+                  Remove New Image
+                </button>
 
               </div>
             )}
@@ -766,7 +1063,6 @@ function EditProduct() {
 
 
             <div className="checkbox-grid">
-
 
               {/* FEATURED */}
 
@@ -867,14 +1163,14 @@ function EditProduct() {
             </h2>
 
             <p className="form-help">
-              Ratings and review counts are normally
-              generated by customer reviews. Edit these
-              only when necessary.
+              Ratings and review counts are
+              normally generated by customer
+              reviews. Edit these only when
+              necessary.
             </p>
 
 
             <div className="form-row">
-
 
               {/* RATING */}
 
@@ -913,7 +1209,9 @@ function EditProduct() {
                   type="number"
                   name="numReviews"
                   placeholder="0"
-                  value={formData.numReviews}
+                  value={
+                    formData.numReviews
+                  }
                   onChange={handleChange}
                   min="0"
                   step="1"
@@ -937,7 +1235,9 @@ function EditProduct() {
               type="button"
               className="btn btn-secondary"
               onClick={() =>
-                navigate("/admin/products")
+                navigate(
+                  "/admin/products"
+                )
               }
               disabled={saving}
             >

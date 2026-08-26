@@ -19,15 +19,19 @@ import {
 
 import upload from "../middleware/uploadMiddleware.js";
 
+
 const router = express.Router();
+
 
 /* ==========================================================
    PUBLIC PRODUCT ROUTES
 ========================================================== */
 
+
 /* ----------------------------------------------------------
    SEARCH PRODUCTS
    GET /api/products/search
+   PUBLIC
 ---------------------------------------------------------- */
 
 router.get(
@@ -35,9 +39,11 @@ router.get(
   searchProducts
 );
 
+
 /* ----------------------------------------------------------
-   GET ALL PRODUCTS
+   GET ALL ACTIVE PRODUCTS
    GET /api/products
+   PUBLIC
 ---------------------------------------------------------- */
 
 router.get(
@@ -45,9 +51,11 @@ router.get(
   getProducts
 );
 
+
 /* ----------------------------------------------------------
-   GET SINGLE PRODUCT
+   GET SINGLE ACTIVE PRODUCT
    GET /api/products/:id
+   PUBLIC
 ---------------------------------------------------------- */
 
 router.get(
@@ -55,12 +63,14 @@ router.get(
   getProductById
 );
 
+
 /* ==========================================================
    ADMIN PRODUCT ROUTES
 ========================================================== */
 
+
 /* ----------------------------------------------------------
-   GET ALL ADMIN PRODUCTS
+   GET ALL PRODUCTS
    GET /api/products/admin
    PRIVATE / ADMIN
 ---------------------------------------------------------- */
@@ -71,6 +81,7 @@ router.get(
   adminOnly,
   getAdminProducts
 );
+
 
 /* ----------------------------------------------------------
    GET ADMIN PRODUCT BY ID
@@ -85,11 +96,14 @@ router.get(
   getAdminProductById
 );
 
+
 /* ----------------------------------------------------------
    CREATE PRODUCT
    POST /api/products
    PRIVATE / ADMIN
-   IMAGE UPLOAD → CLOUDINARY
+
+   IMAGE:
+   FormData → Multer → Cloudinary
 ---------------------------------------------------------- */
 
 router.post(
@@ -100,18 +114,28 @@ router.post(
   createProduct
 );
 
+
 /* ----------------------------------------------------------
    UPDATE PRODUCT
    PUT /api/products/:id
    PRIVATE / ADMIN
+
+   IMAGE:
+   FormData → Multer → Cloudinary
+
+   IMPORTANT:
+   The upload middleware is required here so that
+   updateProduct() can access req.file.
 ---------------------------------------------------------- */
 
 router.put(
   "/:id",
   protect,
   adminOnly,
+  upload,
   updateProduct
 );
+
 
 /* ----------------------------------------------------------
    RESTORE PRODUCT
@@ -126,10 +150,12 @@ router.put(
   restoreProduct
 );
 
+
 /* ----------------------------------------------------------
    DELETE PRODUCT
    DELETE /api/products/:id
    PRIVATE / ADMIN
+
    SOFT DELETE
 ---------------------------------------------------------- */
 
@@ -139,5 +165,6 @@ router.delete(
   adminOnly,
   deleteProduct
 );
+
 
 export default router;
