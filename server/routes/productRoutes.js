@@ -3,12 +3,9 @@ import express from "express";
 import {
   getProducts,
   getProductById,
-
   getAdminProducts,
   getAdminProductById,
-
   searchProducts,
-
   createProduct,
   updateProduct,
   deleteProduct,
@@ -20,14 +17,13 @@ import {
   adminOnly,
 } from "../middleware/authMiddleware.js";
 
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
-
 
 /* ==========================================================
    PUBLIC PRODUCT ROUTES
 ========================================================== */
-
 
 /* ----------------------------------------------------------
    SEARCH PRODUCTS
@@ -39,7 +35,6 @@ router.get(
   searchProducts
 );
 
-
 /* ----------------------------------------------------------
    GET ALL PRODUCTS
    GET /api/products
@@ -49,7 +44,6 @@ router.get(
   "/",
   getProducts
 );
-
 
 /* ----------------------------------------------------------
    GET SINGLE PRODUCT
@@ -61,11 +55,9 @@ router.get(
   getProductById
 );
 
-
 /* ==========================================================
    ADMIN PRODUCT ROUTES
 ========================================================== */
-
 
 /* ----------------------------------------------------------
    GET ALL ADMIN PRODUCTS
@@ -80,7 +72,6 @@ router.get(
   getAdminProducts
 );
 
-
 /* ----------------------------------------------------------
    GET ADMIN PRODUCT BY ID
    GET /api/products/admin/:id
@@ -94,20 +85,20 @@ router.get(
   getAdminProductById
 );
 
-
 /* ----------------------------------------------------------
    CREATE PRODUCT
    POST /api/products
    PRIVATE / ADMIN
+   IMAGE UPLOAD → CLOUDINARY
 ---------------------------------------------------------- */
 
 router.post(
   "/",
   protect,
   adminOnly,
+  upload,
   createProduct
 );
-
 
 /* ----------------------------------------------------------
    UPDATE PRODUCT
@@ -122,7 +113,6 @@ router.put(
   updateProduct
 );
 
-
 /* ----------------------------------------------------------
    RESTORE PRODUCT
    PUT /api/products/:id/restore
@@ -135,7 +125,6 @@ router.put(
   adminOnly,
   restoreProduct
 );
-
 
 /* ----------------------------------------------------------
    DELETE PRODUCT
@@ -150,6 +139,5 @@ router.delete(
   adminOnly,
   deleteProduct
 );
-
 
 export default router;

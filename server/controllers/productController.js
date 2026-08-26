@@ -181,6 +181,27 @@ const getValidationMessage = (error) => {
 };
 
 // ==========================================================
+// NORMALIZE IMAGE DATA
+// ==========================================================
+
+const normalizeImages = (images) => {
+  if (Array.isArray(images)) {
+    return images
+      .map((image) => String(image || "").trim())
+      .filter(Boolean);
+  }
+
+  if (
+    typeof images === "string" &&
+    images.trim()
+  ) {
+    return [images.trim()];
+  }
+
+  return [];
+};
+
+// ==========================================================
 // GET ALL ACTIVE PRODUCTS
 // GET /api/products
 // PUBLIC
@@ -201,10 +222,6 @@ export const getProducts = async (req, res) => {
       page = 1,
       limit = 10,
     } = req.query;
-
-    // --------------------------------------------------------
-    // BASE FILTER
-    // --------------------------------------------------------
 
     const filter = {
       isActive: true,
@@ -288,7 +305,8 @@ export const getProducts = async (req, res) => {
     // SORT
     // --------------------------------------------------------
 
-    const sortOption = buildSortOption(sort);
+    const sortOption =
+      buildSortOption(sort);
 
     // --------------------------------------------------------
     // PAGINATION
@@ -314,10 +332,6 @@ export const getProducts = async (req, res) => {
 
         Product.countDocuments(filter),
       ]);
-
-    // --------------------------------------------------------
-    // PAGINATION INFO
-    // --------------------------------------------------------
 
     const totalPages = Math.ceil(
       totalProducts / pageSize
@@ -412,10 +426,6 @@ export const searchProducts = async (
       sort = "newest",
     } = req.query;
 
-    // --------------------------------------------------------
-    // SEARCH TERM
-    // --------------------------------------------------------
-
     const searchTerm = (
       q ||
       search ||
@@ -423,17 +433,9 @@ export const searchProducts = async (
       ""
     ).trim();
 
-    // --------------------------------------------------------
-    // BASE FILTER
-    // --------------------------------------------------------
-
     const filter = {
       isActive: true,
     };
-
-    // --------------------------------------------------------
-    // SEARCH
-    // --------------------------------------------------------
 
     const searchFilter =
       buildSearchFilter(searchTerm);
@@ -442,10 +444,6 @@ export const searchProducts = async (
       Object.assign(filter, searchFilter);
     }
 
-    // --------------------------------------------------------
-    // CATEGORY
-    // --------------------------------------------------------
-
     if (
       category &&
       category.trim() &&
@@ -453,10 +451,6 @@ export const searchProducts = async (
     ) {
       filter.category = category.trim();
     }
-
-    // --------------------------------------------------------
-    // PRICE FILTER
-    // --------------------------------------------------------
 
     const priceResult = buildPriceFilter(
       minPrice,
@@ -475,24 +469,13 @@ export const searchProducts = async (
       filter.price = priceResult.filter;
     }
 
-    // --------------------------------------------------------
-    // SORT
-    // --------------------------------------------------------
-
-    const sortOption = buildSortOption(sort);
-
-    // --------------------------------------------------------
-    // QUERY
-    // --------------------------------------------------------
+    const sortOption =
+      buildSortOption(sort);
 
     const products =
       await Product.find(filter)
         .sort(sortOption)
         .lean();
-
-    // --------------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------------
 
     return res.status(200).json({
       success: true,
@@ -527,20 +510,12 @@ export const getProductById = async (
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
-    // VALIDATE ID
-    // --------------------------------------------------------
-
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
         message: "Invalid product ID.",
       });
     }
-
-    // --------------------------------------------------------
-    // FIND ACTIVE PRODUCT
-    // --------------------------------------------------------
 
     const product =
       await Product.findOne({
@@ -554,10 +529,6 @@ export const getProductById = async (
         message: "Product not found.",
       });
     }
-
-    // --------------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------------
 
     return res.status(200).json({
       success: true,
@@ -589,20 +560,12 @@ export const getAdminProductById = async (
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
-    // VALIDATE ID
-    // --------------------------------------------------------
-
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
         message: "Invalid product ID.",
       });
     }
-
-    // --------------------------------------------------------
-    // FIND PRODUCT
-    // --------------------------------------------------------
 
     const product =
       await Product.findById(id).lean();
@@ -613,10 +576,6 @@ export const getAdminProductById = async (
         message: "Product not found.",
       });
     }
-
-    // --------------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------------
 
     return res.status(200).json({
       success: true,
@@ -640,6 +599,7 @@ export const getAdminProductById = async (
 // CREATE PRODUCT
 // POST /api/products
 // ADMIN
+// IMAGE UPLOAD -> CLOUDINARY
 // ==========================================================
 
 export const createProduct = async (
@@ -672,8 +632,55 @@ export const createProduct = async (
     } = req.body;
 
     // --------------------------------------------------------
-    // BASIC SKU CHECK
+    // CLOUDINARY IMAGE
     // --------------------------------------------------------
+
+    const uploadedImage =
+      req.file?.path ||
+      req.file?.secure_url ||
+      "";
+
+    // Uploaded Cloudinary image takes priority.
+    // If there is no uploaded file, use the supplied image URL.
+    const primaryImage =
+      uploadedImage ||
+      String(image || "").trim();
+
+    // --------------------------------------------------------
+    // ADDITIONAL IMAGES
+    // --------------------------------------------------------
+
+    const additionalImages =
+      normalizeImages(images);
+
+    // --------------------------------------------------------
+    // BASIC PRODUCT VALIDATION
+    // --------------------------------------------------------
+
+    if (!name || !String(name).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Product name is required.",
+      });
+    }
+
+    if (
+      !description ||
+      !String(description).trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Product description is required.",
+      });
+    }
+
+    if (!category || !String(category).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Category is required.",
+      });
+    }
 
     if (!sku || !String(sku).trim()) {
       return res.status(400).json({
@@ -682,9 +689,26 @@ export const createProduct = async (
       });
     }
 
-    const normalizedSku = String(sku)
-      .trim()
-      .toUpperCase();
+    // --------------------------------------------------------
+    // IMAGE VALIDATION
+    // --------------------------------------------------------
+
+    if (!primaryImage) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Product image is required.",
+      });
+    }
+
+    // --------------------------------------------------------
+    // NORMALIZE SKU
+    // --------------------------------------------------------
+
+    const normalizedSku =
+      String(sku)
+        .trim()
+        .toUpperCase();
 
     // --------------------------------------------------------
     // CHECK DUPLICATE SKU
@@ -709,27 +733,44 @@ export const createProduct = async (
 
     const product =
       await Product.create({
-        name,
-        description,
+        name: String(name).trim(),
+
+        description:
+          String(description).trim(),
+
         price,
         oldPrice,
         discount,
         currency,
-        category,
-        brand,
+
+        category:
+          String(category).trim(),
+
+        brand:
+          brand
+            ? String(brand).trim()
+            : "TechStore Pro",
+
         sku: normalizedSku,
-        image,
-        images,
+
+        // Cloudinary URL
+        image: primaryImage,
+
+        // Additional images
+        images: additionalImages,
+
         features,
         stock,
         shipping,
         rating,
         numReviews,
         warranty,
+
         featured,
         bestseller,
         newArrival,
         isActive,
+
         createdBy:
           req.user?._id || null,
       });
@@ -801,20 +842,12 @@ export const updateProduct = async (
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
-    // VALIDATE ID
-    // --------------------------------------------------------
-
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
         message: "Invalid product ID.",
       });
     }
-
-    // --------------------------------------------------------
-    // ALLOWED FIELDS
-    // --------------------------------------------------------
 
     const allowedFields = [
       "name",
@@ -840,10 +873,6 @@ export const updateProduct = async (
       "isActive",
     ];
 
-    // --------------------------------------------------------
-    // BUILD UPDATE DATA
-    // --------------------------------------------------------
-
     const updateData = {};
 
     allowedFields.forEach((field) => {
@@ -857,6 +886,33 @@ export const updateProduct = async (
           req.body[field];
       }
     });
+
+    // --------------------------------------------------------
+    // SUPPORT CLOUDINARY IMAGE UPDATE
+    // --------------------------------------------------------
+
+    if (req.file) {
+      updateData.image =
+        req.file.path ||
+        req.file.secure_url ||
+        "";
+    }
+
+    // --------------------------------------------------------
+    // NORMALIZE IMAGE ARRAY
+    // --------------------------------------------------------
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        updateData,
+        "images"
+      )
+    ) {
+      updateData.images =
+        normalizeImages(
+          updateData.images
+        );
+    }
 
     // --------------------------------------------------------
     // PREVENT EMPTY UPDATE
@@ -892,11 +948,10 @@ export const updateProduct = async (
         });
       }
 
-      updateData.sku = String(
-        updateData.sku
-      )
-        .trim()
-        .toUpperCase();
+      updateData.sku =
+        String(updateData.sku)
+          .trim()
+          .toUpperCase();
 
       // ------------------------------------------------------
       // CHECK SKU BELONGS TO ANOTHER PRODUCT
@@ -935,20 +990,12 @@ export const updateProduct = async (
         }
       );
 
-    // --------------------------------------------------------
-    // PRODUCT NOT FOUND
-    // --------------------------------------------------------
-
     if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found.",
       });
     }
-
-    // --------------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------------
 
     return res.status(200).json({
       success: true,
@@ -962,10 +1009,6 @@ export const updateProduct = async (
       error
     );
 
-    // --------------------------------------------------------
-    // DUPLICATE KEY ERROR
-    // --------------------------------------------------------
-
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
@@ -973,10 +1016,6 @@ export const updateProduct = async (
           "A product with this SKU already exists.",
       });
     }
-
-    // --------------------------------------------------------
-    // VALIDATION ERROR
-    // --------------------------------------------------------
 
     const validationMessage =
       getValidationMessage(error);
@@ -987,10 +1026,6 @@ export const updateProduct = async (
         message: validationMessage,
       });
     }
-
-    // --------------------------------------------------------
-    // SERVER ERROR
-    // --------------------------------------------------------
 
     return res.status(500).json({
       success: false,
@@ -1014,20 +1049,12 @@ export const deleteProduct = async (
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
-    // VALIDATE ID
-    // --------------------------------------------------------
-
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
         message: "Invalid product ID.",
       });
     }
-
-    // --------------------------------------------------------
-    // FIND PRODUCT
-    // --------------------------------------------------------
 
     const product =
       await Product.findById(id);
@@ -1039,17 +1066,9 @@ export const deleteProduct = async (
       });
     }
 
-    // --------------------------------------------------------
-    // SOFT DELETE
-    // --------------------------------------------------------
-
     product.isActive = false;
 
     await product.save();
-
-    // --------------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------------
 
     return res.status(200).json({
       success: true,
@@ -1084,20 +1103,12 @@ export const restoreProduct = async (
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
-    // VALIDATE ID
-    // --------------------------------------------------------
-
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
         message: "Invalid product ID.",
       });
     }
-
-    // --------------------------------------------------------
-    // FIND PRODUCT
-    // --------------------------------------------------------
 
     const product =
       await Product.findById(id);
@@ -1109,17 +1120,9 @@ export const restoreProduct = async (
       });
     }
 
-    // --------------------------------------------------------
-    // RESTORE
-    // --------------------------------------------------------
-
     product.isActive = true;
 
     await product.save();
-
-    // --------------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------------
 
     return res.status(200).json({
       success: true,

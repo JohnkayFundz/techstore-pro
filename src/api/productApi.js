@@ -9,12 +9,11 @@ const getErrorMessage = (
   fallback = "Something went wrong."
 ) => {
   return (
-    error.response?.data?.message ||
-    error.message ||
+    error?.response?.data?.message ||
+    error?.message ||
     fallback
   );
 };
-
 
 /* ==========================================================
    GET ALL PRODUCTS
@@ -45,7 +44,6 @@ export const getProducts = async (params = {}) => {
   }
 };
 
-
 /* ==========================================================
    GET SINGLE PUBLIC PRODUCT
    GET /api/products/:id
@@ -71,7 +69,6 @@ export const getProductById = async (id) => {
     };
   }
 };
-
 
 /* ==========================================================
    GET ALL ADMIN PRODUCTS
@@ -102,7 +99,6 @@ export const getAdminProducts = async () => {
   }
 };
 
-
 /* ==========================================================
    GET ADMIN PRODUCT BY ID
    GET /api/products/admin/:id
@@ -132,11 +128,14 @@ export const getAdminProductById = async (id) => {
   }
 };
 
-
 /* ==========================================================
    CREATE PRODUCT
    POST /api/products
    ADMIN ONLY
+
+   Supports:
+   - FormData
+   - Cloudinary image upload
 ========================================================== */
 
 export const createProduct = async (productData) => {
@@ -163,7 +162,6 @@ export const createProduct = async (productData) => {
     };
   }
 };
-
 
 /* ==========================================================
    UPDATE PRODUCT
@@ -199,7 +197,6 @@ export const updateProduct = async (
   }
 };
 
-
 /* ==========================================================
    DELETE PRODUCT
    DELETE /api/products/:id
@@ -230,7 +227,6 @@ export const deleteProduct = async (id) => {
   }
 };
 
-
 /* ==========================================================
    RESTORE PRODUCT
    PUT /api/products/:id/restore
@@ -260,7 +256,6 @@ export const restoreProduct = async (id) => {
     };
   }
 };
-
 
 /* ==========================================================
    GET FEATURED PRODUCTS
@@ -299,7 +294,6 @@ export const getFeaturedProducts = async (
   }
 };
 
-
 /* ==========================================================
    GET BESTSELLER PRODUCTS
    GET /api/products?bestseller=true
@@ -337,7 +331,6 @@ export const getBestSellerProducts = async (
   }
 };
 
-
 /* ==========================================================
    GET NEW ARRIVAL PRODUCTS
    GET /api/products?newArrival=true
@@ -374,7 +367,6 @@ export const getNewArrivalProducts = async (
     };
   }
 };
-
 
 /* ==========================================================
    SEARCH PRODUCTS
@@ -414,7 +406,6 @@ export const searchProducts = async (
   }
 };
 
-
 /* ==========================================================
    GET PRODUCTS BY CATEGORY
    GET /api/products?category=...
@@ -452,7 +443,6 @@ export const getProductsByCategory = async (
     };
   }
 };
-
 
 /* ==========================================================
    GET PRODUCTS WITH PAGINATION
@@ -497,17 +487,18 @@ export const getProductsPaginated = async (
   }
 };
 
-
 /* ==========================================================
    SORT PRODUCTS
    GET /api/products?sort=...
-   
+
    Supported:
    newest
    oldest
    price-low
    price-high
    name
+   name-asc
+   name-desc
    rating
 ========================================================== */
 
@@ -543,7 +534,6 @@ export const getSortedProducts = async (
     };
   }
 };
-
 
 /* ==========================================================
    FILTER PRODUCTS
