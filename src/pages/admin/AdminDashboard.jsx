@@ -19,706 +19,734 @@ import "./AdminDashboard.css";
 
 
 function AdminDashboard() {
-
+  // ==========================================================
+  // STATE
+  // ==========================================================
 
   const [stats, setStats] = useState({
-
     totalUsers: 0,
-
     totalProducts: 0,
-
+    activeProducts: 0,
+    inactiveProducts: 0,
     totalOrders: 0,
-
+    pendingOrders: 0,
+    processingOrders: 0,
+    shippedOrders: 0,
+    deliveredOrders: 0,
+    cancelledOrders: 0,
     totalRevenue: 0,
-
   });
 
 
+  const [salesSummary, setSalesSummary] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    deliveredOrders: 0,
+    cancelledOrders: 0,
+    averageOrderValue: 0,
+  });
 
-  const [recentOrders, setRecentOrders] = useState([]);
 
-  const [sales, setSales] = useState([]);
+  const [salesByDay, setSalesByDay] = useState([]);
 
-
+  const [topProducts, setTopProducts] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
 
 
-
+  // ==========================================================
+  // LOAD DASHBOARD
+  // ==========================================================
 
   const loadDashboard = useCallback(async () => {
-
-
     try {
-
-
       setLoading(true);
 
       setError("");
 
 
+      // ======================================================
+      // LOAD DASHBOARD + ANALYTICS
+      // ======================================================
 
       const [
-
-        dashboard,
-
-        analytics,
-
+        dashboardResponse,
+        analyticsResponse,
       ] = await Promise.all([
-
         getDashboardStats(),
-
         getSalesAnalytics(),
-
       ]);
 
 
+      // ======================================================
+      // VALIDATE DASHBOARD RESPONSE
+      // ======================================================
 
+      if (!dashboardResponse?.success) {
+        throw new Error(
+          dashboardResponse?.message ||
+          "Failed to load dashboard."
+        );
+      }
+
+
+      // ======================================================
+      // DASHBOARD DATA
+      //
+      // Backend returns:
+      //
+      // {
+      //   success: true,
+      //   stats: {...},
+      //   recentOrders: [...]
+      // }
+      //
+      // ======================================================
+
+      const dashboard =
+        dashboardResponse.stats || {};
 
 
       setStats({
-
         totalUsers:
-          dashboard.stats?.totalUsers || 0,
-
+          dashboard.totalUsers || 0,
 
         totalProducts:
-          dashboard.stats?.totalProducts || 0,
+          dashboard.totalProducts || 0,
 
+        activeProducts:
+          dashboard.activeProducts || 0,
+
+        inactiveProducts:
+          dashboard.inactiveProducts || 0,
 
         totalOrders:
-          dashboard.stats?.totalOrders || 0,
+          dashboard.totalOrders || 0,
 
+        pendingOrders:
+          dashboard.pendingOrders || 0,
+
+        processingOrders:
+          dashboard.processingOrders || 0,
+
+        shippedOrders:
+          dashboard.shippedOrders || 0,
+
+        deliveredOrders:
+          dashboard.deliveredOrders || 0,
+
+        cancelledOrders:
+          dashboard.cancelledOrders || 0,
 
         totalRevenue:
-          dashboard.stats?.totalRevenue || 0,
-
+          dashboard.totalRevenue || 0,
       });
 
 
+      // ======================================================
+      // VALIDATE ANALYTICS RESPONSE
+      // ======================================================
+
+      if (!analyticsResponse?.success) {
+        throw new Error(
+          analyticsResponse?.message ||
+          "Failed to load sales analytics."
+        );
+      }
 
 
+      // ======================================================
+      // SALES ANALYTICS
+      //
+      // Backend returns:
+      //
+      // {
+      //   success: true,
+      //   summary: {...},
+      //   salesByStatus: [...],
+      //   salesByDay: [...],
+      //   topProducts: [...]
+      // }
+      //
+      // ======================================================
 
-      setRecentOrders(
+      const analytics =
+        analyticsResponse || {};
 
-        dashboard.recentOrders || []
 
+      setSalesSummary(
+        analytics.summary || {
+          totalRevenue: 0,
+          totalOrders: 0,
+          deliveredOrders: 0,
+          cancelledOrders: 0,
+          averageOrderValue: 0,
+        }
       );
 
 
-
-
-
-      setSales(
-
-        analytics?.sales || []
-
+      setSalesByDay(
+        Array.isArray(
+          analytics.salesByDay
+        )
+          ? analytics.salesByDay
+          : []
       );
 
 
+      setTopProducts(
+        Array.isArray(
+          analytics.topProducts
+        )
+          ? analytics.topProducts
+          : []
+      );
 
 
     } catch (err) {
-
-
       console.error(
         "Dashboard Error:",
         err
       );
 
 
-
       setError(
-
-        err.response?.data?.message ||
-
+        err.message ||
         "Failed to load dashboard."
-
       );
 
 
-
     } finally {
-
-
       setLoading(false);
-
-
     }
-
-
   }, []);
 
 
-
-
+  // ==========================================================
+  // LOAD ON MOUNT
+  // ==========================================================
 
   useEffect(() => {
-
-
     loadDashboard();
-
-
   }, [loadDashboard]);
 
 
-
-
-
-
+  // ==========================================================
+  // LOADING
+  // ==========================================================
 
   if (loading) {
-
     return <Loading />;
-
   }
 
 
-
-
-
+  // ==========================================================
+  // ERROR
+  // ==========================================================
 
   if (error) {
-
-
     return (
+      <section className="admin-dashboard">
 
-      <div className="admin-error">
+        <div className="admin-error">
 
-        {error}
+          <h2>
+            Dashboard Error
+          </h2>
 
-      </div>
 
+          <p>
+            {error}
+          </p>
+
+
+          <button
+            type="button"
+            onClick={loadDashboard}
+          >
+            Try Again
+          </button>
+
+        </div>
+
+      </section>
     );
-
   }
 
 
-
-
-
-
+  // ==========================================================
+  // RENDER
+  // ==========================================================
 
   return (
-
-
     <section className="admin-dashboard">
 
-
-
-
-
-      {/* Header */}
+      {/* ====================================================
+          HEADER
+          ==================================================== */}
 
       <header className="dashboard-title">
 
+        <div>
 
-        <h1>
-
-          Admin Dashboard
-
-        </h1>
-
+          <h1>
+            Admin Dashboard
+          </h1>
 
 
-        <p>
+          <p>
+            Welcome back, Administrator
+          </p>
 
-          Welcome back, Administrator
-
-        </p>
-
-
+        </div>
 
       </header>
 
 
-
-
-
-
-
-
-
-      {/* Statistics Cards */}
-
+      {/* ====================================================
+          STATISTICS
+          ==================================================== */}
 
       <div className="stats-grid">
 
-
-
-
+        {/* USERS */}
 
         <div className="stat-card">
 
-
           <h3>
-
             Users
-
           </h3>
 
 
           <strong>
-
             {stats.totalUsers}
-
           </strong>
-
 
         </div>
 
 
-
-
-
-
+        {/* PRODUCTS */}
 
         <div className="stat-card">
 
-
           <h3>
-
             Products
-
           </h3>
 
 
           <strong>
-
             {stats.totalProducts}
-
           </strong>
 
+
+          <small>
+            {stats.activeProducts} active
+          </small>
 
         </div>
 
 
-
-
-
-
+        {/* ORDERS */}
 
         <div className="stat-card">
 
-
           <h3>
-
             Orders
-
           </h3>
 
 
           <strong>
-
             {stats.totalOrders}
-
           </strong>
 
+
+          <small>
+            {stats.pendingOrders} pending
+          </small>
 
         </div>
 
 
-
-
-
-
+        {/* REVENUE */}
 
         <div className="stat-card">
 
-
           <h3>
-
             Revenue
-
           </h3>
 
 
           <strong>
-
             {formatPrice(
               stats.totalRevenue
             )}
-
           </strong>
 
 
+          <small>
+            Delivered orders
+          </small>
+
         </div>
-
-
-
-
 
       </div>
 
 
-
-
-
-
-
-
-
-      {/* Quick Actions */}
-
+      {/* ====================================================
+          ORDER STATUS
+          ==================================================== */}
 
       <section className="admin-actions">
 
-
         <h2>
-
-          Quick Actions
-
+          Order Overview
         </h2>
-
 
 
         <div className="action-grid">
 
+          <div>
+
+            <strong>
+              {stats.pendingOrders}
+            </strong>
 
 
-          <Link to="/admin/products">
+            <span>
+              Pending
+            </span>
 
-            Manage Products
-
-          </Link>
-
-
+          </div>
 
 
-          <Link to="/admin/orders">
+          <div>
 
-            Manage Orders
-
-          </Link>
-
-
+            <strong>
+              {stats.processingOrders}
+            </strong>
 
 
-          <Link to="/admin/users">
+            <span>
+              Processing
+            </span>
 
-            Manage Users
-
-          </Link>
+          </div>
 
 
+          <div>
+
+            <strong>
+              {stats.shippedOrders}
+            </strong>
+
+
+            <span>
+              Shipped
+            </span>
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              {stats.deliveredOrders}
+            </strong>
+
+
+            <span>
+              Delivered
+            </span>
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              {stats.cancelledOrders}
+            </strong>
+
+
+            <span>
+              Cancelled
+            </span>
+
+          </div>
 
         </div>
 
+      </section>
+
+
+      {/* ====================================================
+          QUICK ACTIONS
+          ==================================================== */}
+
+      <section className="admin-actions">
+
+        <h2>
+          Quick Actions
+        </h2>
+
+
+        <div className="action-grid">
+
+          <Link to="/admin/products">
+            Manage Products
+          </Link>
+
+
+          <Link to="/admin/orders">
+            Manage Orders
+          </Link>
+
+
+          <Link to="/admin/users">
+            Manage Users
+          </Link>
+
+        </div>
 
       </section>
 
 
-
-
-
-
-
-
-
-      {/* Sales Analytics */}
-
+      {/* ====================================================
+          SALES SUMMARY
+          ==================================================== */}
 
       <section className="sales-section">
 
-
         <h2>
-
           Sales Analytics
-
         </h2>
 
 
+        <div className="stats-grid">
+
+          {/* TOTAL REVENUE */}
+
+          <div className="stat-card">
+
+            <h3>
+              Total Revenue
+            </h3>
 
 
+            <strong>
+              {formatPrice(
+                salesSummary.totalRevenue
+              )}
+            </strong>
 
-        {
-
-          sales.length === 0 ?
-
-
-          (
-
-            <p>
-
-              No sales data available.
-
-            </p>
-
-          )
+          </div>
 
 
+          {/* TOTAL ORDERS */}
 
-          :
+          <div className="stat-card">
 
-
-
-          (
-
-            <div className="sales-list">
-
-
-              {
-
-                sales.map((sale) => (
+            <h3>
+              Total Orders
+            </h3>
 
 
-                  <div
+            <strong>
+              {salesSummary.totalOrders}
+            </strong>
 
-                    className="sales-item"
-
-                    key={
-                      `${sale._id.year}-${sale._id.month}`
-                    }
-
-                  >
+          </div>
 
 
-                    <span>
+          {/* DELIVERED */}
 
-                      {sale._id.month}/
+          <div className="stat-card">
 
-                      {sale._id.year}
-
-                    </span>
-
-
+            <h3>
+              Delivered
+            </h3>
 
 
-                    <strong>
+            <strong>
+              {salesSummary.deliveredOrders}
+            </strong>
 
-                      {formatPrice(
-                        sale.totalSales
-                      )}
-
-                    </strong>
+          </div>
 
 
+          {/* AVERAGE ORDER */}
+
+          <div className="stat-card">
+
+            <h3>
+              Average Order
+            </h3>
 
 
-                    <small>
+            <strong>
+              {formatPrice(
+                salesSummary.averageOrderValue
+              )}
+            </strong>
 
-                      {sale.totalOrders}
+          </div>
 
-                      {" "}Orders
-
-                    </small>
-
-
-
-                  </div>
-
-
-                ))
-
-              }
-
-
-
-            </div>
-
-          )
-
-
-        }
-
-
+        </div>
 
       </section>
 
 
+      {/* ====================================================
+          SALES BY DAY
+          ==================================================== */}
 
-
-
-
-
-
-
-      {/* Recent Orders */}
-
-
-      <section className="recent-orders">
-
+      <section className="sales-section">
 
         <h2>
-
-          Recent Orders
-
+          Daily Sales
         </h2>
 
 
+        {salesByDay.length === 0 ? (
 
+          <p>
+            No sales data available.
+          </p>
 
+        ) : (
 
-        {
+          <div className="sales-list">
 
-          recentOrders.length === 0 ?
+            {salesByDay.map((sale) => (
 
+              <div
+                className="sales-item"
+                key={sale._id}
+              >
 
-          (
+                <span>
+                  {sale._id}
+                </span>
 
-            <p>
 
-              No recent orders.
+                <strong>
+                  {formatPrice(
+                    sale.revenue
+                  )}
+                </strong>
 
-            </p>
 
-          )
+                <small>
+                  {sale.orders} Orders
+                </small>
 
+              </div>
 
+            ))}
 
-          :
+          </div>
 
-
-
-          (
-
-
-            <table className="admin-table">
-
-
-
-              <thead>
-
-
-                <tr>
-
-
-                  <th>
-
-                    Order
-
-                  </th>
-
-
-
-                  <th>
-
-                    Customer
-
-                  </th>
-
-
-
-                  <th>
-
-                    Status
-
-                  </th>
-
-
-
-                  <th>
-
-                    Total
-
-                  </th>
-
-
-                </tr>
-
-
-              </thead>
-
-
-
-
-
-
-
-              <tbody>
-
-
-
-                {
-
-                  recentOrders.map((order) => (
-
-
-
-                    <tr key={order._id}>
-
-
-                      <td>
-
-                        {order.orderNumber}
-
-                      </td>
-
-
-
-
-                      <td>
-
-                        {
-                          order.user?.name ||
-                          "Unknown"
-                        }
-
-                      </td>
-
-
-
-
-                      <td>
-
-                        {order.status}
-
-                      </td>
-
-
-
-
-                      <td>
-
-                        {formatPrice(
-                          order.totalAmount
-                        )}
-
-                      </td>
-
-
-
-                    </tr>
-
-
-                  ))
-
-
-                }
-
-
-
-              </tbody>
-
-
-
-
-            </table>
-
-
-          )
-
-
-        }
-
-
+        )}
 
       </section>
 
 
+      {/* ====================================================
+          TOP PRODUCTS
+          ==================================================== */}
+
+      <section className="sales-section">
+
+        <h2>
+          Top Products
+        </h2>
 
 
+        {topProducts.length === 0 ? (
 
+          <p>
+            No product sales data available.
+          </p>
+
+        ) : (
+
+          <div className="sales-list">
+
+            {topProducts.map((product) => (
+
+              <div
+                className="sales-item"
+                key={
+                  product._id ||
+                  product.productName
+                }
+              >
+
+                <span>
+                  {product.productName}
+                </span>
+
+
+                <strong>
+                  {product.quantitySold}
+                  {" "}
+                  sold
+                </strong>
+
+
+                <small>
+                  {formatPrice(
+                    product.revenue
+                  )}
+                </small>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
+
+      </section>
+
+
+      {/* ====================================================
+          ADMIN LINKS
+          ==================================================== */}
+
+      <section className="admin-actions">
+
+        <h2>
+          Administration
+        </h2>
+
+
+        <div className="action-grid">
+
+          <Link to="/admin/products">
+            Products
+          </Link>
+
+
+          <Link to="/admin/orders">
+            Orders
+          </Link>
+
+
+          <Link to="/admin/users">
+            Users
+          </Link>
+
+        </div>
+
+      </section>
 
     </section>
-
-
   );
-
 }
-
 
 
 export default AdminDashboard;

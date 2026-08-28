@@ -1,78 +1,108 @@
 import api from "./axios";
 
-
 /* ==========================================================
-   GET ALL USERS (ADMIN)
+   ADMIN USERS API
 ========================================================== */
+
+/* ----------------------------------------------------------
+   GET ALL USERS
+   GET /api/admin/users
+---------------------------------------------------------- */
 
 export const getUsers = async () => {
+  try {
+    const { data } = await api.get("/admin/users");
 
-  const { data } = await api.get(
-    "/users"
-  );
+    return data;
+  } catch (error) {
+    console.error("Get Users Error:", error);
 
-  return data;
-
+    return {
+      success: false,
+      users: [],
+      message:
+        error.response?.data?.message ||
+        "Failed to load users.",
+    };
+  }
 };
 
 
-
-
-
-/* ==========================================================
-   GET SINGLE USER (ADMIN)
-========================================================== */
+/* ----------------------------------------------------------
+   GET SINGLE USER
+   GET /api/admin/users/:id
+---------------------------------------------------------- */
 
 export const getUserById = async (id) => {
+  try {
+    const { data } = await api.get(
+      `/admin/users/${id}`
+    );
 
-  const { data } = await api.get(
-    `/users/${id}`
-  );
+    return data;
+  } catch (error) {
+    console.error("Get User By ID Error:", error);
 
-  return data;
-
+    return {
+      success: false,
+      user: null,
+      message:
+        error.response?.data?.message ||
+        "Failed to load user.",
+    };
+  }
 };
 
 
+/* ----------------------------------------------------------
+   UPDATE USER ROLE
+   PUT /api/admin/users/:id/role
+---------------------------------------------------------- */
 
+export const updateUserRole = async (id, role) => {
+  try {
+    const { data } = await api.put(
+      `/admin/users/${id}/role`,
+      {
+        role,
+      }
+    );
 
+    return data;
+  } catch (error) {
+    console.error("Update User Role Error:", error);
 
-/* ==========================================================
-   UPDATE USER ROLE (ADMIN)
-========================================================== */
-
-export const updateUserRole = async (
-  id,
-  role
-) => {
-
-  const { data } = await api.put(
-    `/users/${id}/role`,
-    {
-      role,
-    }
-  );
-
-  return data;
-
+    return {
+      success: false,
+      user: null,
+      message:
+        error.response?.data?.message ||
+        "Failed to update user role.",
+    };
+  }
 };
 
 
+/* ----------------------------------------------------------
+   DELETE USER
+   DELETE /api/admin/users/:id
+---------------------------------------------------------- */
 
+export const deleteUser = async (id) => {
+  try {
+    const { data } = await api.delete(
+      `/admin/users/${id}`
+    );
 
+    return data;
+  } catch (error) {
+    console.error("Delete User Error:", error);
 
-/* ==========================================================
-   DELETE USER (ADMIN)
-========================================================== */
-
-export const deleteUser = async (
-  id
-) => {
-
-  const { data } = await api.delete(
-    `/users/${id}`
-  );
-
-  return data;
-
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "Failed to delete user.",
+    };
+  }
 };

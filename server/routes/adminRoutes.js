@@ -38,6 +38,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  restoreProduct,
 } from "../controllers/adminController.js";
 
 
@@ -45,38 +46,8 @@ const router = express.Router();
 
 
 /* ==========================================================
-   ADMIN AUTHENTICATION
-========================================================== */
-
-/*
- * Every route in this file requires:
- *
- * 1. A valid authenticated user
- * 2. Admin privileges
- *
- * protect    → verifies JWT / authentication
- * adminOnly  → verifies user.role === "admin"
- *
- * The middleware is applied individually below so each
- * route is explicit and easy to debug.
- */
-
-
-/* ==========================================================
    DASHBOARD
 ========================================================== */
-
-/*
- * GET /api/admin/dashboard
- *
- * Returns:
- * - Total products
- * - Total users
- * - Total orders
- * - Active products
- * - Pending orders
- * - Total sales
- */
 
 router.get(
   "/dashboard",
@@ -85,12 +56,6 @@ router.get(
   getDashboardStats
 );
 
-
-/*
- * GET /api/admin/sales
- *
- * Returns monthly sales analytics.
- */
 
 router.get(
   "/sales",
@@ -104,12 +69,6 @@ router.get(
    USERS
 ========================================================== */
 
-/*
- * GET /api/admin/users
- *
- * Get all registered users.
- */
-
 router.get(
   "/users",
   protect,
@@ -118,23 +77,6 @@ router.get(
 );
 
 
-/*
- * PUT /api/admin/users/:id/role
- *
- * Update a user's role.
- *
- * Body:
- * {
- *   "role": "user"
- * }
- *
- * or
- *
- * {
- *   "role": "admin"
- * }
- */
-
 router.put(
   "/users/:id/role",
   protect,
@@ -142,12 +84,6 @@ router.put(
   updateUserRole
 );
 
-
-/*
- * DELETE /api/admin/users/:id
- *
- * Delete a user.
- */
 
 router.delete(
   "/users/:id",
@@ -161,12 +97,6 @@ router.delete(
    ORDERS
 ========================================================== */
 
-/*
- * GET /api/admin/orders
- *
- * Get all customer orders.
- */
-
 router.get(
   "/orders",
   protect,
@@ -175,25 +105,6 @@ router.get(
 );
 
 
-/*
- * PUT /api/admin/orders/:id
- *
- * Update order status.
- *
- * Body:
- * {
- *   "status": "processing"
- * }
- *
- * Allowed statuses:
- *
- * pending
- * processing
- * shipped
- * delivered
- * cancelled
- */
-
 router.put(
   "/orders/:id",
   protect,
@@ -201,12 +112,6 @@ router.put(
   updateOrderStatus
 );
 
-
-/*
- * DELETE /api/admin/orders/:id
- *
- * Delete an order.
- */
 
 router.delete(
   "/orders/:id",
@@ -221,9 +126,8 @@ router.delete(
 ========================================================== */
 
 /*
+ * GET ALL PRODUCTS
  * GET /api/admin/products
- *
- * Get all products for the admin panel.
  */
 
 router.get(
@@ -235,9 +139,8 @@ router.get(
 
 
 /*
+ * GET SINGLE PRODUCT
  * GET /api/admin/products/:id
- *
- * Get a single product.
  */
 
 router.get(
@@ -249,14 +152,8 @@ router.get(
 
 
 /*
+ * CREATE PRODUCT
  * POST /api/admin/products
- *
- * Create a new product.
- *
- * Supports:
- * - JSON
- * - FormData
- * - Image uploads
  */
 
 router.post(
@@ -268,14 +165,8 @@ router.post(
 
 
 /*
+ * UPDATE PRODUCT
  * PUT /api/admin/products/:id
- *
- * Update an existing product.
- *
- * Supports:
- * - JSON
- * - FormData
- * - Image uploads
  */
 
 router.put(
@@ -287,9 +178,10 @@ router.put(
 
 
 /*
+ * DELETE PRODUCT
  * DELETE /api/admin/products/:id
  *
- * Delete a product.
+ * Soft delete
  */
 
 router.delete(
@@ -297,6 +189,19 @@ router.delete(
   protect,
   adminOnly,
   deleteProduct
+);
+
+
+/*
+ * RESTORE PRODUCT
+ * PUT /api/admin/products/:id/restore
+ */
+
+router.put(
+  "/products/:id/restore",
+  protect,
+  adminOnly,
+  restoreProduct
 );
 
 

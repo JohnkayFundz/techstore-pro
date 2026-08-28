@@ -115,3 +115,5 @@ server/uploads/
 *.bak
 *.backup
 *.old
+# Local Cloudinary preview/test assets
+cloudinary-preview/
