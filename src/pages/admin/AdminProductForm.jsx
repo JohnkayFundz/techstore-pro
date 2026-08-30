@@ -32,6 +32,7 @@ const CATEGORIES = [
 const EMPTY_FORM = {
   name: "",
   brand: "",
+  sku: "",
   category: "Laptops",
   price: "",
   stock: "",
@@ -89,6 +90,7 @@ function AdminProductForm() {
       setForm({
         name: product?.name || "",
         brand: product?.brand || "",
+        sku: product?.sku || "",
         category: CATEGORIES.includes(product?.category)
           ? product.category
           : "Laptops",
@@ -210,6 +212,10 @@ function AdminProductForm() {
       return "Product name is required.";
     }
 
+    if (!form.sku.trim()) {
+      return "Product SKU is required.";
+    }
+
     if (
       form.price === "" ||
       !Number.isFinite(Number(form.price)) ||
@@ -256,17 +262,28 @@ function AdminProductForm() {
 
       const payload = {
         name: form.name.trim(),
+
         brand: form.brand.trim(),
+
+        sku: form.sku.trim().toUpperCase(),
+
         category: form.category,
+
         price: Number(form.price),
+
         stock:
           form.stock === ""
             ? 0
             : Number(form.stock),
+
         description: form.description.trim(),
+
         image: form.image || "",
+
         featured: Boolean(form.featured),
+
         bestseller: Boolean(form.bestseller),
+
         newArrival: Boolean(form.newArrival),
       };
 
@@ -395,6 +412,29 @@ function AdminProductForm() {
                 onChange={handleChange}
                 placeholder="e.g. Apple"
               />
+            </div>
+
+            {/* SKU */}
+
+            <div className="form-group">
+              <label htmlFor="sku">
+                SKU *
+              </label>
+
+              <input
+                id="sku"
+                type="text"
+                name="sku"
+                value={form.sku}
+                onChange={handleChange}
+                placeholder="e.g. APPLE-MBP-M4-16"
+                required
+                maxLength={100}
+              />
+
+              <small>
+                SKU must be unique for each product.
+              </small>
             </div>
 
             {/* CATEGORY */}

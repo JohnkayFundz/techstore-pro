@@ -12,7 +12,9 @@ import Product from "./models/Product.js";
 // LOAD ENVIRONMENT VARIABLES
 // ==========================================================
 
-dotenv.config();
+dotenv.config({
+  path: "./server/.env",
+});
 
 // ==========================================================
 // MONGODB CONFIGURATION
@@ -21,7 +23,9 @@ dotenv.config();
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error("ERROR: MONGODB_URI is not defined in .env");
+  console.error(
+    "ERROR: MONGODB_URI is not defined in server/.env"
+  );
   process.exit(1);
 }
 
@@ -58,10 +62,13 @@ const inspectProducts = async () => {
       console.log(`Stock      : ${product.stock}`);
       console.log(`Images     : ${product.images?.length || 0}`);
 
-      console.log(`Primary Image:`);
+      console.log("Primary Image:");
       console.log(`  ${product.image || "NONE"}`);
 
-      if (Array.isArray(product.images) && product.images.length > 0) {
+      if (
+        Array.isArray(product.images) &&
+        product.images.length > 0
+      ) {
         product.images.forEach((image, imageIndex) => {
           console.log(`  Image ${imageIndex + 1}:`);
           console.log(`    ${image}`);
@@ -78,7 +85,6 @@ const inspectProducts = async () => {
     console.log("==========================================");
     console.log(`Total products inspected: ${products.length}`);
     console.log("");
-
   } catch (error) {
     console.error("");
     console.error("Inspection failed:");
