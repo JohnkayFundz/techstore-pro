@@ -1,0 +1,176 @@
+/* ==========================================================
+   TECHSTORE PRO
+   CATEGORY FILTER
+   ========================================================== */
+
+.category-filter {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+/* ==========================================================
+   CATEGORY BUTTON
+   ========================================================== */
+
+.category-filter__button {
+  appearance: none;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+
+  padding: 0.7rem 1.15rem;
+
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  white-space: nowrap;
+}
+
+/* ==========================================================
+   HOVER
+   ========================================================== */
+
+.category-filter__button:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+
+  transform: translateY(-1px);
+}
+
+/* ==========================================================
+   ACTIVE CATEGORY
+   ========================================================== */
+
+.category-filter__button.active {
+  background: #111827;
+  border-color: #111827;
+  color: #ffffff;
+
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.18);
+}
+
+/* ==========================================================
+   ACTIVE HOVER
+   ========================================================== */
+
+.category-filter__button.active:hover {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: #ffffff;
+}
+
+/* ==========================================================
+   FOCUS ACCESSIBILITY
+   ========================================================== */
+
+.category-filter__button:focus {
+  outline: none;
+}
+
+.category-filter__button:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 3px;
+}
+
+/* ==========================================================
+   DISABLED STATE
+   ========================================================== */
+
+.category-filter__button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 768px) {
+  .category-filter {
+    gap: 0.6rem;
+    margin: 0.85rem 0;
+  }
+
+  .category-filter__button {
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 480px) {
+  .category-filter {
+    gap: 0.5rem;
+
+    /*
+      Allows horizontal scrolling when there are
+      many categories on smaller screens.
+    */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
+    padding: 0.25rem 0.1rem 0.65rem;
+
+    scrollbar-width: thin;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .category-filter__button {
+    flex: 0 0 auto;
+
+    padding: 0.6rem 0.9rem;
+
+    font-size: 0.85rem;
+  }
+
+  /* Hide scrollbar on WebKit browsers */
+  .category-filter::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .category-filter::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 999px;
+  }
+
+  .category-filter::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .category-filter__button {
+    transition: none;
+  }
+
+  .category-filter__button:hover {
+    transform: none;
+  }
+}

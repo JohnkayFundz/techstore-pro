@@ -19,59 +19,35 @@ import {
 
 import upload from "../middleware/uploadMiddleware.js";
 
-
 const router = express.Router();
-
 
 /* ==========================================================
    PUBLIC PRODUCT ROUTES
 ========================================================== */
 
-
 /* ----------------------------------------------------------
    SEARCH PRODUCTS
+
    GET /api/products/search
+
    PUBLIC
+
+   IMPORTANT:
+   Must come BEFORE /:id
 ---------------------------------------------------------- */
 
-router.get(
-  "/search",
-  searchProducts
-);
-
-
-/* ----------------------------------------------------------
-   GET ALL ACTIVE PRODUCTS
-   GET /api/products
-   PUBLIC
----------------------------------------------------------- */
-
-router.get(
-  "/",
-  getProducts
-);
-
-
-/* ----------------------------------------------------------
-   GET SINGLE ACTIVE PRODUCT
-   GET /api/products/:id
-   PUBLIC
----------------------------------------------------------- */
-
-router.get(
-  "/:id",
-  getProductById
-);
+router.get("/search", searchProducts);
 
 
 /* ==========================================================
    ADMIN PRODUCT ROUTES
 ========================================================== */
 
-
 /* ----------------------------------------------------------
-   GET ALL PRODUCTS
+   GET ALL PRODUCTS — ADMIN
+
    GET /api/products/admin
+
    PRIVATE / ADMIN
 ---------------------------------------------------------- */
 
@@ -84,8 +60,10 @@ router.get(
 
 
 /* ----------------------------------------------------------
-   GET ADMIN PRODUCT BY ID
+   GET SINGLE PRODUCT — ADMIN
+
    GET /api/products/admin/:id
+
    PRIVATE / ADMIN
 ---------------------------------------------------------- */
 
@@ -99,11 +77,16 @@ router.get(
 
 /* ----------------------------------------------------------
    CREATE PRODUCT
+
    POST /api/products
+
    PRIVATE / ADMIN
 
-   IMAGE:
-   FormData → Multer → Cloudinary
+   FormData
+   ↓
+   Multer
+   ↓
+   Cloudinary
 ---------------------------------------------------------- */
 
 router.post(
@@ -116,16 +99,39 @@ router.post(
 
 
 /* ----------------------------------------------------------
-   UPDATE PRODUCT
-   PUT /api/products/:id
+   RESTORE PRODUCT
+
+   PUT /api/products/:id/restore
+
    PRIVATE / ADMIN
 
-   IMAGE:
-   FormData → Multer → Cloudinary
-
    IMPORTANT:
-   The upload middleware is required here so that
-   updateProduct() can access req.file.
+   Must come BEFORE /:id
+---------------------------------------------------------- */
+
+router.put(
+  "/:id/restore",
+  protect,
+  adminOnly,
+  restoreProduct
+);
+
+
+/* ----------------------------------------------------------
+   UPDATE PRODUCT
+
+   PUT /api/products/:id
+
+   PRIVATE / ADMIN
+
+   FormData
+   ↓
+   Multer
+   ↓
+   Cloudinary
+
+   upload middleware is required because
+   updateProduct() may access req.file.
 ---------------------------------------------------------- */
 
 router.put(
@@ -138,22 +144,10 @@ router.put(
 
 
 /* ----------------------------------------------------------
-   RESTORE PRODUCT
-   PUT /api/products/:id/restore
-   PRIVATE / ADMIN
----------------------------------------------------------- */
-
-router.put(
-  "/:id/restore",
-  protect,
-  adminOnly,
-  restoreProduct
-);
-
-
-/* ----------------------------------------------------------
    DELETE PRODUCT
+
    DELETE /api/products/:id
+
    PRIVATE / ADMIN
 
    SOFT DELETE
@@ -166,5 +160,44 @@ router.delete(
   deleteProduct
 );
 
+
+/* ==========================================================
+   PUBLIC PRODUCT ROUTES
+========================================================== */
+
+/* ----------------------------------------------------------
+   GET ALL ACTIVE PRODUCTS
+
+   GET /api/products
+
+   PUBLIC
+---------------------------------------------------------- */
+
+router.get(
+  "/",
+  getProducts
+);
+
+
+/* ----------------------------------------------------------
+   GET SINGLE ACTIVE PRODUCT
+
+   GET /api/products/:id
+
+   PUBLIC
+
+   IMPORTANT:
+   This MUST remain the LAST GET route.
+---------------------------------------------------------- */
+
+router.get(
+  "/:id",
+  getProductById
+);
+
+
+/* ==========================================================
+   EXPORT ROUTER
+========================================================== */
 
 export default router;

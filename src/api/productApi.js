@@ -16,6 +16,25 @@ const getErrorMessage = (
 };
 
 /* ==========================================================
+   EMPTY PRODUCTS RESPONSE
+========================================================== */
+
+const emptyProductsResponse = (
+  message = "Failed to fetch products.",
+  page = 1
+) => ({
+  success: false,
+  message,
+  products: [],
+  count: 0,
+  totalProducts: 0,
+  currentPage: page,
+  totalPages: 0,
+  hasNextPage: false,
+  hasPreviousPage: false,
+});
+
+/* ==========================================================
    GET ALL PRODUCTS
    GET /api/products
 ========================================================== */
@@ -30,17 +49,12 @@ export const getProducts = async (params = {}) => {
   } catch (error) {
     console.error("Get Products Error:", error);
 
-    return {
-      success: false,
-      message: getErrorMessage(
+    return emptyProductsResponse(
+      getErrorMessage(
         error,
         "Failed to fetch products."
-      ),
-      products: [],
-      totalProducts: 0,
-      currentPage: 1,
-      totalPages: 0,
-    };
+      )
+    );
   }
 };
 
@@ -51,6 +65,14 @@ export const getProducts = async (params = {}) => {
 
 export const getProductById = async (id) => {
   try {
+    if (!id) {
+      return {
+        success: false,
+        message: "Product ID is required.",
+        product: null,
+      };
+    }
+
     const { data } = await api.get(
       `/products/${id}`
     );
@@ -95,6 +117,7 @@ export const getAdminProducts = async () => {
         "Failed to fetch admin products."
       ),
       products: [],
+      count: 0,
     };
   }
 };
@@ -106,6 +129,14 @@ export const getAdminProducts = async () => {
 
 export const getAdminProductById = async (id) => {
   try {
+    if (!id) {
+      return {
+        success: false,
+        message: "Product ID is required.",
+        product: null,
+      };
+    }
+
     const { data } = await api.get(
       `/products/admin/${id}`
     );
@@ -134,6 +165,7 @@ export const getAdminProductById = async (id) => {
    ADMIN ONLY
 
    Supports:
+   - JSON
    - FormData
    - Cloudinary image upload
 ========================================================== */
@@ -174,6 +206,14 @@ export const updateProduct = async (
   productData
 ) => {
   try {
+    if (!id) {
+      return {
+        success: false,
+        message: "Product ID is required.",
+        product: null,
+      };
+    }
+
     const { data } = await api.put(
       `/products/${id}`,
       productData
@@ -206,6 +246,13 @@ export const updateProduct = async (
 
 export const deleteProduct = async (id) => {
   try {
+    if (!id) {
+      return {
+        success: false,
+        message: "Product ID is required.",
+      };
+    }
+
     const { data } = await api.delete(
       `/products/${id}`
     );
@@ -235,6 +282,14 @@ export const deleteProduct = async (id) => {
 
 export const restoreProduct = async (id) => {
   try {
+    if (!id) {
+      return {
+        success: false,
+        message: "Product ID is required.",
+        product: null,
+      };
+    }
+
     const { data } = await api.put(
       `/products/${id}/restore`
     );
@@ -265,33 +320,10 @@ export const restoreProduct = async (id) => {
 export const getFeaturedProducts = async (
   params = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: {
-          ...params,
-          featured: true,
-        },
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "Featured Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to fetch featured products."
-      ),
-      products: [],
-    };
-  }
+  return getProducts({
+    ...params,
+    featured: true,
+  });
 };
 
 /* ==========================================================
@@ -302,33 +334,10 @@ export const getFeaturedProducts = async (
 export const getBestSellerProducts = async (
   params = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: {
-          ...params,
-          bestseller: true,
-        },
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "Best Seller Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to fetch bestseller products."
-      ),
-      products: [],
-    };
-  }
+  return getProducts({
+    ...params,
+    bestseller: true,
+  });
 };
 
 /* ==========================================================
@@ -339,33 +348,10 @@ export const getBestSellerProducts = async (
 export const getNewArrivalProducts = async (
   params = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: {
-          ...params,
-          newArrival: true,
-        },
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "New Arrival Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to fetch new arrival products."
-      ),
-      products: [],
-    };
-  }
+  return getProducts({
+    ...params,
+    newArrival: true,
+  });
 };
 
 /* ==========================================================
@@ -374,7 +360,7 @@ export const getNewArrivalProducts = async (
 ========================================================== */
 
 export const searchProducts = async (
-  query,
+  query = "",
   params = {}
 ) => {
   try {
@@ -383,7 +369,7 @@ export const searchProducts = async (
       {
         params: {
           ...params,
-          q: query,
+          q: String(query).trim(),
         },
       }
     );
@@ -395,14 +381,12 @@ export const searchProducts = async (
       error
     );
 
-    return {
-      success: false,
-      message: getErrorMessage(
+    return emptyProductsResponse(
+      getErrorMessage(
         error,
         "Failed to search products."
-      ),
-      products: [],
-    };
+      )
+    );
   }
 };
 
@@ -415,33 +399,10 @@ export const getProductsByCategory = async (
   category,
   params = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: {
-          ...params,
-          category,
-        },
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "Category Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to fetch category products."
-      ),
-      products: [],
-    };
-  }
+  return getProducts({
+    ...params,
+    category,
+  });
 };
 
 /* ==========================================================
@@ -454,85 +415,26 @@ export const getProductsPaginated = async (
   limit = 10,
   params = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: {
-          ...params,
-          page,
-          limit,
-        },
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "Paginated Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to fetch products."
-      ),
-      products: [],
-      totalProducts: 0,
-      currentPage: page,
-      totalPages: 0,
-    };
-  }
+  return getProducts({
+    ...params,
+    page,
+    limit,
+  });
 };
 
 /* ==========================================================
    SORT PRODUCTS
    GET /api/products?sort=...
-
-   Supported:
-   newest
-   oldest
-   price-low
-   price-high
-   name
-   name-asc
-   name-desc
-   rating
 ========================================================== */
 
 export const getSortedProducts = async (
   sort = "newest",
   params = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: {
-          ...params,
-          sort,
-        },
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "Sorted Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to sort products."
-      ),
-      products: [],
-    };
-  }
+  return getProducts({
+    ...params,
+    sort,
+  });
 };
 
 /* ==========================================================
@@ -543,28 +445,5 @@ export const getSortedProducts = async (
 export const filterProducts = async (
   filters = {}
 ) => {
-  try {
-    const { data } = await api.get(
-      "/products",
-      {
-        params: filters,
-      }
-    );
-
-    return data;
-  } catch (error) {
-    console.error(
-      "Filter Products Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message: getErrorMessage(
-        error,
-        "Failed to filter products."
-      ),
-      products: [],
-    };
-  }
+  return getProducts(filters);
 };

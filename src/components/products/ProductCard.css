@@ -1,27 +1,46 @@
 /* ==========================================================
-   TECHSTORE PRO - PRODUCT CARD
+   TECHSTORE PRO
+   PRODUCT CARD
    Matches ProductCard.jsx
 ========================================================== */
 
 .product-card {
   display: flex;
   flex-direction: column;
+
   width: 100%;
   height: 100%;
+
   background: #ffffff;
+
   border: 1px solid #e5e7eb;
   border-radius: 18px;
+
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.08);
+
   transition:
     transform 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
+
+
+/* ==========================================================
+   CARD HOVER
+========================================================== */
 
 .product-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.15);
+
+  border-color: #d1d5db;
 }
+
 
 /* ==========================================================
    IMAGE WRAPPER
@@ -29,12 +48,16 @@
 
 .product-card__image-wrapper {
   position: relative;
+
   width: 100%;
   height: 280px;
   min-height: 280px;
+
   background: #f8fafc;
+
   overflow: hidden;
 }
+
 
 /* ==========================================================
    IMAGE LINK
@@ -42,12 +65,18 @@
 
 .product-card__image-link {
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   width: 100%;
   height: 100%;
+
   text-decoration: none;
+
+  overflow: hidden;
 }
+
 
 /* ==========================================================
    PRODUCT IMAGE
@@ -55,17 +84,31 @@
 
 .product-card__image {
   display: block;
+
   width: 100%;
   height: 100%;
+
   padding: 20px;
+
   box-sizing: border-box;
+
   object-fit: contain;
-  transition: transform 0.35s ease;
+
+  transition:
+    transform 0.35s ease,
+    opacity 0.25s ease;
 }
 
-.product-card:hover .product-card__image {
+
+/* ==========================================================
+   IMAGE HOVER
+========================================================== */
+
+.product-card:hover
+.product-card__image {
   transform: scale(1.06);
 }
+
 
 /* ==========================================================
    FALLBACK IMAGE
@@ -75,17 +118,21 @@
   opacity: 0.9;
 }
 
+
 /* ==========================================================
    DISCOUNT BADGE
 ========================================================== */
 
 .product-card__discount {
   position: absolute;
+
   top: 14px;
   left: 14px;
+
   z-index: 5;
 
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
@@ -102,22 +149,28 @@
   line-height: 1;
 }
 
+
 /* ==========================================================
    WISHLIST BUTTON
 ========================================================== */
 
 .product-card__wishlist {
   position: absolute;
+
   top: 14px;
   right: 14px;
+
   z-index: 5;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   width: 42px;
   height: 42px;
+
+  padding: 0;
 
   border: none;
   border-radius: 50%;
@@ -127,22 +180,51 @@
 
   cursor: pointer;
 
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.15);
 
   transition:
     transform 0.25s ease,
     color 0.25s ease,
-    background 0.25s ease;
+    background 0.25s ease,
+    box-shadow 0.25s ease;
 }
+
+
+/* ==========================================================
+   WISHLIST HOVER
+========================================================== */
 
 .product-card__wishlist:hover {
   transform: scale(1.08);
+
   color: #ef4444;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.18);
 }
+
+
+/* ==========================================================
+   ACTIVE WISHLIST
+========================================================== */
 
 .product-card__wishlist--active {
   color: #ef4444;
 }
+
+
+/* ==========================================================
+   WISHLIST FOCUS
+========================================================== */
+
+.product-card__wishlist:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 3px;
+}
+
 
 /* ==========================================================
    STOCK BADGE
@@ -150,11 +232,14 @@
 
 .product-card__stock-badge {
   position: absolute;
+
   bottom: 14px;
   left: 14px;
+
   z-index: 5;
 
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
@@ -169,17 +254,21 @@
   font-weight: 700;
 }
 
+
 /* ==========================================================
    PRODUCT CONTENT
 ========================================================== */
 
 .product-card__content {
   display: flex;
+
   flex-direction: column;
+
   flex: 1;
 
   padding: 20px;
 }
+
 
 /* ==========================================================
    CATEGORY
@@ -187,9 +276,11 @@
 
 .product-card__category {
   display: inline-block;
+
   width: fit-content;
 
   margin-bottom: 8px;
+
   padding: 5px 10px;
 
   background: #eff6ff;
@@ -200,6 +291,7 @@
   font-size: 0.75rem;
   font-weight: 700;
 }
+
 
 /* ==========================================================
    BRAND
@@ -216,8 +308,10 @@
   font-weight: 700;
 
   text-transform: uppercase;
+
   letter-spacing: 0.04em;
 }
+
 
 /* ==========================================================
    PRODUCT TITLE
@@ -225,23 +319,44 @@
 
 .product-card__title {
   margin: 0 0 12px;
+
   min-height: 48px;
 
   font-size: 1.1rem;
+
   line-height: 1.4;
+
   font-weight: 700;
 }
 
+
 .product-card__title a {
   color: #111827;
+
   text-decoration: none;
 
-  transition: color 0.25s ease;
+  transition:
+    color 0.25s ease;
 }
+
 
 .product-card__title a:hover {
   color: #2563eb;
 }
+
+
+/* ==========================================================
+   TITLE FOCUS
+========================================================== */
+
+.product-card__title a:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+
+  outline-offset: 3px;
+
+  border-radius: 4px;
+}
+
 
 /* ==========================================================
    RATING
@@ -249,7 +364,9 @@
 
 .product-card__rating {
   display: flex;
+
   align-items: center;
+
   gap: 7px;
 
   margin-bottom: 14px;
@@ -257,16 +374,22 @@
   color: #f59e0b;
 }
 
+
 .product-card__stars {
   display: flex;
+
   align-items: center;
+
   gap: 2px;
 }
 
+
 .product-card__reviews {
   color: #6b7280;
+
   font-size: 0.82rem;
 }
+
 
 /* ==========================================================
    PRICE
@@ -274,28 +397,36 @@
 
 .product-card__price-wrapper {
   display: flex;
+
   align-items: center;
+
   flex-wrap: wrap;
+
   gap: 10px;
 
   margin-bottom: 16px;
 }
 
+
 .product-card__price {
   color: #2563eb;
 
   font-size: 1.45rem;
+
   font-weight: 800;
 }
+
 
 .product-card__old-price {
   color: #9ca3af;
 
   font-size: 0.95rem;
+
   font-weight: 500;
 
   text-decoration: line-through;
 }
+
 
 /* ==========================================================
    ADD TO CART BUTTON
@@ -303,53 +434,103 @@
 
 .product-card__cart-btn {
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   gap: 8px;
 
   width: 100%;
 
   margin-top: auto;
+
   padding: 13px 16px;
 
   border: none;
+
   border-radius: 12px;
 
   background: #2563eb;
   color: #ffffff;
 
   font-size: 0.95rem;
+
   font-weight: 700;
 
   cursor: pointer;
 
   transition:
     background 0.25s ease,
-    transform 0.25s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
+
+
+/* ==========================================================
+   CART HOVER
+========================================================== */
 
 .product-card__cart-btn:hover:not(:disabled) {
   background: #1d4ed8;
+
   transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 15px rgba(37, 99, 235, 0.25);
 }
+
+
+/* ==========================================================
+   CART ACTIVE
+========================================================== */
 
 .product-card__cart-btn:active:not(:disabled) {
   transform: translateY(0);
+
+  box-shadow: none;
 }
+
+
+/* ==========================================================
+   CART FOCUS
+========================================================== */
+
+.product-card__cart-btn:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================
+   CART DISABLED
+========================================================== */
 
 .product-card__cart-btn:disabled {
   background: #d1d5db;
+
   color: #6b7280;
+
   cursor: not-allowed;
+
+  box-shadow: none;
+
+  transform: none;
 }
 
+
 /* ==========================================================
-   RESPONSIVE
+   TABLET
 ========================================================== */
 
 @media (max-width: 768px) {
+  .product-card {
+    border-radius: 16px;
+  }
+
   .product-card__image-wrapper {
     height: 240px;
+
     min-height: 240px;
   }
 
@@ -359,16 +540,33 @@
 
   .product-card__title {
     font-size: 1rem;
+
+    min-height: 44px;
   }
 
   .product-card__price {
     font-size: 1.3rem;
   }
+
+  .product-card__wishlist {
+    width: 40px;
+    height: 40px;
+  }
 }
 
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
 @media (max-width: 480px) {
+  .product-card {
+    border-radius: 15px;
+  }
+
   .product-card__image-wrapper {
     height: 210px;
+
     min-height: 210px;
   }
 
@@ -377,6 +575,9 @@
   }
 
   .product-card__wishlist {
+    top: 10px;
+    right: 10px;
+
     width: 38px;
     height: 38px;
   }
@@ -384,10 +585,109 @@
   .product-card__discount {
     top: 10px;
     left: 10px;
+
+    padding: 6px 9px;
+
+    font-size: 0.7rem;
   }
 
-  .product-card__wishlist {
-    top: 10px;
-    right: 10px;
+  .product-card__stock-badge {
+    bottom: 10px;
+    left: 10px;
+
+    padding: 6px 10px;
+
+    font-size: 0.7rem;
+  }
+
+  .product-card__category {
+    font-size: 0.7rem;
+  }
+
+  .product-card__brand {
+    font-size: 0.72rem;
+  }
+
+  .product-card__title {
+    margin-bottom: 10px;
+
+    font-size: 0.98rem;
+
+    min-height: auto;
+  }
+
+  .product-card__rating {
+    margin-bottom: 12px;
+  }
+
+  .product-card__price {
+    font-size: 1.25rem;
+  }
+
+  .product-card__old-price {
+    font-size: 0.85rem;
+  }
+
+  .product-card__cart-btn {
+    padding: 12px 14px;
+
+    font-size: 0.9rem;
+  }
+}
+
+
+/* ==========================================================
+   VERY SMALL MOBILE
+========================================================== */
+
+@media (max-width: 360px) {
+  .product-card__image-wrapper {
+    height: 190px;
+
+    min-height: 190px;
+  }
+
+  .product-card__content {
+    padding: 12px;
+  }
+
+  .product-card__price {
+    font-size: 1.15rem;
+  }
+
+  .product-card__cart-btn {
+    padding: 11px 12px;
+  }
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .product-card__image,
+  .product-card__wishlist,
+  .product-card__title a,
+  .product-card__cart-btn {
+    transition: none;
+  }
+
+  .product-card:hover {
+    transform: none;
+  }
+
+  .product-card:hover
+  .product-card__image {
+    transform: none;
+  }
+
+  .product-card__wishlist:hover {
+    transform: none;
+  }
+
+  .product-card__cart-btn:hover:not(:disabled) {
+    transform: none;
   }
 }
