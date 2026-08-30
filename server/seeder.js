@@ -1,6 +1,6 @@
 // ==========================================================
 // TECHSTORE PRO
-// PRODUCT RESET SEEDER
+// SAFE PRODUCT SEEDER
 // ==========================================================
 
 import dotenv from "dotenv";
@@ -22,7 +22,7 @@ dotenv.config();
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error("❌ MONGODB_URI is not defined in .env");
+  console.error("ERROR: MONGODB_URI is not defined in .env");
   process.exit(1);
 }
 
@@ -32,13 +32,13 @@ if (!MONGODB_URI) {
 
 const connectDB = async () => {
   try {
-    console.log("🔄 Connecting to MongoDB...");
+    console.log("Connecting to MongoDB...");
 
     await mongoose.connect(MONGODB_URI);
 
-    console.log("✅ MongoDB Connected");
+    console.log("MongoDB Connected");
   } catch (error) {
-    console.error("❌ MongoDB Connection Failed");
+    console.error("MongoDB Connection Failed");
     console.error(error.message);
 
     process.exit(1);
@@ -74,36 +74,116 @@ const validateProducts = () => {
       );
     }
 
-    // Check duplicate SKU
-    if (skus.has(product.sku)) {
+    const normalizedSku = product.sku.trim().toUpperCase();
+
+    if (skus.has(normalizedSku)) {
       throw new Error(
-        `Duplicate SKU found: ${product.sku}`
+        `Duplicate SKU found: ${normalizedSku}`
       );
     }
 
-    skus.add(product.sku);
+    skus.add(normalizedSku);
 
-    // Check duplicate product name
-    if (names.has(product.name)) {
+    const normalizedName = product.name.trim().toLowerCase();
+
+    if (names.has(normalizedName)) {
       throw new Error(
         `Duplicate product name found: ${product.name}`
       );
     }
 
-    names.add(product.name);
+    names.add(normalizedName);
   }
 
-  console.log("✅ Product data validation passed");
+  console.log("Product data validation passed");
+};
+
+// ==========================================================
+// CHECK WHETHER AN IMAGE IS A CLOUDINARY IMAGE
+// ==========================================================
+
+const isCloudinaryImage = (image) => {
+  if (!image || typeof image !== "string") {
+    return false;
+  }
+
+  return image.includes("cloudinary.com");
+};
+
+// ==========================================================
+// UPDATE EXISTING PRODUCT SAFELY
+//
+// Important:
+// - Product is matched by SKU.
+// - Existing Cloudinary images are preserved.
+// - Stock/rating/review counts are preserved.
+// - Manually created products are untouched.
+// ==========================================================
+
+const updateExistingProduct = async (existingProduct, seedProduct) => {
+  const updateData = {
+    name: seedProduct.name,
+    description: seedProduct.description,
+    price: seedProduct.price,
+    oldPrice: seedProduct.oldPrice,
+    discount: seedProduct.discount,
+    currency: seedProduct.currency,
+    category: seedProduct.category,
+    brand: seedProduct.brand,
+    shipping: seedProduct.shipping,
+    warranty: seedProduct.warranty,
+    features: seedProduct.features,
+    featured: seedProduct.featured,
+    bestseller: seedProduct.bestseller,
+    newArrival: seedProduct.newArrival,
+  };
+
+  // --------------------------------------------------------
+  // PRESERVE EXISTING CLOUDINARY PRIMARY IMAGE
+  // --------------------------------------------------------
+
+  if (
+    existingProduct.image &&
+    isCloudinaryImage(existingProduct.image)
+  ) {
+    updateData.image = existingProduct.image;
+  } else {
+    updateData.image = seedProduct.image;
+  }
+
+  // --------------------------------------------------------
+  // PRESERVE EXISTING CLOUDINARY IMAGE COLLECTION
+  // --------------------------------------------------------
+
+  const existingImages = Array.isArray(existingProduct.images)
+    ? existingProduct.images
+    : [];
+
+  const hasCloudinaryImages = existingImages.some(
+    isCloudinaryImage
+  );
+
+  if (hasCloudinaryImages) {
+    updateData.images = existingImages;
+  } else {
+    updateData.images = seedProduct.images;
+  }
+
+  await Product.updateOne(
+    { sku: existingProduct.sku },
+    { $set: updateData }
+  );
 };
 
 // ==========================================================
 // SEED PRODUCTS
 //
-// WARNING:
-// This deletes ALL existing products before inserting
-// the products from server/data/products.js.
-//
-// Use this during development only.
+// SAFE MODE:
+// - Does NOT delete existing products.
+// - Creates missing seed products.
+// - Updates existing seed products by SKU.
+// - Preserves Cloudinary images.
+// - Leaves manually-created products untouched.
 // ==========================================================
 
 const seedProducts = async () => {
@@ -112,7 +192,7 @@ const seedProducts = async () => {
 
     console.log("");
     console.log("==========================================");
-    console.log("       TECHSTORE PRO PRODUCT SEEDER");
+    console.log("       TECHSTORE PRO SAFE SEEDER");
     console.log("==========================================");
     console.log("");
 
@@ -122,81 +202,101 @@ const seedProducts = async () => {
 
     validateProducts();
 
-    console.log(`📦 Products to insert: ${products.length}`);
+    console.log(`Products in seed file: ${products.length}`);
     console.log("");
 
     // --------------------------------------------------------
-    // DELETE EXISTING PRODUCTS
+    // PROCESS PRODUCTS
     // --------------------------------------------------------
 
-    console.log("🗑️ Removing existing products...");
+    let createdCount = 0;
+    let updatedCount = 0;
+    let skippedCount = 0;
 
-    const deleteResult = await Product.deleteMany({});
+    for (const seedProduct of products) {
+      const normalizedSku = seedProduct.sku
+        .trim()
+        .toUpperCase();
 
-    console.log(
-      `🗑️ Products removed: ${deleteResult.deletedCount}`
-    );
+      const existingProduct = await Product.findOne({
+        sku: normalizedSku,
+      });
 
-    console.log("");
+      // ------------------------------------------------------
+      // CREATE NEW PRODUCT
+      // ------------------------------------------------------
 
-    // --------------------------------------------------------
-    // INSERT CLEAN PRODUCT DATA
-    // --------------------------------------------------------
+      if (!existingProduct) {
+        await Product.create({
+          ...seedProduct,
+          sku: normalizedSku,
+        });
 
-    console.log("📥 Inserting clean product data...");
+        createdCount++;
 
-    const insertedProducts = await Product.insertMany(products);
+        console.log(
+          `CREATED: ${seedProduct.name} | ${normalizedSku}`
+        );
 
-    console.log(
-      `✅ Products inserted: ${insertedProducts.length}`
-    );
+        continue;
+      }
 
-    // --------------------------------------------------------
-    // DISPLAY INSERTED PRODUCTS
-    // --------------------------------------------------------
+      // ------------------------------------------------------
+      // UPDATE EXISTING SEED PRODUCT
+      // ------------------------------------------------------
 
-    console.log("");
-
-    insertedProducts.forEach((product, index) => {
-      console.log(
-        `${index + 1}. ${product.name} | ${product.sku}`
+      await updateExistingProduct(
+        existingProduct,
+        seedProduct
       );
-    });
 
-    // ========================================================
-    // SEED SUMMARY
-    // ========================================================
+      updatedCount++;
+
+      console.log(
+        `UPDATED: ${seedProduct.name} | ${normalizedSku}`
+      );
+    }
+
+    // --------------------------------------------------------
+    // COUNT DATABASE PRODUCTS
+    // --------------------------------------------------------
+
+    const databaseTotal = await Product.countDocuments();
+
+    // --------------------------------------------------------
+    // SUMMARY
+    // --------------------------------------------------------
 
     console.log("");
     console.log("==========================================");
     console.log("          SEEDING COMPLETE");
     console.log("==========================================");
-    console.log(
-      `🗑️ Products removed : ${deleteResult.deletedCount}`
-    );
-    console.log(
-      `🆕 Products inserted: ${insertedProducts.length}`
-    );
-    console.log(
-      `📦 Database total   : ${insertedProducts.length}`
-    );
+    console.log(`Seed products       : ${products.length}`);
+    console.log(`Products created    : ${createdCount}`);
+    console.log(`Products updated    : ${updatedCount}`);
+    console.log(`Products skipped    : ${skippedCount}`);
+    console.log(`Database total      : ${databaseTotal}`);
     console.log("==========================================");
     console.log("");
+    console.log("Existing products were NOT deleted.");
+    console.log("Existing Cloudinary images were preserved.");
+    console.log("Manually-created products were preserved.");
+    console.log("");
 
-    // ========================================================
+    // --------------------------------------------------------
     // CLOSE DATABASE
-    // ========================================================
+    // --------------------------------------------------------
 
     await mongoose.connection.close();
 
-    console.log("🔌 MongoDB connection closed");
-    console.log("✅ Seeder finished successfully");
+    console.log("MongoDB connection closed");
+    console.log("Seeder finished successfully");
 
     process.exit(0);
   } catch (error) {
     console.error("");
     console.error("==========================================");
-    console.error("          ❌ SEEDER ERROR");
+    console.error("          SEEDER ERROR");
     console.error("==========================================");
     console.error(error.message);
     console.error("==========================================");
@@ -211,7 +311,7 @@ const seedProducts = async () => {
       }
     } catch (closeError) {
       console.error(
-        "❌ Error closing MongoDB connection:",
+        "Error closing MongoDB connection:",
         closeError.message
       );
     }
