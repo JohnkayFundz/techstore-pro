@@ -38,9 +38,15 @@ import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
 
-import AddProduct from "./pages/admin/AddProduct.jsx";
-import CreateProduct from "./pages/admin/CreateProduct.jsx";
-import EditProduct from "./pages/admin/EditProduct.jsx";
+// ==========================================================
+// SINGLE PRODUCT FORM
+//
+// Handles BOTH:
+// /admin/products/new
+// /admin/products/edit/:id
+// ==========================================================
+
+import AdminProductForm from "./pages/admin/AdminProductForm.jsx";
 
 import ProductManagement from "./pages/admin/ProductManagement.jsx";
 import AdminSettings from "./pages/admin/AdminSettings.jsx";
@@ -159,7 +165,6 @@ function App() {
 
         {/* ==================================================
             ADMIN LAYOUT
-            ==================================================
 
             AdminRoute handles:
             - Authentication
@@ -210,32 +215,28 @@ function App() {
 
 
           {/* ================================================
-              ADD PRODUCT
-              ================================================ */}
-
-          <Route
-            path="/admin/products/add"
-            element={<AddProduct />}
-          />
-
-
-          {/* ================================================
               CREATE PRODUCT
+
+              Uses the unified AdminProductForm.
               ================================================ */}
 
           <Route
             path="/admin/products/new"
-            element={<CreateProduct />}
+            element={<AdminProductForm />}
           />
 
 
           {/* ================================================
               EDIT PRODUCT
+
+              Uses the same AdminProductForm.
+              The :id parameter tells the form
+              which product to load.
               ================================================ */}
 
           <Route
             path="/admin/products/edit/:id"
-            element={<EditProduct />}
+            element={<AdminProductForm />}
           />
 
 
