@@ -117,3 +117,7 @@ server/uploads/
 *.old
 # Local Cloudinary preview/test assets
 cloudinary-preview/
+
+# Local product backups and Cloudinary preview files
+cloudinary-preview-assets/
+server/data/products-backup*.json
