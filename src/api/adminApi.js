@@ -1,7 +1,7 @@
 import api from "./axios";
 
 /* ==========================================================
-   DASHBOARD STATS
+   DASHBOARD
 ========================================================== */
 
 export const getDashboardStats = async () => {
@@ -48,7 +48,7 @@ export const getSalesAnalytics = async () => {
       success: false,
       message:
         error.response?.data?.message ||
-        "Failed to load sales data.",
+        "Failed to load sales analytics.",
     };
   }
 };
@@ -57,11 +57,6 @@ export const getSalesAnalytics = async () => {
 /* ==========================================================
    PRODUCTS
 ========================================================== */
-
-/* ----------------------------------------------------------
-   GET ALL ADMIN PRODUCTS
-   GET /api/admin/products
----------------------------------------------------------- */
 
 export const getAdminProducts = async () => {
   try {
@@ -78,7 +73,7 @@ export const getAdminProducts = async () => {
 
     return {
       success: false,
-      products: [],
+      data: [],
       message:
         error.response?.data?.message ||
         "Failed to load products.",
@@ -86,11 +81,6 @@ export const getAdminProducts = async () => {
   }
 };
 
-
-/* ----------------------------------------------------------
-   GET ADMIN PRODUCT BY ID
-   GET /api/admin/products/:id
----------------------------------------------------------- */
 
 export const getAdminProduct = async (id) => {
   try {
@@ -107,7 +97,7 @@ export const getAdminProduct = async (id) => {
 
     return {
       success: false,
-      product: null,
+      data: null,
       message:
         error.response?.data?.message ||
         "Failed to load product.",
@@ -115,11 +105,6 @@ export const getAdminProduct = async (id) => {
   }
 };
 
-
-/* ----------------------------------------------------------
-   CREATE PRODUCT
-   POST /api/admin/products
----------------------------------------------------------- */
 
 export const createAdminProduct = async (
   product
@@ -139,7 +124,7 @@ export const createAdminProduct = async (
 
     return {
       success: false,
-      product: null,
+      data: null,
       message:
         error.response?.data?.message ||
         "Failed to create product.",
@@ -147,11 +132,6 @@ export const createAdminProduct = async (
   }
 };
 
-
-/* ----------------------------------------------------------
-   UPDATE PRODUCT
-   PUT /api/admin/products/:id
----------------------------------------------------------- */
 
 export const updateAdminProduct = async (
   id,
@@ -172,7 +152,7 @@ export const updateAdminProduct = async (
 
     return {
       success: false,
-      product: null,
+      data: null,
       message:
         error.response?.data?.message ||
         "Failed to update product.",
@@ -180,12 +160,6 @@ export const updateAdminProduct = async (
   }
 };
 
-
-/* ----------------------------------------------------------
-   DELETE PRODUCT
-   DELETE /api/admin/products/:id
-   SOFT DELETE
----------------------------------------------------------- */
 
 export const deleteAdminProduct = async (
   id
@@ -212,11 +186,6 @@ export const deleteAdminProduct = async (
 };
 
 
-/* ----------------------------------------------------------
-   RESTORE PRODUCT
-   PUT /api/admin/products/:id/restore
----------------------------------------------------------- */
-
 export const restoreAdminProduct = async (
   id
 ) => {
@@ -234,7 +203,7 @@ export const restoreAdminProduct = async (
 
     return {
       success: false,
-      product: null,
+      data: null,
       message:
         error.response?.data?.message ||
         "Failed to restore product.",
@@ -246,10 +215,6 @@ export const restoreAdminProduct = async (
 /* ==========================================================
    ORDERS
 ========================================================== */
-
-/* ----------------------------------------------------------
-   GET ALL ADMIN ORDERS
----------------------------------------------------------- */
 
 export const getAdminOrders = async () => {
   try {
@@ -266,7 +231,7 @@ export const getAdminOrders = async () => {
 
     return {
       success: false,
-      orders: [],
+      data: [],
       message:
         error.response?.data?.message ||
         "Failed to load orders.",
@@ -274,11 +239,6 @@ export const getAdminOrders = async () => {
   }
 };
 
-
-/* ----------------------------------------------------------
-   UPDATE ORDER STATUS
-   PUT /api/admin/orders/:id
----------------------------------------------------------- */
 
 export const updateOrderStatus = async (
   id,
@@ -309,11 +269,6 @@ export const updateOrderStatus = async (
 };
 
 
-/* ----------------------------------------------------------
-   DELETE ORDER
-   DELETE /api/admin/orders/:id
----------------------------------------------------------- */
-
 export const deleteAdminOrder = async (
   id
 ) => {
@@ -343,11 +298,6 @@ export const deleteAdminOrder = async (
    USERS
 ========================================================== */
 
-/* ----------------------------------------------------------
-   GET USERS
-   GET /api/admin/users
----------------------------------------------------------- */
-
 export const getUsers = async () => {
   try {
     const { data } = await api.get(
@@ -363,7 +313,7 @@ export const getUsers = async () => {
 
     return {
       success: false,
-      users: [],
+      data: [],
       message:
         error.response?.data?.message ||
         "Failed to load users.",
@@ -371,11 +321,6 @@ export const getUsers = async () => {
   }
 };
 
-
-/* ----------------------------------------------------------
-   UPDATE USER ROLE
-   PUT /api/admin/users/:id/role
----------------------------------------------------------- */
 
 export const updateUserRole = async (
   id,
@@ -405,11 +350,6 @@ export const updateUserRole = async (
   }
 };
 
-
-/* ----------------------------------------------------------
-   DELETE USER
-   DELETE /api/admin/users/:id
----------------------------------------------------------- */
 
 export const deleteUser = async (
   id

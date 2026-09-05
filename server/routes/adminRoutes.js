@@ -41,13 +41,15 @@ import {
   restoreProduct,
 } from "../controllers/adminController.js";
 
-
 const router = express.Router();
-
 
 /* ==========================================================
    DASHBOARD
 ========================================================== */
+
+/*
+ * GET /api/admin/dashboard
+ */
 
 router.get(
   "/dashboard",
@@ -56,6 +58,30 @@ router.get(
   getDashboardStats
 );
 
+
+/* ==========================================================
+   SALES ANALYTICS
+========================================================== */
+
+/*
+ * GET /api/admin/analytics
+ *
+ * Main endpoint used by AdminAnalytics.jsx
+ */
+
+router.get(
+  "/analytics",
+  protect,
+  adminOnly,
+  getSalesAnalytics
+);
+
+
+/*
+ * GET /api/admin/sales
+ *
+ * Backward-compatible alias.
+ */
 
 router.get(
   "/sales",
@@ -69,6 +95,12 @@ router.get(
    USERS
 ========================================================== */
 
+/*
+ * GET ALL USERS
+ *
+ * GET /api/admin/users
+ */
+
 router.get(
   "/users",
   protect,
@@ -77,6 +109,12 @@ router.get(
 );
 
 
+/*
+ * UPDATE USER ROLE
+ *
+ * PUT /api/admin/users/:id/role
+ */
+
 router.put(
   "/users/:id/role",
   protect,
@@ -84,6 +122,12 @@ router.put(
   updateUserRole
 );
 
+
+/*
+ * DELETE USER
+ *
+ * DELETE /api/admin/users/:id
+ */
 
 router.delete(
   "/users/:id",
@@ -97,6 +141,12 @@ router.delete(
    ORDERS
 ========================================================== */
 
+/*
+ * GET ALL ORDERS
+ *
+ * GET /api/admin/orders
+ */
+
 router.get(
   "/orders",
   protect,
@@ -105,6 +155,12 @@ router.get(
 );
 
 
+/*
+ * UPDATE ORDER STATUS
+ *
+ * PUT /api/admin/orders/:id
+ */
+
 router.put(
   "/orders/:id",
   protect,
@@ -112,6 +168,12 @@ router.put(
   updateOrderStatus
 );
 
+
+/*
+ * DELETE ORDER
+ *
+ * DELETE /api/admin/orders/:id
+ */
 
 router.delete(
   "/orders/:id",
@@ -127,6 +189,7 @@ router.delete(
 
 /*
  * GET ALL PRODUCTS
+ *
  * GET /api/admin/products
  */
 
@@ -140,6 +203,7 @@ router.get(
 
 /*
  * GET SINGLE PRODUCT
+ *
  * GET /api/admin/products/:id
  */
 
@@ -153,6 +217,7 @@ router.get(
 
 /*
  * CREATE PRODUCT
+ *
  * POST /api/admin/products
  */
 
@@ -166,6 +231,7 @@ router.post(
 
 /*
  * UPDATE PRODUCT
+ *
  * PUT /api/admin/products/:id
  */
 
@@ -179,6 +245,7 @@ router.put(
 
 /*
  * DELETE PRODUCT
+ *
  * DELETE /api/admin/products/:id
  *
  * Soft delete
@@ -194,6 +261,7 @@ router.delete(
 
 /*
  * RESTORE PRODUCT
+ *
  * PUT /api/admin/products/:id/restore
  */
 
@@ -206,7 +274,7 @@ router.put(
 
 
 /* ==========================================================
-   EXPORT ROUTER
+   EXPORT
 ========================================================== */
 
 export default router;

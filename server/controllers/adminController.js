@@ -1,94 +1,75 @@
-// ==========================================================
-// TECHSTORE PRO
-// ADMIN CONTROLLER
-// ==========================================================
-
 import mongoose from "mongoose";
 
+import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
-import User from "../models/User.js";
 
-// ==========================================================
-// CONSTANTS
-// ==========================================================
 
-const ORDER_STATUSES = [
-  "pending",
-  "processing",
-  "shipped",
-  "delivered",
-  "cancelled",
-];
+/* ==========================================================
+   HELPERS
+========================================================== */
 
-const USER_ROLES = [
-  "user",
-  "admin",
-];
+/**
+ * Safely return a useful error message.
+ */
+const getErrorMessage = (error, fallback) => {
+  return (
+    error?.response?.data?.message ||
+    error?.message ||
+    fallback
+  );
+};
 
-// ==========================================================
-// HELPERS
-// ==========================================================
 
+/**
+ * Check whether a MongoDB ObjectId is valid.
+ */
 const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
-const getErrorMessage = (error) => {
-  if (error?.name === "ValidationError") {
-    return Object.values(error.errors)
-      .map((err) => err.message)
-      .join(", ");
-  }
 
-  return error?.message || "Something went wrong.";
+/**
+ * Convert a value to a number safely.
+ */
+const toNumber = (value) => {
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : 0;
 };
 
-// ==========================================================
-// DASHBOARD STATS
-// ==========================================================
 
+/* ==========================================================
+   DASHBOARD
+========================================================== */
+
+/**
+ * GET /api/admin/dashboard
+ *
+ * Admin dashboard statistics.
+ */
 export const getDashboardStats = async (req, res) => {
   try {
     const [
-      totalProducts,
-      activeProducts,
-      inactiveProducts,
       totalUsers,
+      totalProducts,
       totalOrders,
-
       pendingOrders,
       processingOrders,
       shippedOrders,
       deliveredOrders,
       cancelledOrders,
-
-      revenueResult,
-      recentOrders,
     ] = await Promise.all([
-      // ----------------------------------------------------
-      // PRODUCTS
-      // ----------------------------------------------------
-
-      Product.countDocuments(),
-
-      Product.countDocuments({
-        isActive: true,
-      }),
-
-      Product.countDocuments({
-        isActive: false,
-      }),
-
-      // ----------------------------------------------------
-      // USERS
-      // ----------------------------------------------------
-
       User.countDocuments(),
 
-      // ----------------------------------------------------
-      // ORDERS
-      // ----------------------------------------------------
+      Product.countDocuments({
+        $or: [
+          { isDeleted: { $ne: true } },
+          { isDeleted: { $exists: false } },
+        ],
+      }),
 
       Order.countDocuments(),
 
@@ -111,12 +92,11 @@ export const getDashboardStats = async (req, res) => {
       Order.countDocuments({
         status: "cancelled",
       }),
+    ]);
 
-      // ----------------------------------------------------
-      // REVENUE
-      // ----------------------------------------------------
 
-      Order.aggregate([
+    const revenueResult =
+      await Order.aggregate([
         {
           $match: {
             status: "delivered",
@@ -132,37 +112,22 @@ export const getDashboardStats = async (req, res) => {
             },
           },
         },
-      ]),
+      ]);
 
-      // ----------------------------------------------------
-      // RECENT ORDERS
-      // ----------------------------------------------------
-
-      Order.find()
-        .populate("user", "name email")
-        .sort({
-          createdAt: -1,
-        })
-        .limit(5)
-        .lean(),
-    ]);
 
     const totalRevenue =
-      revenueResult.length > 0
-        ? revenueResult[0].totalRevenue
-        : 0;
+      toNumber(
+        revenueResult[0]?.totalRevenue
+      );
 
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
 
       stats: {
         totalUsers,
         totalProducts,
         totalOrders,
-        totalRevenue,
-
-        activeProducts,
-        inactiveProducts,
 
         pendingOrders,
         processingOrders,
@@ -170,147 +135,79 @@ export const getDashboardStats = async (req, res) => {
         deliveredOrders,
         cancelledOrders,
 
-        currency: "USD",
+        totalRevenue,
       },
 
-      recentOrders,
+      totalUsers,
+      totalProducts,
+      totalOrders,
+
+      pendingOrders,
+      processingOrders,
+      shippedOrders,
+      deliveredOrders,
+      cancelledOrders,
+
+      totalRevenue,
     });
   } catch (error) {
     console.error(
-      "Get dashboard stats error:",
+      "Get Dashboard Stats Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to load dashboard statistics",
-
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to load dashboard statistics."
+      ),
     });
   }
 };
 
-// ==========================================================
-// SALES ANALYTICS
-// ==========================================================
 
-export const getSalesAnalytics = async (
-  req,
-  res
-) => {
+/* ==========================================================
+   SALES ANALYTICS
+========================================================== */
+
+/**
+ * GET /api/admin/analytics
+ * GET /api/admin/sales
+ *
+ * Sales analytics based on delivered orders.
+ */
+export const getSalesAnalytics = async (req, res) => {
   try {
+
+    /* --------------------------------------------------------
+       GET ALL ORDER COUNTS
+    -------------------------------------------------------- */
+
     const [
-      totalRevenueResult,
       totalOrders,
       deliveredOrders,
       cancelledOrders,
-      averageOrderResult,
-      salesByStatus,
-      salesByDay,
-      topProducts,
     ] = await Promise.all([
-      // ----------------------------------------------------
-      // TOTAL REVENUE
-      // ----------------------------------------------------
-
-      Order.aggregate([
-        {
-          $match: {
-            status: "delivered",
-          },
-        },
-
-        {
-          $group: {
-            _id: null,
-
-            totalRevenue: {
-              $sum: "$totalAmount",
-            },
-          },
-        },
-      ]),
-
-      // ----------------------------------------------------
-      // TOTAL ORDERS
-      // ----------------------------------------------------
-
       Order.countDocuments(),
-
-      // ----------------------------------------------------
-      // DELIVERED ORDERS
-      // ----------------------------------------------------
 
       Order.countDocuments({
         status: "delivered",
       }),
 
-      // ----------------------------------------------------
-      // CANCELLED ORDERS
-      // ----------------------------------------------------
-
       Order.countDocuments({
         status: "cancelled",
       }),
+    ]);
 
-      // ----------------------------------------------------
-      // AVERAGE ORDER VALUE
-      // ----------------------------------------------------
 
-      Order.aggregate([
-        {
-          $match: {
-            status: "delivered",
-          },
-        },
+    /* --------------------------------------------------------
+       MONTHLY DELIVERED SALES
+    -------------------------------------------------------- */
 
-        {
-          $group: {
-            _id: null,
-
-            averageOrderValue: {
-              $avg: "$totalAmount",
-            },
-          },
-        },
-      ]),
-
-      // ----------------------------------------------------
-      // SALES BY STATUS
-      // ----------------------------------------------------
-
-      Order.aggregate([
-        {
-          $group: {
-            _id: "$status",
-
-            count: {
-              $sum: 1,
-            },
-
-            revenue: {
-              $sum: "$totalAmount",
-            },
-          },
-        },
-
-        {
-          $sort: {
-            count: -1,
-          },
-        },
-      ]),
-
-      // ----------------------------------------------------
-      // DAILY SALES
-      // ----------------------------------------------------
-
-      Order.aggregate([
+    const salesData =
+      await Order.aggregate([
         {
           $match: {
             status: "delivered",
@@ -320,9 +217,12 @@ export const getSalesAnalytics = async (
         {
           $group: {
             _id: {
-              $dateToString: {
-                format: "%Y-%m-%d",
-                date: "$createdAt",
+              year: {
+                $year: "$createdAt",
+              },
+
+              month: {
+                $month: "$createdAt",
               },
             },
 
@@ -338,1394 +238,1138 @@ export const getSalesAnalytics = async (
 
         {
           $sort: {
-            _id: 1,
+            "_id.year": 1,
+            "_id.month": 1,
           },
         },
-      ]),
+      ]);
 
-      // ----------------------------------------------------
-      // TOP PRODUCTS
-      // ----------------------------------------------------
 
-      Order.aggregate([
-        {
-          $match: {
-            status: "delivered",
-          },
-        },
+    /* --------------------------------------------------------
+       FORMAT MONTHLY DATA
+    -------------------------------------------------------- */
 
-        {
-          $unwind: "$items",
-        },
+    const formattedSalesData =
+      salesData.map((item) => ({
+        year: item._id.year,
 
-        {
-          $group: {
-            _id: "$items.product",
+        month: item._id.month,
 
-            productName: {
-              $first: "$items.name",
-            },
+        monthName:
+          new Date(
+            2000,
+            item._id.month - 1,
+            1
+          ).toLocaleString(
+            "en-US",
+            {
+              month: "short",
+            }
+          ),
 
-            quantitySold: {
-              $sum: "$items.quantity",
-            },
+        sales:
+          toNumber(item.revenue),
 
-            revenue: {
-              $sum: {
-                $multiply: [
-                  "$items.price",
-                  "$items.quantity",
-                ],
-              },
-            },
-          },
-        },
+        revenue:
+          toNumber(item.revenue),
 
-        {
-          $sort: {
-            quantitySold: -1,
-          },
-        },
+        orders:
+          Number(item.orders) || 0,
+      }));
 
-        {
-          $limit: 10,
-        },
-      ]),
-    ]);
+
+    /* --------------------------------------------------------
+       TOTAL REVENUE
+    -------------------------------------------------------- */
 
     const totalRevenue =
-      totalRevenueResult.length > 0
-        ? totalRevenueResult[0].totalRevenue
-        : 0;
+      formattedSalesData.reduce(
+        (total, item) =>
+          total +
+          toNumber(item.revenue),
+
+        0
+      );
+
+
+    /* --------------------------------------------------------
+       AVERAGE ORDER VALUE
+    -------------------------------------------------------- */
 
     const averageOrderValue =
-      averageOrderResult.length > 0
-        ? averageOrderResult[0]
-            .averageOrderValue
+      deliveredOrders > 0
+        ? totalRevenue /
+          deliveredOrders
         : 0;
 
-    res.status(200).json({
+
+    /* --------------------------------------------------------
+       BEST PERFORMING MONTH
+    -------------------------------------------------------- */
+
+    let bestMonth = null;
+
+
+    if (
+      formattedSalesData.length > 0
+    ) {
+      bestMonth =
+        formattedSalesData.reduce(
+          (best, current) => {
+            return current.sales >
+              best.sales
+              ? current
+              : best;
+          },
+          formattedSalesData[0]
+        );
+    }
+
+
+    /* --------------------------------------------------------
+       RESPONSE
+    -------------------------------------------------------- */
+
+    return res.status(200).json({
       success: true,
+
+
+      /* ------------------------------------------------------
+         SUMMARY
+         AdminAnalytics.jsx expects this object.
+      ------------------------------------------------------ */
 
       summary: {
         totalRevenue,
+
         totalOrders,
+
         deliveredOrders,
+
         cancelledOrders,
+
         averageOrderValue,
-        currency: "USD",
       },
 
-      sales: salesByDay,
 
-      salesByDay,
+      /* ------------------------------------------------------
+         MONTHLY SALES
+         AdminAnalytics.jsx expects `sales`.
+      ------------------------------------------------------ */
 
-      salesByStatus,
+      sales:
+        formattedSalesData,
 
-      topProducts,
+
+      /* ------------------------------------------------------
+         BEST MONTH
+      ------------------------------------------------------ */
+
+      bestMonth: bestMonth
+        ? {
+            year:
+              bestMonth.year,
+
+            month:
+              bestMonth.month,
+
+            monthName:
+              bestMonth.monthName,
+
+            sales:
+              bestMonth.sales,
+
+            revenue:
+              bestMonth.revenue,
+
+            orders:
+              bestMonth.orders,
+          }
+        : {
+            year: null,
+
+            month: null,
+
+            monthName: "N/A",
+
+            sales: 0,
+
+            revenue: 0,
+
+            orders: 0,
+          },
+
+
+      /* ------------------------------------------------------
+         BACKWARD COMPATIBILITY
+      ------------------------------------------------------ */
+
+      salesData:
+        formattedSalesData,
+
+      data:
+        formattedSalesData,
+
+      totalRevenue,
+
+      deliveredOrders,
+
+      totalOrders,
+
+      cancelledOrders,
+
+      averageOrderValue,
     });
   } catch (error) {
     console.error(
-      "Get sales analytics error:",
+      "Get Sales Analytics Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to load sales analytics",
+      summary: {
+        totalRevenue: 0,
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+        totalOrders: 0,
+
+        deliveredOrders: 0,
+
+        cancelledOrders: 0,
+
+        averageOrderValue: 0,
+      },
+
+      sales: [],
+
+      salesData: [],
+
+      data: [],
+
+      bestMonth: {
+        year: null,
+
+        month: null,
+
+        monthName: "N/A",
+
+        sales: 0,
+
+        revenue: 0,
+
+        orders: 0,
+      },
+
+      message: getErrorMessage(
+        error,
+        "Failed to load sales analytics."
+      ),
     });
   }
 };
 
-// ==========================================================
-// GET ALL USERS
-// ==========================================================
 
-export const getUsers = async (
-  req,
-  res
-) => {
+/* ==========================================================
+   USERS
+========================================================== */
+
+/**
+ * GET /api/admin/users
+ */
+export const getUsers = async (req, res) => {
   try {
-    const users = await User.find()
-      .select("-password")
-      .sort({
-        createdAt: -1,
-      })
-      .lean();
+    const users =
+      await User.find({})
+        .select("-password")
+        .sort({
+          createdAt: -1,
+        })
+        .lean();
 
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
 
-      count: users.length,
+      users,
 
-      data: users,
+      count: users.length,
     });
   } catch (error) {
     console.error(
-      "Get users error:",
+      "Get Users Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to fetch users",
+      users: [],
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to load users."
+      ),
     });
   }
 };
 
-// ==========================================================
-// UPDATE USER ROLE
-// ==========================================================
 
+/**
+ * PUT /api/admin/users/:id/role
+ */
 export const updateUserRole = async (
   req,
   res
 ) => {
   try {
+    const { id } = req.params;
+
     const { role } = req.body;
 
-    // ------------------------------------------------------
-    // VALIDATE ROLE
-    // ------------------------------------------------------
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Invalid user ID.",
+      });
+    }
+
 
     if (!role) {
       return res.status(400).json({
         success: false,
 
-        message:
-          "Role is required",
+        message: "User role is required.",
       });
     }
 
-    const normalizedRole =
-      String(role)
-        .toLowerCase()
-        .trim();
 
-    if (
-      !USER_ROLES.includes(
-        normalizedRole
-      )
-    ) {
+    const allowedRoles = [
+      "user",
+      "admin",
+    ];
+
+
+    if (!allowedRoles.includes(role)) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Invalid role. Role must be either user or admin.",
+          "Invalid role. Use user or admin.",
       });
     }
 
-    // ------------------------------------------------------
-    // VALIDATE USER ID
-    // ------------------------------------------------------
-
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Invalid user ID",
-      });
-    }
-
-    // ------------------------------------------------------
-    // FIND USER
-    // ------------------------------------------------------
 
     const user =
-      await User.findById(
-        req.params.id
-      );
+      await User.findById(id);
+
 
     if (!user) {
       return res.status(404).json({
         success: false,
 
-        message:
-          "User not found",
+        message: "User not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // PREVENT ADMIN FROM REMOVING OWN ADMIN ROLE
-    // ------------------------------------------------------
 
-    if (
-      req.user &&
-      user._id.toString() ===
-        req.user._id.toString() &&
-      normalizedRole !== "admin"
-    ) {
-      return res.status(400).json({
-        success: false,
+    user.role = role;
 
-        message:
-          "You cannot remove your own admin role",
-      });
-    }
+    await user.save();
 
-    // ------------------------------------------------------
-    // UPDATE ROLE
-    // ------------------------------------------------------
 
-    user.role =
-      normalizedRole;
+    const safeUser =
+      user.toObject();
 
-    const updatedUser =
-      await user.save();
+    delete safeUser.password;
 
-    const userResponse =
-      updatedUser.toObject();
 
-    delete userResponse.password;
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
 
       message:
-        "User role updated successfully",
+        "User role updated successfully.",
 
-      data: userResponse,
+      user: safeUser,
     });
   } catch (error) {
     console.error(
-      "Update user role error:",
+      "Update User Role Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to update user role",
-
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to update user role."
+      ),
     });
   }
 };
 
-// ==========================================================
-// DELETE USER
-// ==========================================================
 
+/**
+ * DELETE /api/admin/users/:id
+ */
 export const deleteUser = async (
   req,
   res
 ) => {
   try {
-    // ------------------------------------------------------
-    // VALIDATE USER ID
-    // ------------------------------------------------------
+    const { id } = req.params;
 
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Invalid user ID.",
+      });
+    }
+
+
+    /*
+     * Prevent an admin from deleting
+     * their own account.
+     */
     if (
-      !isValidObjectId(
-        req.params.id
-      )
+      req.user?._id &&
+      String(req.user._id) ===
+        String(id)
     ) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Invalid user ID",
+          "You cannot delete your own admin account.",
       });
     }
 
-    // ------------------------------------------------------
-    // FIND USER
-    // ------------------------------------------------------
 
     const user =
-      await User.findById(
-        req.params.id
-      );
+      await User.findByIdAndDelete(id);
+
 
     if (!user) {
       return res.status(404).json({
         success: false,
 
-        message:
-          "User not found",
+        message: "User not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // PREVENT SELF-DELETION
-    // ------------------------------------------------------
 
-    if (
-      req.user &&
-      user._id.toString() ===
-        req.user._id.toString()
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "You cannot delete your own admin account",
-      });
-    }
-
-    // ------------------------------------------------------
-    // DELETE USER
-    // ------------------------------------------------------
-
-    await user.deleteOne();
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
 
       message:
-        "User deleted successfully",
+        "User deleted successfully.",
+
+      userId: id,
     });
   } catch (error) {
     console.error(
-      "Delete user error:",
+      "Delete User Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to delete user",
-
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to delete user."
+      ),
     });
   }
 };
 
-// ==========================================================
-// GET ALL ORDERS
-// ==========================================================
 
+/* ==========================================================
+   ORDERS
+========================================================== */
+
+/**
+ * GET /api/admin/orders
+ */
 export const getOrders = async (
   req,
   res
 ) => {
   try {
     const orders =
-      await Order.find()
+      await Order.find({})
         .populate(
           "user",
-          "name email"
+          "name email role"
         )
         .sort({
           createdAt: -1,
         })
         .lean();
 
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
 
-      count: orders.length,
+      orders,
 
-      data: orders,
+      count: orders.length,
     });
   } catch (error) {
     console.error(
-      "Get orders error:",
+      "Get Orders Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to fetch orders",
+      orders: [],
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to load orders."
+      ),
     });
   }
 };
 
-// ==========================================================
-// UPDATE ORDER STATUS
-// ==========================================================
 
+/**
+ * PUT /api/admin/orders/:id
+ */
 export const updateOrderStatus = async (
   req,
   res
 ) => {
   try {
+    const { id } = req.params;
+
     const { status } = req.body;
 
-    // ------------------------------------------------------
-    // VALIDATE STATUS
-    // ------------------------------------------------------
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Invalid order ID.",
+      });
+    }
+
+
+    const allowedStatuses = [
+      "pending",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled",
+    ];
+
 
     if (!status) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Order status is required",
+          "Order status is required.",
       });
     }
 
-    const normalizedStatus =
-      String(status)
-        .toLowerCase()
-        .trim();
 
     if (
-      !ORDER_STATUSES.includes(
-        normalizedStatus
+      !allowedStatuses.includes(
+        status
       )
     ) {
       return res.status(400).json({
         success: false,
 
         message:
-          `Invalid order status. Valid statuses: ${ORDER_STATUSES.join(
-            ", "
-          )}`,
+          "Invalid order status.",
       });
     }
 
-    // ------------------------------------------------------
-    // VALIDATE ORDER ID
-    // ------------------------------------------------------
-
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Invalid order ID",
-      });
-    }
-
-    // ------------------------------------------------------
-    // FIND ORDER
-    // ------------------------------------------------------
 
     const order =
-      await Order.findById(
-        req.params.id
-      );
+      await Order.findById(id);
+
 
     if (!order) {
       return res.status(404).json({
         success: false,
 
-        message:
-          "Order not found",
+        message: "Order not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // UPDATE STATUS
-    // ------------------------------------------------------
 
-    order.status =
-      normalizedStatus;
+    order.status = status;
+
+
+    /*
+     * When an order is delivered,
+     * mark it as paid if payment
+     * is still pending.
+     */
+    if (
+      status === "delivered" &&
+      order.paymentStatus ===
+        "pending"
+    ) {
+      order.paymentStatus = "paid";
+    }
+
+
+    await order.save();
+
 
     const updatedOrder =
-      await order.save();
+      await Order.findById(id)
+        .populate(
+          "user",
+          "name email role"
+        )
+        .lean();
 
-    await updatedOrder.populate(
-      "user",
-      "name email"
-    );
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
 
       message:
-        "Order status updated successfully",
+        "Order status updated successfully.",
 
-      data: updatedOrder,
+      order: updatedOrder,
     });
   } catch (error) {
     console.error(
-      "Update order status error:",
+      "Update Order Status Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to update order status",
-
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to update order status."
+      ),
     });
   }
 };
 
-// ==========================================================
-// DELETE ORDER
-// ==========================================================
 
+/**
+ * DELETE /api/admin/orders/:id
+ */
 export const deleteOrder = async (
   req,
   res
 ) => {
   try {
-    // ------------------------------------------------------
-    // VALIDATE ORDER ID
-    // ------------------------------------------------------
+    const { id } = req.params;
 
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
+
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
 
-        message:
-          "Invalid order ID",
+        message: "Invalid order ID.",
       });
     }
 
-    // ------------------------------------------------------
-    // FIND ORDER
-    // ------------------------------------------------------
 
     const order =
-      await Order.findById(
-        req.params.id
-      );
+      await Order.findByIdAndDelete(id);
+
 
     if (!order) {
       return res.status(404).json({
         success: false,
 
-        message:
-          "Order not found",
+        message: "Order not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // DELETE ORDER
-    // ------------------------------------------------------
 
-    await order.deleteOne();
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
 
       message:
-        "Order deleted successfully",
+        "Order deleted successfully.",
+
+      orderId: id,
     });
   } catch (error) {
     console.error(
-      "Delete order error:",
+      "Delete Order Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to delete order",
-
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to delete order."
+      ),
     });
   }
 };
 
-// ==========================================================
-// GET ALL PRODUCTS
-// ==========================================================
-//
-// IMPORTANT:
-// Admin can see BOTH active and inactive products.
-// This allows deleted products to be restored.
-// ==========================================================
 
+/* ==========================================================
+   PRODUCTS
+========================================================== */
+
+/**
+ * GET /api/admin/products
+ */
 export const getProducts = async (
   req,
   res
 ) => {
   try {
     const products =
-      await Product.find()
-        .populate(
-          "createdBy",
-          "name email"
-        )
+      await Product.find({})
         .sort({
           createdAt: -1,
         })
         .lean();
 
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
 
-      count: products.length,
+      products,
 
-      data: products,
+      count: products.length,
     });
   } catch (error) {
     console.error(
-      "Get products error:",
+      "Get Admin Products Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to fetch products",
+      products: [],
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to load products."
+      ),
     });
   }
 };
 
-// ==========================================================
-// GET SINGLE PRODUCT
-// ==========================================================
 
+/**
+ * GET /api/admin/products/:id
+ */
 export const getProduct = async (
   req,
   res
 ) => {
   try {
-    // ------------------------------------------------------
-    // VALIDATE PRODUCT ID
-    // ------------------------------------------------------
+    const { id } = req.params;
 
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
+
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Invalid product ID",
+          "Invalid product ID.",
       });
     }
 
-    // ------------------------------------------------------
-    // FIND PRODUCT
-    // ------------------------------------------------------
 
     const product =
-      await Product.findById(
-        req.params.id
-      ).populate(
-        "createdBy",
-        "name email"
-      );
+      await Product.findById(id)
+        .lean();
+
 
     if (!product) {
       return res.status(404).json({
         success: false,
 
+        product: null,
+
         message:
-          "Product not found",
+          "Product not found.",
       });
     }
 
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
 
-      data: product,
+      product,
     });
   } catch (error) {
     console.error(
-      "Get product error:",
+      "Get Admin Product Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to fetch product",
+      product: null,
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to load product."
+      ),
     });
   }
 };
 
-// ==========================================================
-// CREATE PRODUCT
-// ==========================================================
 
+/**
+ * POST /api/admin/products
+ */
 export const createProduct = async (
   req,
   res
 ) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      oldPrice,
-      discount,
-      currency,
-      category,
-      brand,
-      sku,
-      image,
-      images,
-      features,
-      stock,
-      shipping,
-      rating,
-      numReviews,
-      warranty,
-      featured,
-      bestseller,
-      newArrival,
-    } = req.body;
+    const body = {
+      ...req.body,
+    };
 
-    // ------------------------------------------------------
-    // REQUIRED FIELDS
-    // ------------------------------------------------------
 
     if (
-      !name ||
-      !String(name).trim()
+      body.price !== undefined
     ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product name is required",
-      });
+      body.price =
+        toNumber(body.price);
     }
+
 
     if (
-      !description ||
-      !String(description).trim()
+      body.stock !== undefined
     ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product description is required",
-      });
+      body.stock =
+        toNumber(body.stock);
     }
 
-    if (
-      price === undefined ||
-      price === null ||
-      price === ""
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product price is required",
-      });
-    }
-
-    const numericPrice =
-      Number(price);
-
-    if (
-      !Number.isFinite(
-        numericPrice
-      ) ||
-      numericPrice < 0
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product price must be a valid non-negative number",
-      });
-    }
-
-    if (
-      !category ||
-      !String(category).trim()
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product category is required",
-      });
-    }
-
-    if (
-      !sku ||
-      !String(sku).trim()
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product SKU is required",
-      });
-    }
-
-    // ------------------------------------------------------
-    // CREATE PRODUCT
-    // ------------------------------------------------------
 
     const product =
-      await Product.create({
-        name:
-          String(name).trim(),
+      await Product.create(body);
 
-        description:
-          String(description).trim(),
 
-        price:
-          numericPrice,
-
-        oldPrice,
-
-        discount,
-
-        currency,
-
-        category:
-          String(category).trim(),
-
-        brand,
-
-        sku:
-          String(sku).trim(),
-
-        image,
-
-        images,
-
-        features,
-
-        stock,
-
-        shipping,
-
-        rating,
-
-        numReviews,
-
-        warranty,
-
-        featured,
-
-        bestseller,
-
-        newArrival,
-
-        createdBy:
-          req.user?._id || null,
-
-        isActive: true,
-      });
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
 
       message:
-        "Product created successfully",
+        "Product created successfully.",
 
-      data: product,
+      product,
     });
   } catch (error) {
     console.error(
-      "Create product error:",
+      "Create Product Error:",
       error
     );
 
-    // ------------------------------------------------------
-    // DUPLICATE SKU
-    // ------------------------------------------------------
-
-    if (
-      error.code === 11000
-    ) {
-      return res.status(409).json({
-        success: false,
-
-        message:
-          "A product with this SKU already exists",
-      });
-    }
-
-    // ------------------------------------------------------
-    // VALIDATION ERROR
-    // ------------------------------------------------------
-
-    if (
-      error.name ===
-      "ValidationError"
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product validation failed",
-
-        errors:
-          Object.values(
-            error.errors
-          ).map(
-            (err) =>
-              err.message
-          ),
-      });
-    }
-
-    res.status(500).json({
+    return res.status(400).json({
       success: false,
 
-      message:
-        "Failed to create product",
+      product: null,
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to create product."
+      ),
     });
   }
 };
 
-// ==========================================================
-// UPDATE PRODUCT
-// ==========================================================
 
+/**
+ * PUT /api/admin/products/:id
+ */
 export const updateProduct = async (
   req,
   res
 ) => {
   try {
-    // ------------------------------------------------------
-    // VALIDATE PRODUCT ID
-    // ------------------------------------------------------
+    const { id } = req.params;
 
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
+
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Invalid product ID",
+          "Invalid product ID.",
       });
     }
 
-    // ------------------------------------------------------
-    // FIND PRODUCT
-    // ------------------------------------------------------
+
+    const updates = {
+      ...req.body,
+    };
+
+
+    if (
+      updates.price !== undefined
+    ) {
+      updates.price =
+        toNumber(updates.price);
+    }
+
+
+    if (
+      updates.stock !== undefined
+    ) {
+      updates.stock =
+        toNumber(updates.stock);
+    }
+
+
+    delete updates._id;
+
 
     const product =
-      await Product.findById(
-        req.params.id
+      await Product.findByIdAndUpdate(
+        id,
+        updates,
+        {
+          new: true,
+
+          runValidators: true,
+        }
       );
+
 
     if (!product) {
       return res.status(404).json({
         success: false,
 
+        product: null,
+
         message:
-          "Product not found",
+          "Product not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // ALLOWED FIELDS
-    // ------------------------------------------------------
 
-    const allowedFields = [
-      "name",
-      "description",
-      "price",
-      "oldPrice",
-      "discount",
-      "currency",
-      "category",
-      "brand",
-      "sku",
-      "image",
-      "images",
-      "features",
-      "stock",
-      "shipping",
-      "rating",
-      "numReviews",
-      "warranty",
-      "featured",
-      "bestseller",
-      "newArrival",
-      "isActive",
-    ];
-
-    // ------------------------------------------------------
-    // UPDATE ONLY ALLOWED FIELDS
-    // ------------------------------------------------------
-
-    allowedFields.forEach(
-      (field) => {
-        if (
-          req.body[field] !==
-          undefined
-        ) {
-          product[field] =
-            req.body[field];
-        }
-      }
-    );
-
-    // ------------------------------------------------------
-    // VALIDATE PRICE
-    // ------------------------------------------------------
-
-    if (
-      product.price !==
-      undefined
-    ) {
-      const numericPrice =
-        Number(product.price);
-
-      if (
-        !Number.isFinite(
-          numericPrice
-        ) ||
-        numericPrice < 0
-      ) {
-        return res.status(400).json({
-          success: false,
-
-          message:
-            "Product price must be a valid non-negative number",
-        });
-      }
-
-      product.price =
-        numericPrice;
-    }
-
-    // ------------------------------------------------------
-    // SAVE
-    // ------------------------------------------------------
-
-    const updatedProduct =
-      await product.save();
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
 
       message:
-        "Product updated successfully",
+        "Product updated successfully.",
 
-      data: updatedProduct,
+      product,
     });
   } catch (error) {
     console.error(
-      "Update product error:",
+      "Update Product Error:",
       error
     );
 
-    // ------------------------------------------------------
-    // DUPLICATE SKU
-    // ------------------------------------------------------
-
-    if (
-      error.code === 11000
-    ) {
-      return res.status(409).json({
-        success: false,
-
-        message:
-          "A product with this SKU already exists",
-      });
-    }
-
-    // ------------------------------------------------------
-    // VALIDATION ERROR
-    // ------------------------------------------------------
-
-    if (
-      error.name ===
-      "ValidationError"
-    ) {
-      return res.status(400).json({
-        success: false,
-
-        message:
-          "Product validation failed",
-
-        errors:
-          Object.values(
-            error.errors
-          ).map(
-            (err) =>
-              err.message
-          ),
-      });
-    }
-
-    res.status(500).json({
+    return res.status(400).json({
       success: false,
 
-      message:
-        "Failed to update product",
+      product: null,
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to update product."
+      ),
     });
   }
 };
 
-// ==========================================================
-// SOFT DELETE PRODUCT
-// ==========================================================
 
+/**
+ * DELETE /api/admin/products/:id
+ *
+ * Soft delete when supported.
+ */
 export const deleteProduct = async (
   req,
   res
 ) => {
   try {
-    // ------------------------------------------------------
-    // VALIDATE PRODUCT ID
-    // ------------------------------------------------------
+    const { id } = req.params;
 
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
+
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Invalid product ID",
+          "Invalid product ID.",
       });
     }
 
-    // ------------------------------------------------------
-    // FIND PRODUCT
-    // ------------------------------------------------------
 
     const product =
-      await Product.findById(
-        req.params.id
-      );
+      await Product.findById(id);
+
 
     if (!product) {
       return res.status(404).json({
         success: false,
 
         message:
-          "Product not found",
+          "Product not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // CHECK CURRENT STATUS
-    // ------------------------------------------------------
+
+    const productObject =
+      product.toObject();
+
 
     if (
-      product.isActive === false
+      Object.prototype.hasOwnProperty.call(
+        productObject,
+        "isDeleted"
+      )
     ) {
-      return res.status(400).json({
-        success: false,
+      product.isDeleted = true;
+
+      await product.save();
+
+
+      return res.status(200).json({
+        success: true,
 
         message:
-          "Product is already deleted",
+          "Product deleted successfully.",
+
+        product,
       });
     }
 
-    // ------------------------------------------------------
-    // SOFT DELETE
-    // ------------------------------------------------------
 
-    product.isActive = false;
+    await Product.findByIdAndDelete(
+      id
+    );
 
-    await product.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
 
       message:
-        "Product deleted successfully",
+        "Product deleted successfully.",
 
-      data: product,
+      productId: id,
     });
   } catch (error) {
     console.error(
-      "Delete product error:",
+      "Delete Product Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(400).json({
       success: false,
 
-      message:
-        "Failed to delete product",
-
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to delete product."
+      ),
     });
   }
 };
 
-// ==========================================================
-// RESTORE PRODUCT
-// ==========================================================
 
+/**
+ * PUT /api/admin/products/:id/restore
+ */
 export const restoreProduct = async (
   req,
   res
 ) => {
   try {
-    // ------------------------------------------------------
-    // VALIDATE PRODUCT ID
-    // ------------------------------------------------------
+    const { id } = req.params;
 
-    if (
-      !isValidObjectId(
-        req.params.id
-      )
-    ) {
+
+    if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Invalid product ID",
+          "Invalid product ID.",
       });
     }
 
-    // ------------------------------------------------------
-    // FIND PRODUCT
-    // ------------------------------------------------------
 
     const product =
-      await Product.findById(
-        req.params.id
-      );
+      await Product.findById(id);
+
 
     if (!product) {
       return res.status(404).json({
         success: false,
 
+        product: null,
+
         message:
-          "Product not found",
+          "Product not found.",
       });
     }
 
-    // ------------------------------------------------------
-    // CHECK CURRENT STATUS
-    // ------------------------------------------------------
+
+    const productObject =
+      product.toObject();
+
 
     if (
-      product.isActive === true
+      Object.prototype.hasOwnProperty.call(
+        productObject,
+        "isDeleted"
+      )
     ) {
-      return res.status(400).json({
-        success: false,
+      product.isDeleted = false;
+
+      await product.save();
+
+
+      return res.status(200).json({
+        success: true,
 
         message:
-          "Product is already active",
+          "Product restored successfully.",
+
+        product,
       });
     }
 
-    // ------------------------------------------------------
-    // RESTORE PRODUCT
-    // ------------------------------------------------------
 
-    product.isActive = true;
+    return res.status(400).json({
+      success: false,
 
-    await product.save();
-
-    res.status(200).json({
-      success: true,
+      product: null,
 
       message:
-        "Product restored successfully",
-
-      data: product,
+        "Product does not support soft restore.",
     });
   } catch (error) {
     console.error(
-      "Restore product error:",
+      "Restore Product Error:",
       error
     );
 
-    res.status(500).json({
+    return res.status(400).json({
       success: false,
 
-      message:
-        "Failed to restore product",
+      product: null,
 
-      error:
-        process.env.NODE_ENV === "production"
-          ? undefined
-          : getErrorMessage(error),
+      message: getErrorMessage(
+        error,
+        "Failed to restore product."
+      ),
     });
   }
-};
-
-// ==========================================================
-// DEFAULT EXPORT
-// ==========================================================
-
-export default {
-  getDashboardStats,
-  getSalesAnalytics,
-
-  getUsers,
-  updateUserRole,
-  deleteUser,
-
-  getOrders,
-  updateOrderStatus,
-  deleteOrder,
-
-  getProducts,
-  getProduct,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  restoreProduct,
 };

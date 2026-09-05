@@ -63,8 +63,8 @@ function AdminOrders() {
       //
       // {
       //   success: true,
-      //   count: orders.length,
-      //   data: orders
+      //   orders: [...],
+      //   count: orders.length
       // }
 
       if (
@@ -81,8 +81,11 @@ function AdminOrders() {
         return;
       }
 
+      // IMPORTANT:
+      // The backend returns the orders array
+      // under "orders", not "data".
       const orderList =
-        response?.data;
+        response?.orders;
 
       setOrders(
         Array.isArray(orderList)
