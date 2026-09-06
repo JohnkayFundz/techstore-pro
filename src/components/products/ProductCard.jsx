@@ -140,14 +140,6 @@ const getProductImage = (product) => {
 
 const ProductCard = ({ product }) => {
   /* ========================================================
-     SAFETY CHECK
-  ======================================================== */
-
-  if (!product) {
-    return null;
-  }
-
-  /* ========================================================
      CONTEXTS
   ======================================================== */
 
@@ -163,20 +155,9 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   const productId =
-    product._id ??
-    product.id;
-
-  /*
-    Prevent broken product links.
-  */
-
-  if (
-    productId === undefined ||
-    productId === null ||
-    productId === ""
-  ) {
-    return null;
-  }
+    product?._id ??
+    product?.id ??
+    null;
 
   /* ========================================================
      IMAGE STATE
@@ -201,12 +182,20 @@ const ProductCard = ({ product }) => {
 
     setImageError(false);
   }, [
-    product._id,
-    product.id,
-    product.image,
-    product.imageUrl,
-    product.images,
+    product?._id,
+    product?.id,
+    product?.image,
+    product?.imageUrl,
+    product?.images,
   ]);
+
+  /* ========================================================
+     SAFETY CHECK
+  ======================================================== */
+
+  if (!product || !productId) {
+    return null;
+  }
 
   /* ========================================================
      IMAGE ERROR HANDLER
@@ -287,9 +276,14 @@ const ProductCard = ({ product }) => {
         )
       : 0;
 
-  const discount =
-    Number(product.discount) ||
-    calculatedDiscount;
+  const discount = Math.min(
+    100,
+    Math.max(
+      0,
+      Number(product.discount) ||
+        calculatedDiscount
+    )
+  );
 
   /* ========================================================
      STOCK STATUS
@@ -353,7 +347,6 @@ const ProductCard = ({ product }) => {
       className="product-card"
       aria-label={productName}
     >
-
       {/* ==================================================
           IMAGE SECTION
       ================================================== */}
