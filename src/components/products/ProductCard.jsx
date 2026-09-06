@@ -1,6 +1,17 @@
-import { memo, useEffect, useState } from "react";
+// ==========================================================
+// TECHSTORE PRO
+// PRODUCT CARD COMPONENT
+// ==========================================================
+
+import {
+  memo,
+  useEffect,
+  useState,
+} from "react";
+
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+
 import {
   FiHeart,
   FiShoppingCart,
@@ -17,10 +28,11 @@ import "./ProductCard.css";
    CONSTANTS
 ========================================================== */
 
-const PLACEHOLDER_IMAGE = "/placeholder-product.png";
+const PLACEHOLDER_IMAGE =
+  "/placeholder-product.png";
 
 /* ==========================================================
-   GET SAFE IMAGE URL
+   SAFE IMAGE URL
 ========================================================== */
 
 const getSafeImageUrl = (value) => {
@@ -34,17 +46,12 @@ const getSafeImageUrl = (value) => {
     return null;
   }
 
-  /*
-    Reject old external placeholder URLs.
-  */
+  // Reject old external placeholder URLs.
   if (image.includes("via.placeholder.com")) {
     return null;
   }
 
-  /*
-    Reject javascript/data/blob URLs.
-    This keeps the image source predictable.
-  */
+  // Reject unsafe image sources.
   if (
     image.startsWith("javascript:") ||
     image.startsWith("data:") ||
@@ -65,9 +72,9 @@ const getProductImage = (product) => {
     return PLACEHOLDER_IMAGE;
   }
 
-  /*
-    1. Main image
-  */
+  /* --------------------------------------------------------
+     1. Main image
+  -------------------------------------------------------- */
 
   const mainImage = getSafeImageUrl(
     product.image
@@ -77,9 +84,9 @@ const getProductImage = (product) => {
     return mainImage;
   }
 
-  /*
-    2. imageUrl
-  */
+  /* --------------------------------------------------------
+     2. imageUrl
+  -------------------------------------------------------- */
 
   const imageUrl = getSafeImageUrl(
     product.imageUrl
@@ -89,16 +96,13 @@ const getProductImage = (product) => {
     return imageUrl;
   }
 
-  /*
-    3. images array
-  */
+  /* --------------------------------------------------------
+     3. Images array
+  -------------------------------------------------------- */
 
   if (Array.isArray(product.images)) {
     for (const image of product.images) {
-      /*
-        String image
-      */
-
+      // String image
       if (typeof image === "string") {
         const safeImage =
           getSafeImageUrl(image);
@@ -108,18 +112,13 @@ const getProductImage = (product) => {
         }
       }
 
-      /*
-        Object image
-      */
-
+      // Object image
       if (
         image &&
         typeof image === "object"
       ) {
         const safeImage =
-          getSafeImageUrl(
-            image.url
-          );
+          getSafeImageUrl(image.url);
 
         if (safeImage) {
           return safeImage;
@@ -128,9 +127,9 @@ const getProductImage = (product) => {
     }
   }
 
-  /*
-    4. Always use local fallback.
-  */
+  /* --------------------------------------------------------
+     4. Local fallback
+  -------------------------------------------------------- */
 
   return PLACEHOLDER_IMAGE;
 };
@@ -140,14 +139,6 @@ const getProductImage = (product) => {
 ========================================================== */
 
 const ProductCard = ({ product }) => {
-  /* ========================================================
-     SAFETY CHECK
-  ======================================================== */
-
-  if (!product) {
-    return null;
-  }
-
   /* ========================================================
      CONTEXTS
   ======================================================== */
@@ -164,26 +155,18 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   const productId =
-    product._id ||
-    product.id;
-
-  /*
-    Do not create broken product URLs.
-  */
-
-  if (!productId) {
-    return null;
-  }
+    product?._id ??
+    product?.id ??
+    null;
 
   /* ========================================================
-     PRODUCT IMAGE
+     IMAGE STATE
   ======================================================== */
 
-  const initialImage =
-    getProductImage(product);
-
   const [imageSrc, setImageSrc] =
-    useState(initialImage);
+    useState(
+      getProductImage(product)
+    );
 
   const [imageError, setImageError] =
     useState(false);
@@ -193,18 +176,26 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   useEffect(() => {
-    const nextImage =
-      getProductImage(product);
+    setImageSrc(
+      getProductImage(product)
+    );
 
-    setImageSrc(nextImage);
     setImageError(false);
   }, [
-    product._id,
-    product.id,
-    product.image,
-    product.imageUrl,
-    product.images,
+    product?._id,
+    product?.id,
+    product?.image,
+    product?.imageUrl,
+    product?.images,
   ]);
+
+  /* ========================================================
+     SAFETY CHECK
+  ======================================================== */
+
+  if (!product || !productId) {
+    return null;
+  }
 
   /* ========================================================
      IMAGE ERROR HANDLER
@@ -212,7 +203,7 @@ const ProductCard = ({ product }) => {
 
   const handleImageError = () => {
     /*
-      Prevent an infinite fallback loop.
+      Prevent a fallback loop.
     */
 
     if (
@@ -222,11 +213,6 @@ const ProductCard = ({ product }) => {
       setImageError(true);
       return;
     }
-
-    console.warn(
-      "⚠️ Product image failed to load:",
-      imageSrc
-    );
 
     setImageSrc(
       PLACEHOLDER_IMAGE
@@ -249,8 +235,13 @@ const ProductCard = ({ product }) => {
   const productOldPrice =
     Number(product.oldPrice) || 0;
 
-  const productRating =
-    Number(product.rating) || 0;
+  const productRating = Math.min(
+    5,
+    Math.max(
+      0,
+      Number(product.rating) || 0
+    )
+  );
 
   const productReviews =
     Number(
@@ -274,20 +265,25 @@ const ProductCard = ({ product }) => {
      DISCOUNT
   ======================================================== */
 
-  const discount =
-    Number(product.discount) ||
-    (
-      productOldPrice >
-      productPrice
-        ? Math.round(
-            (
-              (productOldPrice -
-                productPrice) /
-              productOldPrice
-            ) * 100
-          )
-        : 0
-    );
+  const calculatedDiscount =
+    productOldPrice > productPrice
+      ? Math.round(
+          (
+            (productOldPrice -
+              productPrice) /
+            productOldPrice
+          ) * 100
+        )
+      : 0;
+
+  const discount = Math.min(
+    100,
+    Math.max(
+      0,
+      Number(product.discount) ||
+        calculatedDiscount
+    )
+  );
 
   /* ========================================================
      STOCK STATUS
@@ -347,8 +343,10 @@ const ProductCard = ({ product }) => {
   ======================================================== */
 
   return (
-    <article className="product-card">
-
+    <article
+      className="product-card"
+      aria-label={productName}
+    >
       {/* ==================================================
           IMAGE SECTION
       ================================================== */}
@@ -358,12 +356,15 @@ const ProductCard = ({ product }) => {
         {/* DISCOUNT */}
 
         {discount > 0 && (
-          <span className="product-card__discount">
+          <span
+            className="product-card__discount"
+            aria-label={`${discount}% discount`}
+          >
             -{discount}%
           </span>
         )}
 
-        {/* WISHLIST BUTTON */}
+        {/* WISHLIST */}
 
         <button
           type="button"
@@ -372,7 +373,9 @@ const ProductCard = ({ product }) => {
               ? "product-card__wishlist--active"
               : ""
           }`}
-          onClick={handleWishlist}
+          onClick={
+            handleWishlist
+          }
           aria-label={
             wishlistActive
               ? `Remove ${productName} from wishlist`
@@ -389,6 +392,7 @@ const ProductCard = ({ product }) => {
                 ? "currentColor"
                 : "none"
             }
+            aria-hidden="true"
           />
         </button>
 
@@ -397,6 +401,7 @@ const ProductCard = ({ product }) => {
         <Link
           to={`/products/${productId}`}
           className="product-card__image-link"
+          aria-label={`View ${productName}`}
         >
           <img
             src={
@@ -409,7 +414,7 @@ const ProductCard = ({ product }) => {
                 ? "product-card__image--fallback"
                 : ""
             }`}
-            loading="eager"
+            loading="lazy"
             decoding="async"
             onError={
               handleImageError
@@ -420,7 +425,10 @@ const ProductCard = ({ product }) => {
         {/* OUT OF STOCK */}
 
         {isOutOfStock && (
-          <span className="product-card__stock-badge">
+          <span
+            className="product-card__stock-badge"
+            role="status"
+          >
             Out of Stock
           </span>
         )}
@@ -459,10 +467,14 @@ const ProductCard = ({ product }) => {
 
         {/* RATING */}
 
-        <div className="product-card__rating">
-
-          <div className="product-card__stars">
-
+        <div
+          className="product-card__rating"
+          aria-label={`Rated ${productRating} out of 5 stars`}
+        >
+          <div
+            className="product-card__stars"
+            aria-hidden="true"
+          >
             {[1, 2, 3, 4, 5].map(
               (star) => (
                 <FiStar
@@ -474,16 +486,15 @@ const ProductCard = ({ product }) => {
                       ? "currentColor"
                       : "none"
                   }
+                  strokeWidth={1.8}
                 />
               )
             )}
-
           </div>
 
           <span className="product-card__reviews">
             ({productReviews})
           </span>
-
         </div>
 
         {/* PRICE */}
@@ -498,7 +509,12 @@ const ProductCard = ({ product }) => {
 
           {productOldPrice >
             productPrice && (
-            <span className="product-card__old-price">
+            <span
+              className="product-card__old-price"
+              aria-label={`Original price ${formatPrice(
+                productOldPrice
+              )}`}
+            >
               {formatPrice(
                 productOldPrice
               )}
@@ -518,9 +534,15 @@ const ProductCard = ({ product }) => {
           disabled={
             isOutOfStock
           }
+          aria-label={
+            isOutOfStock
+              ? `${productName} is out of stock`
+              : `Add ${productName} to cart`
+          }
         >
           <FiShoppingCart
             size={18}
+            aria-hidden="true"
           />
 
           <span>
@@ -528,11 +550,9 @@ const ProductCard = ({ product }) => {
               ? "Out of Stock"
               : "Add to Cart"}
           </span>
-
         </button>
 
       </div>
-
     </article>
   );
 };
@@ -542,93 +562,79 @@ const ProductCard = ({ product }) => {
 ========================================================== */
 
 ProductCard.propTypes = {
-  product:
-    PropTypes.shape({
-      _id: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
+  product: PropTypes.shape({
+    _id: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
 
-      id: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
+    id: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
 
-      name: PropTypes.string,
+    name: PropTypes.string,
 
-      image: PropTypes.string,
+    image: PropTypes.string,
 
-      imageUrl:
-        PropTypes.string,
+    imageUrl: PropTypes.string,
 
-      images:
-        PropTypes.arrayOf(
-          PropTypes.oneOfType([
-            PropTypes.string,
-
-            PropTypes.shape({
-              url: PropTypes.string,
-            }),
-          ])
-        ),
-
-      price:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      oldPrice:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      discount:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      rating:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      numReviews:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      reviewsCount:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      reviews:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      stock:
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]),
-
-      inStock:
-        PropTypes.bool,
-
-      category:
+    images: PropTypes.arrayOf(
+      PropTypes.oneOfType([
         PropTypes.string,
 
-      brand:
-        PropTypes.string,
-    }),
+        PropTypes.shape({
+          url: PropTypes.string,
+        }),
+      ])
+    ),
+
+    price: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    oldPrice: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    discount: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    rating: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    numReviews: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    reviewsCount: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    reviews: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    stock: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+
+    inStock: PropTypes.bool,
+
+    category: PropTypes.string,
+
+    brand: PropTypes.string,
+  }),
 };
 
 export default memo(ProductCard);

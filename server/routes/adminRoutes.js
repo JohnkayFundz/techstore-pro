@@ -38,29 +38,10 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  restoreProduct,
 } from "../controllers/adminController.js";
 
-
 const router = express.Router();
-
-
-/* ==========================================================
-   ADMIN AUTHENTICATION
-========================================================== */
-
-/*
- * Every route in this file requires:
- *
- * 1. A valid authenticated user
- * 2. Admin privileges
- *
- * protect    → verifies JWT / authentication
- * adminOnly  → verifies user.role === "admin"
- *
- * The middleware is applied individually below so each
- * route is explicit and easy to debug.
- */
-
 
 /* ==========================================================
    DASHBOARD
@@ -68,14 +49,6 @@ const router = express.Router();
 
 /*
  * GET /api/admin/dashboard
- *
- * Returns:
- * - Total products
- * - Total users
- * - Total orders
- * - Active products
- * - Pending orders
- * - Total sales
  */
 
 router.get(
@@ -86,10 +59,28 @@ router.get(
 );
 
 
+/* ==========================================================
+   SALES ANALYTICS
+========================================================== */
+
+/*
+ * GET /api/admin/analytics
+ *
+ * Main endpoint used by AdminAnalytics.jsx
+ */
+
+router.get(
+  "/analytics",
+  protect,
+  adminOnly,
+  getSalesAnalytics
+);
+
+
 /*
  * GET /api/admin/sales
  *
- * Returns monthly sales analytics.
+ * Backward-compatible alias.
  */
 
 router.get(
@@ -105,9 +96,9 @@ router.get(
 ========================================================== */
 
 /*
- * GET /api/admin/users
+ * GET ALL USERS
  *
- * Get all registered users.
+ * GET /api/admin/users
  */
 
 router.get(
@@ -119,20 +110,9 @@ router.get(
 
 
 /*
+ * UPDATE USER ROLE
+ *
  * PUT /api/admin/users/:id/role
- *
- * Update a user's role.
- *
- * Body:
- * {
- *   "role": "user"
- * }
- *
- * or
- *
- * {
- *   "role": "admin"
- * }
  */
 
 router.put(
@@ -144,9 +124,9 @@ router.put(
 
 
 /*
- * DELETE /api/admin/users/:id
+ * DELETE USER
  *
- * Delete a user.
+ * DELETE /api/admin/users/:id
  */
 
 router.delete(
@@ -162,9 +142,9 @@ router.delete(
 ========================================================== */
 
 /*
- * GET /api/admin/orders
+ * GET ALL ORDERS
  *
- * Get all customer orders.
+ * GET /api/admin/orders
  */
 
 router.get(
@@ -176,22 +156,9 @@ router.get(
 
 
 /*
+ * UPDATE ORDER STATUS
+ *
  * PUT /api/admin/orders/:id
- *
- * Update order status.
- *
- * Body:
- * {
- *   "status": "processing"
- * }
- *
- * Allowed statuses:
- *
- * pending
- * processing
- * shipped
- * delivered
- * cancelled
  */
 
 router.put(
@@ -203,9 +170,9 @@ router.put(
 
 
 /*
- * DELETE /api/admin/orders/:id
+ * DELETE ORDER
  *
- * Delete an order.
+ * DELETE /api/admin/orders/:id
  */
 
 router.delete(
@@ -221,9 +188,9 @@ router.delete(
 ========================================================== */
 
 /*
- * GET /api/admin/products
+ * GET ALL PRODUCTS
  *
- * Get all products for the admin panel.
+ * GET /api/admin/products
  */
 
 router.get(
@@ -235,9 +202,9 @@ router.get(
 
 
 /*
- * GET /api/admin/products/:id
+ * GET SINGLE PRODUCT
  *
- * Get a single product.
+ * GET /api/admin/products/:id
  */
 
 router.get(
@@ -249,14 +216,9 @@ router.get(
 
 
 /*
+ * CREATE PRODUCT
+ *
  * POST /api/admin/products
- *
- * Create a new product.
- *
- * Supports:
- * - JSON
- * - FormData
- * - Image uploads
  */
 
 router.post(
@@ -268,14 +230,9 @@ router.post(
 
 
 /*
+ * UPDATE PRODUCT
+ *
  * PUT /api/admin/products/:id
- *
- * Update an existing product.
- *
- * Supports:
- * - JSON
- * - FormData
- * - Image uploads
  */
 
 router.put(
@@ -287,9 +244,11 @@ router.put(
 
 
 /*
+ * DELETE PRODUCT
+ *
  * DELETE /api/admin/products/:id
  *
- * Delete a product.
+ * Soft delete
  */
 
 router.delete(
@@ -300,8 +259,22 @@ router.delete(
 );
 
 
+/*
+ * RESTORE PRODUCT
+ *
+ * PUT /api/admin/products/:id/restore
+ */
+
+router.put(
+  "/products/:id/restore",
+  protect,
+  adminOnly,
+  restoreProduct
+);
+
+
 /* ==========================================================
-   EXPORT ROUTER
+   EXPORT
 ========================================================== */
 
 export default router;

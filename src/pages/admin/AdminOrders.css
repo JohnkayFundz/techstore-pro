@@ -1,32 +1,97 @@
+/* ==========================================================
+   ADMIN ORDERS PAGE
+   ========================================================== */
+
 .admin-orders-page {
+  min-height: 100vh;
   padding: 2rem 0;
   background: #f8fafc;
-  min-height: 100vh;
 }
 
+.admin-orders-page .container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+   ========================================================== */
+
 .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .page-header h1 {
+  margin: 0 0 .5rem;
+  color: #0f172a;
   font-size: 2rem;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
+  font-weight: 700;
 }
 
 .page-header p {
+  margin: 0;
   color: #64748b;
+  line-height: 1.6;
+  font-size: .95rem;
 }
 
-.error-message {
-  background: #fee2e2;
-  color: #b91c1c;
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: .2s ease;
 }
 
-.orders-summary {
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: white;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+}
+
+
+/* ==========================================================
+   SUMMARY GRID
+   ========================================================== */
+
+.orders-summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
@@ -34,218 +99,741 @@
 }
 
 .summary-card {
-  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #e2e8f0;
   border-radius: 14px;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  box-shadow: 0 4px 10px rgba(15,23,42,.05);
+  transition: .25s ease;
 }
 
-.summary-card h3 {
-  font-size: 1.8rem;
-  color: var(--primary);
-  margin-bottom: .4rem;
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15,23,42,.08);
+}
+
+.summary-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #eff6ff;
+  font-size: 1.4rem;
 }
 
 .summary-card span {
+  display: block;
+  margin-bottom: .25rem;
   color: #64748b;
+  font-size: .8rem;
 }
+
+.summary-card strong {
+  display: block;
+  color: #0f172a;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.summary-card-revenue {
+  background: linear-gradient(135deg,#2563eb,#1d4ed8);
+  color: white;
+}
+
+.summary-card-revenue span,
+.summary-card-revenue strong {
+  color: white;
+}
+
+.summary-card-revenue .summary-card-icon {
+  background: rgba(255,255,255,.15);
+}
+
+
+/* ==========================================================
+   TOOLBAR
+   ========================================================== */
 
 .orders-toolbar {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.orders-toolbar input,
-.orders-toolbar select {
-  padding: .85rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  font-size: .95rem;
-}
-
-.orders-toolbar input {
-  flex: 1;
-  min-width: 260px;
-}
-
-.admin-orders-list {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.admin-order-card {
-  background: #fff;
-  border-radius: 16px;
+  margin-bottom: 1.5rem;
   padding: 1.5rem;
-  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
 }
 
-.order-top {
+.search-box,
+.status-filter {
+  flex: 1;
+}
+
+.search-box label,
+.status-filter label {
+  display: block;
+  margin-bottom: .5rem;
+  color: #475569;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.search-box input,
+.status-filter select {
+  width: 100%;
+  height: 46px;
+  padding: 0 .9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  color: #334155;
+  font-family: inherit;
+  font-size: .9rem;
+  transition: .2s;
+}
+
+.search-box input:focus,
+.status-filter select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+
+/* ==========================================================
+   RESULTS INFO
+   ========================================================== */
+
+.orders-results-info {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 1rem;
-}
-
-.order-top h3 {
-  margin-bottom: .5rem;
-}
-
-.order-top p {
-  color: #64748b;
-  margin: .25rem 0;
-}
-
-.order-top select {
-  padding: .7rem;
-  border-radius: 8px;
-}
-
-.shipping-info {
-  margin: 1.5rem 0;
-  background: #f8fafc;
-  padding: 1rem;
-  border-radius: 10px;
-}
-
-.shipping-info h4 {
-  margin-bottom: .5rem;
-}
-
-.shipping-info p {
-  margin: .3rem 0;
-}
-
-.order-items {
-  margin: 1.5rem 0;
-}
-
-.order-items h4 {
-  margin-bottom: 1rem;
-}
-
-.admin-order-item {
-  display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: .75rem 0;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 1.5rem;
 }
 
-.admin-order-item:last-child {
+.orders-results-info span {
+  color: #64748b;
+  font-size: .9rem;
+}
+
+.orders-results-info strong {
+  color: #0f172a;
+}
+
+.clear-filters {
+  border: none;
+  background: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: .85rem;
+}
+
+.clear-filters:hover {
+  text-decoration: underline;
+}
+
+
+/* ==========================================================
+   ERROR ALERT
+   ========================================================== */
+
+.alert {
+  padding: 1.25rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.alert-error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.alert-error p {
+  margin: 0 0 1rem;
+}/* ==========================================================
+   ORDERS TABLE WRAPPER
+   ========================================================== */
+
+.orders-table-wrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.orders-table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+   ========================================================== */
+
+.orders-table thead {
+  background: #f8fafc;
+}
+
+.orders-table th {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   TABLE BODY
+   ========================================================== */
+
+.orders-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.orders-table tbody tr {
+  transition: background .2s ease;
+}
+
+.orders-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.orders-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.admin-order-item img {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  border-radius: 10px;
-}
 
-.admin-order-item div {
-  flex: 1;
-}
+/* ==========================================================
+   ORDER ID
+   ========================================================== */
 
-.admin-order-footer {
+.order-id {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  border-top: 1px solid #e5e7eb;
-  padding-top: 1rem;
+  gap: .25rem;
+  color: #2563eb;
+  font-weight: 700;
+  white-space: nowrap;
 }
+
+.order-id span {
+  color: #94a3b8;
+}
+
+
+/* ==========================================================
+   CUSTOMER INFO
+   ========================================================== */
+
+.customer-info {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.customer-info strong {
+  color: #0f172a;
+  font-size: .92rem;
+}
+
+.customer-info span {
+  color: #64748b;
+  font-size: .8rem;
+  word-break: break-word;
+}
+
+
+/* ==========================================================
+   ITEMS
+   ========================================================== */
+
+.order-items-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .35rem .75rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+
+/* ==========================================================
+   ORDER TOTAL
+   ========================================================== */
+
+.order-total {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: .95rem;
+}
+
+
+/* ==========================================================
+   ORDER DATE
+   ========================================================== */
+
+.order-date {
+  color: #64748b;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   STATUS CONTROL
+   ========================================================== */
+
+.status-control {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  min-width: 150px;
+}
+
+.status-control select {
+  height: 36px;
+  padding: 0 .65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: .8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.status-control select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+
+/* ==========================================================
+   STATUS BADGES
+   ========================================================== */
 
 .status-badge {
-  padding: .45rem .9rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  min-width: 90px;
+  padding: .45rem .8rem;
   border-radius: 999px;
-  font-size: .85rem;
-  font-weight: 600;
+  font-size: .75rem;
+  font-weight: 700;
   text-transform: capitalize;
 }
 
-.status-badge.pending {
+.status-pending {
   background: #fef3c7;
   color: #92400e;
 }
 
-.status-badge.processing {
+.status-processing {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
-.status-badge.shipped {
+.status-shipped {
   background: #e0e7ff;
   color: #4338ca;
 }
 
-.status-badge.delivered {
+.status-delivered {
   background: #dcfce7;
-  color: #15803d;
+  color: #166534;
 }
 
-.status-badge.cancelled {
+.status-completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-cancelled {
   background: #fee2e2;
   color: #b91c1c;
 }
 
-.delete-btn {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: .7rem 1.1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: .3s;
+.status-failed {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
-.delete-btn:hover:not(:disabled) {
-  background: #dc2626;
+.status-default {
+  background: #f1f5f9;
+  color: #475569;
 }
 
-.delete-btn:disabled {
+
+/* ==========================================================
+   ACTION BUTTONS
+   ========================================================== */
+
+.order-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.btn-small {
+  min-height: 36px;
+  padding: .45rem .85rem;
+  font-size: .8rem;
+}
+
+.btn-view {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.btn-view:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.btn-delete {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.btn-delete:disabled {
   opacity: .6;
   cursor: not-allowed;
 }
 
-.empty-orders {
-  background: white;
-  border-radius: 14px;
-  padding: 3rem;
-  text-align: center;
-  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+
+/* ==========================================================
+   TABLE SCROLLBAR
+   ========================================================== */
+
+.orders-table-wrapper::-webkit-scrollbar {
+  height: 8px;
 }
 
-@media (max-width: 768px) {
-  .order-top,
-  .admin-order-footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.orders-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
 
-  .admin-order-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.orders-table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
 
-  .admin-order-item img {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
+.orders-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}/* ==========================================================
+   EMPTY STATE
+   ========================================================== */
+
+.empty-orders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.empty-orders-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+  border-radius: 50%;
+  background: #eff6ff;
+  font-size: 2rem;
+}
+
+.empty-orders h2 {
+  margin-bottom: .75rem;
+  color: #0f172a;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.empty-orders p {
+  max-width: 450px;
+  margin-bottom: 1.75rem;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+
+/* ==========================================================
+   LOADING
+   ========================================================== */
+
+.orders-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+}
+
+
+/* ==========================================================
+   PAGINATION
+   ========================================================== */
+
+.orders-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.pagination-info {
+  color: #64748b;
+  font-size: .85rem;
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #475569;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+}
+
+.pagination-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.pagination-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================
+   FOCUS STATES
+   ========================================================== */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(37,99,235,.25);
+  outline-offset: 2px;
+}
+
+
+/* ==========================================================
+   TRANSITIONS
+   ========================================================== */
+
+.summary-card,
+.orders-table tbody tr,
+.btn,
+.pagination-btn,
+.status-control select,
+.search-box input,
+.status-filter select {
+  transition: all .2s ease;
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 992px) {
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .orders-toolbar {
     flex-direction: column;
+    align-items: stretch;
   }
 
-  .orders-toolbar input,
-  .orders-toolbar select {
+  .orders-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .status-control {
+    min-width: 130px;
+  }
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+  .admin-orders-page .container {
+    padding: 0 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .orders-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    padding: 1rem;
+  }
+
+  .summary-card strong {
+    font-size: 1.2rem;
+  }
+
+  .orders-toolbar {
+    padding: 1rem;
+  }
+
+  .orders-results-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .75rem;
+  }
+
+  .orders-table {
+    min-width: 900px;
+  }
+
+  .order-actions {
+    flex-wrap: nowrap;
+  }
+
+  .orders-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination-buttons {
+    justify-content: center;
+  }
+
+}
+
+
+/* ==========================================================
+   SMALL MOBILE
+   ========================================================== */
+
+@media (max-width: 480px) {
+
+  .admin-orders-page .container {
+    padding: 0 .75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .summary-card {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .summary-card-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+
+  .btn {
     width: 100%;
   }
+
+  .orders-toolbar {
+    gap: 1rem;
+  }
+
+  .search-box input,
+  .status-filter select {
+    height: 44px;
+  }
+
+  .empty-orders {
+    padding: 2rem 1rem;
+  }
+
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
 }

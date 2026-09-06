@@ -1,0 +1,165 @@
+/* ==========================================================
+   TECHSTORE PRO
+   MAINTENANCE PAGE
+   ========================================================== */
+
+.maintenance-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: #f5f7fb;
+
+  box-sizing: border-box;
+}
+
+/* ==========================================================
+   MAINTENANCE CARD
+   ========================================================== */
+
+.maintenance-card {
+  width: 100%;
+  max-width: 560px;
+
+  padding: 48px 32px;
+
+  text-align: center;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+
+  box-sizing: border-box;
+}
+
+/* ==========================================================
+   ICON
+   ========================================================== */
+
+.maintenance-icon {
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 34px;
+
+  background: #f3f4f6;
+  border-radius: 50%;
+}
+
+/* ==========================================================
+   HEADING
+   ========================================================== */
+
+.maintenance-card h1 {
+  margin: 0 0 16px;
+
+  font-size: 32px;
+  line-height: 1.2;
+
+  color: #111827;
+}
+
+/* ==========================================================
+   TEXT
+   ========================================================== */
+
+.maintenance-card p {
+  margin: 0 auto 12px;
+
+  max-width: 460px;
+
+  font-size: 16px;
+  line-height: 1.7;
+
+  color: #6b7280;
+}
+
+/* ==========================================================
+   REFRESH BUTTON
+   ========================================================== */
+
+.maintenance-refresh-btn {
+  margin-top: 24px;
+
+  padding: 12px 22px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.maintenance-refresh-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.maintenance-refresh-btn:active {
+  transform: translateY(0);
+}
+
+.maintenance-refresh-btn:focus-visible {
+  outline: 3px solid rgba(17, 24, 39, 0.25);
+  outline-offset: 3px;
+}
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .maintenance-page {
+    padding: 16px;
+  }
+
+  .maintenance-card {
+    padding: 36px 22px;
+    border-radius: 16px;
+  }
+
+  .maintenance-icon {
+    width: 64px;
+    height: 64px;
+
+    margin-bottom: 20px;
+
+    font-size: 30px;
+  }
+
+  .maintenance-card h1 {
+    font-size: 27px;
+  }
+
+  .maintenance-card p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .maintenance-refresh-btn {
+    width: 100%;
+    max-width: 220px;
+  }
+}

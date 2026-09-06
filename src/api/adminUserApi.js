@@ -1,78 +1,114 @@
 import api from "./axios";
 
+/* ==========================================================
+   ADMIN USERS API
+========================================================== */
+
 
 /* ==========================================================
-   GET ALL USERS (ADMIN)
+   GET ALL USERS
+
+   GET /api/admin/users
 ========================================================== */
 
 export const getUsers = async () => {
+  try {
+    const { data } = await api.get(
+      "/admin/users"
+    );
 
-  const { data } = await api.get(
-    "/users"
-  );
+    return data;
+  } catch (error) {
+    console.error(
+      "Get Users Error:",
+      error
+    );
 
-  return data;
+    /*
+     * Do not hide the Axios error.
+     *
+     * AdminUsers.jsx already has try/catch
+     * handling for displaying errors.
+     */
 
+    throw error;
+  }
 };
 
 
-
-
-
 /* ==========================================================
-   GET SINGLE USER (ADMIN)
+   GET SINGLE USER
+
+   GET /api/admin/users/:id
 ========================================================== */
 
 export const getUserById = async (id) => {
+  try {
+    const { data } = await api.get(
+      `/admin/users/${id}`
+    );
 
-  const { data } = await api.get(
-    `/users/${id}`
-  );
+    return data;
+  } catch (error) {
+    console.error(
+      "Get User By ID Error:",
+      error
+    );
 
-  return data;
-
+    throw error;
+  }
 };
 
 
-
-
-
 /* ==========================================================
-   UPDATE USER ROLE (ADMIN)
+   UPDATE USER ROLE
+
+   PUT /api/admin/users/:id/role
 ========================================================== */
 
 export const updateUserRole = async (
   id,
   role
 ) => {
+  try {
+    const { data } = await api.put(
+      `/admin/users/${id}/role`,
+      {
+        role,
+      }
+    );
 
-  const { data } = await api.put(
-    `/users/${id}/role`,
-    {
-      role,
-    }
-  );
+    return data;
+  } catch (error) {
+    console.error(
+      "Update User Role Error:",
+      error
+    );
 
-  return data;
-
+    throw error;
+  }
 };
 
 
-
-
-
 /* ==========================================================
-   DELETE USER (ADMIN)
+   DELETE USER
+
+   DELETE /api/admin/users/:id
 ========================================================== */
 
-export const deleteUser = async (
-  id
-) => {
+export const deleteUser = async (id) => {
+  try {
+    const { data } = await api.delete(
+      `/admin/users/${id}`
+    );
 
-  const { data } = await api.delete(
-    `/users/${id}`
-  );
+    return data;
+  } catch (error) {
+    console.error(
+      "Delete User Error:",
+      error
+    );
 
-  return data;
-
+    throw error;
+  }
 };

@@ -1,3 +1,8 @@
+// ==========================================================
+// TECHSTORE PRO
+// EXPRESS APPLICATION
+// ==========================================================
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -6,47 +11,65 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
+// ==========================================================
+// ROUTES
+// ==========================================================
+
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
+
+// ==========================================================
+// CREATE EXPRESS APP
+// ==========================================================
 
 const app = express();
 
-/* ==========================================================
-   APP SETTINGS
-========================================================== */
+// ==========================================================
+// APP SETTINGS
+// ==========================================================
 
 app.set("trust proxy", 1);
 
-/* ==========================================================
-   RATE LIMITERS
-========================================================== */
+// ==========================================================
+// RATE LIMITER
+// ==========================================================
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
+
   max: 100,
+
   standardHeaders: true,
+
   legacyHeaders: false,
+
   message: {
     success: false,
-    message: "Too many requests. Please try again later.",
+    message:
+      "Too many requests. Please try again later.",
   },
 });
 
-/* ==========================================================
-   GLOBAL SECURITY MIDDLEWARE
-========================================================== */
+// ==========================================================
+// SECURITY MIDDLEWARE
+// ==========================================================
 
-app.use(helmet());
+app.use(
+  helmet()
+);
 
-app.use(compression());
+app.use(
+  compression()
+);
 
-/* ==========================================================
-   CORS CONFIGURATION
-========================================================== */
+// ==========================================================
+// CORS CONFIGURATION
+// ==========================================================
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -57,25 +80,43 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, callback) {
-      // Allow requests without an Origin header
-      // e.g. Postman, server-to-server requests
+      // ----------------------------------------------------
+      // Allow requests without Origin
+      // Postman / server-to-server
+      // ----------------------------------------------------
+
       if (!origin) {
         return callback(null, true);
       }
 
-      // Allow explicitly configured origins
-      if (allowedOrigins.includes(origin)) {
+      // ----------------------------------------------------
+      // Explicitly allowed origins
+      // ----------------------------------------------------
+
+      if (
+        allowedOrigins.includes(origin)
+      ) {
         return callback(null, true);
       }
 
+      // ----------------------------------------------------
       // Allow Vercel deployments
-      if (origin.endsWith(".vercel.app")) {
+      // ----------------------------------------------------
+
+      if (
+        origin.endsWith(".vercel.app")
+      ) {
         return callback(null, true);
       }
 
-      console.log("❌ CORS blocked:", origin);
+      console.log(
+        "CORS blocked:",
+        origin
+      );
 
-      return callback(new Error("Not allowed by CORS"));
+      return callback(
+        new Error("Not allowed by CORS")
+      );
     },
 
     credentials: true,
@@ -97,9 +138,9 @@ app.use(
   })
 );
 
-/* ==========================================================
-   BODY PARSERS
-========================================================== */
+// ==========================================================
+// BODY PARSERS
+// ==========================================================
 
 app.use(
   express.json({
@@ -114,188 +155,353 @@ app.use(
   })
 );
 
-app.use(cookieParser());
+// ==========================================================
+// COOKIE PARSER
+// ==========================================================
 
-/* ==========================================================
-   LOGGING
-========================================================== */
+app.use(
+  cookieParser()
+);
 
-if (process.env.NODE_ENV !== "production") {
-  app.use(morgan("dev"));
+// ==========================================================
+// REQUEST LOGGING
+// ==========================================================
+
+if (
+  process.env.NODE_ENV !== "production"
+) {
+  app.use(
+    morgan("dev")
+  );
 }
 
-if (process.env.NODE_ENV === "development") {
-  app.use((req, res, next) => {
-    console.log(`📥 ${req.method} ${req.originalUrl}`);
-    next();
-  });
+if (
+  process.env.NODE_ENV === "development"
+) {
+  app.use(
+    (req, res, next) => {
+      console.log(
+        `Incoming Request: ${req.method} ${req.originalUrl}`
+      );
+
+      next();
+    }
+  );
 }
 
-/* ==========================================================
-   API RATE LIMIT
-========================================================== */
+// ==========================================================
+// GLOBAL API RATE LIMIT
+// ==========================================================
 
-app.use("/api", apiLimiter);
+app.use(
+  "/api",
+  apiLimiter
+);
 
-/* ==========================================================
-   HOME ROUTE
-========================================================== */
+// ==========================================================
+// HOME ROUTE
+// ==========================================================
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "🚀 Welcome to TechStore Pro API",
-    version: "1.0.0",
-    environment: process.env.NODE_ENV,
-    timestamp: new Date().toISOString(),
-  });
-});
+app.get(
+  "/",
+  (req, res) => {
+    res.status(200).json({
+      success: true,
 
-/* ==========================================================
-   API INFORMATION
-========================================================== */
+      message:
+        "Welcome to TechStore Pro API",
 
-app.get("/api", (req, res) => {
-  res.status(200).json({
-    success: true,
-    name: "TechStore Pro API",
-    version: "1.0.0",
+      version: "1.0.0",
 
-    endpoints: {
-      auth: "/api/auth",
-      admin: "/api/admin",
-      users: "/api/users",
-      products: "/api/products",
-      orders: "/api/orders",
-      upload: "/api/upload",
-    },
-  });
-});
+      environment:
+        process.env.NODE_ENV ||
+        "development",
 
-/* ==========================================================
-   HEALTH CHECK
-========================================================== */
-
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    status: "OK",
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  });
-});
-
-/* ==========================================================
-   API ROUTES
-========================================================== */
-
-app.use("/api/auth", authRoutes);
-
-app.use("/api/admin", adminRoutes);
-
-app.use("/api/users", userRoutes);
-
-app.use("/api/products", productRoutes);
-
-app.use("/api/orders", orderRoutes);
-
-app.use("/api/upload", uploadRoutes);
-
-/* ==========================================================
-   INVALID JSON ERROR HANDLER
-========================================================== */
-
-app.use((err, req, res, next) => {
-  if (
-    err instanceof SyntaxError &&
-    err.status === 400 &&
-    "body" in err
-  ) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid JSON payload.",
+      timestamp:
+        new Date().toISOString(),
     });
   }
+);
 
-  next(err);
-});
+// ==========================================================
+// API INFORMATION
+// ==========================================================
 
-/* ==========================================================
-   MULTER ERROR HANDLER
-========================================================== */
+app.get(
+  "/api",
+  (req, res) => {
+    res.status(200).json({
+      success: true,
 
-app.use((err, req, res, next) => {
-  if (err.name === "MulterError") {
-    if (err.code === "LIMIT_FILE_SIZE") {
+      name:
+        "TechStore Pro API",
+
+      version: "1.0.0",
+
+      endpoints: {
+        auth:
+          "/api/auth",
+
+        admin:
+          "/api/admin",
+
+        users:
+          "/api/users",
+
+        products:
+          "/api/products",
+
+        orders:
+          "/api/orders",
+
+        upload:
+          "/api/upload",
+
+        settings:
+          "/api/settings",
+      },
+    });
+  }
+);
+
+// ==========================================================
+// HEALTH CHECK
+// ==========================================================
+
+app.get(
+  "/health",
+  (req, res) => {
+    res.status(200).json({
+      success: true,
+
+      status: "OK",
+
+      uptime:
+        process.uptime(),
+
+      timestamp:
+        new Date().toISOString(),
+    });
+  }
+);
+
+// ==========================================================
+// API ROUTES
+// ==========================================================
+
+// ----------------------------------------------------------
+// AUTH
+// ----------------------------------------------------------
+
+app.use(
+  "/api/auth",
+  authRoutes
+);
+
+// ----------------------------------------------------------
+// ADMIN
+// ----------------------------------------------------------
+
+app.use(
+  "/api/admin",
+  adminRoutes
+);
+
+// ----------------------------------------------------------
+// USERS
+// ----------------------------------------------------------
+
+app.use(
+  "/api/users",
+  userRoutes
+);
+
+// ----------------------------------------------------------
+// PRODUCTS
+// ----------------------------------------------------------
+
+app.use(
+  "/api/products",
+  productRoutes
+);
+
+// ----------------------------------------------------------
+// ORDERS
+// ----------------------------------------------------------
+
+app.use(
+  "/api/orders",
+  orderRoutes
+);
+
+// ----------------------------------------------------------
+// UPLOADS
+// ----------------------------------------------------------
+
+app.use(
+  "/api/upload",
+  uploadRoutes
+);
+
+// ----------------------------------------------------------
+// SETTINGS
+// ----------------------------------------------------------
+
+app.use(
+  "/api/settings",
+  settingsRoutes
+);
+
+// ==========================================================
+// INVALID JSON ERROR HANDLER
+// ==========================================================
+
+app.use(
+  (err, req, res, next) => {
+    if (
+      err instanceof SyntaxError &&
+      err.status === 400 &&
+      "body" in err
+    ) {
       return res.status(400).json({
         success: false,
-        message: "File size exceeds 5MB limit.",
+
+        message:
+          "Invalid JSON payload.",
       });
     }
 
-    return res.status(400).json({
+    next(err);
+  }
+);
+
+// ==========================================================
+// MULTER / FILE UPLOAD ERROR HANDLER
+// ==========================================================
+
+app.use(
+  (err, req, res, next) => {
+    // ------------------------------------------------------
+    // Multer errors
+    // ------------------------------------------------------
+
+    if (
+      err.name === "MulterError"
+    ) {
+      // File too large
+      if (
+        err.code ===
+        "LIMIT_FILE_SIZE"
+      ) {
+        return res.status(400).json({
+          success: false,
+
+          message:
+            "File size exceeds 5MB limit.",
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+
+        message:
+          err.message ||
+          "File upload error.",
+      });
+    }
+
+    // ------------------------------------------------------
+    // File type validation
+    // ------------------------------------------------------
+
+    if (
+      err.message &&
+      err.message.includes(
+        "Only JPG, PNG"
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          err.message,
+      });
+    }
+
+    next(err);
+  }
+);
+
+// ==========================================================
+// 404 ROUTE
+// ==========================================================
+
+app.use(
+  (req, res) => {
+    res.status(404).json({
       success: false,
-      message: err.message || "File upload error.",
+
+      message:
+        "Route not found",
+
+      method:
+        req.method,
+
+      path:
+        req.originalUrl,
     });
   }
+);
 
-  if (
-    err.message &&
-    err.message.includes("Only JPG, PNG")
-  ) {
-    return res.status(400).json({
+// ==========================================================
+// GLOBAL ERROR HANDLER
+// ==========================================================
+
+app.use(
+  (err, req, res, next) => {
+    console.error(
+      "================================="
+    );
+
+    console.error(
+      "Global Error"
+    );
+
+    console.error(err);
+
+    console.error(
+      "================================="
+    );
+
+    const statusCode =
+      err.statusCode ||
+      err.status ||
+      500;
+
+    res.status(statusCode).json({
       success: false,
-      message: err.message,
+
+      message:
+        process.env.NODE_ENV ===
+        "production"
+          ? "Internal Server Error"
+          : err.message ||
+            "Something went wrong.",
+
+      // ----------------------------------------------------
+      // Stack trace only in development
+      // ----------------------------------------------------
+
+      ...(process.env.NODE_ENV !==
+        "production" && {
+        stack: err.stack,
+      }),
     });
   }
+);
 
-  next(err);
-});
-
-/* ==========================================================
-   404 ROUTE
-========================================================== */
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-    method: req.method,
-    path: req.originalUrl,
-  });
-});
-
-/* ==========================================================
-   GLOBAL ERROR HANDLER
-========================================================== */
-
-app.use((err, req, res, next) => {
-  console.error("=================================");
-  console.error("❌ Global Error");
-  console.error(err);
-  console.error("=================================");
-
-  const statusCode =
-    err.statusCode ||
-    err.status ||
-    500;
-
-  res.status(statusCode).json({
-    success: false,
-
-    message:
-      process.env.NODE_ENV === "production"
-        ? "Internal Server Error"
-        : err.message || "Something went wrong.",
-
-    ...(process.env.NODE_ENV !== "production" && {
-      stack: err.stack,
-    }),
-  });
-});
-
-/* ==========================================================
-   EXPORT APP
-========================================================== */
+// ==========================================================
+// EXPORT APP
+// ==========================================================
 
 export default app;

@@ -1,0 +1,627 @@
+/* ==========================================================
+   TECHSTORE PRO
+   PRODUCTS PAGE
+   Matches Products.jsx
+========================================================== */
+
+
+/* ==========================================================
+   PAGE CONTAINER
+========================================================== */
+
+.products-page {
+  width: 100%;
+
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  padding: 32px 24px 64px;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================
+   PRODUCTS HEADER
+========================================================== */
+
+.products-header {
+  margin-bottom: 28px;
+
+  text-align: center;
+}
+
+
+.products-header h1 {
+  margin: 0 0 10px;
+
+  color: #111827;
+
+  font-size: clamp(
+    2rem,
+    4vw,
+    3rem
+  );
+
+  line-height: 1.15;
+
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+}
+
+
+.products-header p {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  color: #6b7280;
+
+  font-size: 1rem;
+
+  line-height: 1.7;
+}
+
+
+/* ==========================================================
+   PRODUCTS CONTROLS
+========================================================== */
+
+.products-controls {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  width: 100%;
+
+  margin-bottom: 28px;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ==========================================================
+   SEARCH BAR AREA
+========================================================== */
+
+.products-controls > * {
+  flex: 0 1 auto;
+}
+
+
+/*
+  SearchBar normally benefits from taking
+  the remaining horizontal space.
+*/
+
+.products-controls
+.search-bar {
+  flex: 1 1 280px;
+
+  min-width: 220px;
+}
+
+
+/* ==========================================================
+   CATEGORY FILTER
+========================================================== */
+
+.products-controls
+.category-filter {
+  flex: 1 1 auto;
+
+  margin: 0;
+
+  min-width: 0;
+}
+
+
+/* ==========================================================
+   SORT SELECT
+========================================================== */
+
+.sort-select {
+  flex: 0 0 auto;
+
+  min-width: 170px;
+
+  height: 44px;
+
+  padding: 0 38px 0 14px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 10px;
+
+  background-color: #ffffff;
+
+  color: #374151;
+
+  font-family: inherit;
+
+  font-size: 0.9rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+.sort-select:hover {
+  border-color: #9ca3af;
+
+  background-color: #f9fafb;
+}
+
+
+.sort-select:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(
+      37,
+      99,
+      235,
+      0.12
+    );
+}
+
+
+/* ==========================================================
+   PRICE FILTER
+========================================================== */
+
+.price-filter {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  min-width: 180px;
+
+  padding: 4px 0;
+}
+
+
+.price-filter label {
+  color: #374151;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   PRICE RANGE
+========================================================== */
+
+.price-filter input[type="range"] {
+  width: 100%;
+
+  min-width: 150px;
+
+  height: 5px;
+
+  margin: 0;
+
+  padding: 0;
+
+  accent-color: #2563eb;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================================
+   RANGE FOCUS
+========================================================== */
+
+.price-filter input[type="range"]:focus-visible {
+  outline: 3px solid rgba(
+    37,
+    99,
+    235,
+    0.25
+  );
+
+  outline-offset: 4px;
+
+  border-radius: 999px;
+}
+
+
+/* ==========================================================
+   CLEAR FILTER BUTTON
+========================================================== */
+
+.clear-filter-btn {
+  flex: 0 0 auto;
+
+  height: 44px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-family: inherit;
+
+  font-size: 0.9rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.clear-filter-btn:hover {
+  background: #f9fafb;
+
+  border-color: #9ca3af;
+
+  color: #111827;
+
+  transform: translateY(-1px);
+}
+
+
+.clear-filter-btn:active {
+  transform: translateY(0);
+}
+
+
+.clear-filter-btn:focus-visible {
+  outline: 3px solid rgba(
+    37,
+    99,
+    235,
+    0.25
+  );
+
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================
+   PRODUCTS RESULTS
+========================================================== */
+
+.products-results {
+  width: 100%;
+}
+
+
+/* ==========================================================
+   PRODUCTS COUNT
+========================================================== */
+
+.products-count {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  margin-bottom: 18px;
+
+  color: #6b7280;
+
+  font-size: 0.95rem;
+
+  line-height: 1.5;
+}
+
+
+.products-count strong {
+  color: #111827;
+
+  font-weight: 800;
+}
+
+
+/* ==========================================================
+   PRODUCT GRID SPACING
+========================================================== */
+
+.products-results .product-grid {
+  width: 100%;
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 1200px) {
+  .products-page {
+    padding-left: 20px;
+
+    padding-right: 20px;
+  }
+
+  .products-controls {
+    align-items: stretch;
+
+    flex-wrap: wrap;
+  }
+
+  .products-controls
+  .search-bar {
+    flex: 1 1 45%;
+
+    min-width: 250px;
+  }
+
+  .products-controls
+  .category-filter {
+    flex: 1 1 100%;
+
+    order: 5;
+  }
+
+  .sort-select {
+    flex: 1 1 180px;
+  }
+
+  .price-filter {
+    flex: 1 1 200px;
+  }
+
+  .clear-filter-btn {
+    flex: 0 0 auto;
+  }
+}
+
+
+/* ==========================================================
+   SMALL TABLET
+========================================================== */
+
+@media (max-width: 900px) {
+  .products-page {
+    padding-top: 28px;
+
+    padding-bottom: 50px;
+  }
+
+  .products-header {
+    margin-bottom: 22px;
+  }
+
+  .products-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .products-controls {
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+
+    padding: 16px;
+  }
+
+  .products-controls
+  .search-bar {
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .products-controls
+  .category-filter {
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    order: initial;
+  }
+
+  .sort-select {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .price-filter {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .clear-filter-btn {
+    width: 100%;
+
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 600px) {
+  .products-page {
+    padding: 22px 14px 40px;
+  }
+
+  .products-header {
+    margin-bottom: 20px;
+  }
+
+  .products-header h1 {
+    font-size: 1.8rem;
+
+    letter-spacing: -0.02em;
+  }
+
+  .products-header p {
+    font-size: 0.9rem;
+
+    line-height: 1.6;
+  }
+
+  .products-controls {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 12px;
+
+    padding: 14px;
+
+    border-radius: 16px;
+  }
+
+  .products-controls
+  .search-bar {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .products-controls
+  .category-filter {
+    width: 100%;
+
+    margin: 0;
+
+    /*
+      CategoryFilter handles horizontal
+      scrolling on small screens.
+    */
+    min-width: 0;
+  }
+
+  .sort-select {
+    width: 100%;
+
+    height: 46px;
+  }
+
+  .price-filter {
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 4px 0;
+  }
+
+  .price-filter label {
+    font-size: 0.85rem;
+  }
+
+  .price-filter input[type="range"] {
+    min-width: 0;
+
+    width: 100%;
+  }
+
+  .clear-filter-btn {
+    width: 100%;
+
+    height: 46px;
+  }
+
+  .products-count {
+    margin-bottom: 14px;
+
+    font-size: 0.9rem;
+  }
+}
+
+
+/* ==========================================================
+   VERY SMALL MOBILE
+========================================================== */
+
+@media (max-width: 360px) {
+  .products-page {
+    padding-left: 10px;
+
+    padding-right: 10px;
+  }
+
+  .products-header h1 {
+    font-size: 1.55rem;
+  }
+
+  .products-header p {
+    font-size: 0.85rem;
+  }
+
+  .products-controls {
+    padding: 12px;
+
+    border-radius: 14px;
+  }
+
+  .products-count {
+    font-size: 0.85rem;
+  }
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sort-select,
+  .clear-filter-btn {
+    transition: none;
+  }
+
+  .clear-filter-btn:hover {
+    transform: none;
+  }
+}

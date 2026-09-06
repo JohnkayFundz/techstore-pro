@@ -1,537 +1,892 @@
+// ==========================================================
+// TECHSTORE PRO
+// PRODUCTS PAGE
+// ==========================================================
+
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
 
 import {
-  useSearchParams,
-} from "react-router-dom";
+  FiAlertCircle,
+  FiChevronLeft,
+  FiChevronRight,
+  FiFilter,
+  FiRefreshCw,
+  FiSearch,
+  FiX,
+} from "react-icons/fi";
 
-import debounce from "lodash.debounce";
-import { toast } from "react-toastify";
+import ProductCard from "../components/products/ProductCard";
+import CategoryFilter from "../components/products/CategoryFilter";
 
-import ProductGrid from "../components/products/ProductGrid";
-import SearchBar from "../components/SearchBar";
-import CategoryFilter from "../components/CategoryFilter";
-import Loading from "../components/Loading";
+import { getProductsPaginated } from "../api/productApi";
 
-import { getProducts } from "../api/productApi";
+import { formatPrice } from "../utils/formatPrice";
 
+import "./Products.css";
 
-function Products() {
-  /* ==========================================================
-     URL SEARCH PARAMETERS
-  ========================================================== */
+/* ==========================================================
+   CONSTANTS
+========================================================== */
 
-  const [
-    searchParams,
-    setSearchParams,
-  ] = useSearchParams();
+const PRODUCTS_PER_PAGE = 10;
+const DEFAULT_MAX_PRICE = 2000;
 
+const CATEGORIES = [
+  "All",
+  "Accessories",
+  "Audio",
+  "Gaming",
+  "Laptops",
+  "Smartphones",
+  "Tablets",
+  "Wearables",
+];
 
-  /* ==========================================================
+const SORT_OPTIONS = [
+  {
+    value: "newest",
+    label: "Newest",
+  },
+  {
+    value: "oldest",
+    label: "Oldest",
+  },
+  {
+    value: "price-low",
+    label: "Price: Low to High",
+  },
+  {
+    value: "price-high",
+    label: "Price: High to Low",
+  },
+  {
+    value: "rating",
+    label: "Highest Rating",
+  },
+  {
+    value: "name-asc",
+    label: "Name A-Z",
+  },
+  {
+    value: "name-desc",
+    label: "Name Z-A",
+  },
+];
+
+/* ==========================================================
+   PRODUCTS PAGE
+========================================================== */
+
+const Products = () => {
+  /* ========================================================
      STATE
-  ========================================================== */
+  ======================================================== */
 
-  const [
-    products,
-    setProducts,
-  ] = useState([]);
+  const [products, setProducts] = useState([]);
 
+  const [category, setCategory] = useState("All");
 
-  const [
-    search,
-    setSearch,
-  ] = useState(
-    searchParams.get("search") || ""
-  );
+  const [sort, setSort] = useState("newest");
 
+  const [search, setSearch] = useState("");
 
-  const [
-    category,
-    setCategory,
-  ] = useState("All");
+  const [maxPrice, setMaxPrice] =
+    useState(DEFAULT_MAX_PRICE);
 
+  const [page, setPage] = useState(1);
 
-  const [
-    sortBy,
-    setSortBy,
-  ] = useState("default");
+  const [totalProducts, setTotalProducts] =
+    useState(0);
 
+  const [totalPages, setTotalPages] =
+    useState(0);
 
-  const [
-    maxPrice,
-    setMaxPrice,
-  ] = useState(5000);
+  const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState("");
 
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
+  const [showFilters, setShowFilters] =
+    useState(false);
 
+  /* ========================================================
+     FETCH PRODUCTS
+  ======================================================== */
 
-  /* ==========================================================
-     LOAD PRODUCTS
-  ========================================================== */
+  const fetchProducts = useCallback(
+    async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
+        const params = {
+          sort,
+          limit: PRODUCTS_PER_PAGE,
+        };
 
+        /* CATEGORY */
 
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-
-      const response =
-        await getProducts();
-
-
-      if (response.success) {
-        const items =
-          response.products || [];
-
-
-        setProducts(items);
-
-
-        if (items.length > 0) {
-          setMaxPrice(
-            Math.max(
-              ...items.map(
-                (product) =>
-                  Number(product.price) || 0
-              )
-            )
-          );
+        if (
+          category &&
+          category !== "All"
+        ) {
+          params.category = category;
         }
-      } else {
-        toast.error(
-          response.message ||
-            "Failed to load products."
+
+        /* MAX PRICE */
+
+        if (
+          maxPrice &&
+          Number(maxPrice) > 0
+        ) {
+          params.maxPrice = Number(maxPrice);
+        }
+
+        /* SEARCH */
+
+        const trimmedSearch =
+          search.trim();
+
+        if (trimmedSearch) {
+          params.search = trimmedSearch;
+        }
+
+        /* API REQUEST */
+
+        const response =
+          await getProductsPaginated(
+            page,
+            PRODUCTS_PER_PAGE,
+            params
+          );
+
+        /* API ERROR */
+
+        if (
+          response?.success === false
+        ) {
+          setProducts([]);
+          setTotalProducts(0);
+          setTotalPages(0);
+
+          setError(
+            response.message ||
+              "Failed to load products."
+          );
+
+          return;
+        }
+
+        /* PRODUCTS */
+
+        const nextProducts =
+          Array.isArray(
+            response?.products
+          )
+            ? response.products
+            : [];
+
+        setProducts(nextProducts);
+
+        /* TOTAL PRODUCTS */
+
+        const nextTotalProducts =
+          Number(
+            response?.totalProducts ??
+              response?.total ??
+              nextProducts.length
+          );
+
+        setTotalProducts(
+          Number.isFinite(
+            nextTotalProducts
+          )
+            ? nextTotalProducts
+            : nextProducts.length
+        );
+
+        /* TOTAL PAGES */
+
+        const nextTotalPages =
+          Number(
+            response?.totalPages ?? 0
+          );
+
+        setTotalPages(
+          Number.isFinite(
+            nextTotalPages
+          )
+            ? nextTotalPages
+            : 0
+        );
+      } catch (err) {
+        console.error(
+          "Products Page Error:",
+          err
         );
 
         setProducts([]);
+        setTotalProducts(0);
+        setTotalPages(0);
+
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Unable to load products."
+        );
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(
-        "Products Page Error:",
-        error
-      );
+    },
+    [
+      category,
+      maxPrice,
+      page,
+      search,
+      sort,
+    ]
+  );
 
-      toast.error(
-        "Failed to load products."
-      );
+  /* ========================================================
+     LOAD PRODUCTS
+  ======================================================== */
 
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  /* ========================================================
+     FILTER HELPERS
+  ======================================================== */
+
+  const resetToFirstPage = () => {
+    setPage(1);
   };
 
+  /* ========================================================
+     HANDLE CATEGORY
+  ======================================================== */
 
-  /* ==========================================================
-     SYNC SEARCH WITH URL
-  ========================================================== */
+  const handleCategoryChange = (
+    value
+  ) => {
+    setCategory(value);
+    resetToFirstPage();
+  };
 
-  useEffect(() => {
-    const urlSearch =
-      searchParams.get("search") || "";
+  /* ========================================================
+     HANDLE SORT
+  ======================================================== */
 
+  const handleSortChange = (
+    event
+  ) => {
+    setSort(event.target.value);
+    resetToFirstPage();
+  };
 
-    setSearch(urlSearch);
-  }, [searchParams]);
+  /* ========================================================
+     HANDLE PRICE
+  ======================================================== */
 
-
-  /* ==========================================================
-     DEBOUNCED SEARCH
-  ========================================================== */
-
-  const handleSearch = useMemo(() => {
-    return debounce((value) => {
-      setSearch(value);
-
-      const trimmedValue =
-        value.trim();
-
-
-      if (trimmedValue) {
-        setSearchParams({
-          search: trimmedValue,
-        });
-      } else {
-        setSearchParams({});
-      }
-    }, 300);
-  }, [setSearchParams]);
-
-
-  /* ==========================================================
-     CLEANUP DEBOUNCE
-  ========================================================== */
-
-  useEffect(() => {
-    return () => {
-      handleSearch.cancel();
-    };
-  }, [handleSearch]);
-
-
-  /* ==========================================================
-     CATEGORIES
-  ========================================================== */
-
-  const categories = useMemo(() => {
-    return [
-      "All",
-      ...new Set(
-        products
-          .map(
-            (product) =>
-              product.category
-          )
-          .filter(Boolean)
-      ),
-    ];
-  }, [products]);
-
-
-  /* ==========================================================
-     HIGHEST PRODUCT PRICE
-  ========================================================== */
-
-  const highestPrice = useMemo(() => {
-    if (!products.length) {
-      return 5000;
-    }
-
-
-    return Math.max(
-      ...products.map(
-        (product) =>
-          Number(product.price) || 0
-      )
+  const handlePriceChange = (
+    event
+  ) => {
+    setMaxPrice(
+      Number(event.target.value)
     );
-  }, [products]);
 
+    resetToFirstPage();
+  };
 
-  /* ==========================================================
-     FILTER + SORT PRODUCTS
-  ========================================================== */
+  /* ========================================================
+     HANDLE SEARCH
+  ======================================================== */
 
-  const filteredProducts =
-    useMemo(() => {
-      let result = [...products];
+  const handleSearchChange = (
+    event
+  ) => {
+    setSearch(event.target.value);
+    resetToFirstPage();
+  };
 
+  /* ========================================================
+     CLEAR SEARCH
+  ======================================================== */
 
-      /* ------------------------------------------------------
-         SEARCH
-      ------------------------------------------------------ */
+  const clearSearch = () => {
+    setSearch("");
+    resetToFirstPage();
+  };
 
-      if (search.trim()) {
-        const keyword =
-          search
-            .trim()
-            .toLowerCase();
-
-
-        result =
-          result.filter(
-            (product) => {
-              return (
-                product.name
-                  ?.toLowerCase()
-                  .includes(keyword) ||
-
-                product.brand
-                  ?.toLowerCase()
-                  .includes(keyword) ||
-
-                product.description
-                  ?.toLowerCase()
-                  .includes(keyword) ||
-
-                product.category
-                  ?.toLowerCase()
-                  .includes(keyword)
-              );
-            }
-          );
-      }
-
-
-      /* ------------------------------------------------------
-         CATEGORY
-      ------------------------------------------------------ */
-
-      if (category !== "All") {
-        result =
-          result.filter(
-            (product) =>
-              product.category ===
-              category
-          );
-      }
-
-
-      /* ------------------------------------------------------
-         MAX PRICE
-      ------------------------------------------------------ */
-
-      result =
-        result.filter(
-          (product) =>
-            Number(product.price) <=
-            maxPrice
-        );
-
-
-      /* ------------------------------------------------------
-         SORT
-      ------------------------------------------------------ */
-
-      switch (sortBy) {
-        case "price-low":
-          result.sort(
-            (a, b) =>
-              Number(a.price) -
-              Number(b.price)
-          );
-          break;
-
-
-        case "price-high":
-          result.sort(
-            (a, b) =>
-              Number(b.price) -
-              Number(a.price)
-          );
-          break;
-
-
-        case "rating":
-          result.sort(
-            (a, b) =>
-              (Number(b.rating) || 0) -
-              (Number(a.rating) || 0)
-          );
-          break;
-
-
-        case "name":
-          result.sort(
-            (a, b) =>
-              (a.name || "").localeCompare(
-                b.name || ""
-              )
-          );
-          break;
-
-
-        default:
-          break;
-      }
-
-
-      return result;
-    }, [
-      products,
-      search,
-      category,
-      sortBy,
-      maxPrice,
-    ]);
-
-
-  /* ==========================================================
+  /* ========================================================
      CLEAR FILTERS
-  ========================================================== */
+  ======================================================== */
 
   const clearFilters = () => {
-    setSearch("");
-
     setCategory("All");
-
-    setSortBy("default");
-
-    setMaxPrice(highestPrice);
-
-    setSearchParams({});
+    setSort("newest");
+    setSearch("");
+    setMaxPrice(
+      DEFAULT_MAX_PRICE
+    );
+    setPage(1);
   };
 
+  /* ========================================================
+     PAGINATION
+  ======================================================== */
 
-  /* ==========================================================
-     LOADING STATE
-  ========================================================== */
+  const goToPreviousPage = () => {
+    if (page <= 1) {
+      return;
+    }
 
-  if (loading) {
-    return <Loading />;
-  }
+    setPage(
+      (currentPage) =>
+        currentPage - 1
+    );
 
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
-  /* ==========================================================
+  const goToNextPage = () => {
+    if (
+      totalPages <= 0 ||
+      page >= totalPages
+    ) {
+      return;
+    }
+
+    setPage(
+      (currentPage) =>
+        currentPage + 1
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const goToPage = (
+    pageNumber
+  ) => {
+    if (
+      pageNumber < 1 ||
+      pageNumber > totalPages ||
+      pageNumber === page
+    ) {
+      return;
+    }
+
+    setPage(pageNumber);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  /* ========================================================
+     PAGE NUMBERS
+  ======================================================== */
+
+  const pageNumbers = useMemo(() => {
+    if (totalPages <= 1) {
+      return [];
+    }
+
+    const pages = [];
+
+    const start = Math.max(
+      1,
+      page - 2
+    );
+
+    const end = Math.min(
+      totalPages,
+      page + 2
+    );
+
+    for (
+      let number = start;
+      number <= end;
+      number += 1
+    ) {
+      pages.push(number);
+    }
+
+    return pages;
+  }, [
+    page,
+    totalPages,
+  ]);
+
+  /* ========================================================
+     ACTIVE FILTER CHECK
+  ======================================================== */
+
+  const hasActiveFilters =
+    category !== "All" ||
+    sort !== "newest" ||
+    search.trim() !== "" ||
+    maxPrice !==
+      DEFAULT_MAX_PRICE;
+
+  /* ========================================================
+     RESULTS TEXT
+  ======================================================== */
+
+  const resultsText = loading
+    ? "Loading products..."
+    : `Showing ${products.length} of ${totalProducts} products`;
+
+  /* ========================================================
      RENDER
-  ========================================================== */
+  ======================================================== */
 
   return (
-    <main className="products-page">
-
-      {/* ======================================================
+    <main
+      className="products-page"
+      id="main-content"
+    >
+      {/* ==================================================
           HEADER
-      ====================================================== */}
+      ================================================== */}
 
-      <section className="products-header">
+      <section className="products-page__header">
+        <div className="products-page__heading">
+          <span className="products-page__eyebrow">
+            SHOP
+          </span>
 
-        <h1>
-          TechStore Products
-        </h1>
+          <h1>
+            TechStore Products
+          </h1>
 
-        <p>
-          Premium laptops,
-          smartphones, gaming gear
-          and accessories.
-        </p>
-
-      </section>
-
-
-      {/* ======================================================
-          CONTROLS
-      ====================================================== */}
-
-      <section className="products-controls">
+          <p>
+            Premium laptops,
+            smartphones, gaming gear
+            and accessories.
+          </p>
+        </div>
 
         {/* SEARCH */}
 
-        <SearchBar
-          search={search}
-          setSearch={handleSearch}
-        />
-
-
-        {/* CATEGORY */}
-
-        <CategoryFilter
-          category={category}
-          setCategory={setCategory}
-          categories={categories}
-        />
-
-
-        {/* SORT */}
-
-        <select
-          className="sort-select"
-          value={sortBy}
-          onChange={(event) =>
-            setSortBy(
-              event.target.value
-            )
-          }
-        >
-
-          <option value="default">
-            Sort By
-          </option>
-
-          <option value="price-low">
-            Price: Low to High
-          </option>
-
-          <option value="price-high">
-            Price: High to Low
-          </option>
-
-          <option value="rating">
-            Highest Rating
-          </option>
-
-          <option value="name">
-            Name A-Z
-          </option>
-
-        </select>
-
-
-        {/* PRICE FILTER */}
-
-        <div className="price-filter">
-
-          <label htmlFor="price-range">
-
-            Max Price: $
-
-            {maxPrice.toLocaleString()}
-
-          </label>
-
-
-          <input
-            id="price-range"
-            type="range"
-            min="0"
-            max={highestPrice}
-            step="50"
-            value={maxPrice}
-            onChange={(event) =>
-              setMaxPrice(
-                Number(
-                  event.target.value
-                )
-              )
-            }
+        <div className="products-page__search">
+          <FiSearch
+            size={19}
+            aria-hidden="true"
           />
 
+          <input
+            type="search"
+            value={search}
+            onChange={
+              handleSearchChange
+            }
+            placeholder="Search products..."
+            aria-label="Search products"
+          />
+
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              aria-label="Clear search"
+              className="products-page__search-clear"
+            >
+              <FiX size={17} />
+            </button>
+          )}
+        </div>
+      </section>
+
+      {/* ==================================================
+          MOBILE FILTER BUTTON
+      ================================================== */}
+
+      <button
+        type="button"
+        className="products-page__mobile-filter"
+        onClick={() =>
+          setShowFilters(
+            (visible) => !visible
+          )
+        }
+        aria-expanded={showFilters}
+      >
+        <FiFilter size={18} />
+
+        <span>
+          {showFilters
+            ? "Hide Filters"
+            : "Show Filters"}
+        </span>
+      </button>
+
+      {/* ==================================================
+          FILTER PANEL
+      ================================================== */}
+
+      <section
+        className={`products-page__filters ${
+          showFilters
+            ? "products-page__filters--open"
+            : ""
+        }`}
+        aria-label="Product filters"
+      >
+        {/* CATEGORY */}
+
+        <div className="products-page__category-filter">
+          <CategoryFilter
+            category={category}
+            setCategory={
+              handleCategoryChange
+            }
+            categories={CATEGORIES}
+          />
         </div>
 
+        {/* CONTROLS */}
 
-        {/* CLEAR FILTERS */}
+        <div className="products-page__controls">
+          {/* SORT */}
 
-        <button
-          type="button"
-          className="clear-filter-btn"
-          onClick={clearFilters}
+          <div className="products-page__control">
+            <label htmlFor="product-sort">
+              Sort By
+            </label>
+
+            <select
+              id="product-sort"
+              value={sort}
+              onChange={
+                handleSortChange
+              }
+            >
+              {SORT_OPTIONS.map(
+                (option) => (
+                  <option
+                    key={
+                      option.value
+                    }
+                    value={
+                      option.value
+                    }
+                  >
+                    {option.label}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+          {/* PRICE */}
+
+          <div className="products-page__control products-page__price-control">
+            <div className="products-page__price-header">
+              <label htmlFor="max-price">
+                Max Price
+              </label>
+
+              <strong>
+                {formatPrice(
+                  maxPrice
+                )}
+              </strong>
+            </div>
+
+            <input
+              id="max-price"
+              type="range"
+              min="100"
+              max="2000"
+              step="50"
+              value={maxPrice}
+              onChange={
+                handlePriceChange
+              }
+              aria-label="Maximum product price"
+            />
+          </div>
+
+          {/* CLEAR */}
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              className="products-page__clear"
+              onClick={
+                clearFilters
+              }
+            >
+              <FiX size={16} />
+
+              <span>
+                Clear Filters
+              </span>
+            </button>
+          )}
+        </div>
+      </section>
+
+      {/* ==================================================
+          RESULTS BAR
+      ================================================== */}
+
+      <section className="products-page__results-bar">
+        <div>
+          <span>
+            {resultsText}
+          </span>
+        </div>
+
+        {!loading &&
+          !error &&
+          totalPages > 0 && (
+            <span className="products-page__page-info">
+              Page {page} of{" "}
+              {totalPages}
+            </span>
+          )}
+      </section>
+
+      {/* ==================================================
+          ERROR
+      ================================================== */}
+
+      {error && !loading && (
+        <section
+          className="products-page__error"
+          role="alert"
         >
-          Clear Filters
-        </button>
+          <FiAlertCircle size={26} />
 
-      </section>
+          <div>
+            <h2>
+              Unable to load products
+            </h2>
 
+            <p>{error}</p>
+          </div>
 
-      {/* ======================================================
-          RESULTS
-      ====================================================== */}
+          <button
+            type="button"
+            onClick={
+              fetchProducts
+            }
+          >
+            <FiRefreshCw size={17} />
 
-      <section className="products-results">
+            Try Again
+          </button>
+        </section>
+      )}
 
-        <div className="products-count">
+      {/* ==================================================
+          LOADING
+      ================================================== */}
 
-          Showing{" "}
+      {loading && (
+        <section
+          className="products-page__loading"
+          aria-live="polite"
+          aria-busy="true"
+        >
+          {Array.from(
+            {
+              length:
+                PRODUCTS_PER_PAGE,
+            },
+            (_, index) => (
+              <div
+                className="product-skeleton"
+                key={index}
+              >
+                <div className="product-skeleton__image" />
 
-          <strong>
-            {filteredProducts.length}
-          </strong>{" "}
+                <div className="product-skeleton__content">
+                  <div className="product-skeleton__line product-skeleton__line--small" />
 
-          product
+                  <div className="product-skeleton__line" />
 
-          {filteredProducts.length !== 1 &&
-            "s"}
+                  <div className="product-skeleton__line product-skeleton__line--medium" />
 
-        </div>
+                  <div className="product-skeleton__line product-skeleton__line--price" />
 
+                  <div className="product-skeleton__button" />
+                </div>
+              </div>
+            )
+          )}
+        </section>
+      )}
 
-        <ProductGrid
-          products={filteredProducts}
-          loading={loading}
-        />
+      {/* ==================================================
+          PRODUCT GRID
+      ================================================== */}
 
-      </section>
+      {!loading &&
+        !error &&
+        products.length > 0 && (
+          <section
+            className="product-grid"
+            aria-label="Products"
+          >
+            {products.map(
+              (product) => {
+                const id =
+                  product?._id ??
+                  product?.id;
 
+                if (
+                  id === undefined ||
+                  id === null
+                ) {
+                  return null;
+                }
+
+                return (
+                  <ProductCard
+                    key={id}
+                    product={product}
+                  />
+                );
+              }
+            )}
+          </section>
+        )}
+
+      {/* ==================================================
+          EMPTY STATE
+      ================================================== */}
+
+      {!loading &&
+        !error &&
+        products.length === 0 && (
+          <section
+            className="empty-products"
+            aria-live="polite"
+          >
+            <div className="empty-icon">
+              🔍
+            </div>
+
+            <h2>
+              No products found
+            </h2>
+
+            <p>
+              We couldn't find any
+              products matching your
+              current filters.
+            </p>
+
+            <button
+              type="button"
+              className="products-page__empty-button"
+              onClick={
+                clearFilters
+              }
+            >
+              Clear Filters
+            </button>
+          </section>
+        )}
+
+      {/* ==================================================
+          PAGINATION
+      ================================================== */}
+
+      {!loading &&
+        !error &&
+        totalPages > 1 && (
+          <nav
+            className="products-page__pagination"
+            aria-label="Product pagination"
+          >
+            <button
+              type="button"
+              onClick={
+                goToPreviousPage
+              }
+              disabled={page === 1}
+              aria-label="Previous page"
+            >
+              <FiChevronLeft
+                size={18}
+              />
+
+              <span>
+                Previous
+              </span>
+            </button>
+
+            <div className="products-page__page-numbers">
+              {pageNumbers.map(
+                (pageNumber) => (
+                  <button
+                    type="button"
+                    key={
+                      pageNumber
+                    }
+                    className={
+                      pageNumber ===
+                      page
+                        ? "active"
+                        : ""
+                    }
+                    onClick={() =>
+                      goToPage(
+                        pageNumber
+                      )
+                    }
+                    aria-current={
+                      pageNumber ===
+                      page
+                        ? "page"
+                        : undefined
+                    }
+                  >
+                    {pageNumber}
+                  </button>
+                )
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={
+                goToNextPage
+              }
+              disabled={
+                page ===
+                totalPages
+              }
+              aria-label="Next page"
+            >
+              <span>
+                Next
+              </span>
+
+              <FiChevronRight
+                size={18}
+              />
+            </button>
+          </nav>
+        )}
     </main>
   );
-}
-
+};
 
 export default Products;

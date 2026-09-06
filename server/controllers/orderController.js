@@ -10,8 +10,7 @@ import Product from "../models/Product.js";
 ========================================================== */
 
 export const createOrder = async (req, res) => {
-  const session =
-    await mongoose.startSession();
+  const session = await mongoose.startSession();
 
   try {
     /* --------------------------------------------------------
@@ -21,8 +20,7 @@ export const createOrder = async (req, res) => {
     if (!req.user?._id) {
       return res.status(401).json({
         success: false,
-        message:
-          "Authentication required.",
+        message: "Authentication required.",
       });
     }
 
@@ -40,14 +38,10 @@ export const createOrder = async (req, res) => {
        VALIDATE ITEMS
     -------------------------------------------------------- */
 
-    if (
-      !Array.isArray(items) ||
-      items.length === 0
-    ) {
+    if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
-        message:
-          "Order must contain at least one item.",
+        message: "Order must contain at least one item.",
       });
     }
 
@@ -60,15 +54,10 @@ export const createOrder = async (req, res) => {
       "card",
     ];
 
-    if (
-      !allowedPaymentMethods.includes(
-        paymentMethod
-      )
-    ) {
+    if (!allowedPaymentMethods.includes(paymentMethod)) {
       return res.status(400).json({
         success: false,
-        message:
-          "Invalid payment method.",
+        message: "Invalid payment method.",
       });
     }
 
@@ -78,13 +67,11 @@ export const createOrder = async (req, res) => {
 
     if (
       !shippingAddress ||
-      typeof shippingAddress !==
-        "object"
+      typeof shippingAddress !== "object"
     ) {
       return res.status(400).json({
         success: false,
-        message:
-          "Shipping address is required.",
+        message: "Shipping address is required.",
       });
     }
 
@@ -97,19 +84,14 @@ export const createOrder = async (req, res) => {
       "country",
     ];
 
-    for (
-      const field of requiredAddressFields
-    ) {
+    for (const field of requiredAddressFields) {
       if (
         !shippingAddress[field] ||
-        String(
-          shippingAddress[field]
-        ).trim() === ""
+        String(shippingAddress[field]).trim() === ""
       ) {
         return res.status(400).json({
           success: false,
-          message:
-            `${field} is required.`,
+          message: `${field} is required.`,
         });
       }
     }
@@ -124,19 +106,15 @@ export const createOrder = async (req, res) => {
       if (
         !item ||
         !item.product ||
-        !mongoose.Types.ObjectId.isValid(
-          item.product
-        )
+        !mongoose.Types.ObjectId.isValid(item.product)
       ) {
         return res.status(400).json({
           success: false,
-          message:
-            "Invalid product ID.",
+          message: "Invalid product ID.",
         });
       }
 
-      const quantity =
-        Number(item.quantity);
+      const quantity = Number(item.quantity);
 
       if (
         !Number.isInteger(quantity) ||
@@ -144,8 +122,7 @@ export const createOrder = async (req, res) => {
       ) {
         return res.status(400).json({
           success: false,
-          message:
-            "Product quantity must be at least 1.",
+          message: "Product quantity must be at least 1.",
         });
       }
 
@@ -159,65 +136,49 @@ export const createOrder = async (req, res) => {
        COMBINE DUPLICATE PRODUCTS
     -------------------------------------------------------- */
 
-    const quantityMap =
-      new Map();
+    const quantityMap = new Map();
 
-    for (
-      const item of normalizedItems
-    ) {
-      const productId =
-        item.product.toString();
+    for (const item of normalizedItems) {
+      const productId = item.product.toString();
 
       const currentQuantity =
-        quantityMap.get(
-          productId
-        ) || 0;
+        quantityMap.get(productId) || 0;
 
       quantityMap.set(
         productId,
-        currentQuantity +
-          item.quantity
+        currentQuantity + item.quantity
       );
     }
 
-    const uniqueItems =
-      Array.from(
-        quantityMap.entries()
-      ).map(
-        ([product, quantity]) => ({
-          product,
-          quantity,
-        })
-      );
+    const uniqueItems = Array.from(
+      quantityMap.entries()
+    ).map(([product, quantity]) => ({
+      product,
+      quantity,
+    }));
 
     /* --------------------------------------------------------
        LOAD PRODUCTS
     -------------------------------------------------------- */
 
-    const productIds =
-      uniqueItems.map(
-        (item) => item.product
-      );
+    const productIds = uniqueItems.map(
+      (item) => item.product
+    );
 
-    const products =
-      await Product.find({
-        _id: {
-          $in: productIds,
-        },
-      }).lean();
+    const products = await Product.find({
+      _id: {
+        $in: productIds,
+      },
+    }).lean();
 
     /* --------------------------------------------------------
        VERIFY PRODUCTS
     -------------------------------------------------------- */
 
-    if (
-      products.length !==
-      productIds.length
-    ) {
+    if (products.length !== productIds.length) {
       return res.status(404).json({
         success: false,
-        message:
-          "One or more products were not found.",
+        message: "One or more products were not found.",
       });
     }
 
@@ -225,12 +186,9 @@ export const createOrder = async (req, res) => {
        PRODUCT MAP
     -------------------------------------------------------- */
 
-    const productMap =
-      new Map();
+    const productMap = new Map();
 
-    for (
-      const product of products
-    ) {
+    for (const product of products) {
       productMap.set(
         product._id.toString(),
         product
@@ -245,19 +203,15 @@ export const createOrder = async (req, res) => {
 
     let totalAmount = 0;
 
-    for (
-      const item of uniqueItems
-    ) {
-      const product =
-        productMap.get(
-          item.product.toString()
-        );
+    for (const item of uniqueItems) {
+      const product = productMap.get(
+        item.product.toString()
+      );
 
       if (!product) {
         return res.status(404).json({
           success: false,
-          message:
-            "Product not found.",
+          message: "Product not found.",
         });
       }
 
@@ -273,10 +227,7 @@ export const createOrder = async (req, res) => {
 
       /* STOCK */
 
-      if (
-        product.stock <
-        item.quantity
-      ) {
+      if (product.stock < item.quantity) {
         return res.status(400).json({
           success: false,
           message:
@@ -286,13 +237,9 @@ export const createOrder = async (req, res) => {
 
       /* SERVER PRICE */
 
-      const price =
-        Number(product.price);
+      const price = Number(product.price);
 
-      if (
-        !Number.isFinite(price) ||
-        price < 0
-      ) {
+      if (!Number.isFinite(price) || price < 0) {
         return res.status(400).json({
           success: false,
           message:
@@ -308,19 +255,11 @@ export const createOrder = async (req, res) => {
       /* PRODUCT SNAPSHOT */
 
       orderItems.push({
-        product:
-          product._id,
-
-        name:
-          product.name,
-
-        image:
-          product.image || "",
-
+        product: product._id,
+        name: product.name,
+        image: product.image || "",
         price,
-
-        quantity:
-          item.quantity,
+        quantity: item.quantity,
       });
     }
 
@@ -329,9 +268,7 @@ export const createOrder = async (req, res) => {
     -------------------------------------------------------- */
 
     totalAmount =
-      Math.round(
-        totalAmount * 100
-      ) / 100;
+      Math.round(totalAmount * 100) / 100;
 
     /* ========================================================
        TRANSACTION
@@ -343,25 +280,19 @@ export const createOrder = async (req, res) => {
        REDUCE STOCK ATOMICALLY
     -------------------------------------------------------- */
 
-    for (
-      const item of orderItems
-    ) {
+    for (const item of orderItems) {
       const updatedProduct =
         await Product.findOneAndUpdate(
           {
             _id: item.product,
-
             isActive: true,
-
             stock: {
-              $gte:
-                item.quantity,
+              $gte: item.quantity,
             },
           },
           {
             $inc: {
-              stock:
-                -item.quantity,
+              stock: -item.quantity,
             },
           },
           {
@@ -381,66 +312,60 @@ export const createOrder = async (req, res) => {
        CREATE ORDER
     -------------------------------------------------------- */
 
-    const createdOrders =
-      await Order.create(
-        [
-          {
-            user:
-              req.user._id,
-
-            items:
-              orderItems,
-
-            shippingAddress: {
-              fullName:
-                String(
-                  shippingAddress.fullName
-                ).trim(),
-
-              phone:
-                String(
-                  shippingAddress.phone
-                ).trim(),
-
-              address:
-                String(
-                  shippingAddress.address
-                ).trim(),
-
-              city:
-                String(
-                  shippingAddress.city
-                ).trim(),
-
-              state:
-                String(
-                  shippingAddress.state
-                ).trim(),
-
-              country:
-                String(
-                  shippingAddress.country
-                ).trim(),
-            },
-
-            paymentMethod,
-
-            paymentStatus:
-              "pending",
-
-            status:
-              "pending",
-
-            totalAmount,
-          },
-        ],
+    const createdOrders = await Order.create(
+      [
         {
-          session,
-        }
-      );
+          user: req.user._id,
 
-    const order =
-      createdOrders[0];
+          items: orderItems,
+
+          shippingAddress: {
+            fullName:
+              String(
+                shippingAddress.fullName
+              ).trim(),
+
+            phone:
+              String(
+                shippingAddress.phone
+              ).trim(),
+
+            address:
+              String(
+                shippingAddress.address
+              ).trim(),
+
+            city:
+              String(
+                shippingAddress.city
+              ).trim(),
+
+            state:
+              String(
+                shippingAddress.state
+              ).trim(),
+
+            country:
+              String(
+                shippingAddress.country
+              ).trim(),
+          },
+
+          paymentMethod,
+
+          paymentStatus: "pending",
+
+          status: "pending",
+
+          totalAmount,
+        },
+      ],
+      {
+        session,
+      }
+    );
+
+    const order = createdOrders[0];
 
     /* --------------------------------------------------------
        COMMIT
@@ -454,16 +379,11 @@ export const createOrder = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-
-      message:
-        "Order created successfully.",
-
+      message: "Order created successfully.",
       order,
     });
   } catch (error) {
-    if (
-      session.inTransaction()
-    ) {
+    if (session.inTransaction()) {
       await session.abortTransaction();
     }
 
@@ -474,10 +394,8 @@ export const createOrder = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-
       message:
-        process.env.NODE_ENV ===
-        "development"
+        process.env.NODE_ENV === "development"
           ? error.message
           : "Failed to create order.",
     });
@@ -501,29 +419,24 @@ export const getMyOrders = async (
       return res.status(401).json({
         success: false,
         orders: [],
-        message:
-          "Authentication required.",
+        message: "Authentication required.",
       });
     }
 
-    const orders =
-      await Order.find({
-        user: req.user._id,
-      })
-        .populate(
-          "items.product",
-          "name image price"
-        )
-        .sort({
-          createdAt: -1,
-        });
+    const orders = await Order.find({
+      user: req.user._id,
+    })
+      .populate(
+        "items.product",
+        "name image price"
+      )
+      .sort({
+        createdAt: -1,
+      });
 
     return res.status(200).json({
       success: true,
-
-      count:
-        orders.length,
-
+      count: orders.length,
       orders,
     });
   } catch (error) {
@@ -534,12 +447,9 @@ export const getMyOrders = async (
 
     return res.status(500).json({
       success: false,
-
       orders: [],
-
       message:
-        process.env.NODE_ENV ===
-        "development"
+        process.env.NODE_ENV === "development"
           ? error.message
           : "Failed to get orders.",
     });
@@ -557,48 +467,41 @@ export const getOrderById = async (
   res
 ) => {
   try {
-    const { id } =
-      req.params;
+    const { id } = req.params;
 
     if (!req.user?._id) {
       return res.status(401).json({
         success: false,
         order: null,
-        message:
-          "Authentication required.",
+        message: "Authentication required.",
       });
     }
 
     if (
-      !mongoose.Types.ObjectId.isValid(
-        id
-      )
+      !mongoose.Types.ObjectId.isValid(id)
     ) {
       return res.status(400).json({
         success: false,
         order: null,
-        message:
-          "Invalid order ID.",
+        message: "Invalid order ID.",
       });
     }
 
-    const order =
-      await Order.findById(id)
-        .populate(
-          "user",
-          "name email phone"
-        )
-        .populate(
-          "items.product",
-          "name image price"
-        );
+    const order = await Order.findById(id)
+      .populate(
+        "user",
+        "name email phone"
+      )
+      .populate(
+        "items.product",
+        "name image price"
+      );
 
     if (!order) {
       return res.status(404).json({
         success: false,
         order: null,
-        message:
-          "Order not found.",
+        message: "Order not found.",
       });
     }
 
@@ -611,16 +514,12 @@ export const getOrderById = async (
       req.user._id.toString();
 
     const isOwner =
-      orderUserId ===
-      currentUserId;
+      orderUserId === currentUserId;
 
     const isAdmin =
       req.user.role === "admin";
 
-    if (
-      !isOwner &&
-      !isAdmin
-    ) {
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({
         success: false,
         order: null,
@@ -643,8 +542,7 @@ export const getOrderById = async (
       success: false,
       order: null,
       message:
-        process.env.NODE_ENV ===
-        "development"
+        process.env.NODE_ENV === "development"
           ? error.message
           : "Failed to get order.",
     });
@@ -672,27 +570,22 @@ export const cancelOrder = async (
     if (!req.user?._id) {
       return res.status(401).json({
         success: false,
-        message:
-          "Authentication required.",
+        message: "Authentication required.",
       });
     }
 
-    const { id } =
-      req.params;
+    const { id } = req.params;
 
     /* --------------------------------------------------------
        VALIDATE ORDER ID
     -------------------------------------------------------- */
 
     if (
-      !mongoose.Types.ObjectId.isValid(
-        id
-      )
+      !mongoose.Types.ObjectId.isValid(id)
     ) {
       return res.status(400).json({
         success: false,
-        message:
-          "Invalid order ID.",
+        message: "Invalid order ID.",
       });
     }
 
@@ -721,8 +614,7 @@ export const cancelOrder = async (
 
       return res.status(404).json({
         success: false,
-        message:
-          "Order not found.",
+        message: "Order not found.",
       });
     }
 
@@ -730,9 +622,7 @@ export const cancelOrder = async (
        ONLY PENDING ORDERS
     -------------------------------------------------------- */
 
-    if (
-      order.status !== "pending"
-    ) {
+    if (order.status !== "pending") {
       await session.abortTransaction();
 
       return res.status(400).json({
@@ -746,15 +636,12 @@ export const cancelOrder = async (
        RESTORE STOCK
     -------------------------------------------------------- */
 
-    for (
-      const item of order.items
-    ) {
+    for (const item of order.items) {
       await Product.findByIdAndUpdate(
         item.product,
         {
           $inc: {
-            stock:
-              item.quantity,
+            stock: item.quantity,
           },
         },
         {
@@ -767,8 +654,7 @@ export const cancelOrder = async (
        MARK CANCELLED
     -------------------------------------------------------- */
 
-    order.status =
-      "cancelled";
+    order.status = "cancelled";
 
     await order.save({
       session,
@@ -786,18 +672,18 @@ export const cancelOrder = async (
 
     return res.status(200).json({
       success: true,
-
       message:
         "Order cancelled successfully.",
-
       order,
     });
   } catch (error) {
-    if (
-      session.inTransaction()
-    ) {
+    if (session.inTransaction()) {
       await session.abortTransaction();
     }
+
+    /* --------------------------------------------------------
+       IMPORTANT DIAGNOSTIC LOG
+    -------------------------------------------------------- */
 
     console.error(
       "❌ Cancel Order Error:",
@@ -806,12 +692,9 @@ export const cancelOrder = async (
 
     return res.status(500).json({
       success: false,
-
       message:
-        process.env.NODE_ENV ===
-        "development"
-          ? error.message
-          : "Failed to cancel order.",
+        error.message ||
+        "Failed to cancel order.",
     });
   } finally {
     await session.endSession();

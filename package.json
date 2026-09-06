@@ -14,7 +14,6 @@
     "chart.js": "^4.5.1",
     "compression": "^1.8.1",
     "express-rate-limit": "^8.6.1",
-    "firebase": "^12.16.0",
     "framer-motion": "^12.42.2",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^1.25.0",

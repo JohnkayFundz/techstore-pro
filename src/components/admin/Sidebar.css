@@ -1,43 +1,62 @@
+/* ==========================================================
+   TECHSTORE PRO
+   ADMIN SIDEBAR
+   Responsive / Compact
+========================================================== */
+
 .sidebar {
-  width: 260px;
+  width: 100%;
   min-height: 100vh;
   background: #111827;
   color: #fff;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
+/* ==========================================================
+   LOGO
+========================================================== */
+
 .sidebar-logo {
-  padding: 24px;
+  padding: 18px 20px;
   border-bottom: 1px solid #1f2937;
 }
 
 .sidebar-logo h2 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
+  line-height: 1.2;
 }
 
 .sidebar-logo span {
   color: #9ca3af;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
 }
+
+/* ==========================================================
+   NAVIGATION
+========================================================== */
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 8px;
+  padding: 12px;
+  gap: 5px;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 9px 12px;
   color: #d1d5db;
   text-decoration: none;
-  border-radius: 8px;
-  transition: 0.2s ease;
+  border-radius: 7px;
+  font-size: 13px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .sidebar-link:hover {
@@ -50,21 +69,85 @@
   color: #fff;
 }
 
+/* ==========================================================
+   LOGOUT
+========================================================== */
+
 .logout-btn {
-  margin: auto 16px 24px;
-  padding: 12px;
+  margin: auto 12px 18px;
+  padding: 9px 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 7px;
   background: #dc2626;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 13px;
 }
 
 .logout-btn:hover {
   background: #b91c1c;
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 900px) {
+
+  .sidebar {
+    min-height: auto;
+  }
+
+  .sidebar-logo {
+    padding: 12px 16px;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 8px;
+    gap: 5px;
+  }
+
+  .sidebar-link {
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+
+  .logout-btn {
+    margin: 5px 8px 10px;
+  }
+}
+
+/* ==========================================================
+   SMALL MOBILE
+========================================================== */
+
+@media (max-width: 600px) {
+
+  .sidebar-logo h2 {
+    font-size: 1.05rem;
+  }
+
+  .sidebar-logo span {
+    font-size: 0.7rem;
+  }
+
+  .sidebar-nav {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .sidebar-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .logout-btn {
+    width: calc(100% - 16px);
+  }
 }

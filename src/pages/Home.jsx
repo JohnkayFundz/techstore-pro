@@ -1,13 +1,42 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiSearch } from "react-icons/fi";
+import {
+  FiArrowRight,
+  FiChevronLeft,
+  FiChevronRight,
+  FiSearch,
+  FiX,
+  FiShield,
+  FiTruck,
+  FiHeadphones,
+  FiAward,
+} from "react-icons/fi";
 
 import { useProducts } from "../context/ProductContext";
 import ProductCard from "../components/products/ProductCard";
 
 import "./Home.css";
 
-function Home() {
+// ==========================================================
+// CONSTANTS
+// ==========================================================
+
+const CATEGORIES = [
+  "All",
+  "Laptops",
+  "Smartphones",
+  "Audio",
+  "Wearables",
+  "Accessories",
+  "Gaming",
+  "Tablets",
+];
+
+// ==========================================================
+// HOME
+// ==========================================================
+
+const Home = () => {
   const {
     products = [],
     loading,
@@ -16,27 +45,12 @@ function Home() {
     fetchProducts,
   } = useProducts();
 
-  /* ==========================================================
-     STATE
-  ========================================================== */
-
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("All");
 
-  const categories = [
-    "All",
-    "Laptops",
-    "Smartphones",
-    "Audio",
-    "Wearables",
-    "Accessories",
-    "Gaming",
-    "Tablets",
-  ];
-
-  /* ==========================================================
-     LOAD PRODUCTS FROM BACKEND
-  ========================================================== */
+  // ========================================================
+  // FETCH PRODUCTS
+  // ========================================================
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,22 +59,11 @@ function Home() {
         limit: 10,
       };
 
-      /* ------------------------------------------------------
-         SEARCH
-      ------------------------------------------------------ */
-
       if (searchTerm.trim()) {
         params.search = searchTerm.trim();
       }
 
-      /* ------------------------------------------------------
-         CATEGORY
-      ------------------------------------------------------ */
-
-      if (
-        category &&
-        category !== "All"
-      ) {
+      if (category !== "All") {
         params.category = category;
       }
 
@@ -68,29 +71,48 @@ function Home() {
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [
-    searchTerm,
-    category,
-    fetchProducts,
-  ]);
+  }, [searchTerm, category, fetchProducts]);
 
-  /* ==========================================================
-     CLEAR FILTERS
-  ========================================================== */
+  // ========================================================
+  // CLEAR FILTERS
+  // ========================================================
 
   const clearFilters = () => {
     setSearchTerm("");
     setCategory("All");
   };
 
-  /* ==========================================================
-     CHANGE PAGE
-  ========================================================== */
+  // ========================================================
+  // CHANGE CATEGORY
+  // ========================================================
+
+  const handleCategoryChange = (selectedCategory) => {
+    setCategory(selectedCategory);
+  };
+
+  // ========================================================
+  // PAGINATION
+  // ========================================================
+
+  const currentPage = Number(
+    pagination.page ?? pagination.currentPage ?? 1
+  );
+
+  const totalPages = Number(
+    pagination.pages ?? pagination.totalPages ?? 1
+  );
+
+  const totalProducts = Number(
+    pagination.total ??
+      pagination.totalProducts ??
+      products.length
+  );
 
   const changePage = (page) => {
     if (
       page < 1 ||
-      page > (pagination.totalPages || 1)
+      page > totalPages ||
+      page === currentPage
     ) {
       return;
     }
@@ -104,10 +126,7 @@ function Home() {
       params.search = searchTerm.trim();
     }
 
-    if (
-      category &&
-      category !== "All"
-    ) {
+    if (category !== "All") {
       params.category = category;
     }
 
@@ -119,346 +138,559 @@ function Home() {
     });
   };
 
-  /* ==========================================================
-     RENDER
-  ========================================================== */
+  // ========================================================
+  // RENDER
+  // ========================================================
 
   return (
-    <div className="home">
+    <main className="home-page">
 
-      {/* ======================================================
+      {/* ==================================================
           HERO
-      ====================================================== */}
+      ================================================== */}
 
-      <section className="hero">
-        <div className="hero-content">
+      <section className="home-hero">
+        <div className="home-hero__background" />
 
-          <span className="hero-badge">
-            Premium Technology
-          </span>
+        <div className="home-container home-hero__container">
 
-          <h1>
-            Welcome to TechStore Pro
-          </h1>
+          <div className="home-hero__content">
 
-          <p>
-            Discover premium laptops,
-            smartphones, audio devices,
-            gaming gear, and accessories
-            at competitive prices.
-          </p>
+            <span className="home-hero__badge">
+              Premium Technology
+            </span>
 
-          <Link to="/products">
-            <button
-              type="button"
-              className="hero-btn"
-            >
-              Shop Now
-            </button>
-          </Link>
+            <h1>
+              Premium Tech.
+              <span>Smarter Choices.</span>
+            </h1>
+
+            <p>
+              Discover laptops, smartphones, audio,
+              wearables and accessories built for the
+              way you work, play and connect.
+            </p>
+
+            <div className="home-hero__actions">
+
+              <Link
+                to="/products"
+                className="home-btn home-btn--primary"
+              >
+                Shop Products
+                <FiArrowRight aria-hidden="true" />
+              </Link>
+
+              <a
+                href="#featured-products"
+                className="home-btn home-btn--secondary"
+              >
+                Explore Categories
+              </a>
+
+            </div>
+
+            <div className="home-hero__trust">
+
+              <span>
+                <FiShield aria-hidden="true" />
+                Secure Shopping
+              </span>
+
+              <span>
+                <FiAward aria-hidden="true" />
+                Quality Products
+              </span>
+
+              <span>
+                <FiTruck aria-hidden="true" />
+                Reliable Delivery
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* HERO VISUAL */}
+
+          <div className="home-hero__visual">
+
+            <div className="home-hero__glow" />
+
+            <div className="home-hero__device home-hero__device--large">
+              <div className="home-hero__device-screen">
+                <span>TECH</span>
+                <strong>STORE</strong>
+              </div>
+            </div>
+
+            <div className="home-hero__device home-hero__device--small">
+              <div />
+            </div>
+
+            <div className="home-hero__floating-card">
+
+              <FiHeadphones aria-hidden="true" />
+
+              <div>
+                <strong>Latest Tech</strong>
+                <span>Ready for you</span>
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
       </section>
 
-      {/* ======================================================
-          PRODUCTS SECTION
-      ====================================================== */}
+      {/* ==================================================
+          FEATURE STRIP
+      ================================================== */}
 
-      <section className="products-section">
+      <section className="home-features">
 
-        {/* ====================================================
-            HEADER
-        ==================================================== */}
+        <div className="home-container home-features__container">
 
-        <div className="products-header">
+          {/* SECURE CHECKOUT */}
 
-          <div>
-            <h2>
-              Featured Products
-            </h2>
+          <div className="home-feature">
 
-            {!loading && !error && (
+            <div className="home-feature__icon">
+              <FiShield aria-hidden="true" />
+            </div>
+
+            <div className="home-feature__content">
+
+              <strong className="home-feature__title">
+                Secure Checkout
+              </strong>
+
+              <span className="home-feature__text">
+                Shop with confidence
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* RELIABLE DELIVERY */}
+
+          <div className="home-feature">
+
+            <div className="home-feature__icon">
+              <FiTruck aria-hidden="true" />
+            </div>
+
+            <div className="home-feature__content">
+
+              <strong className="home-feature__title">
+                Reliable Delivery
+              </strong>
+
+              <span className="home-feature__text">
+                Fast &amp; dependable service
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* QUALITY PRODUCTS */}
+
+          <div className="home-feature">
+
+            <div className="home-feature__icon">
+              <FiAward aria-hidden="true" />
+            </div>
+
+            <div className="home-feature__content">
+
+              <strong className="home-feature__title">
+                Quality Products
+              </strong>
+
+              <span className="home-feature__text">
+                Technology you can trust
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* CUSTOMER SUPPORT */}
+
+          <div className="home-feature">
+
+            <div className="home-feature__icon">
+              <FiHeadphones aria-hidden="true" />
+            </div>
+
+            <div className="home-feature__content">
+
+              <strong className="home-feature__title">
+                Customer Support
+              </strong>
+
+              <span className="home-feature__text">
+                We're here to help
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ==================================================
+          PRODUCTS
+      ================================================== */}
+
+      <section
+        className="home-products"
+        id="featured-products"
+      >
+
+        <div className="home-container">
+
+          {/* SECTION HEADER */}
+
+          <div className="home-products__header">
+
+            <div className="home-products__heading">
+
+              <span className="home-products__eyebrow">
+                Explore our collection
+              </span>
+
+              <h2>
+                Featured Products
+              </h2>
+
               <p>
-                {pagination.totalProducts || 0}{" "}
-                {pagination.totalProducts === 1
-                  ? "product"
-                  : "products"}{" "}
-                available
+                Find the technology you need,
+                all in one place.
               </p>
-            )}
-          </div>
 
-          <Link
-            to="/products"
-            className="view-all-link"
-          >
-            View All Products →
-          </Link>
+            </div>
 
-        </div>
-
-        {/* ====================================================
-            CONTROLS
-        ==================================================== */}
-
-        <div className="product-controls">
-
-          {/* SEARCH */}
-
-          <div
-            className="search-bar"
-            role="search"
-            aria-label="Product search"
-          >
-
-            <FiSearch
-              className="search-icon"
-              aria-hidden="true"
-            />
-
-            <input
-              type="search"
-              placeholder="Search products..."
-              aria-label="Search products"
-              value={searchTerm}
-              onChange={(event) =>
-                setSearchTerm(
-                  event.target.value
-                )
-              }
-            />
-
-            {searchTerm && (
-              <button
-                type="button"
-                className="clear-search"
-                onClick={() =>
-                  setSearchTerm("")
-                }
-                aria-label="Clear search"
-              >
-                ×
-              </button>
-            )}
+            <Link
+              to="/products"
+              className="home-view-all"
+            >
+              View All Products
+              <FiArrowRight aria-hidden="true" />
+            </Link>
 
           </div>
 
-          {/* CATEGORY */}
+          {/* ==================================================
+              SEARCH & FILTERS
+          ================================================== */}
 
-          <div
-            className="category-filter"
-            aria-label="Product categories"
-          >
+          <div className="home-products__controls">
 
-            {categories.map((item) => (
-              <button
-                key={item}
-                type="button"
-                className={
-                  category === item
-                    ? "active"
-                    : ""
+            <div className="home-search">
+
+              <FiSearch
+                size={19}
+                aria-hidden="true"
+              />
+
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={(event) =>
+                  setSearchTerm(event.target.value)
                 }
-                onClick={() =>
-                  setCategory(item)
-                }
-              >
-                {item}
-              </button>
-            ))}
-
-          </div>
-
-        </div>
-
-        {/* ====================================================
-            ACTIVE FILTER
-        ==================================================== */}
-
-        {(searchTerm ||
-          category !== "All") && (
-          <div className="active-filter">
-
-            <span>
+                placeholder="Search products..."
+                aria-label="Search products"
+              />
 
               {searchTerm && (
-                <>
-                  Search: "
-                  {searchTerm}
-                  "
-                </>
+                <button
+                  type="button"
+                  className="home-search__clear"
+                  onClick={() => setSearchTerm("")}
+                  aria-label="Clear search"
+                >
+                  <FiX aria-hidden="true" />
+                </button>
               )}
 
-              {searchTerm &&
-                category !== "All" && (
-                  <> • </>
-                )}
+            </div>
 
-              {category !== "All" && (
-                <>
-                  Category: {category}
-                </>
-              )}
-
-            </span>
-
-            <button
-              type="button"
-              onClick={clearFilters}
+            <div
+              className="home-category-filter"
+              aria-label="Product categories"
             >
-              Clear filters
-            </button>
+
+              {CATEGORIES.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  className={
+                    category === item
+                      ? "active"
+                      : ""
+                  }
+                  onClick={() =>
+                    handleCategoryChange(item)
+                  }
+                  aria-pressed={
+                    category === item
+                  }
+                >
+                  {item}
+                </button>
+              ))}
+
+            </div>
 
           </div>
-        )}
 
-        {/* ====================================================
-            ERROR
-        ==================================================== */}
+          {/* ==================================================
+              ACTIVE FILTER
+          ================================================== */}
 
-        {error && (
-          <div
-            className="error-message"
-            role="alert"
-          >
+          {(searchTerm || category !== "All") && (
+            <div className="home-active-filter">
 
-            <h3>
-              Unable to load products
-            </h3>
+              <span>
+                Showing results
+                {searchTerm &&
+                  ` for "${searchTerm}"`}
+                {category !== "All" &&
+                  ` in ${category}`}
+              </span>
 
-            <p>
-              {error}
-            </p>
+              <button
+                type="button"
+                onClick={clearFilters}
+              >
+                Clear filters
+                <FiX aria-hidden="true" />
+              </button>
 
-            <button
-              type="button"
-              onClick={() =>
-                fetchProducts({
-                  page: 1,
-                  limit: 10,
-                })
-              }
+            </div>
+          )}
+
+          {/* ==================================================
+              ERROR
+          ================================================== */}
+
+          {error && (
+            <div
+              className="home-message home-message--error"
+              role="alert"
             >
-              Try Again
-            </button>
 
-          </div>
-        )}
+              <strong>
+                Unable to load products
+              </strong>
 
-        {/* ====================================================
-            LOADING
-        ==================================================== */}
+              <span>
+                {typeof error === "string"
+                  ? error
+                  : "Something went wrong. Please try again."}
+              </span>
 
-        {loading && (
-          <div
-            className="loading-screen"
-            aria-live="polite"
-          >
+              <button
+                type="button"
+                onClick={() =>
+                  fetchProducts({
+                    page: currentPage,
+                    limit: 10,
+                  })
+                }
+              >
+                Try Again
+              </button>
 
-            <div className="spinner"></div>
+            </div>
+          )}
 
-            <p>
-              Loading products...
-            </p>
+          {/* ==================================================
+              LOADING
+          ================================================== */}
 
-          </div>
-        )}
+          {loading && (
+            <div
+              className="home-loading"
+              aria-live="polite"
+              aria-label="Loading products"
+            >
 
-        {/* ====================================================
-            PRODUCTS
-        ==================================================== */}
+              <div className="home-spinner" />
 
-        {!loading && !error && (
-          <>
+              <span>
+                Loading products...
+              </span>
 
-            {products.length > 0 ? (
-              <div className="products-grid">
+            </div>
+          )}
+
+          {/* ==================================================
+              PRODUCT GRID
+          ================================================== */}
+
+          {!loading &&
+            !error &&
+            products.length > 0 && (
+              <div className="home-products-grid">
 
                 {products.map((product) => (
                   <ProductCard
-                    key={product._id}
+                    key={
+                      product._id ??
+                      product.id
+                    }
                     product={product}
                   />
                 ))}
 
               </div>
-            ) : (
-              <div className="empty-products">
+            )}
+
+          {/* ==================================================
+              EMPTY STATE
+          ================================================== */}
+
+          {!loading &&
+            !error &&
+            products.length === 0 && (
+              <div className="home-empty">
+
+                <div className="home-empty__icon">
+                  <FiSearch aria-hidden="true" />
+                </div>
 
                 <h3>
                   No products found
                 </h3>
 
                 <p>
-                  Try changing your search
-                  or category.
+                  We couldn't find any products
+                  matching your search or category.
                 </p>
 
-                {(searchTerm ||
-                  category !== "All") && (
-                  <button
-                    type="button"
-                    onClick={clearFilters}
-                  >
-                    Clear Filters
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                >
+                  Clear Filters
+                </button>
 
               </div>
             )}
 
-            {/* ==================================================
-                PAGINATION
-            ================================================== */}
+          {/* ==================================================
+              RESULTS COUNT
+          ================================================== */}
 
-            {pagination.totalPages > 1 && (
-              <div className="pagination">
+          {!loading &&
+            !error &&
+            products.length > 0 && (
+              <div className="home-results-count">
+
+                Showing{" "}
+                <strong>
+                  {products.length}
+                </strong>{" "}
+                of{" "}
+                <strong>
+                  {totalProducts}
+                </strong>{" "}
+                products
+
+              </div>
+            )}
+
+          {/* ==================================================
+              PAGINATION
+          ================================================== */}
+
+          {!loading &&
+            !error &&
+            products.length > 0 &&
+            totalPages > 1 && (
+
+              <nav
+                className="home-pagination"
+                aria-label="Product pagination"
+              >
 
                 <button
                   type="button"
-                  disabled={
-                    !pagination.hasPreviousPage
-                  }
                   onClick={() =>
                     changePage(
-                      pagination.currentPage - 1
+                      currentPage - 1
                     )
                   }
+                  disabled={
+                    currentPage <= 1
+                  }
+                  aria-label="Previous page"
                 >
-                  ← Previous
+
+                  <FiChevronLeft
+                    aria-hidden="true"
+                  />
+
+                  <span>
+                    Previous
+                  </span>
+
                 </button>
 
-                <span>
+                <span className="home-pagination__status">
+
                   Page{" "}
-                  {pagination.currentPage}{" "}
+                  <strong>
+                    {currentPage}
+                  </strong>{" "}
                   of{" "}
-                  {pagination.totalPages}
+                  <strong>
+                    {totalPages}
+                  </strong>
+
                 </span>
 
                 <button
                   type="button"
-                  disabled={
-                    !pagination.hasNextPage
-                  }
                   onClick={() =>
                     changePage(
-                      pagination.currentPage + 1
+                      currentPage + 1
                     )
                   }
+                  disabled={
+                    currentPage >=
+                    totalPages
+                  }
+                  aria-label="Next page"
                 >
-                  Next →
+
+                  <span>
+                    Next
+                  </span>
+
+                  <FiChevronRight
+                    aria-hidden="true"
+                  />
+
                 </button>
 
-              </div>
+              </nav>
             )}
 
-          </>
-        )}
+        </div>
 
       </section>
 
-    </div>
+    </main>
   );
-}
+};
 
 export default Home;

@@ -3,12 +3,9 @@ import express from "express";
 import {
   getProducts,
   getProductById,
-
   getAdminProducts,
   getAdminProductById,
-
   searchProducts,
-
   createProduct,
   updateProduct,
   deleteProduct,
@@ -20,56 +17,37 @@ import {
   adminOnly,
 } from "../middleware/authMiddleware.js";
 
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
-
 
 /* ==========================================================
    PUBLIC PRODUCT ROUTES
 ========================================================== */
 
-
 /* ----------------------------------------------------------
    SEARCH PRODUCTS
+
    GET /api/products/search
+
+   PUBLIC
+
+   IMPORTANT:
+   Must come BEFORE /:id
 ---------------------------------------------------------- */
 
-router.get(
-  "/search",
-  searchProducts
-);
-
-
-/* ----------------------------------------------------------
-   GET ALL PRODUCTS
-   GET /api/products
----------------------------------------------------------- */
-
-router.get(
-  "/",
-  getProducts
-);
-
-
-/* ----------------------------------------------------------
-   GET SINGLE PRODUCT
-   GET /api/products/:id
----------------------------------------------------------- */
-
-router.get(
-  "/:id",
-  getProductById
-);
+router.get("/search", searchProducts);
 
 
 /* ==========================================================
    ADMIN PRODUCT ROUTES
 ========================================================== */
 
-
 /* ----------------------------------------------------------
-   GET ALL ADMIN PRODUCTS
+   GET ALL PRODUCTS — ADMIN
+
    GET /api/products/admin
+
    PRIVATE / ADMIN
 ---------------------------------------------------------- */
 
@@ -82,8 +60,10 @@ router.get(
 
 
 /* ----------------------------------------------------------
-   GET ADMIN PRODUCT BY ID
+   GET SINGLE PRODUCT — ADMIN
+
    GET /api/products/admin/:id
+
    PRIVATE / ADMIN
 ---------------------------------------------------------- */
 
@@ -97,36 +77,36 @@ router.get(
 
 /* ----------------------------------------------------------
    CREATE PRODUCT
+
    POST /api/products
+
    PRIVATE / ADMIN
+
+   FormData
+   ↓
+   Multer
+   ↓
+   Cloudinary
 ---------------------------------------------------------- */
 
 router.post(
   "/",
   protect,
   adminOnly,
+  upload,
   createProduct
 );
 
 
 /* ----------------------------------------------------------
-   UPDATE PRODUCT
-   PUT /api/products/:id
-   PRIVATE / ADMIN
----------------------------------------------------------- */
-
-router.put(
-  "/:id",
-  protect,
-  adminOnly,
-  updateProduct
-);
-
-
-/* ----------------------------------------------------------
    RESTORE PRODUCT
+
    PUT /api/products/:id/restore
+
    PRIVATE / ADMIN
+
+   IMPORTANT:
+   Must come BEFORE /:id
 ---------------------------------------------------------- */
 
 router.put(
@@ -138,9 +118,38 @@ router.put(
 
 
 /* ----------------------------------------------------------
-   DELETE PRODUCT
-   DELETE /api/products/:id
+   UPDATE PRODUCT
+
+   PUT /api/products/:id
+
    PRIVATE / ADMIN
+
+   FormData
+   ↓
+   Multer
+   ↓
+   Cloudinary
+
+   upload middleware is required because
+   updateProduct() may access req.file.
+---------------------------------------------------------- */
+
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  upload,
+  updateProduct
+);
+
+
+/* ----------------------------------------------------------
+   DELETE PRODUCT
+
+   DELETE /api/products/:id
+
+   PRIVATE / ADMIN
+
    SOFT DELETE
 ---------------------------------------------------------- */
 
@@ -151,5 +160,44 @@ router.delete(
   deleteProduct
 );
 
+
+/* ==========================================================
+   PUBLIC PRODUCT ROUTES
+========================================================== */
+
+/* ----------------------------------------------------------
+   GET ALL ACTIVE PRODUCTS
+
+   GET /api/products
+
+   PUBLIC
+---------------------------------------------------------- */
+
+router.get(
+  "/",
+  getProducts
+);
+
+
+/* ----------------------------------------------------------
+   GET SINGLE ACTIVE PRODUCT
+
+   GET /api/products/:id
+
+   PUBLIC
+
+   IMPORTANT:
+   This MUST remain the LAST GET route.
+---------------------------------------------------------- */
+
+router.get(
+  "/:id",
+  getProductById
+);
+
+
+/* ==========================================================
+   EXPORT ROUTER
+========================================================== */
 
 export default router;

@@ -25,9 +25,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Apple M4 Chip",
@@ -71,9 +69,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Intel Core i7 Processor",
@@ -117,9 +113,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "6.2-inch AMOLED Display",
@@ -163,9 +157,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "A18 Pro Chip",
@@ -209,9 +201,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Advanced Noise Cancellation",
@@ -255,9 +245,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Advanced Fitness Tracking",
@@ -301,9 +289,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Active Noise Cancellation",
@@ -347,9 +333,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Intel Core i9 Processor",
@@ -393,9 +377,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "8K DPI Tracking",
@@ -439,9 +421,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Apple M4 Chip",
@@ -485,9 +465,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "Advanced Health Tracking",
@@ -531,9 +509,7 @@ const products = [
 
     image: "/placeholder-product.png",
 
-    images: [
-      "/placeholder-product.png",
-    ],
+    images: ["/placeholder-product.png"],
 
     features: [
       "7-in-1 Connectivity",

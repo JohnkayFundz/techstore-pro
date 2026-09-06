@@ -1,4 +1,9 @@
 // ==========================================================
+// TECHSTORE PRO
+// FRONTEND PRODUCT DATA
+// ==========================================================
+
+// ==========================================================
 // CURRENCY
 // ==========================================================
 
@@ -16,6 +21,7 @@ export const categories = [
   "Wearables",
   "Accessories",
   "Gaming",
+  "Tablets",
 ];
 
 // ==========================================================
@@ -23,154 +29,543 @@ export const categories = [
 // ==========================================================
 
 export const products = [
+  // ========================================================
+  // 1. MACBOOK PRO M4
+  // ========================================================
+
   {
     id: 1,
-    name: "MacBook Pro M4",
-    brand: "Apple",
-    category: "Laptops",
+
+    name: "MacBook Pro M4 16-inch",
+
+    description:
+      "Apple MacBook Pro powered by the M4 chip, featuring exceptional performance, a stunning Liquid Retina XDR display, and long battery life.",
+
     price: 2499,
     oldPrice: 2699,
+    discount: 7,
+
+    category: "Laptops",
+    brand: "Apple",
+    sku: "APP-MBP-M4-16",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Apple M4 Chip",
+      "16-inch Liquid Retina XDR Display",
+      "24GB Unified Memory",
+      "512GB SSD",
+      "Up to 24 hours battery life",
+    ],
+
     stock: 12,
-    rating: 4.9,
-    reviews: 352,
-    image: "https://images.unsplash.com/photo-1517336714739-489689fd1ca8",
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 5,
+    numReviews: 0,
+
     featured: true,
-    newArrival: true,
     bestseller: true,
-    description: "Apple MacBook Pro powered by the M4 chip.",
+    newArrival: true,
   },
+
+  // ========================================================
+  // 2. DELL XPS 15
+  // ========================================================
+
   {
     id: 2,
+
     name: "Dell XPS 15",
-    brand: "Dell",
-    category: "Laptops",
+
+    description:
+      "Premium Dell XPS 15 laptop designed for professionals, creators, and demanding everyday workloads.",
+
     price: 1899,
     oldPrice: 2099,
-    stock: 10,
+    discount: 10,
+
+    category: "Laptops",
+    brand: "Dell",
+    sku: "DEL-XPS15-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Intel Core i7 Processor",
+      "15.6-inch Display",
+      "16GB RAM",
+      "1TB SSD",
+      "Premium Aluminum Design",
+    ],
+
+    stock: 18,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Dell Warranty",
+
     rating: 4.8,
-    reviews: 210,
-    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
+    numReviews: 0,
+
     featured: true,
-    newArrival: false,
     bestseller: true,
-    description: "Premium Windows laptop with Intel Core Ultra.",
+    newArrival: false,
   },
+
+  // ========================================================
+  // 3. SAMSUNG GALAXY S25
+  // ========================================================
+
   {
     id: 3,
-    name: "Galaxy S25 Ultra",
-    brand: "Samsung",
+
+    name: "Samsung Galaxy S25",
+
+    description:
+      "Samsung Galaxy S25 flagship smartphone with powerful performance, advanced cameras, and a premium display.",
+
+    price: 1199,
+    oldPrice: 1299,
+    discount: 8,
+
     category: "Smartphones",
-    price: 1399,
-    oldPrice: 1499,
-    stock: 15,
-    rating: 4.9,
-    reviews: 480,
-    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
+    brand: "Samsung",
+    sku: "SAM-S25-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "6.2-inch AMOLED Display",
+      "Advanced Triple Camera",
+      "256GB Storage",
+      "12GB RAM",
+      "5G Connectivity",
+    ],
+
+    stock: 30,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Samsung Warranty",
+
+    rating: 4.7,
+    numReviews: 0,
+
     featured: true,
-    newArrival: true,
     bestseller: true,
-    description: "Samsung flagship smartphone.",
+    newArrival: true,
   },
+
+  // ========================================================
+  // 4. IPHONE 16 PRO
+  // ========================================================
+
   {
     id: 4,
-    name: "iPhone 17 Pro",
-    brand: "Apple",
+
+    name: "iPhone 16 Pro",
+
+    description:
+      "Apple iPhone 16 Pro with titanium design, powerful performance, professional camera system, and advanced features.",
+
+    price: 1299,
+    oldPrice: 1399,
+    discount: 7,
+
     category: "Smartphones",
-    price: 1499,
-    oldPrice: 1599,
-    stock: 20,
-    rating: 5.0,
-    reviews: 610,
-    image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5",
+    brand: "Apple",
+    sku: "APP-IP16P-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "A18 Pro Chip",
+      "6.3-inch Super Retina XDR Display",
+      "48MP Main Camera",
+      "256GB Storage",
+      "5G Connectivity",
+    ],
+
+    stock: 0,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.9,
+    numReviews: 0,
+
     featured: true,
-    newArrival: true,
     bestseller: true,
-    description: "Apple's newest Pro iPhone.",
+    newArrival: true,
   },
+
+  // ========================================================
+  // 5. SONY WH-1000XM6
+  // ========================================================
+
   {
     id: 5,
-    name: "Sony WH-1000XM6",
-    brand: "Sony",
-    category: "Audio",
+
+    name: "Sony WH-1000XM6 Wireless Headphones",
+
+    description:
+      "Premium wireless noise-cancelling headphones with immersive sound, comfortable design, and long battery life.",
+
     price: 449,
     oldPrice: 499,
+    discount: 10,
+
+    category: "Audio",
+    brand: "Sony",
+    sku: "SON-WH1000XM6",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Advanced Noise Cancellation",
+      "Wireless Bluetooth",
+      "High-Resolution Audio",
+      "Up to 30 Hours Battery",
+      "Premium Comfort",
+    ],
+
     stock: 25,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Sony Warranty",
+
     rating: 4.8,
-    reviews: 265,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+    numReviews: 0,
+
     featured: true,
-    newArrival: false,
     bestseller: true,
-    description: "Premium noise cancelling headphones.",
+    newArrival: true,
   },
+
+  // ========================================================
+  // 6. APPLE WATCH SERIES 10
+  // ========================================================
+
   {
     id: 6,
-    name: "Apple Watch Ultra 3",
-    brand: "Apple",
+
+    name: "Apple Watch Series 10",
+
+    description:
+      "Apple Watch Series 10 with a sleek design, advanced health features, fitness tracking, and smart notifications.",
+
+    price: 499,
+    oldPrice: 549,
+    discount: 9,
+
     category: "Wearables",
-    price: 899,
-    oldPrice: 999,
-    stock: 14,
-    rating: 4.8,
-    reviews: 194,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-    featured: false,
-    newArrival: true,
+    brand: "Apple",
+    sku: "APP-WATCH10-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Advanced Fitness Tracking",
+      "Heart Rate Monitoring",
+      "Sleep Tracking",
+      "Water Resistant",
+      "Smart Notifications",
+    ],
+
+    stock: 20,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.7,
+    numReviews: 0,
+
+    featured: true,
     bestseller: false,
-    description: "Rugged premium smartwatch.",
+    newArrival: true,
   },
+
+  // ========================================================
+  // 7. AIRPODS PRO 2
+  // ========================================================
+
   {
     id: 7,
-    name: "Logitech MX Master 3S",
-    brand: "Logitech",
-    category: "Accessories",
-    price: 99,
-    oldPrice: 119,
-    stock: 40,
-    rating: 4.9,
-    reviews: 510,
-    image: "https://images.unsplash.com/photo-1527814050087-3793815479db",
-    featured: false,
-    newArrival: false,
+
+    name: "AirPods Pro 2",
+
+    description:
+      "Apple AirPods Pro with active noise cancellation, immersive audio, and a compact wireless charging case.",
+
+    price: 249,
+    oldPrice: 279,
+    discount: 11,
+
+    category: "Audio",
+    brand: "Apple",
+    sku: "APP-APP2-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Active Noise Cancellation",
+      "Transparency Mode",
+      "Spatial Audio",
+      "USB-C Charging",
+      "Wireless Charging Case",
+    ],
+
+    stock: 35,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.8,
+    numReviews: 0,
+
+    featured: true,
     bestseller: true,
-    description: "Professional productivity mouse.",
+    newArrival: false,
   },
+
+  // ========================================================
+  // 8. ASUS ROG STRIX G16
+  // ========================================================
+
   {
     id: 8,
-    name: "PlayStation 5 Pro",
-    brand: "Sony",
+
+    name: "ASUS ROG Strix G16",
+
+    description:
+      "High-performance ASUS gaming laptop designed for serious gamers with powerful graphics and fast refresh rates.",
+
+    price: 1799,
+    oldPrice: 1999,
+    discount: 10,
+
     category: "Gaming",
-    price: 699,
-    oldPrice: 749,
-    stock: 8,
-    rating: 4.9,
-    reviews: 340,
-    image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db",
+    brand: "ASUS",
+    sku: "ASU-ROG-G16",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Intel Core i9 Processor",
+      "NVIDIA GeForce RTX Graphics",
+      "16GB RAM",
+      "1TB SSD",
+      "165Hz Gaming Display",
+    ],
+
+    stock: 15,
+
+    shipping: "Free shipping",
+    warranty: "1 Year ASUS Warranty",
+
+    rating: 4.8,
+    numReviews: 0,
+
     featured: true,
-    newArrival: true,
     bestseller: true,
-    description: "Next-generation gaming console.",
+    newArrival: true,
+  },
+
+  // ========================================================
+  // 9. LOGITECH MX MASTER 3S
+  // ========================================================
+
+  {
+    id: 9,
+
+    name: "Logitech MX Master 3S",
+
+    description:
+      "Advanced wireless mouse designed for productivity with precision tracking, ergonomic comfort, and multi-device support.",
+
+    price: 99,
+    oldPrice: 119,
+    discount: 17,
+
+    category: "Accessories",
+    brand: "Logitech",
+    sku: "LOG-MX3S-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "8K DPI Tracking",
+      "Wireless Connectivity",
+      "Multi-Device Support",
+      "Ergonomic Design",
+      "USB-C Charging",
+    ],
+
+    stock: 40,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Logitech Warranty",
+
+    rating: 4.7,
+    numReviews: 0,
+
+    featured: false,
+    bestseller: true,
+    newArrival: false,
+  },
+
+  // ========================================================
+  // 10. IPAD PRO M4
+  // ========================================================
+
+  {
+    id: 10,
+
+    name: "iPad Pro M4",
+
+    description:
+      "Powerful Apple iPad Pro powered by the M4 chip with an advanced display and professional-level performance.",
+
+    price: 1099,
+    oldPrice: 1199,
+    discount: 8,
+
+    category: "Tablets",
+    brand: "Apple",
+    sku: "APP-IPAD-M4",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Apple M4 Chip",
+      "Ultra Retina XDR Display",
+      "256GB Storage",
+      "12MP Camera",
+      "USB-C Connectivity",
+    ],
+
+    stock: 16,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Apple Warranty",
+
+    rating: 4.9,
+    numReviews: 0,
+
+    featured: true,
+    bestseller: false,
+    newArrival: true,
+  },
+
+  // ========================================================
+  // 11. SAMSUNG GALAXY WATCH 7
+  // ========================================================
+
+  {
+    id: 11,
+
+    name: "Samsung Galaxy Watch 7",
+
+    description:
+      "Smartwatch with advanced health monitoring, fitness tracking, GPS, and seamless Android integration.",
+
+    price: 349,
+    oldPrice: 399,
+    discount: 13,
+
+    category: "Wearables",
+    brand: "Samsung",
+    sku: "SAM-WATCH7-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "Advanced Health Tracking",
+      "Heart Rate Monitoring",
+      "Built-in GPS",
+      "Sleep Tracking",
+      "Water Resistant",
+    ],
+
+    stock: 22,
+
+    shipping: "Free shipping",
+    warranty: "1 Year Samsung Warranty",
+
+    rating: 4.6,
+    numReviews: 0,
+
+    featured: false,
+    bestseller: false,
+    newArrival: true,
+  },
+
+  // ========================================================
+  // 12. ANKER USB-C 7-IN-1 HUB
+  // ========================================================
+
+  {
+    id: 12,
+
+    name: "Anker USB-C 7-in-1 Hub",
+
+    description:
+      "Compact USB-C hub with multiple ports for connecting displays, storage devices, accessories, and peripherals.",
+
+    price: 69,
+    oldPrice: 89,
+    discount: 22,
+
+    category: "Accessories",
+    brand: "Anker",
+    sku: "ANK-USBC7-001",
+
+    image: "/placeholder-product.png",
+
+    images: ["/placeholder-product.png"],
+
+    features: [
+      "7-in-1 Connectivity",
+      "USB-C Power Delivery",
+      "HDMI Output",
+      "USB 3.0 Ports",
+      "SD Card Reader",
+    ],
+
+    stock: 50,
+
+    shipping: "Free shipping",
+    warranty: "18 Month Anker Warranty",
+
+    rating: 4.6,
+    numReviews: 0,
+
+    featured: false,
+    bestseller: true,
+    newArrival: false,
   },
 ];
-
-// ==========================================================
-// FEATURED LISTS
-// ==========================================================
-
-export const featuredProducts = products.filter(
-  (product) => product.featured
-);
-
-export const newArrivals = products.filter(
-  (product) => product.newArrival
-);
-
-export const bestSellers = products.filter(
-  (product) => product.bestseller
-);
-
-export const trendingProducts = [...products]
-  .sort((a, b) => b.rating - a.rating)
-  .slice(0, 6);
-
-export default products;

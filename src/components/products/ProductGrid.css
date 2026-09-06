@@ -1,185 +1,212 @@
-/* =====================================================
+/* ==========================================================
+   TECHSTORE PRO
    PRODUCT GRID
-===================================================== */
+========================================================== */
 
 .product-grid {
+  display: grid;
 
-    display:grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
 
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+  gap: 28px;
 
-    gap:28px;
+  width: 100%;
 
-    width:100%;
-
-    animation:
-        fadeGrid .4s ease;
-
+  animation: fadeGrid 0.4s ease;
 }
 
 
+/* ==========================================================
+   GRID FADE ANIMATION
+========================================================== */
 
 @keyframes fadeGrid {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
 
-    from {
-
-        opacity:0;
-
-        transform:translateY(15px);
-
-    }
-
-
-    to {
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
-
-
-
-
-
-/* =====================================================
-   EMPTY STATE
-===================================================== */
-
+/* ==========================================================
+   EMPTY PRODUCTS STATE
+========================================================== */
 
 .empty-products {
+  width: 100%;
+  min-height: 300px;
 
-    min-height:300px;
+  display: flex;
+  flex-direction: column;
 
-    display:flex;
+  align-items: center;
+  justify-content: center;
 
-    flex-direction:column;
+  text-align: center;
 
-    align-items:center;
+  padding: 40px;
 
-    justify-content:center;
+  border-radius: 22px;
 
-    text-align:center;
+  background: var(--card-bg, #ffffff);
 
-    padding:40px;
+  border: 1px solid var(--border, #e5e7eb);
 
-    border-radius:22px;
-
-    background:var(--card-bg);
-
-    border:1px solid var(--border);
-
+  box-sizing: border-box;
 }
 
 
+/* ==========================================================
+   EMPTY ICON
+========================================================== */
 
 .empty-icon {
+  width: 72px;
+  height: 72px;
 
-    font-size:3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    margin-bottom:15px;
+  margin-bottom: 18px;
 
+  border-radius: 50%;
+
+  background: var(--background-secondary, #f3f4f6);
+
+  font-size: 2rem;
 }
 
 
+/* ==========================================================
+   EMPTY TITLE
+========================================================== */
 
 .empty-products h3 {
+  margin: 0 0 8px;
 
-    margin-bottom:8px;
+  font-size: 1.4rem;
 
-    font-size:1.4rem;
+  font-weight: 700;
 
+  color: var(--text, #111827);
 }
 
 
+/* ==========================================================
+   EMPTY DESCRIPTION
+========================================================== */
 
 .empty-products p {
+  margin: 0;
 
-    color:var(--text-muted);
+  max-width: 400px;
 
-    max-width:400px;
+  color: var(--text-muted, #6b7280);
 
+  font-size: 0.95rem;
+
+  line-height: 1.6;
 }
 
 
+/* ==========================================================
+   LARGE TABLET / SMALL DESKTOP
+========================================================== */
+
+@media (max-width: 1200px) {
+  .product-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+  }
+}
 
 
-
-
-
-/* =====================================================
+/* ==========================================================
    TABLET
-===================================================== */
+========================================================== */
 
+@media (max-width: 900px) {
+  .product-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
 
-@media(max-width:1200px){
+    gap: 20px;
+  }
 
+  .empty-products {
+    min-height: 280px;
 
-    .product-grid {
-
-        grid-template-columns:
-            repeat(3, minmax(0,1fr));
-
-        gap:24px;
-
-    }
-
-
+    padding: 32px;
+  }
 }
 
 
-
-
-
-
-
-/* =====================================================
-   SMALL TABLET
-===================================================== */
-
-
-@media(max-width:900px){
-
-
-    .product-grid {
-
-        grid-template-columns:
-            repeat(2, minmax(0,1fr));
-
-        gap:20px;
-
-    }
-
-
-}
-
-
-
-
-
-
-
-/* =====================================================
+/* ==========================================================
    MOBILE
-===================================================== */
+========================================================== */
+
+@media (max-width: 560px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+  }
+
+  .empty-products {
+    min-height: 250px;
+
+    padding: 28px 20px;
+
+    border-radius: 18px;
+  }
+
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+
+    font-size: 1.8rem;
+  }
+
+  .empty-products h3 {
+    font-size: 1.25rem;
+  }
+
+  .empty-products p {
+    font-size: 0.9rem;
+  }
+}
 
 
-@media(max-width:560px){
+/* ==========================================================
+   VERY SMALL MOBILE
+========================================================== */
+
+@media (max-width: 360px) {
+  .product-grid {
+    gap: 14px;
+  }
+
+  .empty-products {
+    padding: 24px 16px;
+  }
+}
 
 
-    .product-grid {
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
 
-        grid-template-columns:
-            1fr;
-
-        gap:18px;
-
-    }
-
-
+@media (prefers-reduced-motion: reduce) {
+  .product-grid {
+    animation: none;
+  }
 }

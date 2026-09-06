@@ -1,3 +1,8 @@
+// ==========================================================
+// TECHSTORE PRO
+// AUTH CONTEXT
+// ==========================================================
+
 import {
   createContext,
   useContext,
@@ -10,37 +15,48 @@ import {
   logout as logoutApi,
 } from "../api/authApi";
 
-/* ==========================================================
-   AUTH CONTEXT
-========================================================== */
+// ==========================================================
+// AUTH CONTEXT
+// ==========================================================
 
 const AuthContext = createContext(null);
 
-/* ==========================================================
-   AUTH PROVIDER
-========================================================== */
+// ==========================================================
+// AUTH PROVIDER
+// ==========================================================
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
-  /* ========================================================
-     RESTORE SESSION
-  ======================================================== */
+  // ========================================================
+  // RESTORE AUTHENTICATED SESSION
+  // ========================================================
 
   useEffect(() => {
     let mounted = true;
 
-    const loadUser = async () => {
+    const restoreSession = async () => {
       try {
-        setLoading(true);
+        if (mounted) {
+          setLoading(true);
+        }
 
-        /* --------------------------------------------------
-           CHECK TOKEN
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // CHECK STORED TOKEN
+        // --------------------------------------------------
 
-        const token = localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token");
+
+        // --------------------------------------------------
+        // NO TOKEN
+        // --------------------------------------------------
+        //
+        // Your current backend authentication flow uses the
+        // JWT returned by login/register and stored locally.
+        //
 
         if (!token) {
           if (mounted) {
@@ -51,23 +67,29 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        /* --------------------------------------------------
-           LOAD CACHED USER FIRST
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // LOAD CACHED USER
+        // --------------------------------------------------
 
         const cachedUser =
-          localStorage.getItem("techstore-user");
+          localStorage.getItem(
+            "techstore-user"
+          );
 
         if (cachedUser) {
           try {
-            const parsedUser = JSON.parse(cachedUser);
+            const parsedUser =
+              JSON.parse(cachedUser);
 
-            if (mounted && parsedUser) {
+            if (
+              mounted &&
+              parsedUser
+            ) {
               setUser(parsedUser);
             }
           } catch (error) {
             console.warn(
-              "⚠️ Invalid cached user. Removing it."
+              "⚠️ Invalid cached user. Removing cache."
             );
 
             localStorage.removeItem(
@@ -76,58 +98,45 @@ export function AuthProvider({ children }) {
           }
         }
 
-        /* --------------------------------------------------
-           VERIFY SESSION WITH BACKEND
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // VERIFY SESSION WITH BACKEND
+        // --------------------------------------------------
 
-        console.log(
-          "🔐 Checking authenticated user..."
-        );
+        const response =
+          await getCurrentUser();
 
-        const response = await getCurrentUser();
-
-        console.log(
-          "👤 Current user API response:",
-          response
-        );
-
-        /* --------------------------------------------------
-           SUPPORT BOTH AXIOS RESPONSE FORMATS
-
-           Format 1:
-           response.data.user
-
-           Format 2:
-           response.user
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // YOUR authController RETURNS:
+        //
+        // {
+        //   success: true,
+        //   user: {...}
+        // }
+        //
+        // Axios automatically returns that JSON body as
+        // response.data.
+        // --------------------------------------------------
 
         const payload =
           response?.data ?? response;
 
-        console.log(
-          "📋 Current user payload:",
-          payload
-        );
-
         const currentUser =
-          payload?.user ??
-          payload?.data?.user ??
-          null;
+          payload?.user ?? null;
 
-        /* --------------------------------------------------
-           USER NOT FOUND
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // USER NOT FOUND
+        // --------------------------------------------------
 
         if (!currentUser) {
           throw new Error(
             payload?.message ||
-              "User not found."
+              "User session could not be restored."
           );
         }
 
-        /* --------------------------------------------------
-           SAVE CURRENT USER
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // SAVE AUTHENTICATED USER
+        // --------------------------------------------------
 
         if (mounted) {
           setUser(currentUser);
@@ -142,18 +151,19 @@ export function AuthProvider({ children }) {
           "✅ User session restored:",
           currentUser
         );
-
       } catch (error) {
         console.error(
-          "❌ Authentication failed:",
+          "❌ Session restoration failed:",
           error
         );
 
-        /* --------------------------------------------------
-           INVALID / EXPIRED SESSION
-        -------------------------------------------------- */
+        // --------------------------------------------------
+        // CLEAR INVALID SESSION
+        // --------------------------------------------------
 
-        localStorage.removeItem("token");
+        localStorage.removeItem(
+          "token"
+        );
 
         localStorage.removeItem(
           "techstore-user"
@@ -162,7 +172,6 @@ export function AuthProvider({ children }) {
         if (mounted) {
           setUser(null);
         }
-
       } finally {
         if (mounted) {
           setLoading(false);
@@ -170,26 +179,29 @@ export function AuthProvider({ children }) {
       }
     };
 
-    loadUser();
+    restoreSession();
 
-    /* ------------------------------------------------------
-       CLEANUP
-    ------------------------------------------------------ */
+    // ------------------------------------------------------
+    // CLEANUP
+    // ------------------------------------------------------
 
     return () => {
       mounted = false;
     };
   }, []);
 
-  /* ========================================================
-     LOGIN
-  ======================================================== */
+  // ========================================================
+  // LOGIN
+  // ========================================================
 
-  const login = (userData, token) => {
+  const login = (
+    userData,
+    token
+  ) => {
     try {
-      /* --------------------------------------------------
-         SAVE TOKEN
-      -------------------------------------------------- */
+      // ----------------------------------------------------
+      // SAVE JWT
+      // ----------------------------------------------------
 
       if (token) {
         localStorage.setItem(
@@ -198,9 +210,9 @@ export function AuthProvider({ children }) {
         );
       }
 
-      /* --------------------------------------------------
-         SAVE USER
-      -------------------------------------------------- */
+      // ----------------------------------------------------
+      // SAVE USER
+      // ----------------------------------------------------
 
       if (userData) {
         localStorage.setItem(
@@ -215,7 +227,6 @@ export function AuthProvider({ children }) {
         "✅ User logged in:",
         userData
       );
-
     } catch (error) {
       console.error(
         "❌ Login context error:",
@@ -224,11 +235,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  /* ========================================================
-     UPDATE USER
-  ======================================================== */
+  // ========================================================
+  // UPDATE USER
+  // ========================================================
 
-  const updateUser = (updatedUser) => {
+  const updateUser = (
+    updatedUser
+  ) => {
     if (!updatedUser) {
       return;
     }
@@ -246,9 +259,9 @@ export function AuthProvider({ children }) {
     );
   };
 
-  /* ========================================================
-     LOGOUT
-  ======================================================== */
+  // ========================================================
+  // LOGOUT
+  // ========================================================
 
   const logout = async () => {
     try {
@@ -256,20 +269,24 @@ export function AuthProvider({ children }) {
         "🚪 Logging out..."
       );
 
-      await logoutApi();
+      // ----------------------------------------------------
+      // ASK BACKEND TO CLEAR HTTP-ONLY COOKIE
+      // ----------------------------------------------------
 
+      await logoutApi();
     } catch (error) {
-      console.error(
-        "⚠️ Logout API error:",
+      console.warn(
+        "⚠️ Logout API request failed:",
         error
       );
-
     } finally {
-      /* --------------------------------------------------
-         ALWAYS CLEAR LOCAL SESSION
-      -------------------------------------------------- */
+      // ----------------------------------------------------
+      // ALWAYS CLEAR LOCAL AUTHENTICATION
+      // ----------------------------------------------------
 
-      localStorage.removeItem("token");
+      localStorage.removeItem(
+        "token"
+      );
 
       localStorage.removeItem(
         "techstore-user"
@@ -283,9 +300,9 @@ export function AuthProvider({ children }) {
     }
   };
 
-  /* ========================================================
-     AUTH STATE
-  ======================================================== */
+  // ========================================================
+  // AUTH STATE
+  // ========================================================
 
   const isAuthenticated =
     Boolean(user);
@@ -293,29 +310,26 @@ export function AuthProvider({ children }) {
   const isAdmin =
     user?.role === "admin";
 
-  /* ========================================================
-     CONTEXT VALUE
-  ======================================================== */
+  // ========================================================
+  // CONTEXT VALUE
+  // ========================================================
 
   const value = {
     user,
-
     loading,
 
     login,
-
     logout,
 
     updateUser,
 
     isAuthenticated,
-
     isAdmin,
   };
 
-  /* ========================================================
-     PROVIDER
-  ======================================================== */
+  // ========================================================
+  // PROVIDER
+  // ========================================================
 
   return (
     <AuthContext.Provider
@@ -326,9 +340,9 @@ export function AuthProvider({ children }) {
   );
 }
 
-/* ==========================================================
-   USE AUTH HOOK
-========================================================== */
+// ==========================================================
+// USE AUTH HOOK
+// ==========================================================
 
 export function useAuth() {
   const context =

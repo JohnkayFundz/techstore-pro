@@ -14,12 +14,20 @@ const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
+// ----------------------------------------------------------
+// Escape special regex characters safely
+// ----------------------------------------------------------
+
 const escapeRegex = (value = "") => {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
 
+// ==========================================================
+// SEARCH FILTER
+// ==========================================================
+
 const buildSearchFilter = (searchTerm = "") => {
-  const term = searchTerm.trim();
+  const term = String(searchTerm).trim();
 
   if (!term) {
     return null;
@@ -63,36 +71,58 @@ const buildSearchFilter = (searchTerm = "") => {
   };
 };
 
+// ==========================================================
+// SORT
+// ==========================================================
+
 const buildSortOption = (sort = "newest") => {
-  switch (sort) {
+  switch (String(sort).trim().toLowerCase()) {
     case "price-low":
     case "price_asc":
     case "price-low-to-high":
-      return { price: 1 };
+      return {
+        price: 1,
+      };
 
     case "price-high":
     case "price_desc":
     case "price-high-to-low":
-      return { price: -1 };
+      return {
+        price: -1,
+      };
 
     case "name":
     case "name-asc":
-      return { name: 1 };
+      return {
+        name: 1,
+      };
 
     case "name-desc":
-      return { name: -1 };
+      return {
+        name: -1,
+      };
 
     case "rating":
-      return { rating: -1 };
+      return {
+        rating: -1,
+      };
 
     case "oldest":
-      return { createdAt: 1 };
+      return {
+        createdAt: 1,
+      };
 
     case "newest":
     default:
-      return { createdAt: -1 };
+      return {
+        createdAt: -1,
+      };
   }
 };
+
+// ==========================================================
+// PAGINATION
+// ==========================================================
 
 const getPagination = (page, limit) => {
   const parsedPage = Number(page);
@@ -124,17 +154,23 @@ const getPagination = (page, limit) => {
   };
 };
 
+// ==========================================================
+// PRICE FILTER
+// ==========================================================
+
 const buildPriceFilter = (minPrice, maxPrice) => {
   const parsedMinPrice = Number(minPrice);
   const parsedMaxPrice = Number(maxPrice);
 
   const hasMinPrice =
     minPrice !== undefined &&
+    minPrice !== null &&
     minPrice !== "" &&
     Number.isFinite(parsedMinPrice);
 
   const hasMaxPrice =
     maxPrice !== undefined &&
+    maxPrice !== null &&
     maxPrice !== "" &&
     Number.isFinite(parsedMaxPrice);
 
@@ -170,6 +206,10 @@ const buildPriceFilter = (minPrice, maxPrice) => {
   };
 };
 
+// ==========================================================
+// VALIDATION ERROR MESSAGE
+// ==========================================================
+
 const getValidationMessage = (error) => {
   if (error?.name === "ValidationError") {
     return Object.values(error.errors)
@@ -178,6 +218,71 @@ const getValidationMessage = (error) => {
   }
 
   return null;
+};
+
+// ==========================================================
+// NORMALIZE IMAGE DATA
+// ==========================================================
+
+const normalizeImages = (images) => {
+  if (Array.isArray(images)) {
+    return images
+      .map((image) => String(image || "").trim())
+      .filter(Boolean);
+  }
+
+  if (
+    typeof images === "string" &&
+    images.trim()
+  ) {
+    return [images.trim()];
+  }
+
+  return [];
+};
+
+// ==========================================================
+// NORMALIZE BOOLEAN
+// ==========================================================
+
+const normalizeBoolean = (value) => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+
+    if (normalized === "true") {
+      return true;
+    }
+
+    if (normalized === "false") {
+      return false;
+    }
+  }
+
+  return value;
+};
+
+// ==========================================================
+// NORMALIZE NUMBER
+// ==========================================================
+
+const normalizeNumber = (value) => {
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    return value;
+  }
+
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : value;
 };
 
 // ==========================================================
@@ -214,10 +319,8 @@ export const getProducts = async (req, res) => {
     // SEARCH
     // --------------------------------------------------------
 
-    const searchTerm = (
-      search ||
-      keyword ||
-      ""
+    const searchTerm = String(
+      search || keyword || ""
     ).trim();
 
     const searchFilter =
@@ -233,10 +336,10 @@ export const getProducts = async (req, res) => {
 
     if (
       category &&
-      category.trim() &&
-      category.trim() !== "All"
+      String(category).trim() &&
+      String(category).trim().toLowerCase() !== "all"
     ) {
-      filter.category = category.trim();
+      filter.category = String(category).trim();
     }
 
     // --------------------------------------------------------
@@ -277,6 +380,9 @@ export const getProducts = async (req, res) => {
         success: false,
         message: priceResult.error,
         products: [],
+        totalProducts: 0,
+        currentPage: 1,
+        totalPages: 0,
       });
     }
 
@@ -304,24 +410,25 @@ export const getProducts = async (req, res) => {
     // DATABASE QUERY
     // --------------------------------------------------------
 
-    const [products, totalProducts] =
-      await Promise.all([
-        Product.find(filter)
-          .sort(sortOption)
-          .skip(skip)
-          .limit(pageSize)
-          .lean(),
+    const [
+      products,
+      totalProducts,
+    ] = await Promise.all([
+      Product.find(filter)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(pageSize)
+        .lean(),
 
-        Product.countDocuments(filter),
-      ]);
+      Product.countDocuments(filter),
+    ]);
 
     // --------------------------------------------------------
-    // PAGINATION INFO
+    // TOTAL PAGES
     // --------------------------------------------------------
 
-    const totalPages = Math.ceil(
-      totalProducts / pageSize
-    );
+    const totalPages =
+      Math.ceil(totalProducts / pageSize);
 
     // --------------------------------------------------------
     // RESPONSE
@@ -333,22 +440,20 @@ export const getProducts = async (req, res) => {
       totalProducts,
       currentPage,
       totalPages,
-      hasNextPage:
-        currentPage < totalPages,
-      hasPreviousPage:
-        currentPage > 1,
+      hasNextPage: currentPage < totalPages,
+      hasPreviousPage: currentPage > 1,
       products,
     });
   } catch (error) {
-    console.error(
-      "Get Products Error:",
-      error
-    );
+    console.error("Get Products Error:", error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to fetch products.",
       products: [],
+      totalProducts: 0,
+      currentPage: 1,
+      totalPages: 0,
     });
   }
 };
@@ -359,17 +464,13 @@ export const getProducts = async (req, res) => {
 // ADMIN
 // ==========================================================
 
-export const getAdminProducts = async (
-  req,
-  res
-) => {
+export const getAdminProducts = async (req, res) => {
   try {
-    const products =
-      await Product.find({})
-        .sort({
-          createdAt: -1,
-        })
-        .lean();
+    const products = await Product.find({})
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
 
     return res.status(200).json({
       success: true,
@@ -377,15 +478,11 @@ export const getAdminProducts = async (
       products,
     });
   } catch (error) {
-    console.error(
-      "Admin Products Error:",
-      error
-    );
+    console.error("Admin Products Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to fetch admin products.",
+      message: "Failed to fetch admin products.",
       products: [],
     });
   }
@@ -397,10 +494,7 @@ export const getAdminProducts = async (
 // PUBLIC
 // ==========================================================
 
-export const searchProducts = async (
-  req,
-  res
-) => {
+export const searchProducts = async (req, res) => {
   try {
     const {
       q = "",
@@ -410,30 +504,29 @@ export const searchProducts = async (
       minPrice,
       maxPrice,
       sort = "newest",
+      page = 1,
+      limit = 10,
     } = req.query;
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // SEARCH TERM
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
-    const searchTerm = (
-      q ||
-      search ||
-      keyword ||
-      ""
+    const searchTerm = String(
+      q || search || keyword || ""
     ).trim();
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // BASE FILTER
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const filter = {
       isActive: true,
     };
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // SEARCH
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const searchFilter =
       buildSearchFilter(searchTerm);
@@ -442,21 +535,21 @@ export const searchProducts = async (
       Object.assign(filter, searchFilter);
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // CATEGORY
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (
       category &&
-      category.trim() &&
-      category.trim() !== "All"
+      String(category).trim() &&
+      String(category).trim().toLowerCase() !== "all"
     ) {
-      filter.category = category.trim();
+      filter.category = String(category).trim();
     }
 
-    // --------------------------------------------------------
-    // PRICE FILTER
-    // --------------------------------------------------------
+    // ------------------------------------------------------
+    // PRICE
+    // ------------------------------------------------------
 
     const priceResult = buildPriceFilter(
       minPrice,
@@ -468,6 +561,9 @@ export const searchProducts = async (
         success: false,
         message: priceResult.error,
         products: [],
+        totalProducts: 0,
+        currentPage: 1,
+        totalPages: 0,
       });
     }
 
@@ -475,41 +571,66 @@ export const searchProducts = async (
       filter.price = priceResult.filter;
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // SORT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const sortOption = buildSortOption(sort);
 
-    // --------------------------------------------------------
-    // QUERY
-    // --------------------------------------------------------
+    // ------------------------------------------------------
+    // PAGINATION
+    // ------------------------------------------------------
 
-    const products =
-      await Product.find(filter)
+    const {
+      currentPage,
+      pageSize,
+      skip,
+    } = getPagination(page, limit);
+
+    // ------------------------------------------------------
+    // DATABASE
+    // ------------------------------------------------------
+
+    const [
+      products,
+      totalProducts,
+    ] = await Promise.all([
+      Product.find(filter)
         .sort(sortOption)
-        .lean();
+        .skip(skip)
+        .limit(pageSize)
+        .lean(),
 
-    // --------------------------------------------------------
+      Product.countDocuments(filter),
+    ]);
+
+    const totalPages =
+      Math.ceil(totalProducts / pageSize);
+
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(200).json({
       success: true,
       count: products.length,
+      totalProducts,
+      currentPage,
+      totalPages,
+      hasNextPage: currentPage < totalPages,
+      hasPreviousPage: currentPage > 1,
       products,
     });
   } catch (error) {
-    console.error(
-      "Search Products Error:",
-      error
-    );
+    console.error("Search Products Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to search products.",
+      message: "Failed to search products.",
       products: [],
+      totalProducts: 0,
+      currentPage: 1,
+      totalPages: 0,
     });
   }
 };
@@ -520,16 +641,13 @@ export const searchProducts = async (
 // PUBLIC
 // ==========================================================
 
-export const getProductById = async (
-  req,
-  res
-) => {
+export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATE ID
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (!isValidObjectId(id)) {
       return res.status(400).json({
@@ -538,15 +656,14 @@ export const getProductById = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // FIND ACTIVE PRODUCT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
-    const product =
-      await Product.findOne({
-        _id: id,
-        isActive: true,
-      }).lean();
+    const product = await Product.findOne({
+      _id: id,
+      isActive: true,
+    }).lean();
 
     if (!product) {
       return res.status(404).json({
@@ -555,19 +672,16 @@ export const getProductById = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(200).json({
       success: true,
       product,
     });
   } catch (error) {
-    console.error(
-      "Get Product Error:",
-      error
-    );
+    console.error("Get Product Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -582,16 +696,13 @@ export const getProductById = async (
 // ADMIN
 // ==========================================================
 
-export const getAdminProductById = async (
-  req,
-  res
-) => {
+export const getAdminProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATE ID
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (!isValidObjectId(id)) {
       return res.status(400).json({
@@ -600,12 +711,11 @@ export const getAdminProductById = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // FIND PRODUCT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
-    const product =
-      await Product.findById(id).lean();
+    const product = await Product.findById(id).lean();
 
     if (!product) {
       return res.status(404).json({
@@ -614,9 +724,9 @@ export const getAdminProductById = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(200).json({
       success: true,
@@ -630,8 +740,7 @@ export const getAdminProductById = async (
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to fetch product.",
+      message: "Failed to fetch product.",
     });
   }
 };
@@ -640,12 +749,14 @@ export const getAdminProductById = async (
 // CREATE PRODUCT
 // POST /api/products
 // ADMIN
+//
+// Supports:
+// - JSON
+// - FormData
+// - Cloudinary image upload
 // ==========================================================
 
-export const createProduct = async (
-  req,
-  res
-) => {
+export const createProduct = async (req, res) => {
   try {
     const {
       name,
@@ -671,9 +782,57 @@ export const createProduct = async (
       isActive,
     } = req.body;
 
-    // --------------------------------------------------------
-    // BASIC SKU CHECK
-    // --------------------------------------------------------
+    // ------------------------------------------------------
+    // CLOUDINARY IMAGE
+    // ------------------------------------------------------
+
+    const uploadedImage =
+      req.file?.path ||
+      req.file?.secure_url ||
+      "";
+
+    const primaryImage =
+      uploadedImage ||
+      String(image || "").trim();
+
+    // ------------------------------------------------------
+    // ADDITIONAL IMAGES
+    // ------------------------------------------------------
+
+    const additionalImages =
+      normalizeImages(images);
+
+    // ------------------------------------------------------
+    // REQUIRED VALIDATION
+    // ------------------------------------------------------
+
+    if (!name || !String(name).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Product name is required.",
+      });
+    }
+
+    if (
+      !description ||
+      !String(description).trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Product description is required.",
+      });
+    }
+
+    if (
+      !category ||
+      !String(category).trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Category is required.",
+      });
+    }
 
     if (!sku || !String(sku).trim()) {
       return res.status(400).json({
@@ -682,13 +841,24 @@ export const createProduct = async (
       });
     }
 
+    if (!primaryImage) {
+      return res.status(400).json({
+        success: false,
+        message: "Product image is required.",
+      });
+    }
+
+    // ------------------------------------------------------
+    // NORMALIZE SKU
+    // ------------------------------------------------------
+
     const normalizedSku = String(sku)
       .trim()
       .toUpperCase();
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // CHECK DUPLICATE SKU
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const existingProduct =
       await Product.findOne({
@@ -703,45 +873,68 @@ export const createProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // CREATE PRODUCT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
-    const product =
-      await Product.create({
-        name,
-        description,
-        price,
-        oldPrice,
-        discount,
-        currency,
-        category,
-        brand,
-        sku: normalizedSku,
-        image,
-        images,
-        features,
-        stock,
-        shipping,
-        rating,
-        numReviews,
-        warranty,
-        featured,
-        bestseller,
-        newArrival,
-        isActive,
-        createdBy:
-          req.user?._id || null,
-      });
+    const product = await Product.create({
+      name: String(name).trim(),
 
-    // --------------------------------------------------------
+      description: String(description).trim(),
+
+      price: normalizeNumber(price),
+
+      oldPrice: normalizeNumber(oldPrice),
+
+      discount: normalizeNumber(discount),
+
+      currency: currency || "USD",
+
+      category: String(category).trim(),
+
+      brand: brand
+        ? String(brand).trim()
+        : "TechStore Pro",
+
+      sku: normalizedSku,
+
+      image: primaryImage,
+
+      images: additionalImages,
+
+      features,
+
+      stock: normalizeNumber(stock),
+
+      shipping,
+
+      rating: normalizeNumber(rating),
+
+      numReviews: normalizeNumber(numReviews),
+
+      warranty,
+
+      featured: normalizeBoolean(featured),
+
+      bestseller: normalizeBoolean(bestseller),
+
+      newArrival: normalizeBoolean(newArrival),
+
+      isActive:
+        isActive === undefined
+          ? true
+          : normalizeBoolean(isActive),
+
+      createdBy: req.user?._id || null,
+    });
+
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(201).json({
       success: true,
-      message:
-        "Product created successfully.",
+      message: "Product created successfully.",
       product,
     });
   } catch (error) {
@@ -750,11 +943,11 @@ export const createProduct = async (
       error
     );
 
-    // --------------------------------------------------------
-    // DUPLICATE KEY ERROR
-    // --------------------------------------------------------
+    // ------------------------------------------------------
+    // DUPLICATE KEY
+    // ------------------------------------------------------
 
-    if (error.code === 11000) {
+    if (error?.code === 11000) {
       return res.status(409).json({
         success: false,
         message:
@@ -762,9 +955,9 @@ export const createProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATION ERROR
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const validationMessage =
       getValidationMessage(error);
@@ -776,14 +969,13 @@ export const createProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // SERVER ERROR
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to create product.",
+      message: "Failed to create product.",
     });
   }
 };
@@ -794,16 +986,13 @@ export const createProduct = async (
 // ADMIN
 // ==========================================================
 
-export const updateProduct = async (
-  req,
-  res
-) => {
+export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATE ID
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (!isValidObjectId(id)) {
       return res.status(400).json({
@@ -812,9 +1001,9 @@ export const updateProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // ALLOWED FIELDS
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const allowedFields = [
       "name",
@@ -840,10 +1029,6 @@ export const updateProduct = async (
       "isActive",
     ];
 
-    // --------------------------------------------------------
-    // BUILD UPDATE DATA
-    // --------------------------------------------------------
-
     const updateData = {};
 
     allowedFields.forEach((field) => {
@@ -853,18 +1038,108 @@ export const updateProduct = async (
           field
         )
       ) {
-        updateData[field] =
-          req.body[field];
+        updateData[field] = req.body[field];
       }
     });
 
-    // --------------------------------------------------------
-    // PREVENT EMPTY UPDATE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
+    // CLOUDINARY IMAGE UPDATE
+    // ------------------------------------------------------
+
+    if (req.file) {
+      updateData.image =
+        req.file.path ||
+        req.file.secure_url ||
+        "";
+    }
+
+    // ------------------------------------------------------
+    // NORMALIZE IMAGE ARRAY
+    // ------------------------------------------------------
 
     if (
-      Object.keys(updateData).length === 0
+      Object.prototype.hasOwnProperty.call(
+        updateData,
+        "images"
+      )
     ) {
+      updateData.images =
+        normalizeImages(updateData.images);
+    }
+
+    // ------------------------------------------------------
+    // NORMALIZE NUMBERS
+    // ------------------------------------------------------
+
+    [
+      "price",
+      "oldPrice",
+      "discount",
+      "stock",
+      "rating",
+      "numReviews",
+    ].forEach((field) => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          updateData,
+          field
+        )
+      ) {
+        updateData[field] =
+          normalizeNumber(updateData[field]);
+      }
+    });
+
+    // ------------------------------------------------------
+    // NORMALIZE BOOLEANS
+    // ------------------------------------------------------
+
+    [
+      "featured",
+      "bestseller",
+      "newArrival",
+      "isActive",
+    ].forEach((field) => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          updateData,
+          field
+        )
+      ) {
+        updateData[field] =
+          normalizeBoolean(updateData[field]);
+      }
+    });
+
+    // ------------------------------------------------------
+    // NORMALIZE TEXT
+    // ------------------------------------------------------
+
+    [
+      "name",
+      "description",
+      "category",
+      "brand",
+      "currency",
+    ].forEach((field) => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          updateData,
+          field
+        ) &&
+        updateData[field] !== undefined &&
+        updateData[field] !== null
+      ) {
+        updateData[field] =
+          String(updateData[field]).trim();
+      }
+    });
+
+    // ------------------------------------------------------
+    // PREVENT EMPTY UPDATE
+    // ------------------------------------------------------
+
+    if (Object.keys(updateData).length === 0) {
       return res.status(400).json({
         success: false,
         message:
@@ -872,9 +1147,9 @@ export const updateProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // NORMALIZE SKU
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (
       Object.prototype.hasOwnProperty.call(
@@ -892,15 +1167,13 @@ export const updateProduct = async (
         });
       }
 
-      updateData.sku = String(
-        updateData.sku
-      )
+      updateData.sku = String(updateData.sku)
         .trim()
         .toUpperCase();
 
-      // ------------------------------------------------------
-      // CHECK SKU BELONGS TO ANOTHER PRODUCT
-      // ------------------------------------------------------
+      // ----------------------------------------------------
+      // CHECK DUPLICATE SKU
+      // ----------------------------------------------------
 
       const duplicateSku =
         await Product.findOne({
@@ -919,9 +1192,9 @@ export const updateProduct = async (
       }
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // UPDATE PRODUCT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const product =
       await Product.findByIdAndUpdate(
@@ -935,10 +1208,6 @@ export const updateProduct = async (
         }
       );
 
-    // --------------------------------------------------------
-    // PRODUCT NOT FOUND
-    // --------------------------------------------------------
-
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -946,14 +1215,13 @@ export const updateProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(200).json({
       success: true,
-      message:
-        "Product updated successfully.",
+      message: "Product updated successfully.",
       product,
     });
   } catch (error) {
@@ -962,11 +1230,11 @@ export const updateProduct = async (
       error
     );
 
-    // --------------------------------------------------------
-    // DUPLICATE KEY ERROR
-    // --------------------------------------------------------
+    // ------------------------------------------------------
+    // DUPLICATE KEY
+    // ------------------------------------------------------
 
-    if (error.code === 11000) {
+    if (error?.code === 11000) {
       return res.status(409).json({
         success: false,
         message:
@@ -974,9 +1242,9 @@ export const updateProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATION ERROR
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     const validationMessage =
       getValidationMessage(error);
@@ -988,14 +1256,13 @@ export const updateProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // SERVER ERROR
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to update product.",
+      message: "Failed to update product.",
     });
   }
 };
@@ -1003,20 +1270,18 @@ export const updateProduct = async (
 // ==========================================================
 // DELETE PRODUCT
 // SOFT DELETE
+//
 // DELETE /api/products/:id
 // ADMIN
 // ==========================================================
 
-export const deleteProduct = async (
-  req,
-  res
-) => {
+export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATE ID
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (!isValidObjectId(id)) {
       return res.status(400).json({
@@ -1025,12 +1290,11 @@ export const deleteProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // FIND PRODUCT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
-    const product =
-      await Product.findById(id);
+    const product = await Product.findById(id);
 
     if (!product) {
       return res.status(404).json({
@@ -1039,22 +1303,21 @@ export const deleteProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // SOFT DELETE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     product.isActive = false;
 
     await product.save();
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(200).json({
       success: true,
-      message:
-        "Product deleted successfully.",
+      message: "Product deleted successfully.",
       product,
     });
   } catch (error) {
@@ -1065,28 +1328,25 @@ export const deleteProduct = async (
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to delete product.",
+      message: "Failed to delete product.",
     });
   }
 };
 
 // ==========================================================
 // RESTORE PRODUCT
+//
 // PUT /api/products/:id/restore
 // ADMIN
 // ==========================================================
 
-export const restoreProduct = async (
-  req,
-  res
-) => {
+export const restoreProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // VALIDATE ID
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     if (!isValidObjectId(id)) {
       return res.status(400).json({
@@ -1095,12 +1355,11 @@ export const restoreProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // FIND PRODUCT
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
-    const product =
-      await Product.findById(id);
+    const product = await Product.findById(id);
 
     if (!product) {
       return res.status(404).json({
@@ -1109,22 +1368,21 @@ export const restoreProduct = async (
       });
     }
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // RESTORE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     product.isActive = true;
 
     await product.save();
 
-    // --------------------------------------------------------
+    // ------------------------------------------------------
     // RESPONSE
-    // --------------------------------------------------------
+    // ------------------------------------------------------
 
     return res.status(200).json({
       success: true,
-      message:
-        "Product restored successfully.",
+      message: "Product restored successfully.",
       product,
     });
   } catch (error) {
@@ -1135,8 +1393,7 @@ export const restoreProduct = async (
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to restore product.",
+      message: "Failed to restore product.",
     });
   }
 };

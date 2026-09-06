@@ -1,263 +1,400 @@
+/* ==========================================================
+   TECHSTORE PRO
+   ADMIN PRODUCTS PAGE
+   Responsive / Mobile Friendly
+========================================================== */
+
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
 .admin-products-page {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 
-/* =========================
-   Header
-========================= */
+/* ==========================================================
+   ADMIN PAGE CONTAINER
+========================================================== */
 
-.page-header {
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  margin-bottom: 30px;
-
-}
-
-
-.page-header h1 {
-
+.admin-products-page > .container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  font-size: 28px;
 
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.admin-products-page .page-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+
+.admin-products-page .page-header h1 {
+  margin: 0;
   color: #111827;
-
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 
-.page-header p {
-
-  margin-top: 8px;
-
+.admin-products-page .page-header p {
+  margin: 8px 0 0;
   color: #6b7280;
-
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 
+/* ==========================================================
+   BUTTONS
+========================================================== */
 
-/* =========================
-   Buttons
-========================= */
-
-.btn {
-
+.admin-products-page .btn {
   border: none;
-
   cursor: pointer;
-
   text-decoration: none;
 
   display: inline-flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 8px;
 
-  transition: .3s;
+  font-family: inherit;
+  font-weight: 600;
 
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+
+  box-sizing: border-box;
 }
 
 
+.admin-products-page .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 
-.btn-primary {
 
+.admin-products-page .btn-primary {
   background: #2563eb;
-
-  color: white;
-
+  color: #ffffff;
   padding: 12px 20px;
-
 }
 
 
-.btn-primary:hover {
-
+.admin-products-page .btn-primary:hover {
   background: #1d4ed8;
-
+  transform: translateY(-1px);
 }
 
 
-
-.btn-small {
-
+.admin-products-page .btn-small {
   padding: 8px 12px;
-
   font-size: 13px;
-
   margin-right: 8px;
-
 }
 
 
+.admin-products-page .btn-small:last-child {
+  margin-right: 0;
+}
 
-.btn-secondary {
 
+.admin-products-page .btn-secondary {
   background: #64748b;
-
-  color: white;
-
+  color: #ffffff;
 }
 
 
-
-.btn-secondary:hover {
-
+.admin-products-page .btn-secondary:hover {
   background: #475569;
-
 }
 
 
-
-.btn-danger {
-
+.admin-products-page .btn-danger {
   background: #ef4444;
-
-  color: white;
-
+  color: #ffffff;
 }
 
 
-
-.btn-danger:hover {
-
+.admin-products-page .btn-danger:hover {
   background: #dc2626;
-
 }
 
 
+.admin-products-page .btn-success {
+  background: #16a34a;
+  color: #ffffff;
+}
 
-/* =========================
-   Alerts
-========================= */
 
-.alert {
+.admin-products-page .btn-success:hover {
+  background: #15803d;
+}
 
+
+/* ==========================================================
+   SUMMARY CARDS
+========================================================== */
+
+.admin-products-summary {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+
+.admin-products-summary .summary-card {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.04);
+
+  box-sizing: border-box;
+}
+
+
+.admin-products-summary .summary-card span {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+.admin-products-summary .summary-card strong {
+  color: #111827;
+  font-size: 28px;
+  line-height: 1;
+}
+
+
+/* ==========================================================
+   ALERTS
+========================================================== */
+
+.admin-products-page .alert {
+  width: 100%;
   padding: 15px;
-
   border-radius: 10px;
-
   margin-bottom: 20px;
-
+  box-sizing: border-box;
 }
 
 
-.alert-error {
-
+.admin-products-page .alert-error {
   background: #fee2e2;
-
   color: #b91c1c;
-
+  border: 1px solid #fecaca;
 }
 
 
+/* ==========================================================
+   PRODUCTS TABLE WRAPPER
+========================================================== */
 
-/* =========================
-   Table
-========================= */
+.admin-products-page .products-table {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 
-.products-table {
-
-  background: white;
+  background: #ffffff;
 
   border-radius: 12px;
 
   padding: 20px;
 
   overflow-x: auto;
+  overflow-y: hidden;
 
   box-shadow:
-    0 4px 15px rgba(0,0,0,0.05);
+    0 4px 15px rgba(0, 0, 0, 0.05);
 
+  box-sizing: border-box;
+
+  -webkit-overflow-scrolling: touch;
 }
 
 
+/* ==========================================================
+   TABLE
+========================================================== */
 
-.products-table table {
-
+.admin-products-page .products-table table {
   width: 100%;
+  min-width: 760px;
 
   border-collapse: collapse;
+  border-spacing: 0;
 
+  box-sizing: border-box;
 }
 
 
-
-.products-table th {
-
+.admin-products-page .products-table th {
   background: #f8fafc;
 
-  padding: 15px;
+  padding: 14px 15px;
 
   text-align: left;
 
   font-size: 14px;
+  font-weight: 600;
 
   color: #374151;
 
+  white-space: nowrap;
+
+  border-bottom: 1px solid #e5e7eb;
 }
 
 
+.admin-products-page .products-table td {
+  padding: 14px 15px;
 
-.products-table td {
+  border-bottom: 1px solid #e5e7eb;
 
-  padding: 15px;
+  color: #374151;
 
-  border-bottom:
-    1px solid #e5e7eb;
+  font-size: 14px;
 
+  vertical-align: middle;
 }
 
 
-
-.products-table tr:last-child td {
-
+.admin-products-page .products-table tr:last-child td {
   border-bottom: none;
-
 }
 
 
+.admin-products-page .products-table tbody tr {
+  transition: background-color 0.2s ease;
+}
 
-.products-table tbody tr:hover {
 
+.admin-products-page .products-table tbody tr:hover {
   background: #f9fafb;
-
 }
 
 
+/* ==========================================================
+   INACTIVE PRODUCT
+========================================================== */
 
-/* =========================
-   Product Image
-========================= */
+.admin-products-page .product-row-inactive {
+  opacity: 0.65;
+}
 
-.product-thumbnail {
 
+.admin-products-page .product-row-inactive:hover {
+  opacity: 0.8;
+}
+
+
+/* ==========================================================
+   PRODUCT IMAGE
+========================================================== */
+
+.admin-products-page .product-thumbnail {
   width: 60px;
-
   height: 60px;
 
   object-fit: cover;
 
+  display: block;
+
   border-radius: 8px;
 
+  background: #f3f4f6;
+
+  border: 1px solid #e5e7eb;
 }
 
 
+/* ==========================================================
+   STATUS BADGES
+========================================================== */
 
-/* =========================
-   Empty State
-========================= */
+.admin-products-page .status-badge {
+  display: inline-flex;
 
-.empty-state {
+  align-items: center;
+  justify-content: center;
 
-  background: white;
+  padding: 5px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+.admin-products-page .status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+
+.admin-products-page .status-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* ==========================================================
+   ACTIONS
+========================================================== */
+
+.admin-products-page .product-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.admin-products-page .empty-state {
+  width: 100%;
+
+  background: #ffffff;
 
   padding: 40px;
 
@@ -265,61 +402,187 @@
 
   border-radius: 12px;
 
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 
-
-.empty-state p {
-
+.admin-products-page .empty-state p {
   color: #6b7280;
+  margin: 0 0 20px;
+}
 
-  margin-bottom: 20px;
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 900px) {
+
+  .admin-products-page > .container {
+    padding: 0;
+  }
+
+
+  .admin-products-page .page-header {
+    margin-bottom: 24px;
+  }
+
+
+  .admin-products-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+
+  .admin-products-summary .summary-card {
+    padding: 16px;
+  }
+
+
+  .admin-products-summary .summary-card strong {
+    font-size: 24px;
+  }
+
+
+  .admin-products-page .products-table {
+    padding: 12px;
+  }
 
 }
 
 
+/* ==========================================================
+   MOBILE
+========================================================== */
 
-/* =========================
-   Responsive
-========================= */
+@media (max-width: 768px) {
+
+  .admin-products-page {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
 
 
-@media(max-width:768px){
-
-
-  .page-header {
-
+  .admin-products-page .page-header {
     flex-direction: column;
-
     align-items: flex-start;
-
-    gap: 20px;
-
+    gap: 16px;
   }
 
 
-
-  .page-header h1 {
-
+  .admin-products-page .page-header h1 {
     font-size: 22px;
-
   }
 
 
+  .admin-products-page .page-header p {
+    font-size: 14px;
+  }
 
-  .products-table {
 
+  .admin-products-page .page-header .btn-primary {
+    width: 100%;
+  }
+
+
+  .admin-products-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+
+  .admin-products-summary .summary-card {
+    padding: 16px;
+  }
+
+
+  .admin-products-summary .summary-card strong {
+    font-size: 22px;
+  }
+
+
+  .admin-products-page .products-table {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+
+    border-radius: 10px;
+  }
+
+
+  .admin-products-page .products-table table {
+    min-width: 760px;
+  }
+
+
+  .admin-products-page .products-table th,
+  .admin-products-page .products-table td {
+    padding: 12px;
+  }
+
+
+  .admin-products-page .product-thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+
+}
+
+
+/* ==========================================================
+   SMALL PHONES
+========================================================== */
+
+@media (max-width: 480px) {
+
+  .admin-products-page .page-header h1 {
+    font-size: 20px;
+  }
+
+
+  .admin-products-page .page-header p {
+    font-size: 13px;
+  }
+
+
+  .admin-products-summary .summary-card {
+    padding: 14px;
+  }
+
+
+  .admin-products-summary .summary-card span {
+    font-size: 13px;
+  }
+
+
+  .admin-products-summary .summary-card strong {
+    font-size: 20px;
+  }
+
+
+  .admin-products-page .products-table {
+    padding: 6px;
+  }
+
+
+  .admin-products-page .products-table table {
+    min-width: 720px;
+  }
+
+
+  .admin-products-page .products-table th,
+  .admin-products-page .products-table td {
     padding: 10px;
-
   }
 
 
-
-  .products-table table {
-
-    min-width: 700px;
-
+  .admin-products-page .btn-small {
+    padding: 7px 10px;
+    font-size: 12px;
   }
-
 
 }

@@ -77,7 +77,10 @@ function Sidebar() {
           <NavLink
             key={item.path}
             to={item.path}
-            end={item.path === "/admin"}
+            end={
+              item.path === "/admin" ||
+              item.path === "/admin/products"
+            }
             className={({ isActive }) =>
               isActive
                 ? "sidebar-link active"
