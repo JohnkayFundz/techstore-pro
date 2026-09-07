@@ -69,6 +69,7 @@ function Contact() {
             type="text"
             name="name"
             placeholder="Your Name"
+            aria-label="Your Name"
             autoComplete="name"
             required
           />
@@ -77,6 +78,7 @@ function Contact() {
             type="email"
             name="email"
             placeholder="Email Address"
+            aria-label="Email Address"
             autoComplete="email"
             required
           />
@@ -85,6 +87,7 @@ function Contact() {
             name="message"
             rows="6"
             placeholder="Your Message"
+            aria-label="Your Message"
             required
           />
 
