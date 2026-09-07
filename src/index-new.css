@@ -16,7 +16,6 @@ ul, ol { list-style: none; }
   --success: #16a34a; --danger: #dc2626; --warning: #ea580c;
   --bg-color: #f8fafc; --surface: #fff; --surface-hover: #f1f5f9; --surface-subtle: #f8fafc;
   --text-color: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
-  /* Compatibility aliases for existing page/component styles. */
   --background: var(--bg-color); --card-bg: var(--surface); --text: var(--text-color);
   --text-primary: var(--text-color); --text-secondary: var(--text-muted); --text-light: var(--text-muted);
   --border-color: var(--border); --container-width: var(--container);
@@ -48,6 +47,7 @@ p { color: var(--text-muted); }
 .btn-secondary { background: var(--secondary); color: #fff; }
 .btn-outline { background: transparent; border-color: var(--primary); color: var(--primary); }
 .btn-outline:hover { background: var(--primary); color: #fff; }
+.btn:disabled { cursor: not-allowed; opacity: .6; transform: none; }
 
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
 .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
@@ -60,9 +60,83 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
 .loading, .empty-state { display: flex; align-items: center; justify-content: center; min-height: 300px; padding: 2rem; color: var(--text-muted); text-align: center; }
 
 /* ==========================================================
+   AUTHENTICATION + ACCOUNT
+========================================================== */
+.auth-page, .account-page { min-height: 70vh; padding: 4rem 0; }
+.auth-card, .account-card { width: min(100%, 520px); margin: 0 auto; padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+.auth-header, .account-header { margin-bottom: 1.75rem; text-align: center; }
+.auth-header h1, .account-header h1 { margin-bottom: .6rem; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+.auth-form, .account-form { display: grid; gap: 1.15rem; }
+.form-group { display: grid; gap: .45rem; }
+.form-group label { color: var(--text-color); font-weight: 600; font-size: .92rem; }
+.form-group textarea { min-height: 120px; resize: vertical; }
+.password-input { position: relative; display: flex; align-items: center; }
+.password-input input { padding-right: 4.75rem; }
+.show-password { position: absolute; right: .35rem; min-height: 36px; padding: .4rem .7rem; border: 0; border-radius: 8px; background: transparent; color: var(--primary); font-weight: 700; }
+.show-password:hover { background: var(--surface-hover); }
+.auth-links { display: flex; justify-content: flex-end; margin-top: -.35rem; }
+.auth-links a, .auth-footer a { color: var(--primary); font-weight: 600; }
+.auth-links a:hover, .auth-footer a:hover { text-decoration: underline; }
+.auth-btn { width: 100%; }
+.auth-footer { display: grid; gap: .5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); text-align: center; }
+.form-error { padding: .8rem 1rem; border: 1px solid rgba(220, 38, 38, .25); border-radius: var(--radius); background: rgba(220, 38, 38, .08); color: var(--danger); font-weight: 600; }
+.success-message { display: grid; gap: 1rem; text-align: center; }
+.success-message h3 { color: var(--success); }
+.success-message .btn { width: 100%; }
+.password-strength { font-weight: 600; }
+.password-strength.weak { color: var(--danger); } .password-strength.medium { color: var(--warning); } .password-strength.strong { color: var(--success); }
+.account-avatar { width: 88px; height: 88px; margin: 0 auto 1.5rem; overflow: hidden; border-radius: 50%; background: var(--surface-subtle); border: 1px solid var(--border); }
+.account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-placeholder { width: 100%; height: 100%; display: grid; place-items: center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-size: 2rem; font-weight: 800; }
+.account-actions { display: flex; gap: .75rem; margin-top: .5rem; }
+.account-actions .btn { flex: 1; }
+.page-loader { min-height: 50vh; display: grid; place-items: center; align-content: center; gap: .75rem; text-align: center; }
+.spinner { width: 22px; height: 22px; display: inline-block; border: 3px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .75s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================
+   CUSTOMER DASHBOARD
+========================================================== */
+.dashboard-page { padding: 3rem 0 5rem; }
+.dashboard-header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem; }
+.dashboard-header h1 { margin-bottom: .45rem; font-size: clamp(1.9rem, 4vw, 2.75rem); }
+.dashboard-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.dashboard-card, .dashboard-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+.dashboard-card { padding: 1.4rem; }
+.dashboard-icon { display: block; margin-bottom: .65rem; font-size: 1.5rem; }
+.dashboard-card h2 { margin-bottom: .25rem; font-size: 1.8rem; }
+.dashboard-card p { font-size: .9rem; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.dashboard-panel { padding: 1.5rem; margin-bottom: 1rem; }
+.dashboard-panel h3 { margin-bottom: 1.15rem; }
+.profile-info { display: grid; gap: .75rem; }
+.profile-row { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--border); }
+.profile-row:last-child { border-bottom: 0; }
+.profile-row span { color: var(--text-muted); }
+.profile-row strong { text-align: right; overflow-wrap: anywhere; }
+.dashboard-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+.dashboard-action { padding: .9rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-color); font-weight: 600; transition: background-color var(--transition), border-color var(--transition), transform var(--transition); }
+.dashboard-action:hover { background: var(--surface-hover); border-color: var(--primary); transform: translateY(-1px); }
+.empty-dashboard { padding: 1rem 0; display: grid; gap: 1rem; justify-items: start; }
+.activity-list { display: grid; gap: .75rem; }
+.activity-item { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: .9rem; align-items: center; padding: .75rem; border: 1px solid var(--border); border-radius: var(--radius); }
+.activity-item img { width: 56px; height: 56px; object-fit: contain; border-radius: 8px; background: var(--surface-subtle); }
+.activity-item h4 { margin-bottom: .2rem; font-size: .98rem; }
+.activity-item strong { color: var(--primary); }
+
+/* ==========================================================
+   404
+========================================================== */
+.not-found { min-height: 65vh; display: grid; place-items: center; padding: 4rem 0; text-align: center; }
+.not-found-content { width: min(100%, 680px); }
+.not-found-content h1 { margin-bottom: .25rem; font-size: clamp(5rem, 18vw, 10rem); line-height: .9; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.not-found-content h2 { margin-bottom: .75rem; font-size: clamp(1.6rem, 4vw, 2.5rem); }
+.not-found-content p { max-width: 560px; margin: 0 auto; }
+.not-found-actions { display: flex; justify-content: center; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+/* ==========================================================
    CART — SHARED STOREFRONT STYLES
 ========================================================== */
-
 .cart-page { padding-top: 3rem; padding-bottom: 5rem; }
 .cart-page .section-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
 .cart-page .section-header h1, .empty-cart h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.75rem); }
@@ -107,11 +181,19 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
 @keyframes pulse { 50% { opacity: .5; } } .pulse { animation: pulse 1.5s infinite; }
 
 @media (max-width: 900px) {
+  .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
   .cart-layout { grid-template-columns: 1fr; }
   .cart-summary { position: static; }
 }
 
 @media (max-width: 640px) {
+  .auth-page, .account-page { padding: 2.5rem 0; }
+  .auth-card, .account-card { padding: 1.25rem; }
+  .dashboard-page { padding: 2rem 0 3rem; }
+  .dashboard-header { align-items: flex-start; flex-direction: column; }
+  .dashboard-header .btn { width: 100%; }
+  .dashboard-stats { grid-template-columns: 1fr 1fr; }
   .cart-page { padding-top: 2rem; padding-bottom: 3rem; }
   .cart-page .section-header { align-items: flex-start; flex-direction: column; }
   .cart-item { grid-template-columns: 1fr; gap: 1rem; }
@@ -124,6 +206,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
   .container { width: min(92%, var(--container)); }
   .section { padding: 3rem 0; }
   .btn { min-height: 46px; }
+  .account-actions, .not-found-actions { flex-direction: column; }
+  .account-actions .btn, .not-found-actions .btn { width: 100%; }
+  .dashboard-stats { grid-template-columns: 1fr; }
+  .dashboard-actions { grid-template-columns: 1fr; }
+  .activity-item { grid-template-columns: 48px minmax(0, 1fr); }
+  .activity-item img { width: 48px; height: 48px; }
+  .activity-item strong { grid-column: 2; }
   .cart-product { gap: .75rem; }
   .cart-image { width: 84px; height: 84px; flex-basis: 84px; }
   .cart-actions { display: grid; grid-template-columns: auto 1fr; gap: .75rem; }
