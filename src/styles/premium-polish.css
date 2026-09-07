@@ -1,0 +1,114 @@
+/* ==========================================================
+   TECHSTORE PRO — FINAL PREMIUM POLISH
+   Small, non-invasive UX layer applied after the core styles.
+========================================================== */
+
+:root {
+  --premium-shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.06);
+  --premium-shadow-md: 0 12px 32px rgba(15, 23, 42, 0.09);
+  --premium-radius: 16px;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.18);
+  color: inherit;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.28);
+  outline-offset: 3px;
+}
+
+/* Prevent accidental horizontal overflow on small screens. */
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+/* Give common interactive cards a restrained premium lift without
+   changing their existing visual language. */
+.product-card,
+.feature-card,
+.category-card,
+.info-card,
+.order-card,
+.dashboard-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.product-card:hover,
+.feature-card:hover,
+.category-card:hover,
+.info-card:hover,
+.order-card:hover,
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--premium-shadow-md);
+}
+
+/* Consistent disabled state across the app. */
+button:disabled,
+.btn:disabled,
+button[aria-disabled="true"],
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none !important;
+}
+
+/* Cleaner scrollbars where supported. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --premium-radius: 14px;
+  }
+
+  /* Keep form controls comfortably tappable on phones. */
+  input,
+  textarea,
+  select,
+  button {
+    min-height: 42px;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: auto;
+  }
+}
