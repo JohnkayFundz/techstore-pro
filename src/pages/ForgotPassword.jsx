@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import "./ForgotPasswordPremium.css";
+
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -9,26 +11,21 @@ function ForgotPassword() {
 
   function handleSubmit(e) {
     e.preventDefault();
-
     setError("");
 
     const trimmedEmail = email.trim();
-
     if (!trimmedEmail) {
       setError("Please enter your email address.");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!emailRegex.test(trimmedEmail)) {
       setError("Please enter a valid email address.");
       return;
     }
 
     setLoading(true);
-
-    // Demo only
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
@@ -38,99 +35,49 @@ function ForgotPassword() {
   return (
     <section className="auth-page">
       <div className="container">
-        <div className="auth-card">
+        <div className="auth-card password-recovery-card">
           <div className="auth-header">
-            <h1>Forgot Password</h1>
-
-            <p>
-              Enter your email address and we'll
-              send you a password reset link.
-            </p>
+            <h1>Reset your password.</h1>
+            <p>Enter your email address and we'll send you a password reset link.</p>
           </div>
 
           {!success ? (
-            <form
-              className="auth-form"
-              onSubmit={handleSubmit}
-              noValidate
-            >
-              {error && (
-                <div className="form-error">
-                  {error}
-                </div>
-              )}
+            <form className="auth-form" onSubmit={handleSubmit} noValidate>
+              {error && <div className="form-error" role="alert">{error}</div>}
 
               <div className="form-group">
-                <label htmlFor="email">
-                  Email Address
-                </label>
-
+                <label htmlFor="email">Email Address</label>
                 <input
                   id="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-
-                    if (error) {
-                      setError("");
-                    }
+                    if (error) setError("");
                   }}
                   required
                   autoComplete="email"
                 />
               </div>
 
-              <button
-                type="submit"
-                className="btn btn-primary auth-btn"
-                disabled={loading}
-              >
+              <button type="submit" className="btn btn-primary auth-btn" disabled={loading}>
                 {loading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Sending...
-                  </>
-                ) : (
-                  "Send Reset Link"
-                )}
+                  <><span className="spinner" aria-hidden="true"></span> Sending...</>
+                ) : "Send Reset Link"}
               </button>
             </form>
           ) : (
-            <div className="success-message">
-              <h3>✔ Email Sent</h3>
-
-              <p>
-                If an account exists for{" "}
-                <strong>{email}</strong>,
-                you'll receive password reset
-                instructions shortly.
-              </p>
-
-              <Link
-                to="/login"
-                className="btn btn-primary"
-              >
-                Back to Login
-              </Link>
+            <div className="success-message" role="status" aria-live="polite">
+              <h3>Email sent</h3>
+              <p>If an account exists for <strong>{email}</strong>, you'll receive password reset instructions shortly.</p>
+              <Link to="/login" className="btn btn-primary">Back to Login</Link>
             </div>
           )}
 
           <div className="auth-footer">
-            <p>
-              Remember your password?{" "}
-              <Link to="/login">
-                Login
-              </Link>
-            </p>
-
-            <p>
-              Don't have an account?{" "}
-              <Link to="/register">
-                Register
-              </Link>
-            </p>
+            <p>Remember your password? <Link to="/login">Login</Link></p>
+            <p>Don't have an account? <Link to="/register">Register</Link></p>
           </div>
         </div>
       </div>
