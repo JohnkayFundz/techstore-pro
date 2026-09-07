@@ -16,7 +16,7 @@ import {
 import { useProducts } from "../context/ProductContext";
 import ProductCard from "../components/products/ProductCard";
 
-import "./Home.css";
+import "./HomePremium.css";
 
 const CATEGORIES = [
   "All",
