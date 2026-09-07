@@ -74,27 +74,6 @@ const Home = () => {
   }, [searchTerm, category, fetchProducts]);
 
   // ========================================================
-  // BUILD QUERY
-  // ========================================================
-
-  const getProductQuery = (page = 1) => {
-    const params = {
-      page,
-      limit: 10,
-    };
-
-    if (searchTerm.trim()) {
-      params.search = searchTerm.trim();
-    }
-
-    if (category !== "All") {
-      params.category = category;
-    }
-
-    return params;
-  };
-
-  // ========================================================
   // CLEAR FILTERS
   // ========================================================
 
@@ -138,20 +117,25 @@ const Home = () => {
       return;
     }
 
-    fetchProducts(getProductQuery(page));
+    const params = {
+      page,
+      limit: 10,
+    };
+
+    if (searchTerm.trim()) {
+      params.search = searchTerm.trim();
+    }
+
+    if (category !== "All") {
+      params.category = category;
+    }
+
+    fetchProducts(params);
 
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  };
-
-  // ========================================================
-  // RETRY
-  // ========================================================
-
-  const retryProducts = () => {
-    fetchProducts(getProductQuery(currentPage));
   };
 
   // ========================================================
@@ -262,74 +246,107 @@ const Home = () => {
 
       {/* ==================================================
           FEATURE STRIP
-      ================================================== */
+      ================================================== */}
 
       <section className="home-features">
 
         <div className="home-container home-features__container">
 
+          {/* SECURE CHECKOUT */}
+
           <div className="home-feature">
+
             <div className="home-feature__icon">
               <FiShield aria-hidden="true" />
             </div>
+
             <div className="home-feature__content">
+
               <strong className="home-feature__title">
                 Secure Checkout
               </strong>
+
               <span className="home-feature__text">
                 Shop with confidence
               </span>
+
             </div>
+
           </div>
 
+          {/* RELIABLE DELIVERY */}
+
           <div className="home-feature">
+
             <div className="home-feature__icon">
               <FiTruck aria-hidden="true" />
             </div>
+
             <div className="home-feature__content">
+
               <strong className="home-feature__title">
                 Reliable Delivery
               </strong>
+
               <span className="home-feature__text">
                 Fast &amp; dependable service
               </span>
+
             </div>
+
           </div>
 
+          {/* QUALITY PRODUCTS */}
+
           <div className="home-feature">
+
             <div className="home-feature__icon">
               <FiAward aria-hidden="true" />
             </div>
+
             <div className="home-feature__content">
+
               <strong className="home-feature__title">
                 Quality Products
               </strong>
+
               <span className="home-feature__text">
                 Technology you can trust
               </span>
+
             </div>
+
           </div>
 
+          {/* CUSTOMER SUPPORT */}
+
           <div className="home-feature">
+
             <div className="home-feature__icon">
               <FiHeadphones aria-hidden="true" />
             </div>
+
             <div className="home-feature__content">
+
               <strong className="home-feature__title">
                 Customer Support
               </strong>
+
               <span className="home-feature__text">
                 We're here to help
               </span>
+
             </div>
+
           </div>
 
         </div>
+
       </section>
 
       {/* ==================================================
           PRODUCTS
-      ================================================== */
+      ================================================== */}
 
       <section
         className="home-products"
@@ -338,16 +355,25 @@ const Home = () => {
 
         <div className="home-container">
 
+          {/* SECTION HEADER */}
+
           <div className="home-products__header">
+
             <div className="home-products__heading">
+
               <span className="home-products__eyebrow">
                 Explore our collection
               </span>
-              <h2>Featured Products</h2>
+
+              <h2>
+                Featured Products
+              </h2>
+
               <p>
                 Find the technology you need,
                 all in one place.
               </p>
+
             </div>
 
             <Link
@@ -357,10 +383,17 @@ const Home = () => {
               View All Products
               <FiArrowRight aria-hidden="true" />
             </Link>
+
           </div>
 
+          {/* ==================================================
+              SEARCH & FILTERS
+          ================================================== */}
+
           <div className="home-products__controls">
+
             <div className="home-search">
+
               <FiSearch
                 size={19}
                 aria-hidden="true"
@@ -386,12 +419,14 @@ const Home = () => {
                   <FiX aria-hidden="true" />
                 </button>
               )}
+
             </div>
 
             <div
               className="home-category-filter"
               aria-label="Product categories"
             >
+
               {CATEGORIES.map((item) => (
                 <button
                   key={item}
@@ -411,11 +446,18 @@ const Home = () => {
                   {item}
                 </button>
               ))}
+
             </div>
+
           </div>
+
+          {/* ==================================================
+              ACTIVE FILTER
+          ================================================== */}
 
           {(searchTerm || category !== "All") && (
             <div className="home-active-filter">
+
               <span>
                 Showing results
                 {searchTerm &&
@@ -431,14 +473,20 @@ const Home = () => {
                 Clear filters
                 <FiX aria-hidden="true" />
               </button>
+
             </div>
           )}
+
+          {/* ==================================================
+              ERROR
+          ================================================== */}
 
           {error && (
             <div
               className="home-message home-message--error"
               role="alert"
             >
+
               <strong>
                 Unable to load products
               </strong>
@@ -451,12 +499,22 @@ const Home = () => {
 
               <button
                 type="button"
-                onClick={retryProducts}
+                onClick={() =>
+                  fetchProducts({
+                    page: currentPage,
+                    limit: 10,
+                  })
+                }
               >
                 Try Again
               </button>
+
             </div>
           )}
+
+          {/* ==================================================
+              LOADING
+          ================================================== */}
 
           {loading && (
             <div
@@ -464,15 +522,25 @@ const Home = () => {
               aria-live="polite"
               aria-label="Loading products"
             >
+
               <div className="home-spinner" />
-              <span>Loading products...</span>
+
+              <span>
+                Loading products...
+              </span>
+
             </div>
           )}
+
+          {/* ==================================================
+              PRODUCT GRID
+          ================================================== */}
 
           {!loading &&
             !error &&
             products.length > 0 && (
               <div className="home-products-grid">
+
                 {products.map((product) => (
                   <ProductCard
                     key={
@@ -482,18 +550,26 @@ const Home = () => {
                     product={product}
                   />
                 ))}
+
               </div>
             )}
+
+          {/* ==================================================
+              EMPTY STATE
+          ================================================== */}
 
           {!loading &&
             !error &&
             products.length === 0 && (
               <div className="home-empty">
+
                 <div className="home-empty__icon">
                   <FiSearch aria-hidden="true" />
                 </div>
 
-                <h3>No products found</h3>
+                <h3>
+                  No products found
+                </h3>
 
                 <p>
                   We couldn't find any products
@@ -506,69 +582,113 @@ const Home = () => {
                 >
                   Clear Filters
                 </button>
+
               </div>
             )}
+
+          {/* ==================================================
+              RESULTS COUNT
+          ================================================== */}
 
           {!loading &&
             !error &&
             products.length > 0 && (
               <div className="home-results-count">
+
                 Showing{" "}
-                <strong>{products.length}</strong>{" "}
+                <strong>
+                  {products.length}
+                </strong>{" "}
                 of{" "}
-                <strong>{totalProducts}</strong>{" "}
+                <strong>
+                  {totalProducts}
+                </strong>{" "}
                 products
+
               </div>
             )}
+
+          {/* ==================================================
+              PAGINATION
+          ================================================== */}
 
           {!loading &&
             !error &&
             products.length > 0 &&
             totalPages > 1 && (
+
               <nav
                 className="home-pagination"
                 aria-label="Product pagination"
               >
+
                 <button
                   type="button"
                   onClick={() =>
-                    changePage(currentPage - 1)
+                    changePage(
+                      currentPage - 1
+                    )
                   }
-                  disabled={currentPage <= 1}
+                  disabled={
+                    currentPage <= 1
+                  }
                   aria-label="Previous page"
                 >
+
                   <FiChevronLeft
                     aria-hidden="true"
                   />
-                  <span>Previous</span>
+
+                  <span>
+                    Previous
+                  </span>
+
                 </button>
 
                 <span className="home-pagination__status">
+
                   Page{" "}
-                  <strong>{currentPage}</strong>{" "}
+                  <strong>
+                    {currentPage}
+                  </strong>{" "}
                   of{" "}
-                  <strong>{totalPages}</strong>
+                  <strong>
+                    {totalPages}
+                  </strong>
+
                 </span>
 
                 <button
                   type="button"
                   onClick={() =>
-                    changePage(currentPage + 1)
+                    changePage(
+                      currentPage + 1
+                    )
                   }
                   disabled={
-                    currentPage >= totalPages
+                    currentPage >=
+                    totalPages
                   }
                   aria-label="Next page"
                 >
-                  <span>Next</span>
+
+                  <span>
+                    Next
+                  </span>
+
                   <FiChevronRight
                     aria-hidden="true"
                   />
+
                 </button>
+
               </nav>
             )}
+
         </div>
+
       </section>
+
     </main>
   );
 };
