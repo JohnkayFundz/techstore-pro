@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -9,19 +9,24 @@ function Account() {
     user,
     loading,
     logout,
-    updateUserProfile,
+    updateUser,
   } = useAuth();
 
-  const [name, setName] = useState(
-    user?.displayName || ""
-  );
-
+  const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setName(
+      user?.name ||
+      user?.displayName ||
+      ""
+    );
+  }, [user]);
 
   if (loading) {
     return (
       <section className="container page-loader">
-        <div className="spinner"></div>
+        <div className="spinner" aria-hidden="true"></div>
         <p>Loading account...</p>
       </section>
     );
@@ -31,8 +36,8 @@ function Account() {
     return <Navigate to="/login" replace />;
   }
 
-  async function handleUpdateProfile(e) {
-    e.preventDefault();
+  async function handleUpdateProfile(event) {
+    event.preventDefault();
 
     const trimmedName = name.trim();
 
@@ -44,13 +49,15 @@ function Account() {
     try {
       setSaving(true);
 
-      await updateUserProfile({
+      // Keep the profile immediately available across the app.
+      // The current backend does not expose a customer profile-update endpoint.
+      updateUser({
+        ...user,
+        name: trimmedName,
         displayName: trimmedName,
       });
 
       toast.success("Profile updated successfully.");
-    } catch (error) {
-      toast.error(error.message);
     } finally {
       setSaving(false);
     }
@@ -61,9 +68,20 @@ function Account() {
       await logout();
       toast.success("Logged out successfully.");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(
+        error?.message ||
+        "Unable to log out."
+      );
     }
   }
+
+  const createdAt =
+    user.createdAt ||
+    user.metadata?.creationTime;
+
+  const formattedCreatedAt = createdAt
+    ? new Date(createdAt).toLocaleDateString()
+    : "Not available";
 
   return (
     <section className="account-page">
@@ -76,16 +94,16 @@ function Account() {
             </p>
           </div>
 
-          <div className="account-avatar">
+          <div className="account-avatar" aria-hidden="true">
             {user.photoURL ? (
               <img
                 src={user.photoURL}
-                alt={user.displayName || "User"}
+                alt=""
               />
             ) : (
               <div className="avatar-placeholder">
-                {(user.displayName || user.email)
-                  ?.charAt(0)
+                {(user.name || user.displayName || user.email || "U")
+                  .charAt(0)
                   .toUpperCase()}
               </div>
             )}
@@ -96,55 +114,60 @@ function Account() {
             onSubmit={handleUpdateProfile}
           >
             <div className="form-group">
-              <label htmlFor="name">
+              <label htmlFor="account-name">
                 Full Name
               </label>
 
               <input
-                id="name"
+                id="account-name"
                 type="text"
                 value={name}
-                onChange={(e) =>
-                  setName(e.target.value)
+                onChange={(event) =>
+                  setName(event.target.value)
                 }
                 autoComplete="name"
+                disabled={saving}
+                required
               />
             </div>
 
             <div className="form-group">
-              <label>Email Address</label>
+              <label htmlFor="account-email">
+                Email Address
+              </label>
 
               <input
+                id="account-email"
                 type="email"
-                value={user.email}
+                value={user.email || ""}
                 disabled
                 readOnly
               />
             </div>
 
             <div className="form-group">
-              <label>Email Verified</label>
+              <label htmlFor="account-role">
+                Account Role
+              </label>
 
               <input
+                id="account-role"
                 type="text"
-                value={
-                  user.emailVerified
-                    ? "Verified"
-                    : "Not Verified"
-                }
+                value={user.role || "customer"}
                 disabled
                 readOnly
               />
             </div>
 
             <div className="form-group">
-              <label>Account Created</label>
+              <label htmlFor="account-created">
+                Account Created
+              </label>
 
               <input
+                id="account-created"
                 type="text"
-                value={new Date(
-                  user.metadata.creationTime
-                ).toLocaleDateString()}
+                value={formattedCreatedAt}
                 disabled
                 readOnly
               />
