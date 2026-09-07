@@ -22,20 +22,16 @@ select {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
+:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.28);
   outline-offset: 3px;
 }
 
-/* Prevent accidental horizontal overflow on small screens. */
 html,
 body,
 #root {
   max-width: 100%;
+  overflow-x: hidden;
 }
 
 img,
@@ -45,227 +41,147 @@ canvas {
   max-width: 100%;
 }
 
-/* Give common interactive cards a restrained premium lift without
-   changing their existing visual language. */
+button,
+a {
+  touch-action: manipulation;
+}
+
+.card,
 .product-card,
-.feature-card,
 .category-card,
-.info-card,
-.order-card,
-.dashboard-card {
+.feature-card,
+.stat-card {
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
     border-color 180ms ease;
 }
 
-.product-card:hover,
-.feature-card:hover,
-.category-card:hover,
-.info-card:hover,
-.order-card:hover,
-.dashboard-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--premium-shadow-md);
-}
-
-/* Touch devices do not need hover-only visual movement. */
-@media (hover: none) {
+@media (hover: hover) and (pointer: fine) {
+  .card:hover,
   .product-card:hover,
-  .feature-card:hover,
   .category-card:hover,
-  .info-card:hover,
-  .order-card:hover,
-  .dashboard-card:hover {
-    transform: none;
+  .feature-card:hover,
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--premium-shadow-md);
   }
 }
 
-/* Consistent disabled state across the app. */
 button:disabled,
-.btn:disabled,
-button[aria-disabled="true"],
-.btn[aria-disabled="true"] {
+input:disabled,
+textarea:disabled,
+select:disabled {
   cursor: not-allowed;
-  opacity: 0.62;
-  transform: none !important;
 }
 
-/* Cleaner scrollbars where supported. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+  scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
 }
 
-/* Respect users who prefer reduced motion. */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.35);
+  background-clip: padding-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
-@media (max-width: 640px) {
-  :root {
-    --premium-radius: 14px;
-  }
-
-  /* Keep form controls comfortably tappable on phones. */
+@media (max-width: 600px) {
+  button,
   input,
   textarea,
-  select,
-  button {
+  select {
     min-height: 42px;
-  }
-
-  input[type="checkbox"],
-  input[type="radio"] {
-    min-height: auto;
   }
 }
 
 /* ==========================================================
-   ADMIN ORDERS — RESPONSIVE FINISHING LAYER
+   ADMIN ORDERS — PREMIUM FINISHING LAYER
 ========================================================== */
 
-.admin-orders-page {
-  min-width: 0;
-  overflow-x: hidden;
-}
-
-.admin-orders-page .page-header {
+.admin-orders {
   min-width: 0;
 }
 
-.admin-orders-page .page-header > div:first-child {
+.admin-orders .orders-table-wrap {
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
+}
+
+.admin-orders .order-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-orders .order-card:hover {
+    transform: translateY(-2px);
+    border-color: #dbe3ef;
+    box-shadow: var(--premium-shadow-md);
+  }
+}
+
+@media (hover: none) {
+  .admin-orders .order-card:hover {
+    transform: none;
+  }
+}
+
+/* ==========================================================
+   ADMIN PRODUCT FORM — PREMIUM FINISHING LAYER
+========================================================== */
+
+.admin-product-form {
   min-width: 0;
 }
 
-.admin-orders-page .page-header h1 {
-  overflow-wrap: anywhere;
-}
-
-.admin-orders-page .refresh-btn,
-.admin-orders-page .orders-toolbar input,
-.admin-orders-page .orders-toolbar select,
-.admin-orders-page .admin-order-card select {
-  min-height: 42px;
-}
-
-.admin-orders-page .orders-summary {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.admin-orders-page .orders-summary .summary-card {
+.admin-product-form .form-card,
+.admin-product-form .image-upload-card {
   min-width: 0;
 }
 
-.admin-orders-page .orders-toolbar {
-  align-items: stretch;
+.admin-product-form input,
+.admin-product-form textarea,
+.admin-product-form select {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
 }
 
-.admin-orders-page .orders-toolbar > input {
-  flex: 1 1 320px;
-  min-width: 0;
+.admin-product-form input:focus,
+.admin-product-form textarea:focus,
+.admin-product-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.admin-orders-page .orders-toolbar > select {
-  flex: 0 1 220px;
-  min-width: 150px;
-}
-
-.admin-orders-page .admin-order-card {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: var(--premium-shadow-sm);
-}
-
-.admin-orders-page .order-top {
-  min-width: 0;
-}
-
-.admin-orders-page .order-top > div:first-child {
-  min-width: 0;
-}
-
-.admin-orders-page .order-top p,
-.admin-orders-page .order-top strong {
-  overflow-wrap: anywhere;
-}
-
-.admin-orders-page .admin-order-card select {
-  max-width: 100%;
-}
-
-@media (max-width: 1100px) {
-  .admin-orders-page .orders-summary {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .admin-orders-page {
-    padding: 1rem 0;
-  }
-
-  .admin-orders-page .page-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .admin-orders-page .page-header h1 {
-    font-size: 1.55rem;
-  }
-
-  .admin-orders-page .refresh-btn {
-    width: 100%;
-  }
-
-  .admin-orders-page .orders-summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .admin-orders-page .summary-card {
-    padding: 1rem;
-  }
-
-  .admin-orders-page .orders-toolbar {
-    flex-direction: column;
-    padding: 1rem;
-  }
-
-  .admin-orders-page .orders-toolbar > input,
-  .admin-orders-page .orders-toolbar > select {
-    width: 100%;
-    min-width: 0;
-    flex: 1 1 auto;
-  }
-}
-
-@media (max-width: 420px) {
-  .admin-orders-page .orders-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-orders-page .summary-card {
-    min-height: 70px;
+@media (max-width: 600px) {
+  .admin-product-form .form-actions button {
+    min-height: 44px;
   }
 }
 
@@ -335,6 +251,66 @@ button[aria-disabled="true"],
 @media (hover: none) {
   .admin-analytics .analytics-card:hover,
   .admin-analytics .analytics-panel:hover {
+    transform: none;
+  }
+}
+
+/* ==========================================================
+   ADMIN HEADER — PREMIUM FINISHING LAYER
+========================================================== */
+
+.admin-header {
+  min-width: 0;
+}
+
+.admin-search,
+.admin-header-right {
+  min-width: 0;
+}
+
+.admin-search input {
+  min-width: 0;
+}
+
+.admin-header .icon-btn,
+.admin-header .admin-profile,
+.admin-header .admin-logout-btn {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.admin-header .icon-btn:focus-visible,
+.admin-header .admin-profile:focus-visible,
+.admin-header .admin-logout-btn:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.22);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .admin-header .icon-btn,
+  .admin-header .profile-icon,
+  .admin-header .admin-logout-btn {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-header .icon-btn,
+  .admin-header .profile-icon,
+  .admin-header .admin-logout-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (hover: none) {
+  .admin-header .icon-btn:hover,
+  .admin-header .admin-profile:hover,
+  .admin-header .admin-logout-btn:hover {
     transform: none;
   }
 }
