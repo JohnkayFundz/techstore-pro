@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowRight,
@@ -10,16 +10,13 @@ import {
   FiTruck,
   FiHeadphones,
   FiAward,
+  FiLayers,
 } from "react-icons/fi";
 
 import { useProducts } from "../context/ProductContext";
 import ProductCard from "../components/products/ProductCard";
 
 import "./Home.css";
-
-// ==========================================================
-// CONSTANTS
-// ==========================================================
 
 const CATEGORIES = [
   "All",
@@ -32,9 +29,29 @@ const CATEGORIES = [
   "Tablets",
 ];
 
-// ==========================================================
-// HOME
-// ==========================================================
+const getProductImage = (product) => {
+  const candidates = [
+    product?.image,
+    product?.imageUrl,
+    ...(Array.isArray(product?.images)
+      ? product.images.map((image) =>
+          typeof image === "string" ? image : image?.url
+        )
+      : []),
+  ];
+
+  return (
+    candidates.find(
+      (image) =>
+        typeof image === "string" &&
+        image.trim() &&
+        !image.includes("via.placeholder.com") &&
+        !image.startsWith("javascript:") &&
+        !image.startsWith("data:") &&
+        !image.startsWith("blob:")
+    ) || "/placeholder-product.png"
+  );
+};
 
 const Home = () => {
   const {
@@ -48,647 +65,263 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("All");
 
-  // ========================================================
-  // FETCH PRODUCTS
-  // ========================================================
-
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = {
-        page: 1,
-        limit: 10,
-      };
-
-      if (searchTerm.trim()) {
-        params.search = searchTerm.trim();
-      }
-
-      if (category !== "All") {
-        params.category = category;
-      }
-
+      const params = { page: 1, limit: 10 };
+      if (searchTerm.trim()) params.search = searchTerm.trim();
+      if (category !== "All") params.category = category;
       fetchProducts(params);
     }, 400);
 
     return () => clearTimeout(timer);
   }, [searchTerm, category, fetchProducts]);
 
-  // ========================================================
-  // CLEAR FILTERS
-  // ========================================================
+  useEffect(() => {
+    const elements = document.querySelectorAll("[data-reveal]");
+    if (!elements.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px" }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [products, loading]);
 
   const clearFilters = () => {
     setSearchTerm("");
     setCategory("All");
   };
 
-  // ========================================================
-  // CHANGE CATEGORY
-  // ========================================================
-
-  const handleCategoryChange = (selectedCategory) => {
-    setCategory(selectedCategory);
-  };
-
-  // ========================================================
-  // PAGINATION
-  // ========================================================
-
   const currentPage = Number(
     pagination.page ?? pagination.currentPage ?? 1
   );
-
   const totalPages = Number(
     pagination.pages ?? pagination.totalPages ?? 1
   );
-
   const totalProducts = Number(
-    pagination.total ??
-      pagination.totalProducts ??
-      products.length
+    pagination.total ?? pagination.totalProducts ?? products.length
   );
 
   const changePage = (page) => {
-    if (
-      page < 1 ||
-      page > totalPages ||
-      page === currentPage
-    ) {
-      return;
-    }
+    if (page < 1 || page > totalPages || page === currentPage) return;
 
-    const params = {
-      page,
-      limit: 10,
-    };
-
-    if (searchTerm.trim()) {
-      params.search = searchTerm.trim();
-    }
-
-    if (category !== "All") {
-      params.category = category;
-    }
-
+    const params = { page, limit: 10 };
+    if (searchTerm.trim()) params.search = searchTerm.trim();
+    if (category !== "All") params.category = category;
     fetchProducts(params);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ========================================================
-  // RENDER
-  // ========================================================
+  const featuredProduct = useMemo(() => products[0] || null, [products]);
+  const supportingProducts = useMemo(() => products.slice(1, 4), [products]);
 
   return (
     <main className="home-page">
-
-      {/* ==================================================
-          HERO
-      ================================================== */}
-
       <section className="home-hero">
-        <div className="home-hero__background" />
-
+        <div className="home-hero__ambient" aria-hidden="true" />
         <div className="home-container home-hero__container">
-
-          <div className="home-hero__content">
-
-            <span className="home-hero__badge">
-              Premium Technology
-            </span>
-
-            <h1>
-              Premium Tech.
-              <span>Smarter Choices.</span>
-            </h1>
-
+          <div className="home-hero__copy" data-reveal>
+            <span className="home-kicker">The new standard in tech</span>
+            <h1>Technology, <em>refined.</em></h1>
             <p>
-              Discover laptops, smartphones, audio,
-              wearables and accessories built for the
-              way you work, play and connect.
+              Carefully selected devices with exceptional design,
+              effortless performance and a shopping experience made simple.
             </p>
-
             <div className="home-hero__actions">
-
-              <Link
-                to="/products"
-                className="home-btn home-btn--primary"
-              >
-                Shop Products
-                <FiArrowRight aria-hidden="true" />
+              <Link to="/products" className="home-pill home-pill--dark">
+                Shop the collection <FiArrowRight aria-hidden="true" />
               </Link>
-
-              <a
-                href="#featured-products"
-                className="home-btn home-btn--secondary"
-              >
-                Explore Categories
+              <a href="#featured-products" className="home-text-link">
+                Explore products <FiArrowRight aria-hidden="true" />
               </a>
-
             </div>
-
-            <div className="home-hero__trust">
-
-              <span>
-                <FiShield aria-hidden="true" />
-                Secure Shopping
-              </span>
-
-              <span>
-                <FiAward aria-hidden="true" />
-                Quality Products
-              </span>
-
-              <span>
-                <FiTruck aria-hidden="true" />
-                Reliable Delivery
-              </span>
-
-            </div>
-
           </div>
 
-          {/* HERO VISUAL */}
-
-          <div className="home-hero__visual">
-
-            <div className="home-hero__glow" />
-
-            <div className="home-hero__device home-hero__device--large">
-              <div className="home-hero__device-screen">
-                <span>TECH</span>
-                <strong>STORE</strong>
-              </div>
+          <div className="home-hero__visual" data-reveal>
+            <div className="home-hero__halo" aria-hidden="true" />
+            <div className="home-hero__stage">
+              {featuredProduct ? (
+                <Link
+                  to={`/products/${featuredProduct._id ?? featuredProduct.id}`}
+                  className="home-hero__product"
+                  aria-label={`View ${featuredProduct.name || "featured product"}`}
+                >
+                  <img
+                    src={getProductImage(featuredProduct)}
+                    alt={featuredProduct.name || "Featured technology product"}
+                  />
+                </Link>
+              ) : (
+                <div className="home-hero__placeholder" aria-hidden="true">
+                  <FiLayers />
+                </div>
+              )}
             </div>
-
-            <div className="home-hero__device home-hero__device--small">
-              <div />
+            <div className="home-hero__caption">
+              <span>Featured</span>
+              <strong>{featuredProduct?.name || "The latest in technology"}</strong>
+              <Link to="/products">Discover <FiArrowRight aria-hidden="true" /></Link>
             </div>
-
-            <div className="home-hero__floating-card">
-
-              <FiHeadphones aria-hidden="true" />
-
-              <div>
-                <strong>Latest Tech</strong>
-                <span>Ready for you</span>
-              </div>
-
-            </div>
-
           </div>
-
         </div>
       </section>
 
-      {/* ==================================================
-          FEATURE STRIP
-      ================================================== */}
-
-      <section className="home-features">
-
-        <div className="home-container home-features__container">
-
-          {/* SECURE CHECKOUT */}
-
-          <div className="home-feature">
-
-            <div className="home-feature__icon">
-              <FiShield aria-hidden="true" />
-            </div>
-
-            <div className="home-feature__content">
-
-              <strong className="home-feature__title">
-                Secure Checkout
-              </strong>
-
-              <span className="home-feature__text">
-                Shop with confidence
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* RELIABLE DELIVERY */}
-
-          <div className="home-feature">
-
-            <div className="home-feature__icon">
-              <FiTruck aria-hidden="true" />
-            </div>
-
-            <div className="home-feature__content">
-
-              <strong className="home-feature__title">
-                Reliable Delivery
-              </strong>
-
-              <span className="home-feature__text">
-                Fast &amp; dependable service
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* QUALITY PRODUCTS */}
-
-          <div className="home-feature">
-
-            <div className="home-feature__icon">
-              <FiAward aria-hidden="true" />
-            </div>
-
-            <div className="home-feature__content">
-
-              <strong className="home-feature__title">
-                Quality Products
-              </strong>
-
-              <span className="home-feature__text">
-                Technology you can trust
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* CUSTOMER SUPPORT */}
-
-          <div className="home-feature">
-
-            <div className="home-feature__icon">
-              <FiHeadphones aria-hidden="true" />
-            </div>
-
-            <div className="home-feature__content">
-
-              <strong className="home-feature__title">
-                Customer Support
-              </strong>
-
-              <span className="home-feature__text">
-                We're here to help
-              </span>
-
-            </div>
-
-          </div>
-
+      <section className="home-value-strip" aria-label="Shopping benefits" data-reveal>
+        <div className="home-container home-value-strip__grid">
+          <div><FiShield aria-hidden="true" /><span><strong>Secure</strong> checkout</span></div>
+          <div><FiTruck aria-hidden="true" /><span><strong>Reliable</strong> delivery</span></div>
+          <div><FiAward aria-hidden="true" /><span><strong>Curated</strong> quality</span></div>
+          <div><FiHeadphones aria-hidden="true" /><span><strong>Human</strong> support</span></div>
         </div>
-
       </section>
 
-      {/* ==================================================
-          PRODUCTS
-      ================================================== */}
-
-      <section
-        className="home-products"
-        id="featured-products"
-      >
-
-        <div className="home-container">
-
-          {/* SECTION HEADER */}
-
-          <div className="home-products__header">
-
-            <div className="home-products__heading">
-
-              <span className="home-products__eyebrow">
-                Explore our collection
-              </span>
-
-              <h2>
-                Featured Products
-              </h2>
-
+      {supportingProducts.length > 0 && (
+        <section className="home-editorial" data-reveal>
+          <div className="home-container home-editorial__grid">
+            <div className="home-editorial__intro">
+              <span className="home-kicker">Designed around you</span>
+              <h2>Less noise.<br /><em>More of what matters.</em></h2>
               <p>
-                Find the technology you need,
-                all in one place.
+                From the first click to the final delivery, every detail is
+                designed to make finding the right device feel effortless.
               </p>
-
+              <Link to="/products" className="home-text-link">
+                See everything <FiArrowRight aria-hidden="true" />
+              </Link>
             </div>
+            <div className="home-editorial__products">
+              {supportingProducts.map((product, index) => (
+                <Link
+                  key={product._id ?? product.id}
+                  to={`/products/${product._id ?? product.id}`}
+                  className={`home-editorial-card home-editorial-card--${index + 1}`}
+                >
+                  <span>{product.category || "Technology"}</span>
+                  <img src={getProductImage(product)} alt={product.name || "Product"} />
+                  <strong>{product.name}</strong>
+                  <span className="home-editorial-card__link">View product <FiArrowRight aria-hidden="true" /></span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-            <Link
-              to="/products"
-              className="home-view-all"
-            >
-              View All Products
-              <FiArrowRight aria-hidden="true" />
-            </Link>
-
+      <section className="home-products" id="featured-products">
+        <div className="home-container">
+          <div className="home-products__header" data-reveal>
+            <div>
+              <span className="home-kicker">The collection</span>
+              <h2>Find your next favorite.</h2>
+              <p>Thoughtfully selected tech for work, play and everything between.</p>
+            </div>
+            <Link to="/products" className="home-text-link">View all <FiArrowRight aria-hidden="true" /></Link>
           </div>
 
-          {/* ==================================================
-              SEARCH & FILTERS
-          ================================================== */}
-
-          <div className="home-products__controls">
-
+          <div className="home-products__controls" data-reveal>
             <div className="home-search">
-
-              <FiSearch
-                size={19}
-                aria-hidden="true"
-              />
-
+              <FiSearch aria-hidden="true" />
               <input
                 type="search"
                 value={searchTerm}
-                onChange={(event) =>
-                  setSearchTerm(event.target.value)
-                }
-                placeholder="Search products..."
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search the collection"
                 aria-label="Search products"
               />
-
               {searchTerm && (
-                <button
-                  type="button"
-                  className="home-search__clear"
-                  onClick={() => setSearchTerm("")}
-                  aria-label="Clear search"
-                >
+                <button type="button" onClick={() => setSearchTerm("")} aria-label="Clear search">
                   <FiX aria-hidden="true" />
                 </button>
               )}
-
             </div>
-
-            <div
-              className="home-category-filter"
-              aria-label="Product categories"
-            >
-
+            <div className="home-category-filter" aria-label="Product categories">
               {CATEGORIES.map((item) => (
                 <button
                   key={item}
                   type="button"
-                  className={
-                    category === item
-                      ? "active"
-                      : ""
-                  }
-                  onClick={() =>
-                    handleCategoryChange(item)
-                  }
-                  aria-pressed={
-                    category === item
-                  }
+                  className={category === item ? "active" : ""}
+                  onClick={() => setCategory(item)}
+                  aria-pressed={category === item}
                 >
                   {item}
                 </button>
               ))}
-
             </div>
-
           </div>
 
-          {/* ==================================================
-              ACTIVE FILTER
-          ================================================== */}
-
           {(searchTerm || category !== "All") && (
-            <div className="home-active-filter">
-
+            <div className="home-active-filter" data-reveal>
               <span>
-                Showing results
-                {searchTerm &&
-                  ` for "${searchTerm}"`}
-                {category !== "All" &&
-                  ` in ${category}`}
+                Showing results{searchTerm ? ` for “${searchTerm}”` : ""}{category !== "All" ? ` in ${category}` : ""}
               </span>
-
-              <button
-                type="button"
-                onClick={clearFilters}
-              >
-                Clear filters
-                <FiX aria-hidden="true" />
-              </button>
-
+              <button type="button" onClick={clearFilters}>Clear filters <FiX aria-hidden="true" /></button>
             </div>
           )}
-
-          {/* ==================================================
-              ERROR
-          ================================================== */}
 
           {error && (
-            <div
-              className="home-message home-message--error"
-              role="alert"
-            >
-
-              <strong>
-                Unable to load products
-              </strong>
-
-              <span>
-                {typeof error === "string"
-                  ? error
-                  : "Something went wrong. Please try again."}
-              </span>
-
-              <button
-                type="button"
-                onClick={() =>
-                  fetchProducts({
-                    page: currentPage,
-                    limit: 10,
-                  })
-                }
-              >
-                Try Again
-              </button>
-
+            <div className="home-message" role="alert" data-reveal>
+              <strong>Unable to load products</strong>
+              <span>{typeof error === "string" ? error : "Something went wrong. Please try again."}</span>
+              <button type="button" onClick={() => fetchProducts({ page: currentPage, limit: 10 })}>Try again</button>
             </div>
           )}
-
-          {/* ==================================================
-              LOADING
-          ================================================== */}
 
           {loading && (
-            <div
-              className="home-loading"
-              aria-live="polite"
-              aria-label="Loading products"
-            >
-
+            <div className="home-loading" aria-live="polite" aria-label="Loading products">
               <div className="home-spinner" />
-
-              <span>
-                Loading products...
-              </span>
-
+              <span>Curating the collection…</span>
             </div>
           )}
 
-          {/* ==================================================
-              PRODUCT GRID
-          ================================================== */}
+          {!loading && !error && products.length > 0 && (
+            <div className="home-products-grid" data-reveal>
+              {products.map((product) => (
+                <ProductCard key={product._id ?? product.id} product={product} />
+              ))}
+            </div>
+          )}
 
-          {!loading &&
-            !error &&
-            products.length > 0 && (
-              <div className="home-products-grid">
+          {!loading && !error && products.length === 0 && (
+            <div className="home-empty" data-reveal>
+              <FiSearch aria-hidden="true" />
+              <h3>No products found</h3>
+              <p>Try a different search or category.</p>
+              <button type="button" onClick={clearFilters}>Clear filters</button>
+            </div>
+          )}
 
-                {products.map((product) => (
-                  <ProductCard
-                    key={
-                      product._id ??
-                      product.id
-                    }
-                    product={product}
-                  />
-                ))}
-
-              </div>
-            )}
-
-          {/* ==================================================
-              EMPTY STATE
-          ================================================== */}
-
-          {!loading &&
-            !error &&
-            products.length === 0 && (
-              <div className="home-empty">
-
-                <div className="home-empty__icon">
-                  <FiSearch aria-hidden="true" />
-                </div>
-
-                <h3>
-                  No products found
-                </h3>
-
-                <p>
-                  We couldn't find any products
-                  matching your search or category.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                >
-                  Clear Filters
-                </button>
-
-              </div>
-            )}
-
-          {/* ==================================================
-              RESULTS COUNT
-          ================================================== */}
-
-          {!loading &&
-            !error &&
-            products.length > 0 && (
-              <div className="home-results-count">
-
-                Showing{" "}
-                <strong>
-                  {products.length}
-                </strong>{" "}
-                of{" "}
-                <strong>
-                  {totalProducts}
-                </strong>{" "}
-                products
-
-              </div>
-            )}
-
-          {/* ==================================================
-              PAGINATION
-          ================================================== */}
-
-          {!loading &&
-            !error &&
-            products.length > 0 &&
-            totalPages > 1 && (
-
-              <nav
-                className="home-pagination"
-                aria-label="Product pagination"
-              >
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    changePage(
-                      currentPage - 1
-                    )
-                  }
-                  disabled={
-                    currentPage <= 1
-                  }
-                  aria-label="Previous page"
-                >
-
-                  <FiChevronLeft
-                    aria-hidden="true"
-                  />
-
-                  <span>
-                    Previous
-                  </span>
-
-                </button>
-
-                <span className="home-pagination__status">
-
-                  Page{" "}
-                  <strong>
-                    {currentPage}
-                  </strong>{" "}
-                  of{" "}
-                  <strong>
-                    {totalPages}
-                  </strong>
-
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    changePage(
-                      currentPage + 1
-                    )
-                  }
-                  disabled={
-                    currentPage >=
-                    totalPages
-                  }
-                  aria-label="Next page"
-                >
-
-                  <span>
-                    Next
-                  </span>
-
-                  <FiChevronRight
-                    aria-hidden="true"
-                  />
-
-                </button>
-
-              </nav>
-            )}
-
+          {!loading && !error && products.length > 0 && (
+            <div className="home-products__footer" data-reveal>
+              <span>Showing <strong>{products.length}</strong> of <strong>{totalProducts}</strong> products</span>
+              {totalPages > 1 && (
+                <nav className="home-pagination" aria-label="Product pagination">
+                  <button type="button" onClick={() => changePage(currentPage - 1)} disabled={currentPage <= 1} aria-label="Previous page"><FiChevronLeft /></button>
+                  <span><strong>{currentPage}</strong> / {totalPages}</span>
+                  <button type="button" onClick={() => changePage(currentPage + 1)} disabled={currentPage >= totalPages} aria-label="Next page"><FiChevronRight /></button>
+                </nav>
+              )}
+            </div>
+          )}
         </div>
-
       </section>
 
+      <section className="home-closing" data-reveal>
+        <div className="home-container">
+          <span className="home-kicker">A better way to shop tech</span>
+          <h2>Beautiful products.<br /><em>Zero distraction.</em></h2>
+          <p>Discover technology that earns its place in your everyday life.</p>
+          <Link to="/products" className="home-pill home-pill--dark">Explore TechStore Pro <FiArrowRight aria-hidden="true" /></Link>
+        </div>
+      </section>
     </main>
   );
 };
