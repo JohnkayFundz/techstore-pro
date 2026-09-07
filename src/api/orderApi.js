@@ -37,7 +37,10 @@ export const getMyOrders = async () => {
     "/orders/my-orders"
   );
 
-  return response;
+  // Return the API payload so consumers can work
+  // directly with success/orders fields instead of
+  // depending on Axios response internals.
+  return response?.data ?? response;
 };
 
 
@@ -75,7 +78,8 @@ export const cancelOrder = async (id) => {
     `/orders/${id}/cancel`
   );
 
-  return response;
+  // Return the API payload to match MyOrders' success/order handling.
+  return response?.data ?? response;
 };
 
 
