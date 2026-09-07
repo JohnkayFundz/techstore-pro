@@ -1,4 +1,24 @@
 function Contact() {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+
+    const subject = encodeURIComponent(
+      "TechStore Pro Customer Support"
+    );
+
+    const body = encodeURIComponent(
+      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+    );
+
+    window.location.href =
+      `mailto:deejayjohnkay@gmail.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <section className="page container">
       <div className="page-header">
@@ -43,26 +63,26 @@ function Contact() {
         {/* Contact Form */}
         <form
           className="contact-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-
-            window.location.href =
-              "mailto:deejayjohnkay@gmail.com?subject=TechStore Pro Customer Support";
-          }}
+          onSubmit={handleSubmit}
         >
           <input
             type="text"
+            name="name"
             placeholder="Your Name"
+            autoComplete="name"
             required
           />
 
           <input
             type="email"
+            name="email"
             placeholder="Email Address"
+            autoComplete="email"
             required
           />
 
           <textarea
+            name="message"
             rows="6"
             placeholder="Your Message"
             required
