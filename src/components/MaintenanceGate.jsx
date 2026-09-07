@@ -13,23 +13,19 @@ function MaintenanceGate() {
   // ==========================================================
   // WAIT FOR SETTINGS TO LOAD
   // ==========================================================
-  //
-  // Important:
-  // We must NOT redirect while the settings request is still
-  // loading. Otherwise the app could briefly assume that
-  // maintenance mode is false before the backend responds.
-  //
+
   if (loading) {
     return (
       <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        className="maintenance-gate-loading"
+        role="status"
+        aria-live="polite"
       >
-        Loading TechStore Pro...
+        <span
+          className="maintenance-gate-spinner"
+          aria-hidden="true"
+        />
+        <span>Loading TechStore Pro...</span>
       </div>
     );
   }
@@ -48,7 +44,8 @@ function MaintenanceGate() {
 
   if (
     location.pathname === "/login" ||
-    location.pathname === "/register"
+    location.pathname === "/register" ||
+    location.pathname === "/forgot-password"
   ) {
     return <Outlet />;
   }
@@ -56,11 +53,7 @@ function MaintenanceGate() {
   // ==========================================================
   // ALWAYS ALLOW ADMIN ROUTES
   // ==========================================================
-  //
-  // AdminRoute is responsible for checking:
-  // - Authentication
-  // - Admin authorization
-  //
+
   if (location.pathname.startsWith("/admin")) {
     return <Outlet />;
   }
