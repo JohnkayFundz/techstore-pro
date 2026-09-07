@@ -134,7 +134,7 @@ button[aria-disabled="true"],
 
 /* ==========================================================
    ADMIN ORDERS — RESPONSIVE FINISHING LAYER
-   ========================================================== */
+========================================================== */
 
 .admin-orders-page {
   min-width: 0;
@@ -266,5 +266,75 @@ button[aria-disabled="true"],
 
   .admin-orders-page .summary-card {
     min-height: 70px;
+  }
+}
+
+/* ==========================================================
+   ADMIN ANALYTICS — PREMIUM FINISHING LAYER
+========================================================== */
+
+.admin-analytics {
+  min-width: 0;
+}
+
+.admin-analytics .analytics-card,
+.admin-analytics .analytics-panel {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.admin-analytics .analytics-card:hover,
+.admin-analytics .analytics-panel:hover {
+  border-color: #dbe3ef;
+  box-shadow: var(--premium-shadow-md);
+}
+
+.admin-analytics .analytics-card-icon {
+  flex-shrink: 0;
+}
+
+.admin-analytics .analytics-panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-analytics .sales-chart {
+  min-width: 0;
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
+}
+
+.admin-analytics .chart-bar {
+  cursor: default;
+}
+
+.admin-analytics .monthly-list {
+  min-width: 0;
+}
+
+.admin-analytics .monthly-progress-fill {
+  transform-origin: left center;
+}
+
+@media (max-width: 768px) {
+  .admin-analytics .analytics-panel-header {
+    margin-bottom: 18px;
+  }
+
+  .admin-analytics .analytics-panel-header h2 {
+    font-size: 17px;
+  }
+
+  .admin-analytics .analytics-card {
+    border-radius: 14px;
+  }
+}
+
+@media (hover: none) {
+  .admin-analytics .analytics-card:hover,
+  .admin-analytics .analytics-panel:hover {
+    transform: none;
   }
 }
