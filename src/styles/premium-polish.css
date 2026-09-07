@@ -38,6 +38,13 @@ body,
   max-width: 100%;
 }
 
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
 /* Give common interactive cards a restrained premium lift without
    changing their existing visual language. */
 .product-card,
@@ -60,6 +67,18 @@ body,
 .dashboard-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--premium-shadow-md);
+}
+
+/* Touch devices do not need hover-only visual movement. */
+@media (hover: none) {
+  .product-card:hover,
+  .feature-card:hover,
+  .category-card:hover,
+  .info-card:hover,
+  .order-card:hover,
+  .dashboard-card:hover {
+    transform: none;
+  }
 }
 
 /* Consistent disabled state across the app. */
