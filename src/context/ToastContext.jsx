@@ -10,6 +10,7 @@ import {
 import PropTypes from "prop-types";
 
 const ToastContext = createContext(null);
+const API_ERROR_EVENT = "techstore:api-error";
 
 export function ToastProvider({ children }) {
   const [toast, setToast] = useState(null);
@@ -97,6 +98,27 @@ export function ToastProvider({ children }) {
     },
     [showToast]
   );
+
+  useEffect(() => {
+    const handleApiError = (event) => {
+      const detail = event.detail || {};
+
+      showToast({
+        type: detail.type || "error",
+        title: detail.title || "Request failed",
+        message:
+          detail.message ||
+          "Something went wrong. Please try again.",
+        duration: detail.duration || 5000,
+      });
+    };
+
+    window.addEventListener(API_ERROR_EVENT, handleApiError);
+
+    return () => {
+      window.removeEventListener(API_ERROR_EVENT, handleApiError);
+    };
+  }, [showToast]);
 
   useEffect(() => {
     return () => {
