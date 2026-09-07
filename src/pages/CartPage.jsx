@@ -2,68 +2,36 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { formatPrice } from "../utils/formatPrice";
+import "./CartPremium.css";
 
 function CartPage() {
   const navigate = useNavigate();
   const { state, dispatch, cartTotal } = useCart();
-
   const { success, warning, info } = useToast();
-
   const { cart } = state;
 
   const increaseQuantity = (id, name) => {
-    dispatch({
-      type: "INCREASE",
-      payload: id,
-    });
-
-    info(
-      "Quantity Updated",
-      `${name} quantity increased.`
-    );
+    dispatch({ type: "INCREASE", payload: id });
+    info("Quantity Updated", `${name} quantity increased.`);
   };
 
   const decreaseQuantity = (id, name) => {
-    dispatch({
-      type: "DECREASE",
-      payload: id,
-    });
-
-    info(
-      "Quantity Updated",
-      `${name} quantity decreased.`
-    );
+    dispatch({ type: "DECREASE", payload: id });
+    info("Quantity Updated", `${name} quantity decreased.`);
   };
 
   const removeItem = (id, name) => {
-    dispatch({
-      type: "REMOVE",
-      payload: id,
-    });
-
-    warning(
-      "Item Removed",
-      `${name} has been removed from your cart.`
-    );
+    dispatch({ type: "REMOVE", payload: id });
+    warning("Item Removed", `${name} has been removed from your cart.`);
   };
 
   const clearCart = () => {
-    dispatch({
-      type: "CLEAR_CART",
-    });
-
-    warning(
-      "Cart Cleared",
-      "All items have been removed from your cart."
-    );
+    dispatch({ type: "CLEAR_CART" });
+    warning("Cart Cleared", "All items have been removed from your cart.");
   };
 
   const handleCheckout = () => {
-    success(
-      "Ready to Checkout",
-      "Proceed to checkout to complete your purchase."
-    );
-
+    success("Ready to Checkout", "Proceed to checkout to complete your purchase.");
     navigate("/checkout");
   };
 
@@ -72,17 +40,8 @@ function CartPage() {
       <section className="cart-page">
         <div className="empty-cart">
           <h2>Your Cart is Empty</h2>
-
-          <p>
-            Looks like you haven't added any products yet.
-          </p>
-
-          <Link
-            to="/products"
-            className="btn-primary"
-          >
-            Continue Shopping
-          </Link>
+          <p>Looks like you haven't added any products yet.</p>
+          <Link to="/products" className="btn-primary">Continue Shopping</Link>
         </div>
       </section>
     );
@@ -91,135 +50,48 @@ function CartPage() {
   return (
     <section className="cart-page">
       <div className="section-header">
-        <h1>Shopping Cart</h1>
-
-        <button
-          type="button"
-          className="btn-danger"
-          onClick={clearCart}
-        >
-          Clear Cart
-        </button>
+        <h1>Your Cart</h1>
+        <button type="button" className="btn-danger" onClick={clearCart}>Clear Cart</button>
       </div>
 
       <div className="cart-layout">
         <div className="cart-items">
           {cart.map((item) => (
-            <article
-              key={item.id}
-              className="cart-item"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="cart-image"
-              />
-
+            <article key={item.id} className="cart-item">
+              <img src={item.image} alt={item.name} className="cart-image" />
               <div className="cart-details">
                 <h3>{item.name}</h3>
-
                 <p>{item.brand}</p>
-
-                <strong>
-                  {formatPrice(item.price)}
-                </strong>
+                <strong>{formatPrice(item.price)}</strong>
               </div>
 
-              <div className="cart-quantity">
-                <button
-                  type="button"
-                  onClick={() =>
-                    decreaseQuantity(
-                      item.id,
-                      item.name
-                    )
-                  }
-                  aria-label={`Decrease ${item.name} quantity`}
-                  disabled={item.quantity <= 1}
-                >
-                  −
-                </button>
-
-                <span aria-label={`Quantity ${item.quantity}`}>
-                  {item.quantity}
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    increaseQuantity(
-                      item.id,
-                      item.name
-                    )
-                  }
-                  aria-label={`Increase ${item.name} quantity`}
-                >
-                  +
-                </button>
+              <div className="cart-quantity" aria-label={`Quantity controls for ${item.name}`}>
+                <button type="button" onClick={() => decreaseQuantity(item.id, item.name)} aria-label={`Decrease ${item.name} quantity`} disabled={item.quantity <= 1}>−</button>
+                <span aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span>
+                <button type="button" onClick={() => increaseQuantity(item.id, item.name)} aria-label={`Increase ${item.name} quantity`}>+</button>
               </div>
 
               <div className="cart-subtotal">
-                <strong>
-                  {formatPrice(
-                    item.price * item.quantity
-                  )}
-                </strong>
+                <strong>{formatPrice(item.price * item.quantity)}</strong>
               </div>
 
-              <button
-                type="button"
-                className="remove-btn"
-                onClick={() =>
-                  removeItem(
-                    item.id,
-                    item.name
-                  )
-                }
-                aria-label={`Remove ${item.name} from cart`}
-              >
-                Remove
-              </button>
+              <button type="button" className="remove-btn" onClick={() => removeItem(item.id, item.name)} aria-label={`Remove ${item.name} from cart`}>Remove</button>
             </article>
           ))}
         </div>
 
         <aside className="cart-summary">
           <h2>Order Summary</h2>
-
           <div className="summary-row">
             <span>Total Items</span>
-
-            <strong>
-              {cart.reduce(
-                (total, item) =>
-                  total + item.quantity,
-                0
-              )}
-            </strong>
+            <strong>{cart.reduce((total, item) => total + item.quantity, 0)}</strong>
           </div>
-
           <div className="summary-row total">
             <span>Total</span>
-
-            <strong>
-              {formatPrice(cartTotal)}
-            </strong>
+            <strong>{formatPrice(cartTotal)}</strong>
           </div>
-
-          <button
-            type="button"
-            className="btn-primary checkout-btn"
-            onClick={handleCheckout}
-          >
-            Proceed to Checkout
-          </button>
-
-          <Link
-            to="/products"
-            className="continue-shopping"
-          >
-            Continue Shopping
-          </Link>
+          <button type="button" className="btn-primary checkout-btn" onClick={handleCheckout}>Proceed to Checkout</button>
+          <Link to="/products" className="continue-shopping">Continue Shopping</Link>
         </aside>
       </div>
     </section>
