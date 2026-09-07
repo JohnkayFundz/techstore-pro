@@ -27,21 +27,11 @@
   color: #6b7280;
 }
 
-
-/* ==========================================================
-   FORM
-========================================================== */
-
 .admin-product-form-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
-
-/* ==========================================================
-   FORM CARD
-========================================================== */
 
 .form-card {
   background: #ffffff;
@@ -66,11 +56,6 @@
   color: #6b7280;
   font-size: 0.9rem;
 }
-
-
-/* ==========================================================
-   FORM GRID
-========================================================== */
 
 .form-grid {
   display: grid;
@@ -124,11 +109,6 @@
   font-size: 0.8rem;
 }
 
-
-/* ==========================================================
-   IMAGE UPLOAD
-========================================================== */
-
 .image-upload-container {
   display: flex;
   flex-direction: column;
@@ -168,17 +148,13 @@
   text-align: center;
 }
 
-
-/* ==========================================================
-   BUTTONS
-========================================================== */
-
 .upload-button,
 .save-button,
 .cancel-button {
   border: none;
   border-radius: 8px;
   padding: 0.75rem 1.25rem;
+  min-height: 42px;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -228,11 +204,6 @@
   cursor: not-allowed;
 }
 
-
-/* ==========================================================
-   CHECKBOXES
-========================================================== */
-
 .checkbox-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -281,11 +252,6 @@
   font-size: 0.8rem;
 }
 
-
-/* ==========================================================
-   ACTIONS
-========================================================== */
-
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -293,11 +259,6 @@
   gap: 1rem;
   padding-top: 0.5rem;
 }
-
-
-/* ==========================================================
-   LOADING
-========================================================== */
 
 .form-loading {
   min-height: 300px;
@@ -308,10 +269,16 @@
   font-size: 1rem;
 }
 
-
-/* ==========================================================
-   RESPONSIVE
-========================================================== */
+.upload-button:focus-visible,
+.save-button:focus-visible,
+.cancel-button:focus-visible,
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible,
+.checkbox-card:has(input:focus-visible) {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
 
 @media (max-width: 900px) {
   .form-grid {
@@ -339,8 +306,12 @@
 
   .image-preview,
   .image-empty {
-    width: 180px;
-    height: 180px;
+    width: min(180px, 100%);
+    height: min(180px, 100vw - 60px);
+  }
+
+  .upload-button {
+    width: 100%;
   }
 
   .form-actions {
@@ -351,5 +322,9 @@
   .cancel-button,
   .save-button {
     width: 100%;
+  }
+
+  .checkbox-card {
+    min-height: 58px;
   }
 }
