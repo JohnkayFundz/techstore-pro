@@ -1,6 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { currency } from "../data/products";
+import { formatPrice } from "../utils/formatPrice";
+
+const FALLBACK_IMAGE = "/placeholder-product.png";
+
+function getProductImage(item) {
+  return (
+    item?.image ||
+    item?.images?.[0] ||
+    item?.gallery?.[0] ||
+    FALLBACK_IMAGE
+  );
+}
 
 function CartPage() {
   const navigate = useNavigate();
@@ -51,11 +62,6 @@ function CartPage() {
       </div>
 
       <div className="cart-layout">
-
-        {/* =====================================================
-            CART ITEMS
-        ====================================================== */}
-
         <div className="cart-items">
           {cart.map((item, index) => {
             const itemId =
@@ -63,6 +69,10 @@ function CartPage() {
               item.id ||
               item._id ||
               `${item.name}-${index}`;
+
+            const stock = Number(item.stock);
+            const hasStockLimit = Number.isFinite(stock);
+            const quantity = Number(item.quantity) || 1;
 
             return (
               <article
@@ -73,82 +83,76 @@ function CartPage() {
                     : "cart-item"
                 }
               >
-                {/* PRODUCT */}
-
                 <div className="cart-product">
-                  <div className="cart-image">
+                  <Link
+                    to={`/products/${item._id || item.id}`}
+                    className="cart-image"
+                    aria-label={`View ${item.name}`}
+                  >
                     <img
-                      src={item.image}
+                      src={getProductImage(item)}
                       alt={item.name}
+                      loading="lazy"
+                      onError={(event) => {
+                        if (event.currentTarget.src.endsWith(FALLBACK_IMAGE)) {
+                          return;
+                        }
+                        event.currentTarget.src = FALLBACK_IMAGE;
+                      }}
                     />
-                  </div>
+                  </Link>
 
                   <div className="cart-details">
                     <h2>{item.name}</h2>
 
-                    <p>{item.brand}</p>
+                    {item.brand && <p>{item.brand}</p>}
 
                     <strong>
-                      {currency}
-                      {Number(item.price).toLocaleString()}
+                      {formatPrice(item.price)}
                     </strong>
                   </div>
                 </div>
 
-                {/* ACTIONS */}
-
                 <div className="cart-actions">
-
-                  {/* QUANTITY */}
-
-                  <div className="quantity-controls">
+                  <div className="quantity-controls" aria-label={`Quantity controls for ${item.name}`}>
                     <button
                       type="button"
                       aria-label={`Decrease quantity of ${item.name}`}
-                      onClick={() =>
-                        decreaseQuantity(itemId)
-                      }
+                      onClick={() => decreaseQuantity(item.cartId)}
+                      disabled={quantity <= 1}
                     >
                       −
                     </button>
 
-                    <span>
-                      {item.quantity}
+                    <span aria-live="polite">
+                      {quantity}
                     </span>
 
                     <button
                       type="button"
                       aria-label={`Increase quantity of ${item.name}`}
-                      onClick={() =>
-                        increaseQuantity(itemId)
-                      }
+                      onClick={() => increaseQuantity(item.cartId)}
+                      disabled={hasStockLimit && quantity >= stock}
                     >
                       +
                     </button>
                   </div>
 
-                  {/* SUBTOTAL */}
-
                   <p className="cart-subtotal">
                     <span>Subtotal:</span>
 
                     <strong>
-                      {currency}
-                      {(
-                        Number(item.price) *
-                        Number(item.quantity || 0)
-                      ).toLocaleString()}
+                      {formatPrice(
+                        Number(item.price) * quantity
+                      )}
                     </strong>
                   </p>
-
-                  {/* REMOVE */}
 
                   <button
                     type="button"
                     className="remove-btn"
-                    onClick={() =>
-                      removeFromCart(itemId)
-                    }
+                    onClick={() => removeFromCart(item.cartId)}
+                    aria-label={`Remove ${item.name} from cart`}
                   >
                     🗑 Remove
                   </button>
@@ -157,10 +161,6 @@ function CartPage() {
             );
           })}
         </div>
-
-        {/* =====================================================
-            ORDER SUMMARY
-        ====================================================== */}
 
         <aside className="cart-summary">
           <h2>Order Summary</h2>
@@ -181,12 +181,9 @@ function CartPage() {
             <span>Total</span>
 
             <strong>
-              {currency}
-              {Number(cartTotal).toLocaleString()}
+              {formatPrice(cartTotal)}
             </strong>
           </div>
-
-          {/* CHECKOUT */}
 
           <button
             type="button"
@@ -196,16 +193,12 @@ function CartPage() {
             💳 Proceed to Checkout
           </button>
 
-          {/* CONTINUE SHOPPING */}
-
           <Link
             to="/products"
             className="continue-shopping"
           >
             Continue Shopping
           </Link>
-
-          {/* CLEAR CART */}
 
           <button
             type="button"
