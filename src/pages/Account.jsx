@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../context/AuthContext";
+import "./AccountPremium.css";
 
 function Account() {
   const {
@@ -49,8 +50,6 @@ function Account() {
     try {
       setSaving(true);
 
-      // Keep the profile immediately available across the app.
-      // The current backend does not expose a customer profile-update endpoint.
       updateUser({
         ...user,
         name: trimmedName,
