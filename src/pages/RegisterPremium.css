@@ -1,0 +1,8 @@
+.auth-page .password-strength { display:block; margin-top:9px; color:#6e6e73; font-size:.78rem; }
+.auth-page .password-strength.strong { color:#1d1d1f; font-weight:600; }
+.auth-page .password-strength.medium { color:#6e6e73; font-weight:600; }
+.auth-page .password-strength.weak { color:#6e6e73; font-weight:600; }
+
+@media (max-width:600px) {
+  .auth-page .auth-header h1 { font-size:clamp(2.4rem,13vw,3.5rem); }
+}
