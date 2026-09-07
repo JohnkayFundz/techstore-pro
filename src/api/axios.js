@@ -11,14 +11,8 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// ----------------------------------------------------------
-// Validate API URL
-// ----------------------------------------------------------
-
 if (!API_URL) {
-  console.error(
-    "❌ VITE_API_URL is not configured."
-  );
+  console.error("❌ VITE_API_URL is not configured.");
 }
 
 // ==========================================================
@@ -28,219 +22,167 @@ if (!API_URL) {
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
-
   headers: {
     Accept: "application/json",
   },
-
   timeout: 30000,
 });
 
 // ==========================================================
-// REQUEST INTERCEPTOR
+// GLOBAL API ERROR FEEDBACK
 // ==========================================================
-//
-// Automatically attaches the JWT stored in localStorage.
-//
-// The backend supports:
-// Authorization: Bearer <token>
-//
-// Cookies are also sent automatically because:
-// withCredentials: true
+
+const API_ERROR_EVENT = "techstore:api-error";
+
+function getApiErrorMessage(error, fallback) {
+  const responseData = error.response?.data;
+
+  if (typeof responseData?.message === "string") {
+    return responseData.message;
+  }
+
+  if (typeof responseData?.error === "string") {
+    return responseData.error;
+  }
+
+  if (typeof error.message === "string" && error.message) {
+    return error.message;
+  }
+
+  return fallback;
+}
+
+function notifyApiError({ type = "error", title, message }) {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent(API_ERROR_EVENT, {
+      detail: {
+        type,
+        title,
+        message,
+        duration: 5000,
+      },
+    })
+  );
+}
+
+// ==========================================================
+// REQUEST INTERCEPTOR
 // ==========================================================
 
 api.interceptors.request.use(
   (config) => {
     try {
-      const token =
-        localStorage.getItem("token");
-
-      // ----------------------------------------------------
-      // ATTACH JWT
-      // ----------------------------------------------------
+      const token = localStorage.getItem("token");
 
       if (token) {
-        config.headers =
-          config.headers || {};
-
-        config.headers.Authorization =
-          `Bearer ${token}`;
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
       }
 
-      // ----------------------------------------------------
-      // FORM DATA
-      // ----------------------------------------------------
-      //
-      // Do NOT manually set Content-Type for FormData.
-      // Axios/browser will automatically add:
-      //
-      // multipart/form-data; boundary=...
-      //
-
-      if (
-        config.data instanceof FormData
-      ) {
-        if (
-          config.headers &&
-          config.headers["Content-Type"]
-        ) {
-          delete config.headers[
-            "Content-Type"
-          ];
+      if (config.data instanceof FormData) {
+        if (config.headers?.["Content-Type"]) {
+          delete config.headers["Content-Type"];
         }
       }
 
       return config;
     } catch (error) {
-      console.error(
-        "❌ Axios request interceptor error:",
-        error
-      );
-
+      console.error("❌ Axios request interceptor error:", error);
       return Promise.reject(error);
     }
   },
-
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // ==========================================================
 // RESPONSE INTERCEPTOR
 // ==========================================================
-//
-// Handles authentication failures globally.
-//
-// Important:
-// We do NOT redirect for every 401 automatically if the
-// current request is already an authentication endpoint.
-// This prevents unnecessary redirect loops during login.
-// ==========================================================
 
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-
+  (response) => response,
   (error) => {
-    const status =
-      error.response?.status;
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || "";
 
-    const requestUrl =
-      error.config?.url || "";
+    const isAuthRequest =
+      requestUrl.includes("/auth/login") ||
+      requestUrl.includes("/auth/register") ||
+      requestUrl.includes("/auth/logout");
 
     // ======================================================
     // 401 UNAUTHORIZED
     // ======================================================
 
     if (status === 401) {
-      // ----------------------------------------------------
-      // Authentication endpoints
-      // ----------------------------------------------------
-      //
-      // Do not redirect from login/register/logout requests.
-      //
+      localStorage.removeItem("token");
+      localStorage.removeItem("techstore-user");
 
-      const isAuthRequest =
-        requestUrl.includes(
-          "/auth/login"
-        ) ||
-        requestUrl.includes(
-          "/auth/register"
-        ) ||
-        requestUrl.includes(
-          "/auth/logout"
-        );
+      if (!isAuthRequest) {
+        notifyApiError({
+          type: "warning",
+          title: "Session expired",
+          message: "Please sign in again to continue.",
+        });
 
-      // ----------------------------------------------------
-      // CLEAR LOCAL SESSION
-      // ----------------------------------------------------
-
-      localStorage.removeItem(
-        "token"
-      );
-
-      localStorage.removeItem(
-        "techstore-user"
-      );
-
-      // ----------------------------------------------------
-      // REDIRECT TO LOGIN
-      // ----------------------------------------------------
-
-      if (
-        !isAuthRequest &&
-        window.location.pathname !==
-          "/login"
-      ) {
-        window.location.href =
-          "/login";
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }
     }
 
-    // ======================================================
-    // 403 FORBIDDEN
-    // ======================================================
-
+    // Authentication pages already handle their own failed
+    // login/register messages, so avoid duplicate global toasts.
     if (status === 403) {
-      console.warn(
-        "⚠️ Access denied:",
-        error.response?.data
-      );
+      notifyApiError({
+        title: "Access denied",
+        message: getApiErrorMessage(
+          error,
+          "You do not have permission to perform this action."
+        ),
+      });
     }
-
-    // ======================================================
-    // 404 NOT FOUND
-    // ======================================================
 
     if (status === 404) {
-      console.warn(
-        "⚠️ API route not found:",
-        requestUrl
-      );
+      notifyApiError({
+        title: "Not found",
+        message: getApiErrorMessage(
+          error,
+          "The requested resource could not be found."
+        ),
+      });
     }
-
-    // ======================================================
-    // 429 RATE LIMIT
-    // ======================================================
 
     if (status === 429) {
-      console.warn(
-        "⚠️ Too many requests. Please try again later."
-      );
+      notifyApiError({
+        type: "warning",
+        title: "Too many requests",
+        message: "Please wait a moment and try again.",
+      });
     }
 
-    // ======================================================
-    // 500 SERVER ERROR
-    // ======================================================
-
-    if (
-      status &&
-      status >= 500
-    ) {
-      console.error(
-        "❌ Server error:",
-        error.response?.data
-      );
+    if (status && status >= 500) {
+      notifyApiError({
+        title: "Server error",
+        message: getApiErrorMessage(
+          error,
+          "Something went wrong on the server. Please try again."
+        ),
+      });
     }
-
-    // ======================================================
-    // NETWORK ERROR
-    // ======================================================
 
     if (!error.response) {
-      console.error(
-        "❌ Network error. Please check your internet connection or API server."
-      );
+      notifyApiError({
+        type: "warning",
+        title: "Connection problem",
+        message:
+          "We could not reach the server. Check your connection and try again.",
+      });
     }
 
     return Promise.reject(error);
   }
 );
-
-// ==========================================================
-// EXPORT
-// ==========================================================
 
 export default api;
