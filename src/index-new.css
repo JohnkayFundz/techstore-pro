@@ -19,7 +19,7 @@ ul, ol { list-style: none; }
   /* Compatibility aliases for existing page/component styles. */
   --background: var(--bg-color); --card-bg: var(--surface); --text: var(--text-color);
   --text-primary: var(--text-color); --text-secondary: var(--text-muted); --text-light: var(--text-muted);
-  --border-color: var(--border);
+  --border-color: var(--border); --container-width: var(--container);
   --shadow-sm: 0 1px 3px rgba(15, 23, 42, .08); --shadow: 0 10px 25px rgba(15, 23, 42, .08); --shadow-lg: 0 20px 40px rgba(15, 23, 42, .12);
   --radius-sm: 6px; --radius: 12px; --radius-lg: 20px; --container: 1200px; --transition: .25s ease;
 }
