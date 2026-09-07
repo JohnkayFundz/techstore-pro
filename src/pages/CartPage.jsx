@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { formatPrice } from "../utils/formatPrice";
 
 function CartPage() {
+  const navigate = useNavigate();
   const { state, dispatch, cartTotal } = useCart();
 
   const { success, warning, info } = useToast();
@@ -62,6 +63,8 @@ function CartPage() {
       "Ready to Checkout",
       "Proceed to checkout to complete your purchase."
     );
+
+    navigate("/checkout");
   };
 
   if (cart.length === 0) {
@@ -131,11 +134,15 @@ function CartPage() {
                       item.name
                     )
                   }
+                  aria-label={`Decrease ${item.name} quantity`}
+                  disabled={item.quantity <= 1}
                 >
                   −
                 </button>
 
-                <span>{item.quantity}</span>
+                <span aria-label={`Quantity ${item.quantity}`}>
+                  {item.quantity}
+                </span>
 
                 <button
                   type="button"
@@ -145,6 +152,7 @@ function CartPage() {
                       item.name
                     )
                   }
+                  aria-label={`Increase ${item.name} quantity`}
                 >
                   +
                 </button>
@@ -167,6 +175,7 @@ function CartPage() {
                     item.name
                   )
                 }
+                aria-label={`Remove ${item.name} from cart`}
               >
                 Remove
               </button>
