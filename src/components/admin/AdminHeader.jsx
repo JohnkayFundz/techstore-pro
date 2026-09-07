@@ -98,7 +98,7 @@ function AdminHeader() {
 
         <button
           type="button"
-          className="logout-btn"
+          className="admin-logout-btn"
           onClick={handleLogout}
         >
           <FiLogOut aria-hidden="true" />
