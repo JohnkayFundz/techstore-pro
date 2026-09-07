@@ -82,7 +82,10 @@ function Login() {
             noValidate
           >
             {error && (
-              <div className="form-error">
+              <div
+                className="form-error"
+                role="alert"
+              >
                 {error}
               </div>
             )}
@@ -100,6 +103,9 @@ function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 autoComplete="email"
+                autoCapitalize="none"
+                spellCheck="false"
+                disabled={loading}
                 required
               />
             </div>
@@ -122,6 +128,7 @@ function Login() {
                   value={formData.password}
                   onChange={handleChange}
                   autoComplete="current-password"
+                  disabled={loading}
                   required
                 />
 
@@ -131,6 +138,13 @@ function Login() {
                   onClick={() =>
                     setShowPassword((prev) => !prev)
                   }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
+                  aria-pressed={showPassword}
+                  disabled={loading}
                 >
                   {showPassword
                     ? "Hide"
