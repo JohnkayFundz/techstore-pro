@@ -7,10 +7,6 @@ import MaintenanceGate from "./components/MaintenanceGate.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
 
-// ==========================================================
-// PUBLIC PAGES
-// ==========================================================
-
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
@@ -21,18 +17,10 @@ import Register from "./pages/Register.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Maintenance from "./pages/Maintenance.jsx";
 
-// ==========================================================
-// CUSTOMER PAGES
-// ==========================================================
-
 import Account from "./pages/Account.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import MyOrders from "./pages/MyOrders.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
-
-// ==========================================================
-// ADMIN PAGES
-// ==========================================================
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminAnalytics from "./pages/admin/AdminAnalytics.jsx";
@@ -43,30 +31,24 @@ import AdminProductForm from "./pages/admin/AdminProductForm.jsx";
 import ProductManagement from "./pages/admin/ProductManagement.jsx";
 import AdminSettings from "./pages/admin/AdminSettings.jsx";
 
-// ==========================================================
-// ERROR PAGE
-// ==========================================================
-
 import NotFound from "./pages/NotFound.jsx";
-
-// ==========================================================
-// APP
-// ==========================================================
 
 function App() {
   return (
     <Routes>
-      <Route element={<MaintenanceGate>}>
+      <Route element={<MaintenanceGate />}>
         <Route
           path="/maintenance"
           element={<Maintenance />}
         />
 
         <Route element={<Layout />}>
-          {/* PUBLIC */}
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route
+            path="/products/:id"
+            element={<ProductDetails />}
+          />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/login" element={<Login />} />
@@ -76,7 +58,6 @@ function App() {
             element={<ForgotPassword />}
           />
 
-          {/* CUSTOMER */}
           <Route
             path="/account"
             element={
@@ -85,7 +66,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/checkout"
             element={
@@ -94,7 +74,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/my-orders"
             element={
@@ -103,7 +82,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/order-success/:id"
             element={
@@ -114,7 +92,6 @@ function App() {
           />
         </Route>
 
-        {/* ADMIN */}
         <Route
           element={
             <AdminRoute>
