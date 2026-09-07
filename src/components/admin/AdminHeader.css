@@ -148,7 +148,7 @@
   line-height: 1.3;
 }
 
-.logout-btn {
+.admin-logout-btn {
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -167,13 +167,13 @@
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.logout-btn:hover {
+.admin-logout-btn:hover {
   background: #dc2626;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(220, 38, 38, 0.18);
 }
 
-.logout-btn:active {
+.admin-logout-btn:active {
   transform: translateY(0);
 }
 
@@ -214,13 +214,13 @@
     padding: 2px;
   }
 
-  .logout-btn {
+  .admin-logout-btn {
     width: 40px;
     height: 40px;
     padding: 0;
   }
 
-  .logout-btn span {
+  .admin-logout-btn span {
     display: none;
   }
 }
@@ -232,7 +232,7 @@
 
   .icon-btn,
   .profile-icon,
-  .logout-btn {
+  .admin-logout-btn {
     width: 38px;
     height: 38px;
   }
@@ -242,7 +242,7 @@
   .admin-search,
   .icon-btn,
   .admin-profile,
-  .logout-btn {
+  .admin-logout-btn {
     transition: none;
   }
 }
