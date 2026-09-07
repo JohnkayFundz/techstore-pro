@@ -1,0 +1,105 @@
+.products-page {
+  max-width: 1440px;
+  padding: clamp(42px, 7vw, 96px) clamp(18px, 4vw, 48px) 88px;
+}
+
+.products-page__header {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
+  gap: clamp(28px, 5vw, 72px);
+  margin-bottom: 48px;
+}
+
+.products-page__eyebrow {
+  color: #6e6e73;
+  letter-spacing: .18em;
+  font-size: .72rem;
+}
+
+.products-page__heading h1 {
+  max-width: 850px;
+  font-size: clamp(3rem, 7vw, 6.4rem);
+  letter-spacing: -.06em;
+  line-height: .94;
+}
+
+.products-page__heading p {
+  max-width: 600px;
+  margin-top: 24px;
+  color: #6e6e73;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+}
+
+.products-page__search {
+  min-height: 58px;
+  padding: 0 18px;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  box-shadow: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.products-page__search:focus-within {
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.07);
+}
+
+.products-page__filters {
+  margin-bottom: 28px;
+  padding: 18px;
+  border: 1px solid #e5e5e7;
+  border-radius: 22px;
+  background: #f8f8fa;
+}
+
+.products-page__results-bar {
+  margin: 28px 0 18px;
+  color: #6e6e73;
+}
+
+.product-grid,
+.products-page__loading {
+  gap: clamp(18px, 2.2vw, 32px);
+}
+
+.products-page__pagination button,
+.products-page__clear,
+.products-page__mobile-filter,
+.products-page__empty-button,
+.products-page__error button {
+  border-radius: 999px;
+}
+
+.products-page__pagination button:focus-visible,
+.products-page__empty-button:focus-visible,
+.products-page__error button:focus-visible,
+.products-page__clear:focus-visible,
+.products-page__mobile-filter:focus-visible {
+  outline: 3px solid rgba(0,0,0,.14);
+  outline-offset: 3px;
+}
+
+.empty-products {
+  min-height: 360px;
+  border: 1px dashed #d2d2d7;
+  border-radius: 28px;
+  background: #fafafa;
+}
+
+@media (max-width: 900px) {
+  .products-page__header { margin-bottom: 34px; }
+}
+
+@media (max-width: 600px) {
+  .products-page {
+    padding: 34px 14px 56px;
+  }
+  .products-page__header { gap: 22px; margin-bottom: 28px; }
+  .products-page__heading h1 { font-size: clamp(2.65rem, 14vw, 4rem); }
+  .products-page__search { min-height: 54px; border-radius: 16px; }
+  .products-page__filters { border-radius: 20px; }
+  .products-page__results-bar { margin: 22px 0 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .products-page__search { transition: none; }
+}
