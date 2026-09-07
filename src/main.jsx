@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import "./index-new.css";
 import "./styles/footer.css";
+import "./styles/premium-polish.css";
 
 import App from "./App";
 
