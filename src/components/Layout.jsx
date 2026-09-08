@@ -22,15 +22,12 @@ function Layout() {
       {/* Global Notifications */}
       <Toast />
 
-      {/* Main Content */}
-      <main
-        id="main-content"
-        className="container"
-      >
+      {/* Route Content */}
+      <div className="container">
         <ErrorBoundary>
           <Outlet />
         </ErrorBoundary>
-      </main>
+      </div>
 
       {/* Footer */}
       <Footer />
