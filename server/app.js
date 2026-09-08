@@ -38,11 +38,15 @@ const apiLimiter = rateLimit({
 app.use(helmet());
 app.use(compression());
 
-const allowedOrigins = [
+const developmentOrigins = [
   "http://localhost:5173",
   "http://localhost:4173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
+];
+
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? [process.env.CLIENT_URL].filter(Boolean)
+    : [...developmentOrigins, process.env.CLIENT_URL].filter(Boolean);
 
 app.use(
   cors({
