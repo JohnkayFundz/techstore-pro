@@ -38,16 +38,22 @@ const apiSecret = process.env.CLOUDINARY_API_SECRET;
 // VALIDATE CONFIGURATION
 // ==========================================================
 
-if (!cloudName) {
-  console.error("❌ CLOUDINARY_CLOUD_NAME is missing.");
-}
+const missingCloudinaryVars = [
+  ["CLOUDINARY_CLOUD_NAME", cloudName],
+  ["CLOUDINARY_API_KEY", apiKey],
+  ["CLOUDINARY_API_SECRET", apiSecret],
+]
+  .filter(([, value]) => !value)
+  .map(([name]) => name);
 
-if (!apiKey) {
-  console.error("❌ CLOUDINARY_API_KEY is missing.");
-}
+if (missingCloudinaryVars.length > 0) {
+  const message = `Missing Cloudinary environment variables: ${missingCloudinaryVars.join(", ")}`;
 
-if (!apiSecret) {
-  console.error("❌ CLOUDINARY_API_SECRET is missing.");
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(message);
+  }
+
+  console.warn(`⚠️ ${message}`);
 }
 
 // ==========================================================
