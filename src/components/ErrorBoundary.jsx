@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import "../styles/error-boundary-premium.css";
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -30,19 +32,19 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <main className="error-boundary" role="alert">
+        <main className="error-boundary" role="alert" aria-labelledby="error-title">
           <div className="error-card">
-            <h2>⚠️ Something went wrong</h2>
+            <h1 id="error-title">Something went wrong</h1>
 
             <p>
-              An unexpected error occurred. Please refresh the page and try
-              again.
+              An unexpected error occurred. Refresh the page and try again.
             </p>
 
             {import.meta.env.DEV && this.state.error && (
               <details
                 style={{
                   marginTop: "1rem",
+                  marginBottom: "1.5rem",
                   textAlign: "left",
                   whiteSpace: "pre-wrap",
                 }}
