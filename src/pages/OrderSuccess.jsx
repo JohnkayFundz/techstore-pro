@@ -131,18 +131,9 @@ function OrderSuccess() {
               <h2>Order Details</h2>
             </div>
             <div className="details-list">
-              <div className="detail-row">
-                <span>Status</span>
-                <strong>{status}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Total</span>
-                <strong>₦{Number(order.totalAmount || 0).toLocaleString()}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Items</span>
-                <strong>{items.length}</strong>
-              </div>
+              <div className="detail-row"><span>Status</span><strong>{status}</strong></div>
+              <div className="detail-row"><span>Total</span><strong>₦{Number(order.totalAmount || 0).toLocaleString()}</strong></div>
+              <div className="detail-row"><span>Items</span><strong>{items.length}</strong></div>
             </div>
           </div>
 
@@ -152,14 +143,8 @@ function OrderSuccess() {
               <h2>Payment</h2>
             </div>
             <div className="details-list">
-              <div className="detail-row">
-                <span>Method</span>
-                <strong>{paymentMethod}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Status</span>
-                <strong>{paymentStatus}</strong>
-              </div>
+              <div className="detail-row"><span>Method</span><strong>{paymentMethod}</strong></div>
+              <div className="detail-row"><span>Status</span><strong>{paymentStatus}</strong></div>
             </div>
           </div>
 
@@ -195,7 +180,7 @@ function OrderSuccess() {
           <Link className="footer-cta__button" to="/products">
             Continue Shopping <FiArrowRight aria-hidden="true" />
           </Link>
-          <Link className="footer-cta__button" to="/orders">
+          <Link className="footer-cta__button" to="/my-orders">
             View My Orders
           </Link>
         </div>
