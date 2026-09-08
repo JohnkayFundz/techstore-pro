@@ -51,7 +51,8 @@ api.interceptors.response.use(
     const isAuthRequest =
       requestUrl.includes("/auth/login") ||
       requestUrl.includes("/auth/register") ||
-      requestUrl.includes("/auth/logout");
+      requestUrl.includes("/auth/logout") ||
+      requestUrl.includes("/auth/me");
 
     if (status === 401 && !isAuthRequest) {
       notifyApiError({
