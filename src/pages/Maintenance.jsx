@@ -1,9 +1,5 @@
-// ==========================================================
-// TECHSTORE PRO
-// MAINTENANCE PAGE
-// ==========================================================
-
 import "./Maintenance.css";
+import "./MaintenancePremium.css";
 
 function Maintenance() {
   const handleRefresh = () => {
@@ -11,32 +7,20 @@ function Maintenance() {
   };
 
   return (
-    <main className="maintenance-page">
+    <main className="maintenance-page" aria-labelledby="maintenance-title">
       <div className="maintenance-card">
+        <div className="maintenance-icon" aria-hidden="true">✦</div>
 
-        {/* Maintenance Icon */}
-        <div
-          className="maintenance-icon"
-          aria-hidden="true"
-        >
-          🔧
-        </div>
+        <h1 id="maintenance-title">We'll Be Back Soon</h1>
 
-        {/* Heading */}
-        <h1>We'll Be Back Soon</h1>
-
-        {/* Message */}
         <p>
-          TechStore Pro is temporarily unavailable while we
-          perform scheduled maintenance.
+          TechStore Pro is temporarily unavailable while we perform scheduled maintenance.
         </p>
 
         <p>
-          We're making improvements to provide you with a
-          better shopping experience. Please check back shortly.
+          We're making improvements to give you a better shopping experience. Please check back shortly.
         </p>
 
-        {/* Refresh Button */}
         <button
           type="button"
           onClick={handleRefresh}
@@ -44,7 +28,6 @@ function Maintenance() {
         >
           Refresh Page
         </button>
-
       </div>
     </main>
   );
