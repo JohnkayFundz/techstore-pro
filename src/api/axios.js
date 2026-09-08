@@ -5,19 +5,11 @@
 
 import axios from "axios";
 
-// ==========================================================
-// API BASE URL
-// ==========================================================
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 if (!API_URL) {
-  console.error("❌ VITE_API_URL is not configured.");
+  console.error("VITE_API_URL is not configured.");
 }
-
-// ==========================================================
-// AXIOS INSTANCE
-// ==========================================================
 
 const api = axios.create({
   baseURL: API_URL,
@@ -28,26 +20,14 @@ const api = axios.create({
   timeout: 30000,
 });
 
-// ==========================================================
-// GLOBAL API ERROR FEEDBACK
-// ==========================================================
-
 const API_ERROR_EVENT = "techstore:api-error";
 
 function getApiErrorMessage(error, fallback) {
   const responseData = error.response?.data;
 
-  if (typeof responseData?.message === "string") {
-    return responseData.message;
-  }
-
-  if (typeof responseData?.error === "string") {
-    return responseData.error;
-  }
-
-  if (typeof error.message === "string" && error.message) {
-    return error.message;
-  }
+  if (typeof responseData?.message === "string") return responseData.message;
+  if (typeof responseData?.error === "string") return responseData.error;
+  if (typeof error.message === "string" && error.message) return error.message;
 
   return fallback;
 }
@@ -57,48 +37,10 @@ function notifyApiError({ type = "error", title, message }) {
 
   window.dispatchEvent(
     new CustomEvent(API_ERROR_EVENT, {
-      detail: {
-        type,
-        title,
-        message,
-        duration: 5000,
-      },
+      detail: { type, title, message, duration: 5000 },
     })
   );
 }
-
-// ==========================================================
-// REQUEST INTERCEPTOR
-// ==========================================================
-
-api.interceptors.request.use(
-  (config) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        config.headers = config.headers || {};
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      if (config.data instanceof FormData) {
-        if (config.headers?.["Content-Type"]) {
-          delete config.headers["Content-Type"];
-        }
-      }
-
-      return config;
-    } catch (error) {
-      console.error("❌ Axios request interceptor error:", error);
-      return Promise.reject(error);
-    }
-  },
-  (error) => Promise.reject(error)
-);
-
-// ==========================================================
-// RESPONSE INTERCEPTOR
-// ==========================================================
 
 api.interceptors.response.use(
   (response) => response,
@@ -111,29 +53,18 @@ api.interceptors.response.use(
       requestUrl.includes("/auth/register") ||
       requestUrl.includes("/auth/logout");
 
-    // ======================================================
-    // 401 UNAUTHORIZED
-    // ======================================================
+    if (status === 401 && !isAuthRequest) {
+      notifyApiError({
+        type: "warning",
+        title: "Session expired",
+        message: "Please sign in again to continue.",
+      });
 
-    if (status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("techstore-user");
-
-      if (!isAuthRequest) {
-        notifyApiError({
-          type: "warning",
-          title: "Session expired",
-          message: "Please sign in again to continue.",
-        });
-
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
       }
     }
 
-    // Authentication pages already handle their own failed
-    // login/register messages, so avoid duplicate global toasts.
     if (status === 403) {
       notifyApiError({
         title: "Access denied",
@@ -176,8 +107,7 @@ api.interceptors.response.use(
       notifyApiError({
         type: "warning",
         title: "Connection problem",
-        message:
-          "We could not reach the server. Check your connection and try again.",
+        message: "We could not reach the server. Check your connection and try again.",
       });
     }
 
