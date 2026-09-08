@@ -142,7 +142,7 @@ app.use((err, req, res, next) => {
     });
   }
 
-  if (err.message?.includes("Only JPG, PNG")) {
+  if (err.message?.includes("Only JPG, PNG, and WEBP")) {
     return res.status(400).json({
       success: false,
       message: err.message,
