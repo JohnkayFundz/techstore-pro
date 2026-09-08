@@ -48,8 +48,8 @@ function Register() {
     try {
       setLoading(true);
       const data = await register({ name, email, password });
-      if (!data?.user || !data?.token) throw new Error("Registration succeeded, but the server did not return a user or token.");
-      loginUser(data.user, data.token);
+      if (!data?.user) throw new Error("Registration succeeded, but the server did not return a user.");
+      loginUser(data.user);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Registration failed. Please try again.");
