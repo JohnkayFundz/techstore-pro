@@ -7,6 +7,7 @@ import "./styles/footer.css";
 import "./styles/premium-polish.css";
 
 import App from "./App";
+import ScrollToTop from "./components/ScrollToTop";
 
 import { AuthProvider } from "./context/AuthContext";
 import { SettingsProvider } from "./context/SettingsContext";
@@ -20,6 +21,7 @@ ReactDOM.createRoot(
 ).render(
   <React.StrictMode>
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <SettingsProvider>
           <ProductProvider>
