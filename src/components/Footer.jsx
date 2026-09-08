@@ -13,13 +13,7 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container footer-grid">
-
-        {/* ==================================================
-            BRAND
-        ================================================== */}
-
         <div className="footer-brand">
-
           <Link to="/" className="footer-logo">
             TechStore <span>Pro</span>
           </Link>
@@ -43,10 +37,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* ==================================================
-            SHOP
-        ================================================== */
-
         <div className="footer-links">
           <h3>Shop</h3>
           <Link to="/">Home</Link>
@@ -55,10 +45,6 @@ function Footer() {
           <Link to="/wishlist">Wishlist</Link>
           <Link to="/checkout">Checkout</Link>
         </div>
-
-        {/* ==================================================
-            CUSTOMER CARE
-        ================================================== */
 
         <div className="footer-links">
           <h3>Customer Care</h3>
@@ -75,10 +61,6 @@ function Footer() {
           </a>
           <Link to="/products">Browse Products</Link>
         </div>
-
-        {/* ==================================================
-            CONTACT
-        ================================================== */
 
         <div className="footer-contact">
           <h3>Get In Touch</h3>
@@ -115,10 +97,6 @@ function Footer() {
         </div>
       </div>
 
-      {/* ==================================================
-          FOOTER CTA
-      ================================================== */
-
       <div className="container footer-cta">
         <div className="footer-cta__content">
           <div>
@@ -139,10 +117,6 @@ function Footer() {
           </a>
         </div>
       </div>
-
-      {/* ==================================================
-          FOOTER BOTTOM
-      ================================================== */
 
       <div className="footer-bottom">
         <div className="container footer-bottom__content">
