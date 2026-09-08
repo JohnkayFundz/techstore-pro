@@ -1,133 +1,71 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import mongoose from "mongoose";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load .env from server directory FIRST with override
-const envPath = path.join(__dirname, ".env");
-console.log("📁 Loading .env from:", envPath);
-
-const result = dotenv.config({ 
-  path: envPath,
-  override: true 
-});
-
-if (result.error) {
-  console.error("❌ Error loading .env file:", result.error);
-} else {
-  console.log("✅ .env loaded successfully");
-}
-
-// Verify environment variables loaded
-console.log("✅ Environment Variables Loaded:");
-console.log("  NODE_ENV:", process.env.NODE_ENV);
-console.log("  CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME ? "✅" : "❌");
-console.log("  CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY ? "✅" : "❌");
-console.log("  CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "✅" : "❌");
-console.log("  MONGODB_URI:", process.env.MONGODB_URI ? "✅" : "❌");
 
 import app from "./app.js";
 
-/* ==========================================================
-   CONFIG
-========================================================== */
-
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 5000;
 const MONGO_URI = process.env.MONGODB_URI;
+const NODE_ENV = process.env.NODE_ENV || "development";
 
-/* ==========================================================
-   VALIDATE ENVIRONMENT VARIABLES
-========================================================== */
+const requiredEnv = ["MONGODB_URI", "JWT_SECRET", "CLIENT_URL"];
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 
-if (!MONGO_URI) {
-  console.error("❌ MONGODB_URI is missing in the .env file.");
+if (missingEnv.length > 0) {
+  console.error(`Missing required environment variables: ${missingEnv.join(", ")}`);
   process.exit(1);
 }
 
-/* ==========================================================
-   DATABASE CONNECTION
-========================================================== */
+if (NODE_ENV === "production" && process.env.JWT_SECRET.length < 32) {
+  console.error("JWT_SECRET must be at least 32 characters in production.");
+  process.exit(1);
+}
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGO_URI);
-
-    console.log("✅ MongoDB Connected");
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 10000,
+    });
+    console.log("MongoDB connected");
   } catch (error) {
-    console.error("❌ MongoDB Connection Failed");
-    console.error(error.message);
+    console.error("MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };
-
-/* ==========================================================
-   START SERVER
-========================================================== */
 
 const startServer = async () => {
-  try {
-    await connectDB();
+  await connectDB();
 
-    const server = app.listen(PORT, () => {
-      console.log("====================================");
-      console.log(
-        `🚀 Server running in ${
-          process.env.NODE_ENV || "development"
-        } mode`
-      );
-      console.log(`🚀 Server listening on port ${PORT}`);
-      console.log("====================================");
-    });
+  const server = app.listen(PORT, () => {
+    console.log(`TechStore Pro API listening on port ${PORT} (${NODE_ENV})`);
+  });
 
-    /* ==========================================================
-       GRACEFUL SHUTDOWN
-    ========================================================== */
+  const shutdown = async (signal) => {
+    console.log(`${signal} received. Shutting down gracefully...`);
 
-    const shutdown = async () => {
-      console.log("\n🛑 Shutting down server...");
-
-      server.close(async () => {
-        await mongoose.connection.close();
-
-        console.log("✅ MongoDB connection closed.");
-        console.log("👋 Server stopped.");
-
+    server.close(async () => {
+      try {
+        await mongoose.connection.close(false);
+        console.log("Server and MongoDB connection closed.");
         process.exit(0);
-      });
-    };
+      } catch (error) {
+        console.error("Shutdown error:", error.message);
+        process.exit(1);
+      }
+    });
+  };
 
-    process.on("SIGINT", shutdown);
-    process.on("SIGTERM", shutdown);
-  } catch (error) {
-    console.error("❌ Failed to start server.");
-    console.error(error);
-    process.exit(1);
-  }
+  process.once("SIGINT", () => shutdown("SIGINT"));
+  process.once("SIGTERM", () => shutdown("SIGTERM"));
 };
 
-/* ==========================================================
-   GLOBAL ERROR HANDLERS
-========================================================== */
-
 process.on("unhandledRejection", (reason) => {
-  console.error("❌ Unhandled Promise Rejection:");
-  console.error(reason);
-
+  console.error("Unhandled promise rejection:", reason);
   process.exit(1);
 });
 
 process.on("uncaughtException", (error) => {
-  console.error("❌ Uncaught Exception:");
-  console.error(error);
-
+  console.error("Uncaught exception:", error);
   process.exit(1);
 });
-
-/* ==========================================================
-   START APPLICATION
-========================================================== */
 
 startServer();
