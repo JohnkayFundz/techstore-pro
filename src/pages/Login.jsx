@@ -34,7 +34,7 @@ function Login() {
       setLoading(true);
       setError("");
       const response = await login({ email, password });
-      loginUser(response.user, response.token);
+      loginUser(response.user);
       navigate(response.user.role === "admin" ? "/admin" : "/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
