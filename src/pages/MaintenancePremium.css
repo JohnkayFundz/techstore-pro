@@ -1,0 +1,62 @@
+.maintenance-page {
+  min-height: 100dvh;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  background: #f5f5f7;
+}
+
+.maintenance-card {
+  width: min(100%, 760px);
+  padding: clamp(3rem, 8vw, 5.5rem) clamp(1.5rem, 6vw, 4rem);
+  border: 1px solid #e5e5e7;
+  border-radius: 32px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .08);
+}
+
+.maintenance-icon {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 2rem;
+  border-radius: 24px;
+  background: #f5f5f7;
+  font-size: 2rem;
+}
+
+.maintenance-card h1 {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: .98;
+  letter-spacing: -.06em;
+  font-weight: 800;
+}
+
+.maintenance-card p {
+  font-size: 1.05rem;
+  color: #6e6e73;
+  line-height: 1.7;
+}
+
+.maintenance-refresh-btn {
+  min-height: 48px;
+  padding: .85rem 1.5rem;
+  border-radius: 999px;
+  background: #111;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .maintenance-card {
+    border-radius: 24px;
+    padding: 3rem 1.5rem;
+  }
+
+  .maintenance-refresh-btn {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maintenance-refresh-btn {
+    transition: none;
+  }
+}
