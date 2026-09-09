@@ -22,6 +22,7 @@ import {
   FiSettings,
   FiLogOut,
   FiPackage,
+  FiShield,
 } from "react-icons/fi";
 
 import { MdStorefront } from "react-icons/md";
@@ -168,6 +169,9 @@ function Navbar() {
               <div className="profile-dropdown" role="menu">
                 <div className="profile-dropdown-header"><span className="profile-avatar large">{initials}</span><div><strong>{username}</strong>{user?.email && <p>{user.email}</p>}</div></div>
                 <hr />
+                {user?.role === "admin" && (
+                  <NavLink to="/admin" className="dropdown-item" role="menuitem"><FiShield /><span>Admin Panel</span></NavLink>
+                )}
                 <NavLink to="/my-orders" className="dropdown-item" role="menuitem"><FiPackage /><span>My Orders</span></NavLink>
                 <NavLink to="/wishlist" className="dropdown-item" role="menuitem"><FiHeart /><span>Wishlist</span>{wishlist.length > 0 && <span className="dropdown-count">{wishlist.length}</span>}</NavLink>
                 <NavLink to="/cart" className="dropdown-item" role="menuitem"><FiShoppingCart /><span>Cart</span>{cartCount > 0 && <span className="dropdown-count">{cartCount}</span>}</NavLink>
@@ -188,6 +192,9 @@ function Navbar() {
           </nav>
           {user && (
             <div className="mobile-account" aria-label="Account actions">
+              {user.role === "admin" && (
+                <NavLink to="/admin" className="dropdown-item" onClick={() => setMobileOpen(false)}><FiShield /><span>Admin Panel</span></NavLink>
+              )}
               <NavLink to="/my-orders" className="dropdown-item" onClick={() => setMobileOpen(false)}><FiPackage /><span>My Orders</span></NavLink>
               <button className="dropdown-item" type="button" onClick={handleSettings}><FiSettings /><span>Account Settings</span></button>
               <button className="dropdown-item danger" type="button" onClick={handleLogout}><FiLogOut /><span>Logout</span></button>
