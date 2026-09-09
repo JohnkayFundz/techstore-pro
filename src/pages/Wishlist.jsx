@@ -45,6 +45,7 @@ function WishlistPage() {
 
   const uniqueWishlistIds = [...new Set(wishlistIds)];
   const listedWishlistItems = products.filter((product) => uniqueWishlistIds.includes(getProductId(product)));
+  const listedWishlistIds = products.map(getProductId).filter(Boolean);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,7 +56,7 @@ function WishlistPage() {
       return undefined;
     }
 
-    const listedIds = new Set(listedWishlistItems.map(getProductId));
+    const listedIds = new Set(listedWishlistIds);
     const missingIds = uniqueWishlistIds.filter((productId) => !listedIds.has(productId));
 
     if (missingIds.length === 0) {
@@ -85,7 +86,7 @@ function WishlistPage() {
     return () => {
       cancelled = true;
     };
-  }, [loading, error, products, uniqueWishlistIds.join("|")]);
+  }, [loading, error, listedWishlistIds.join("|"), uniqueWishlistIds.join("|")]);
 
   const wishlistItems = uniqueWishlistIds
     .map((productId) => listedWishlistItems.find((product) => getProductId(product) === productId)
