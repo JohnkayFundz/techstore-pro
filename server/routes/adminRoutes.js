@@ -26,8 +26,6 @@ import {
   ======================================================== */
 
   getOrders,
-  updateOrderStatus,
-  deleteOrder,
 
   /* ========================================================
      PRODUCTS
@@ -40,6 +38,11 @@ import {
   deleteProduct,
   restoreProduct,
 } from "../controllers/adminController.js";
+
+import {
+  updateOrderStatusSafely,
+  deleteOrderSafely,
+} from "../controllers/adminOrderLifecycleController.js";
 
 const router = express.Router();
 
@@ -159,13 +162,15 @@ router.get(
  * UPDATE ORDER STATUS
  *
  * PUT /api/admin/orders/:id
+ *
+ * Inventory-safe lifecycle handler.
  */
 
 router.put(
   "/orders/:id",
   protect,
   adminOnly,
-  updateOrderStatus
+  updateOrderStatusSafely
 );
 
 
@@ -173,13 +178,15 @@ router.put(
  * DELETE ORDER
  *
  * DELETE /api/admin/orders/:id
+ *
+ * Only cancelled orders may be permanently deleted.
  */
 
 router.delete(
   "/orders/:id",
   protect,
   adminOnly,
-  deleteOrder
+  deleteOrderSafely
 );
 
 
