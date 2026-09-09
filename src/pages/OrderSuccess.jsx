@@ -14,9 +14,20 @@ import {
 } from "react-icons/fi";
 
 import { getOrderById } from "../api/orderApi";
+import { formatPrice } from "../utils/formatPrice";
 
 import "./OrderSuccess.css";
 import "./OrderSuccessPremium.css";
+
+const formatStatus = (value) => {
+  if (!value) return "Unknown";
+
+  return String(value)
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+};
 
 function OrderSuccess() {
   const { id } = useParams();
@@ -103,8 +114,12 @@ function OrderSuccess() {
   const StatusIcon = cancelled ? FiXCircle : FiCheckCircle;
   const address = order.shippingAddress || {};
   const items = Array.isArray(order.items) ? order.items : [];
-  const paymentMethod = String(order.paymentMethod || "cash");
-  const paymentStatus = String(order.paymentStatus || "pending");
+  const paymentMethod = formatStatus(order.paymentMethod || "cash");
+  const paymentStatus = formatStatus(order.paymentStatus || "pending");
+  const itemCount = items.reduce((total, item) => {
+    const quantity = Number(item?.quantity);
+    return total + (Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
+  }, 0);
 
   return (
     <main className="order-success-page">
@@ -131,9 +146,9 @@ function OrderSuccess() {
               <h2>Order Details</h2>
             </div>
             <div className="details-list">
-              <div className="detail-row"><span>Status</span><strong>{status}</strong></div>
-              <div className="detail-row"><span>Total</span><strong>₦{Number(order.totalAmount || 0).toLocaleString()}</strong></div>
-              <div className="detail-row"><span>Items</span><strong>{items.length}</strong></div>
+              <div className="detail-row"><span>Status</span><strong>{formatStatus(status)}</strong></div>
+              <div className="detail-row"><span>Total</span><strong>{formatPrice(order.totalAmount)}</strong></div>
+              <div className="detail-row"><span>Items</span><strong>{itemCount}</strong></div>
             </div>
           </div>
 
@@ -154,9 +169,9 @@ function OrderSuccess() {
               <h2>Shipping</h2>
             </div>
             <div className="details-list">
-              <div className="detail-row"><span>Name</span><strong>{address.fullName}</strong></div>
-              <div className="detail-row"><span>Phone</span><strong>{address.phone}</strong></div>
-              <div className="detail-row"><span>Location</span><strong>{[address.city, address.state].filter(Boolean).join(", ")}</strong></div>
+              <div className="detail-row"><span>Name</span><strong>{address.fullName || "N/A"}</strong></div>
+              <div className="detail-row"><span>Phone</span><strong>{address.phone || "N/A"}</strong></div>
+              <div className="detail-row"><span>Location</span><strong>{[address.city, address.state].filter(Boolean).join(", ") || "N/A"}</strong></div>
             </div>
           </div>
         </div>
@@ -169,8 +184,8 @@ function OrderSuccess() {
           <div className="details-list">
             {items.map((item, index) => (
               <div className="detail-row" key={`${item.product || item.name}-${index}`}>
-                <span>{item.name} × {item.quantity}</span>
-                <strong>₦{Number(item.price || 0).toLocaleString()}</strong>
+                <span>{item.name || "Product"} × {item.quantity || 1}</span>
+                <strong>{formatPrice(Number(item.price || 0) * Number(item.quantity || 1))}</strong>
               </div>
             ))}
           </div>
