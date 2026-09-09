@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 
 import { useProduct } from "../context/ProductContext";
+import { getProductById } from "../api/productApi";
 import ProductGrid from "../components/products/ProductGrid";
 import RatingStars from "../components/RatingStars";
 import { useCart } from "../context/CartContext";
@@ -28,13 +29,47 @@ function ProductDetails() {
   const { products = [], loading = false } = useProduct();
   const { dispatch } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
+  const [fetchedProduct, setFetchedProduct] = useState(null);
+  const [fetchingProduct, setFetchingProduct] = useState(false);
 
-  const product = useMemo(() => {
+  const listedProduct = useMemo(() => {
     if (!Array.isArray(products)) return null;
     return products.find(
       (item) => String(item?._id) === String(id) || String(item?.id) === String(id)
     );
   }, [products, id]);
+
+  const product = listedProduct || fetchedProduct;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    setFetchedProduct(null);
+
+    if (!id || loading || listedProduct) {
+      setFetchingProduct(false);
+      return undefined;
+    }
+
+    setFetchingProduct(true);
+
+    getProductById(id)
+      .then((response) => {
+        if (!cancelled && response?.success && response?.product) {
+          setFetchedProduct(response.product);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) console.error("Product details fetch error:", error);
+      })
+      .finally(() => {
+        if (!cancelled) setFetchingProduct(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, loading, listedProduct]);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState("");
@@ -82,7 +117,7 @@ function ProductDetails() {
     return () => observer.disconnect();
   }, [product]);
 
-  if (loading) {
+  if (loading || fetchingProduct) {
     return (
       <main className="product-details-page">
         <div className="product-loading"><h2>Loading product...</h2><p>Please wait while we load the product details.</p></div>
