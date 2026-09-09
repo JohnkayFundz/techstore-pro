@@ -186,6 +186,13 @@ function Navbar() {
           <nav className="mobile-nav-links" aria-label="Mobile navigation links">
             {navItems.map((item) => <NavLink key={item.path} to={item.path} end={item.end} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}><span className="mobile-nav-label">{item.icon}<span>{item.label}</span></span>{item.count > 0 && <span className="badge">{item.count}</span>}</NavLink>)}
           </nav>
+          {user && (
+            <div className="mobile-account" aria-label="Account actions">
+              <NavLink to="/my-orders" className="dropdown-item" onClick={() => setMobileOpen(false)}><FiPackage /><span>My Orders</span></NavLink>
+              <button className="dropdown-item" type="button" onClick={handleSettings}><FiSettings /><span>Account Settings</span></button>
+              <button className="dropdown-item danger" type="button" onClick={handleLogout}><FiLogOut /><span>Logout</span></button>
+            </div>
+          )}
           <div className="mobile-footer"><div className="mobile-cart-summary"><span>Cart total</span><strong>${cartTotal.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></div></div>
         </aside>
       </header>
