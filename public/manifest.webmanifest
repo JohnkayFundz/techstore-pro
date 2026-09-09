@@ -1,0 +1,17 @@
+{
+  "name": "TechStore Pro",
+  "short_name": "TechStore Pro",
+  "description": "A modern electronics store with secure checkout, product discovery, and order management.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
