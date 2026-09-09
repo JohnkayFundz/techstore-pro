@@ -7,9 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cap:sync": "npm run build && cap sync",
+    "cap:open:android": "cap open android"
   },
   "dependencies": {
+    "@capacitor/core": "^8.0.0",
     "axios": "^1.18.1",
     "chart.js": "^4.5.1",
     "compression": "^1.8.1",
@@ -31,6 +34,7 @@
     "swiper": "^14.0.6"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
     "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
