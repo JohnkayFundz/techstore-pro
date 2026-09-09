@@ -693,8 +693,9 @@ export const cancelOrder = async (
     return res.status(500).json({
       success: false,
       message:
-        error.message ||
-        "Failed to cancel order.",
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Failed to cancel order.",
     });
   } finally {
     await session.endSession();
