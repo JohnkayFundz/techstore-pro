@@ -1,13 +1,11 @@
-// ==========================================================
-// Wishlist.jsx
-// ==========================================================
-
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useProduct } from "../context/ProductContext";
+import { getProductById } from "../api/productApi";
 
 import "./WishlistPremium.css";
 
@@ -33,6 +31,8 @@ function WishlistPage() {
   const { cart = [], dispatch } = useCart();
   const { wishlist = [], toggleWishlist, clearWishlist } = useWishlist();
   const { products = [], loading, error } = useProduct();
+  const [hydratedProducts, setHydratedProducts] = useState([]);
+  const [hydrating, setHydrating] = useState(false);
 
   const wishlistIds = wishlist
     .map((item) => {
@@ -44,7 +44,53 @@ function WishlistPage() {
     .filter(Boolean);
 
   const uniqueWishlistIds = [...new Set(wishlistIds)];
-  const wishlistItems = products.filter((product) => uniqueWishlistIds.includes(getProductId(product)));
+  const listedWishlistItems = products.filter((product) => uniqueWishlistIds.includes(getProductId(product)));
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (loading || error || uniqueWishlistIds.length === 0) {
+      setHydratedProducts([]);
+      setHydrating(false);
+      return undefined;
+    }
+
+    const listedIds = new Set(listedWishlistItems.map(getProductId));
+    const missingIds = uniqueWishlistIds.filter((productId) => !listedIds.has(productId));
+
+    if (missingIds.length === 0) {
+      setHydratedProducts([]);
+      setHydrating(false);
+      return undefined;
+    }
+
+    setHydrating(true);
+
+    Promise.all(missingIds.map((productId) => getProductById(productId)))
+      .then((responses) => {
+        if (cancelled) return;
+        setHydratedProducts(
+          responses
+            .filter((response) => response?.success && response?.product)
+            .map((response) => response.product)
+        );
+      })
+      .catch((fetchError) => {
+        if (!cancelled) console.error("Wishlist hydration error:", fetchError);
+      })
+      .finally(() => {
+        if (!cancelled) setHydrating(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, error, products, uniqueWishlistIds.join("|")]);
+
+  const wishlistItems = uniqueWishlistIds
+    .map((productId) => listedWishlistItems.find((product) => getProductId(product) === productId)
+      || hydratedProducts.find((product) => getProductId(product) === productId))
+    .filter(Boolean);
 
   function handleAddToCart(product) {
     const productId = getProductId(product);
@@ -79,7 +125,7 @@ function WishlistPage() {
     toast.success("Wishlist cleared.");
   }
 
-  if (loading) {
+  if (loading || hydrating) {
     return (
       <section className="wishlist-page container">
         <div className="wishlist-header">
