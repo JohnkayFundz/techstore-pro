@@ -19,6 +19,7 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
+import { csrfProtection } from "./middleware/csrfMiddleware.js";
 
 const app = express();
 
@@ -72,6 +73,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use("/api", apiLimiter);
+app.use("/api", csrfProtection);
 
 app.get("/", (req, res) => {
   res.status(200).json({
