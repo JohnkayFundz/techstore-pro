@@ -134,3 +134,102 @@
 
 @media (hover:none) { .checkout-btn:hover:not(:disabled) { transform: none; box-shadow: none; } }
 @media (prefers-reduced-motion:reduce) { .form-group input, .form-group textarea, .form-group select, .checkout-btn { transition: none; } }
+
+/* ==========================================================
+   FINAL CHECKOUT OVERRIDES
+   Keep checkout styles isolated from legacy global selectors
+   in the main stylesheet.
+========================================================== */
+
+.checkout-page {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-inline: clamp(14px, 4vw, 40px) !important;
+  overflow-x: clip;
+}
+
+.checkout-page .checkout-container {
+  display: block !important;
+  width: min(100%, 1180px) !important;
+  max-width: 1180px !important;
+  margin-inline: auto !important;
+  padding-inline: 0 !important;
+}
+
+.checkout-page .checkout-content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, .85fr) !important;
+  gap: clamp(20px, 3vw, 32px) !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.checkout-page .checkout-form-card,
+.checkout-page .checkout-summary {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.checkout-page .checkout-form-card {
+  padding: clamp(20px, 3vw, 32px) !important;
+}
+
+.checkout-page .form-group,
+.checkout-page .form-row,
+.checkout-page .checkout-form-card form {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.checkout-page .form-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.checkout-page .form-group input,
+.checkout-page .form-group textarea,
+.checkout-page .form-group select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+.checkout-page .checkout-summary {
+  padding: clamp(18px, 2.5vw, 24px) !important;
+}
+
+@media (max-width: 960px) {
+  .checkout-page .checkout-content {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .checkout-page {
+    padding-inline: 14px !important;
+  }
+
+  .checkout-page .checkout-content {
+    gap: 18px !important;
+  }
+
+  .checkout-page .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .checkout-page .checkout-form-card,
+  .checkout-page .checkout-summary {
+    padding: 20px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .checkout-page {
+    padding-inline: 10px !important;
+  }
+
+  .checkout-page .checkout-form-card,
+  .checkout-page .checkout-summary {
+    padding: 16px !important;
+  }
+}
