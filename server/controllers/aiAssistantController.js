@@ -22,35 +22,43 @@ const buildRecommendationReason = (message, product) => {
   const query = message.toLowerCase();
   const category = product.category || "product";
   const features = (product.features || []).filter(Boolean).slice(0, 2);
+  const description = String(product.description || "").replace(/\s+/g, " ").trim();
+  const descriptionSnippet = description ? description.split(/[.!?]/)[0].trim() : "";
   const featureText = features.join(" and ");
   const priceText = `${product.currency || "USD"} ${Number(product.price || 0).toLocaleString()}`;
 
   if (/(coding|programming|developer|development|software)/.test(query)) {
     if (featureText) return `A strong coding option with ${featureText}.`;
-    return `A solid ${category.toLowerCase()} option for development work.`;
+    if (descriptionSnippet) return `${product.name} is suited to development work: ${descriptionSnippet}.`;
+    return `${product.name} is a ${category.toLowerCase()} built for demanding development work.`;
   }
 
   if (/(gaming|gamer)/.test(query)) {
     if (featureText) return `A gaming-focused option featuring ${featureText}.`;
-    return `A good ${category.toLowerCase()} match for a gaming setup.`;
+    if (descriptionSnippet) return `${product.name} fits a gaming setup because ${descriptionSnippet.toLowerCase()}.`;
+    return `${product.name} is a ${category.toLowerCase()} choice for a gaming setup.`;
   }
 
   if (/(music|audio|headphone|headset)/.test(query)) {
     if (featureText) return `A good audio match with ${featureText}.`;
-    return `A suitable ${category.toLowerCase()} choice for your audio needs.`;
+    if (descriptionSnippet) return `${product.name} suits music and audio use: ${descriptionSnippet}.`;
+    return `${product.name} is a suitable ${category.toLowerCase()} for your audio needs.`;
   }
 
   if (/(camera|photography|photo|video)/.test(query)) {
     if (featureText) return `A useful choice for photo and video use, with ${featureText}.`;
-    return `A suitable ${category.toLowerCase()} option for photo and video use.`;
+    if (descriptionSnippet) return `${product.name} fits photo and video use: ${descriptionSnippet}.`;
+    return `${product.name} is a suitable ${category.toLowerCase()} option for photo and video use.`;
   }
 
   if (/(budget|under|below|less than|around|cheap|affordable)/.test(query)) {
-    return `A ${category.toLowerCase()} option priced at ${priceText} that fits the requested budget focus.`;
+    if (descriptionSnippet) return `${product.name} is priced at ${priceText}; ${descriptionSnippet.toLowerCase()}.`;
+    return `A ${category.toLowerCase()} option priced at ${priceText} for your budget-focused request.`;
   }
 
-  if (featureText) return `Matches your request with ${featureText}.`;
-  return `A relevant in-stock ${category.toLowerCase()} option that matches your request.`;
+  if (featureText) return `${product.name} matches your request with ${featureText}.`;
+  if (descriptionSnippet) return `${product.name} matches your request: ${descriptionSnippet}.`;
+  return `${product.name} is an in-stock ${category.toLowerCase()} option that fits your request.`;
 };
 
 const getFallbackRecommendations = (message, products) => {
