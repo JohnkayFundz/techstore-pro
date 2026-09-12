@@ -60,6 +60,10 @@ export const aiShoppingAssistant = async (req, res) => {
       return res.status(503).json({
         success: false,
         message: "The AI shopping assistant is being configured. Please try again shortly.",
+        diagnostic: {
+          source: "server-config",
+          reason: "missing_api_key",
+        },
       });
     }
 
@@ -137,6 +141,10 @@ export const aiShoppingAssistant = async (req, res) => {
       return res.status(502).json({
         success: false,
         message: "The shopping assistant is temporarily unavailable. Please try again.",
+        diagnostic: {
+          source: "openai-network",
+          reason: error?.name || "request_failed",
+        },
       });
     }
 
@@ -144,30 +152,32 @@ export const aiShoppingAssistant = async (req, res) => {
       const requestId = openAIResponse.headers.get("x-request-id") || "not-provided";
       const errorBody = await openAIResponse.text();
 
-      let errorDetails = errorBody;
+      let parsedError = null;
       try {
-        const parsedError = JSON.parse(errorBody);
-        errorDetails = JSON.stringify({
-          error: parsedError?.error?.message,
-          type: parsedError?.error?.type,
-          code: parsedError?.error?.code,
-          param: parsedError?.error?.param,
-        });
+        parsedError = JSON.parse(errorBody)?.error || null;
       } catch {
-        // Keep the raw response text when OpenAI does not return JSON.
+        // OpenAI normally returns JSON, but keep diagnostics safe if it does not.
       }
 
-      console.error("OpenAI API error:", {
+      const diagnostic = {
+        source: "openai-api",
         status: openAIResponse.status,
-        statusText: openAIResponse.statusText,
         requestId,
+        type: parsedError?.type || "unknown",
+        code: parsedError?.code || "unknown",
+        param: parsedError?.param || null,
+      };
+
+      console.error("OpenAI API error:", {
+        ...diagnostic,
         model,
-        details: errorDetails,
+        message: parsedError?.message || "non-json response",
       });
 
       return res.status(502).json({
         success: false,
         message: "The shopping assistant is temporarily unavailable. Please try again.",
+        diagnostic,
       });
     }
 
