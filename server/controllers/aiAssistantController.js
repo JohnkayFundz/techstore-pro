@@ -37,6 +37,58 @@ const getOutputText = (response) => {
   return "";
 };
 
+const getFallbackRecommendations = (message, products) => {
+  const query = message.toLowerCase();
+  const terms = query.split(/[^a-z0-9]+/).filter((term) => term.length > 2);
+
+  return products
+    .map((product) => {
+      const haystack = [
+        product.name,
+        product.description,
+        product.category,
+        product.brand,
+        ...(product.features || []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      let score = Number(product.bestseller) * 2 + Number(product.featured) + Number(product.newArrival);
+      for (const term of terms) {
+        if (haystack.includes(term)) score += 3;
+      }
+
+      const category = product.category?.toLowerCase() || "";
+      if (query.includes("laptop") && category === "laptops") score += 8;
+      if (query.includes("phone") && category === "smartphones") score += 8;
+      if ((query.includes("headphone") || query.includes("audio")) && category === "audio") score += 6;
+      if (query.includes("watch") && category === "wearables") score += 6;
+      if (query.includes("tablet") && category === "tablets") score += 6;
+
+      return { product, score };
+    })
+    .sort((a, b) => b.score - a.score || (b.product.rating || 0) - (a.product.rating || 0))
+    .slice(0, 3)
+    .map(({ product }) => ({
+      productId: String(product._id),
+      name: product.name,
+      price: product.price,
+      currency: product.currency,
+      category: product.category,
+      image: product.image || product.images?.[0] || "",
+      rating: product.rating,
+      reason: `A relevant in-stock ${product.category || "product"} option based on your request.`,
+    }));
+};
+
+const buildFallbackResponse = (message, products) => ({
+  success: true,
+  message: "I couldn't reach the AI service right now, so I matched your request against our in-stock catalog instead.",
+  recommendations: getFallbackRecommendations(message, products),
+  fallback: true,
+});
+
 export const aiShoppingAssistant = async (req, res) => {
   try {
     const message = String(req.body?.message || "").trim();
@@ -55,20 +107,8 @@ export const aiShoppingAssistant = async (req, res) => {
       });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      console.error("AI Shopping Assistant configuration error: OPENAI_API_KEY is missing.");
-      return res.status(503).json({
-        success: false,
-        message: "The AI shopping assistant is being configured. Please try again shortly.",
-        diagnostic: {
-          source: "server-config",
-          reason: "missing_api_key",
-        },
-      });
-    }
-
     const products = await Product.find({ isActive: true, stock: { $gt: 0 } })
-      .select("name description price currency category brand features rating bestseller newArrival image")
+      .select("name description price currency category brand features rating bestseller newArrival featured image images")
       .sort({ bestseller: -1, featured: -1, rating: -1 })
       .limit(60)
       .lean();
@@ -79,6 +119,11 @@ export const aiShoppingAssistant = async (req, res) => {
         message: "I don't have any in-stock products to recommend right now.",
         recommendations: [],
       });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("AI Shopping Assistant configuration error: OPENAI_API_KEY is missing. Using catalog fallback.");
+      return res.status(200).json(buildFallbackResponse(message, products));
     }
 
     const catalog = products.map((product) => ({
@@ -137,15 +182,7 @@ export const aiShoppingAssistant = async (req, res) => {
         message: error?.message,
         model,
       });
-
-      return res.status(502).json({
-        success: false,
-        message: "The shopping assistant is temporarily unavailable. Please try again.",
-        diagnostic: {
-          source: "openai-network",
-          reason: error?.name || "request_failed",
-        },
-      });
+      return res.status(200).json(buildFallbackResponse(message, products));
     }
 
     if (!openAIResponse.ok) {
@@ -159,36 +196,36 @@ export const aiShoppingAssistant = async (req, res) => {
         // OpenAI normally returns JSON, but keep diagnostics safe if it does not.
       }
 
-      const diagnostic = {
-        source: "openai-api",
+      console.error("OpenAI API error; using catalog fallback:", {
         status: openAIResponse.status,
+        statusText: openAIResponse.statusText,
         requestId,
+        model,
         type: parsedError?.type || "unknown",
         code: parsedError?.code || "unknown",
         param: parsedError?.param || null,
-      };
-
-      console.error("OpenAI API error:", {
-        ...diagnostic,
-        model,
         message: parsedError?.message || "non-json response",
       });
 
-      return res.status(502).json({
-        success: false,
-        message: "The shopping assistant is temporarily unavailable. Please try again.",
-        diagnostic,
-      });
+      return res.status(200).json(buildFallbackResponse(message, products));
     }
 
     const data = await openAIResponse.json();
     const outputText = getOutputText(data);
 
     if (!outputText) {
-      throw new Error("OpenAI returned no assistant output.");
+      console.error("OpenAI returned no assistant output; using catalog fallback.");
+      return res.status(200).json(buildFallbackResponse(message, products));
     }
 
-    const parsed = JSON.parse(outputText);
+    let parsed;
+    try {
+      parsed = JSON.parse(outputText);
+    } catch (error) {
+      console.error("OpenAI returned invalid JSON output; using catalog fallback:", error?.message);
+      return res.status(200).json(buildFallbackResponse(message, products));
+    }
+
     const productMap = new Map(products.map((product) => [String(product._id), product]));
 
     const recommendations = (parsed.recommendations || [])
@@ -216,6 +253,19 @@ export const aiShoppingAssistant = async (req, res) => {
     });
   } catch (error) {
     console.error("AI Shopping Assistant Error:", error);
+
+    try {
+      const message = String(req.body?.message || "").trim();
+      const products = await Product.find({ isActive: true, stock: { $gt: 0 } })
+        .select("name description price currency category brand features rating bestseller newArrival featured image images")
+        .sort({ bestseller: -1, featured: -1, rating: -1 })
+        .limit(60)
+        .lean();
+
+      if (products.length) return res.status(200).json(buildFallbackResponse(message, products));
+    } catch (fallbackError) {
+      console.error("AI Shopping Assistant fallback failed:", fallbackError);
+    }
 
     return res.status(500).json({
       success: false,
