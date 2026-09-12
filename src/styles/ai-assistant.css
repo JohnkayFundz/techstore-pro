@@ -183,8 +183,20 @@
 }
 
 .ai-recommendation-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
+}
+
+.ai-recommendation-price > span:first-child {
+  color: #374151;
+}
+
+.ai-recommendation-price > span:last-child {
+  color: #111827;
 }
 
 .ai-recommendation-body small {
@@ -201,7 +213,7 @@
   width: fit-content;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   margin-top: 2px;
   padding: 0;
   border: 0;
@@ -210,6 +222,11 @@
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.ai-recommendation-body button span {
+  display: inline-block;
+  line-height: 1;
 }
 
 .ai-quick-prompts {
