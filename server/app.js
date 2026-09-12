@@ -16,6 +16,7 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import aiAssistantRoutes from "./routes/aiAssistantRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
@@ -95,6 +96,7 @@ app.get("/api", (req, res) => {
       admin: "/api/admin",
       users: "/api/users",
       products: "/api/products",
+      aiAssistant: "/api/products/ai/assistant",
       orders: "/api/orders",
       upload: "/api/upload",
       settings: "/api/settings",
@@ -117,6 +119,7 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/products", aiAssistantRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
