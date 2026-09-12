@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Send, Sparkles, X, ArrowRight } from "lucide-react";
+import { Send, Sparkles, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../api/axios";
@@ -141,8 +141,9 @@ function AIShoppingAssistant() {
 
                         <div className="ai-recommendation-body">
                           <strong>{product.name}</strong>
-                          <span className="ai-recommendation-price">
-                            {product.currency || "USD"} {Number(product.price || 0).toLocaleString()}
+                          <span className="ai-recommendation-price" aria-label={`Price ${product.currency || "USD"} ${Number(product.price || 0).toLocaleString()}`}>
+                            <span>{product.currency || "USD"}</span>
+                            <span>{Number(product.price || 0).toLocaleString()}</span>
                           </span>
                           <small>{product.reason}</small>
                           <button
@@ -152,7 +153,7 @@ function AIShoppingAssistant() {
                               navigate(`/products/${product.productId}`);
                             }}
                           >
-                            View product <ArrowRight size={14} />
+                            View product <span aria-hidden="true">→</span>
                           </button>
                         </div>
                       </article>
