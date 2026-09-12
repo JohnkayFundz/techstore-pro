@@ -56,6 +56,7 @@ export const aiShoppingAssistant = async (req, res) => {
     }
 
     if (!process.env.OPENAI_API_KEY) {
+      console.error("AI Shopping Assistant configuration error: OPENAI_API_KEY is missing.");
       return res.status(503).json({
         success: false,
         message: "The AI shopping assistant is being configured. Please try again shortly.",
@@ -90,42 +91,79 @@ export const aiShoppingAssistant = async (req, res) => {
       newArrival: Boolean(product.newArrival),
     }));
 
-    const openAIResponse = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || DEFAULT_MODEL,
-        instructions:
-          "You are TechStore Pro's shopping assistant. Help customers choose from the supplied in-stock catalog. Never invent products, prices, features, stock, discounts, or URLs. Recommend only products whose exact id appears in the catalog. If the request is vague, ask one concise clarifying question instead of guessing. Keep the tone friendly, practical, and concise. Mention budget or use-case fit when relevant. Return no more than 3 recommendations.",
-        input: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "input_text",
-                text: `Customer request:\n${message}\n\nIn-stock product catalog:\n${JSON.stringify(catalog)}`,
-              },
-            ],
-          },
-        ],
-        text: {
-          format: {
-            type: "json_schema",
-            name: "shopping_assistant_response",
-            strict: true,
-            schema: responseSchema,
-          },
+    const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
+
+    let openAIResponse;
+    try {
+      openAIResponse = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
         },
-        max_output_tokens: 500,
-      }),
-    });
+        body: JSON.stringify({
+          model,
+          instructions:
+            "You are TechStore Pro's shopping assistant. Help customers choose from the supplied in-stock catalog. Never invent products, prices, features, stock, discounts, or URLs. Recommend only products whose exact id appears in the catalog. If the request is vague, ask one concise clarifying question instead of guessing. Keep the tone friendly, practical, and concise. Mention budget or use-case fit when relevant. Return no more than 3 recommendations.",
+          input: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "input_text",
+                  text: `Customer request:\n${message}\n\nIn-stock product catalog:\n${JSON.stringify(catalog)}`,
+                },
+              ],
+            },
+          ],
+          text: {
+            format: {
+              type: "json_schema",
+              name: "shopping_assistant_response",
+              strict: true,
+              schema: responseSchema,
+            },
+          },
+          max_output_tokens: 500,
+        }),
+      });
+    } catch (error) {
+      console.error("OpenAI request failed before receiving a response:", {
+        name: error?.name,
+        message: error?.message,
+        model,
+      });
+
+      return res.status(502).json({
+        success: false,
+        message: "The shopping assistant is temporarily unavailable. Please try again.",
+      });
+    }
 
     if (!openAIResponse.ok) {
+      const requestId = openAIResponse.headers.get("x-request-id") || "not-provided";
       const errorBody = await openAIResponse.text();
-      console.error("OpenAI API error:", openAIResponse.status, errorBody);
+
+      let errorDetails = errorBody;
+      try {
+        const parsedError = JSON.parse(errorBody);
+        errorDetails = JSON.stringify({
+          error: parsedError?.error?.message,
+          type: parsedError?.error?.type,
+          code: parsedError?.error?.code,
+          param: parsedError?.error?.param,
+        });
+      } catch {
+        // Keep the raw response text when OpenAI does not return JSON.
+      }
+
+      console.error("OpenAI API error:", {
+        status: openAIResponse.status,
+        statusText: openAIResponse.statusText,
+        requestId,
+        model,
+        details: errorDetails,
+      });
 
       return res.status(502).json({
         success: false,
