@@ -2,35 +2,16 @@ import Product from "../models/Product.js";
 
 const DEFAULT_MODEL = "gpt-5.6-luna";
 
-const responseSchema = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    message: { type: "string" },
-    recommendations: {
-      type: "array",
-      items: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          productId: { type: "string" },
-          reason: { type: "string" },
-        },
-        required: ["productId", "reason"],
-      },
-    },
-  },
-  required: ["message", "recommendations"],
-};
-
 const getOutputText = (response) => {
+  if (typeof response?.output_text === "string" && response.output_text.trim()) {
+    return response.output_text;
+  }
+
   for (const item of response?.output || []) {
     if (item?.type !== "message") continue;
 
     for (const content of item.content || []) {
-      if (content?.type === "output_text" && content.text) {
-        return content.text;
-      }
+      if (content?.type === "output_text" && content.text) return content.text;
     }
   }
 
@@ -84,7 +65,7 @@ const getFallbackRecommendations = (message, products) => {
 
 const buildFallbackResponse = (message, products) => ({
   success: true,
-  message: "I couldn't reach the AI service right now, so I matched your request against our in-stock catalog instead.",
+  message: "Based on your request, here are the best matches from our in-stock catalog.",
   recommendations: getFallbackRecommendations(message, products),
   fallback: true,
 });
@@ -94,17 +75,11 @@ export const aiShoppingAssistant = async (req, res) => {
     const message = String(req.body?.message || "").trim();
 
     if (!message) {
-      return res.status(400).json({
-        success: false,
-        message: "Please tell me what you are looking for.",
-      });
+      return res.status(400).json({ success: false, message: "Please tell me what you are looking for." });
     }
 
     if (message.length > 1200) {
-      return res.status(400).json({
-        success: false,
-        message: "Please keep your request under 1,200 characters.",
-      });
+      return res.status(400).json({ success: false, message: "Please keep your request under 1,200 characters." });
     }
 
     const products = await Product.find({ isActive: true, stock: { $gt: 0 } })
@@ -121,9 +96,11 @@ export const aiShoppingAssistant = async (req, res) => {
       });
     }
 
+    const fallback = () => res.status(200).json(buildFallbackResponse(message, products));
+
     if (!process.env.OPENAI_API_KEY) {
       console.error("AI Shopping Assistant configuration error: OPENAI_API_KEY is missing. Using catalog fallback.");
-      return res.status(200).json(buildFallbackResponse(message, products));
+      return fallback();
     }
 
     const catalog = products.map((product) => ({
@@ -141,8 +118,8 @@ export const aiShoppingAssistant = async (req, res) => {
     }));
 
     const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
-
     let openAIResponse;
+
     try {
       openAIResponse = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
@@ -153,26 +130,8 @@ export const aiShoppingAssistant = async (req, res) => {
         body: JSON.stringify({
           model,
           instructions:
-            "You are TechStore Pro's shopping assistant. Help customers choose from the supplied in-stock catalog. Never invent products, prices, features, stock, discounts, or URLs. Recommend only products whose exact id appears in the catalog. If the request is vague, ask one concise clarifying question instead of guessing. Keep the tone friendly, practical, and concise. Mention budget or use-case fit when relevant. Return no more than 3 recommendations.",
-          input: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "input_text",
-                  text: `Customer request:\n${message}\n\nIn-stock product catalog:\n${JSON.stringify(catalog)}`,
-                },
-              ],
-            },
-          ],
-          text: {
-            format: {
-              type: "json_schema",
-              name: "shopping_assistant_response",
-              strict: true,
-              schema: responseSchema,
-            },
-          },
+            "You are TechStore Pro's shopping assistant. Recommend only products from the supplied in-stock catalog. Never invent products, prices, features, stock, discounts, or URLs. Return valid JSON only with this shape: {\"message\":\"string\",\"recommendations\":[{\"productId\":\"catalog id\",\"reason\":\"short reason\"}]}. Return no more than 3 recommendations. If the request is vague, ask one concise clarifying question and return an empty recommendations array.",
+          input: `Customer request:\n${message}\n\nIn-stock product catalog:\n${JSON.stringify(catalog)}`,
           max_output_tokens: 500,
         }),
       });
@@ -182,18 +141,18 @@ export const aiShoppingAssistant = async (req, res) => {
         message: error?.message,
         model,
       });
-      return res.status(200).json(buildFallbackResponse(message, products));
+      return fallback();
     }
 
     if (!openAIResponse.ok) {
       const requestId = openAIResponse.headers.get("x-request-id") || "not-provided";
       const errorBody = await openAIResponse.text();
-
       let parsedError = null;
+
       try {
         parsedError = JSON.parse(errorBody)?.error || null;
       } catch {
-        // OpenAI normally returns JSON, but keep diagnostics safe if it does not.
+        // Keep diagnostics safe if the provider returns non-JSON text.
       }
 
       console.error("OpenAI API error; using catalog fallback:", {
@@ -207,15 +166,21 @@ export const aiShoppingAssistant = async (req, res) => {
         message: parsedError?.message || "non-json response",
       });
 
-      return res.status(200).json(buildFallbackResponse(message, products));
+      return fallback();
     }
 
-    const data = await openAIResponse.json();
-    const outputText = getOutputText(data);
+    let data;
+    try {
+      data = await openAIResponse.json();
+    } catch (error) {
+      console.error("OpenAI returned an unreadable response; using catalog fallback:", error?.message);
+      return fallback();
+    }
 
+    const outputText = getOutputText(data);
     if (!outputText) {
       console.error("OpenAI returned no assistant output; using catalog fallback.");
-      return res.status(200).json(buildFallbackResponse(message, products));
+      return fallback();
     }
 
     let parsed;
@@ -223,17 +188,15 @@ export const aiShoppingAssistant = async (req, res) => {
       parsed = JSON.parse(outputText);
     } catch (error) {
       console.error("OpenAI returned invalid JSON output; using catalog fallback:", error?.message);
-      return res.status(200).json(buildFallbackResponse(message, products));
+      return fallback();
     }
 
     const productMap = new Map(products.map((product) => [String(product._id), product]));
-
-    const recommendations = (parsed.recommendations || [])
+    const recommendations = (Array.isArray(parsed.recommendations) ? parsed.recommendations : [])
       .filter((item) => productMap.has(String(item.productId)))
       .slice(0, 3)
       .map((item) => {
         const product = productMap.get(String(item.productId));
-
         return {
           productId: String(product._id),
           name: product.name,
@@ -242,13 +205,13 @@ export const aiShoppingAssistant = async (req, res) => {
           category: product.category,
           image: product.image || product.images?.[0] || "",
           rating: product.rating,
-          reason: item.reason,
+          reason: String(item.reason || "A relevant option based on your request."),
         };
       });
 
     return res.status(200).json({
       success: true,
-      message: parsed.message || "Here are a few products that may fit your needs.",
+      message: String(parsed.message || "Here are a few products that may fit your needs."),
       recommendations,
     });
   } catch (error) {
