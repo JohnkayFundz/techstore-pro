@@ -141,9 +141,8 @@ function AIShoppingAssistant() {
 
                         <div className="ai-recommendation-body">
                           <strong>{product.name}</strong>
-                          <span className="ai-recommendation-price" aria-label={`Price ${product.currency || "USD"} ${Number(product.price || 0).toLocaleString()}`}>
-                            <span>{product.currency || "USD"}</span>
-                            <span>{Number(product.price || 0).toLocaleString()}</span>
+                          <span className="ai-recommendation-price">
+                            {`${product.currency || "USD"} ${Number(product.price || 0).toLocaleString()}`}
                           </span>
                           <small>{product.reason}</small>
                           <button
