@@ -4,6 +4,7 @@ import Navbar from "./Navbar.jsx";
 import Footer from "./Footer.jsx";
 import Toast from "./Toast.jsx";
 import ErrorBoundary from "./ErrorBoundary.jsx";
+import AIShoppingAssistant from "./AIShoppingAssistant.jsx";
 
 function Layout() {
   return (
@@ -31,6 +32,9 @@ function Layout() {
 
       {/* Footer */}
       <Footer />
+
+      {/* AI Shopping Assistant */}
+      <AIShoppingAssistant />
     </>
   );
 }
