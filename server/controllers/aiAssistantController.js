@@ -18,6 +18,41 @@ const getOutputText = (response) => {
   return "";
 };
 
+const buildRecommendationReason = (message, product) => {
+  const query = message.toLowerCase();
+  const category = product.category || "product";
+  const features = (product.features || []).filter(Boolean).slice(0, 2);
+  const featureText = features.join(" and ");
+  const priceText = `${product.currency || "USD"} ${Number(product.price || 0).toLocaleString()}`;
+
+  if (/(coding|programming|developer|development|software)/.test(query)) {
+    if (featureText) return `A strong coding option with ${featureText}.`;
+    return `A solid ${category.toLowerCase()} option for development work.`;
+  }
+
+  if (/(gaming|gamer)/.test(query)) {
+    if (featureText) return `A gaming-focused option featuring ${featureText}.`;
+    return `A good ${category.toLowerCase()} match for a gaming setup.`;
+  }
+
+  if (/(music|audio|headphone|headset)/.test(query)) {
+    if (featureText) return `A good audio match with ${featureText}.`;
+    return `A suitable ${category.toLowerCase()} choice for your audio needs.`;
+  }
+
+  if (/(camera|photography|photo|video)/.test(query)) {
+    if (featureText) return `A useful choice for photo and video use, with ${featureText}.`;
+    return `A suitable ${category.toLowerCase()} option for photo and video use.`;
+  }
+
+  if (/(budget|under|below|less than|around|cheap|affordable)/.test(query)) {
+    return `A ${category.toLowerCase()} option priced at ${priceText} that fits the requested budget focus.`;
+  }
+
+  if (featureText) return `Matches your request with ${featureText}.`;
+  return `A relevant in-stock ${category.toLowerCase()} option that matches your request.`;
+};
+
 const getFallbackRecommendations = (message, products) => {
   const query = message.toLowerCase();
   const terms = query.split(/[^a-z0-9]+/).filter((term) => term.length > 2);
@@ -59,7 +94,7 @@ const getFallbackRecommendations = (message, products) => {
       category: product.category,
       image: product.image || product.images?.[0] || "",
       rating: product.rating,
-      reason: `A relevant in-stock ${product.category || "product"} option based on your request.`,
+      reason: buildRecommendationReason(message, product),
     }));
 };
 
@@ -130,7 +165,7 @@ export const aiShoppingAssistant = async (req, res) => {
         body: JSON.stringify({
           model,
           instructions:
-            "You are TechStore Pro's shopping assistant. Recommend only products from the supplied in-stock catalog. Never invent products, prices, features, stock, discounts, or URLs. Return valid JSON only with this shape: {\"message\":\"string\",\"recommendations\":[{\"productId\":\"catalog id\",\"reason\":\"short reason\"}]}. Return no more than 3 recommendations. If the request is vague, ask one concise clarifying question and return an empty recommendations array.",
+            "You are TechStore Pro's shopping assistant. Recommend only products from the supplied in-stock catalog. Never invent products, prices, features, stock, discounts, or URLs. Return valid JSON only with this shape: {\"message\":\"string\",\"recommendations\":[{\"productId\":\"catalog id\",\"reason\":\"short specific reason\"}]}. Return no more than 3 recommendations. Each reason must explain why that exact product fits the customer's request using only facts present in the catalog; mention relevant features, use case, category, or budget when supported. Never use generic reasons such as 'relevant option' or 'based on your request'. If the request is vague, ask one concise clarifying question and return an empty recommendations array.",
           input: `Customer request:\n${message}\n\nIn-stock product catalog:\n${JSON.stringify(catalog)}`,
           max_output_tokens: 500,
         }),
@@ -197,6 +232,7 @@ export const aiShoppingAssistant = async (req, res) => {
       .slice(0, 3)
       .map((item) => {
         const product = productMap.get(String(item.productId));
+        const reason = String(item.reason || "").trim();
         return {
           productId: String(product._id),
           name: product.name,
@@ -205,7 +241,7 @@ export const aiShoppingAssistant = async (req, res) => {
           category: product.category,
           image: product.image || product.images?.[0] || "",
           rating: product.rating,
-          reason: String(item.reason || "A relevant option based on your request."),
+          reason: reason || buildRecommendationReason(message, product),
         };
       });
 
