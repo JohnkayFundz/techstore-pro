@@ -12,6 +12,7 @@ import {
 import {
   getAdminOrders,
   updateOrderStatus,
+  recordCashPayment,
   deleteAdminOrder,
 } from "../../api/adminApi";
 
@@ -303,6 +304,67 @@ function AdminOrders() {
         error?.response?.data?.message ||
           error?.message ||
           "Failed to update status."
+      );
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  // ========================================================
+  // RECORD CASH PAYMENT RECEIVED
+  // ========================================================
+
+  const handleRecordCashPayment = async (order) => {
+    const orderId = order?._id;
+    const paymentMethod = String(order?.paymentMethod || "")
+      .trim()
+      .toLowerCase();
+    const paymentStatus = String(order?.paymentStatus || "pending")
+      .trim()
+      .toLowerCase();
+
+    if (!orderId || paymentMethod !== "cash" || paymentStatus !== "pending") {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Confirm that the cash payment has actually been received. This will record the order as paid."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setUpdating(orderId);
+
+      const response = await recordCashPayment(orderId);
+
+      if (!response || response.success === false) {
+        throw new Error(
+          response?.message || "Failed to record cash payment."
+        );
+      }
+
+      setOrders((previous) =>
+        previous.map((item) =>
+          item._id === orderId
+            ? {
+                ...item,
+                paymentStatus: response.order?.paymentStatus || "paid",
+              }
+            : item
+        )
+      );
+
+      alert(response.message || "Cash payment recorded successfully.");
+    } catch (error) {
+      console.error("Record Cash Payment Error:", error);
+
+      alert(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to record cash payment."
       );
     } finally {
       setUpdating(null);
@@ -788,6 +850,20 @@ function AdminOrders() {
                           {paymentStatus}
                         </strong>
                       </p>
+
+                      {String(order?.paymentMethod || "").trim().toLowerCase() === "cash" &&
+                        String(order?.paymentStatus || "pending").trim().toLowerCase() === "pending" && (
+                          <button
+                            type="button"
+                            className="record-cash-payment-btn"
+                            disabled={updating === order._id}
+                            onClick={() => handleRecordCashPayment(order)}
+                          >
+                            {updating === order._id
+                              ? "Recording..."
+                              : "Record Cash Received"}
+                          </button>
+                        )}
 
                     </div>
 
