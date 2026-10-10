@@ -269,6 +269,26 @@ export const updateOrderStatus = async (
 };
 
 
+export const recordCashPayment = async (id) => {
+  try {
+    const { data } = await api.put(
+      `/admin/orders/${id}/payment-status`
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Record Cash Payment Error:", error);
+
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "Failed to record cash payment.",
+    };
+  }
+};
+
+
 export const deleteAdminOrder = async (
   id
 ) => {
