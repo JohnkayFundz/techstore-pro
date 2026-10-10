@@ -42,6 +42,7 @@ import {
 import {
   updateOrderStatusSafely,
   deleteOrderSafely,
+  recordCashPaymentSafely,
 } from "../controllers/adminOrderLifecycleController.js";
 
 const router = express.Router();
@@ -171,6 +172,19 @@ router.put(
   protect,
   adminOnly,
   updateOrderStatusSafely
+);
+
+
+/*
+ * RECORD CASH PAYMENT RECEIVED
+ *
+ * PUT /api/admin/orders/:id/payment-status
+ */
+router.put(
+  "/orders/:id/payment-status",
+  protect,
+  adminOnly,
+  recordCashPaymentSafely
 );
 
 

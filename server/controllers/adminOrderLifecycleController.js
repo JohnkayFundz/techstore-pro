@@ -112,13 +112,6 @@ export const updateOrderStatusSafely = async (req, res) => {
 
     order.status = status;
 
-    if (
-      status === "delivered" &&
-      order.paymentStatus === "pending"
-    ) {
-      order.paymentStatus = "paid";
-    }
-
     await order.save({ session });
     await session.commitTransaction();
 
@@ -190,6 +183,75 @@ export const deleteOrderSafely = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to delete order.",
+    });
+  }
+};
+
+
+/**
+ * Record cash actually received for an order.
+ * Card payments must be verified by a real payment provider.
+ */
+export const recordCashPaymentSafely = async (req, res) => {
+  const { id } = req.params;
+
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid order ID.",
+    });
+  }
+
+  try {
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found.",
+      });
+    }
+
+    const paymentMethod = String(order.paymentMethod || "")
+      .trim()
+      .toLowerCase();
+    const paymentStatus = String(order.paymentStatus || "pending")
+      .trim()
+      .toLowerCase();
+
+    if (paymentMethod !== "cash") {
+      return res.status(400).json({
+        success: false,
+        message: "Only cash orders can be marked paid through this action.",
+      });
+    }
+
+    if (paymentStatus !== "pending") {
+      return res.status(409).json({
+        success: false,
+        message: "Only orders with pending payment can be updated.",
+      });
+    }
+
+    order.paymentStatus = "paid";
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Cash payment recorded successfully.",
+      order: {
+        _id: order._id,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        status: order.status,
+      },
+    });
+  } catch (error) {
+    console.error("Record Cash Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to record cash payment.",
     });
   }
 };

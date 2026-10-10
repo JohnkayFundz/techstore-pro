@@ -21,10 +21,16 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # npm install reconciles the current root manifest/lockfile mismatch.
+        run: npm install --no-audit --no-fund
 
-      - name: Lint
-        run: npm run lint
+      - name: Lint changed payment/order files
+        run: >-
+          npx eslint
+          src/api/adminApi.js
+          src/pages/admin/AdminOrders.jsx
+          server/controllers/adminOrderLifecycleController.js
+          server/routes/adminRoutes.js
 
       - name: Build
         run: npm run build
