@@ -116,6 +116,8 @@ function AdminOrders() {
   // ========================================================
 
   useEffect(() => {
+    // The existing loader manages loading/error/order state asynchronously.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadOrders();
   }, []);
 
