@@ -14,6 +14,14 @@ const allowedStatuses = [
   "cancelled",
 ];
 
+const allowedTransitions = {
+  pending: ["processing", "cancelled"],
+  processing: ["shipped", "cancelled"],
+  shipped: ["delivered"],
+  delivered: [],
+  cancelled: [],
+};
+
 /**
  * Update an order status while keeping inventory consistent.
  *
@@ -56,25 +64,6 @@ export const updateOrderStatusSafely = async (req, res) => {
 
     const previousStatus = String(order.status || "pending").toLowerCase();
 
-    if (previousStatus === "cancelled" && status !== "cancelled") {
-      await session.abortTransaction();
-      return res.status(409).json({
-        success: false,
-        message: "Cancelled orders cannot be reopened.",
-      });
-    }
-
-    if (
-      status === "cancelled" &&
-      !["pending", "processing"].includes(previousStatus)
-    ) {
-      await session.abortTransaction();
-      return res.status(409).json({
-        success: false,
-        message: "Only pending or processing orders can be cancelled.",
-      });
-    }
-
     if (status === previousStatus) {
       await session.commitTransaction();
 
@@ -86,6 +75,14 @@ export const updateOrderStatusSafely = async (req, res) => {
         success: true,
         message: "Order status is already up to date.",
         order: unchangedOrder,
+      });
+    }
+
+    if (!allowedTransitions[previousStatus]?.includes(status)) {
+      await session.abortTransaction();
+      return res.status(409).json({
+        success: false,
+        message: `Order status cannot transition from "${previousStatus}" to "${status}".`,
       });
     }
 
@@ -154,28 +151,31 @@ export const deleteOrderSafely = async (req, res) => {
   }
 
   try {
-    const order = await Order.findById(id).lean();
+    const deletedOrder = await Order.findOneAndDelete({
+      _id: id,
+      status: "cancelled",
+    }).lean();
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found.",
-      });
-    }
+    if (!deletedOrder) {
+      const orderExists = await Order.exists({ _id: id });
 
-    if (String(order.status).toLowerCase() !== "cancelled") {
+      if (!orderExists) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found.",
+        });
+      }
+
       return res.status(409).json({
         success: false,
         message: "Only cancelled orders can be permanently deleted.",
       });
     }
 
-    await Order.deleteOne({ _id: id });
-
     return res.status(200).json({
       success: true,
       message: "Cancelled order deleted successfully.",
-      orderId: id,
+      orderId: String(deletedOrder._id),
     });
   } catch (error) {
     console.error("Delete Admin Order Error:", error);
@@ -203,48 +203,52 @@ export const recordCashPaymentSafely = async (req, res) => {
   }
 
   try {
-    const order = await Order.findById(id);
+    const updatedOrder = await Order.findOneAndUpdate(
+      {
+        _id: id,
+        paymentMethod: "cash",
+        paymentStatus: "pending",
+      },
+      {
+        $set: { paymentStatus: "paid" },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select("_id paymentMethod paymentStatus status");
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found.",
-      });
-    }
+    if (!updatedOrder) {
+      // Read only to return a useful error; the state-changing operation above
+      // remains a single atomic conditional update.
+      const currentOrder = await Order.findById(id)
+        .select("_id paymentMethod paymentStatus")
+        .lean();
 
-    const paymentMethod = String(order.paymentMethod || "")
-      .trim()
-      .toLowerCase();
-    const paymentStatus = String(order.paymentStatus || "pending")
-      .trim()
-      .toLowerCase();
+      if (!currentOrder) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found.",
+        });
+      }
 
-    if (paymentMethod !== "cash") {
-      return res.status(400).json({
-        success: false,
-        message: "Only cash orders can be marked paid through this action.",
-      });
-    }
+      if (String(currentOrder.paymentMethod || "").trim().toLowerCase() !== "cash") {
+        return res.status(400).json({
+          success: false,
+          message: "Only cash orders can be marked paid through this action.",
+        });
+      }
 
-    if (paymentStatus !== "pending") {
       return res.status(409).json({
         success: false,
         message: "Only orders with pending payment can be updated.",
       });
     }
 
-    order.paymentStatus = "paid";
-    await order.save();
-
     return res.status(200).json({
       success: true,
       message: "Cash payment recorded successfully.",
-      order: {
-        _id: order._id,
-        paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
-        status: order.status,
-      },
+      order: updatedOrder,
     });
   } catch (error) {
     console.error("Record Cash Payment Error:", error);
