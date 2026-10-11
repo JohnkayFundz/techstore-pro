@@ -34,7 +34,7 @@ function requestFor(id, body = {}) {
   return { params: { id: String(id) }, body };
 }
 
-async function createProduct({ stock = 10, sku = "TEST-SKU" } = {}) {
+async function createProduct({ stock = 10, sku = `TEST-${new mongoose.Types.ObjectId()}` } = {}) {
   return Product.create({
     name: "Integration Test Product",
     description: "Temporary product for isolated lifecycle tests",
