@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, test/pr7-lifecycle-integration]
   pull_request:
     branches: [main]
 
@@ -57,3 +57,30 @@ jobs:
 
       - name: Check JavaScript syntax
         run: node --check server.js && node --check app.js
+
+  lifecycle-integration:
+    name: Order lifecycle integration tests
+    if: github.ref == 'refs/heads/test/pr7-lifecycle-integration'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Install isolated test runner dependency
+        run: npm install --no-save --no-audit --no-fund mongodb-memory-server
+
+      - name: Run lifecycle integration tests
+        run: node --test tests/adminOrderLifecycle.integration.test.js
