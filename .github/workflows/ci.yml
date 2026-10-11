@@ -1,6 +1,7 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [main, test/pr7-lifecycle-integration]
   pull_request:
