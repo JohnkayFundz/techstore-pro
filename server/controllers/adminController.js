@@ -196,6 +196,7 @@ export const getSalesAnalytics = async (req, res) => {
       totalOrders,
       deliveredOrders,
       cancelledOrders,
+      paidOrders,
     ] = await Promise.all([
       Order.countDocuments(),
 
@@ -205,6 +206,10 @@ export const getSalesAnalytics = async (req, res) => {
 
       Order.countDocuments({
         status: "cancelled",
+      }),
+
+      Order.countDocuments({
+        paymentStatus: "paid",
       }),
     ]);
 
@@ -217,7 +222,7 @@ export const getSalesAnalytics = async (req, res) => {
       await Order.aggregate([
         {
           $match: {
-            status: "delivered",
+            paymentStatus: "paid",
           },
         },
 
