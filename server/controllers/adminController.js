@@ -812,17 +812,10 @@ export const updateOrderStatus = async (
 
 
     /*
-     * When an order is delivered,
-     * mark it as paid if payment
-     * is still pending.
+     * Delivery and payment are separate states.
+     * Do not mark an order as paid here; payment
+     * recording must confirm that funds were received.
      */
-    if (
-      status === "delivered" &&
-      order.paymentStatus ===
-        "pending"
-    ) {
-      order.paymentStatus = "paid";
-    }
 
 
     await order.save();
