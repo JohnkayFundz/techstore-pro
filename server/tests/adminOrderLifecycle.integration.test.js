@@ -87,7 +87,7 @@ before(async () => {
   await mongoose.connect(replSet.getUri());
   user = await User.create({
     name: "Lifecycle Test User",
-    email: "lifecycle-test@example.invalid",
+    email: "lifecycle-test@example.com",
     password: "temporary-test-password",
     role: "admin",
   });
