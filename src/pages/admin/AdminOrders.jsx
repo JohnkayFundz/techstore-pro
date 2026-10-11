@@ -144,6 +144,26 @@ function AdminOrders() {
   };
 
   // ========================================================
+  // VALID ORDER STATUS TRANSITIONS
+  // ========================================================
+
+  const getAllowedNextStatuses = (currentStatus) => {
+    const transitions = {
+      pending: ["processing", "cancelled"],
+      processing: ["shipped", "cancelled"],
+      shipped: ["delivered"],
+      delivered: [],
+      cancelled: [],
+    };
+
+    const normalized = String(currentStatus || "pending")
+      .trim()
+      .toLowerCase();
+
+    return transitions[normalized] || [];
+  };
+
+  // ========================================================
   // GET ORDER TOTAL
   // ========================================================
 
@@ -887,25 +907,14 @@ function AdminOrders() {
                       }
                     >
 
-                      <option value="Pending">
-                        Pending
-                      </option>
-
-                      <option value="Processing">
-                        Processing
-                      </option>
-
-                      <option value="Shipped">
-                        Shipped
-                      </option>
-
-                      <option value="Delivered">
-                        Delivered
-                      </option>
-
-                      <option value="Cancelled">
-                        Cancelled
-                      </option>
+                      {[
+                        status,
+                        ...getAllowedNextStatuses(order?.status).map(formatStatus),
+                      ].map((nextStatus) => (
+                        <option key={nextStatus} value={nextStatus}>
+                          {nextStatus}
+                        </option>
+                      ))}
 
                     </select>
 
@@ -1175,8 +1184,13 @@ function AdminOrders() {
                       type="button"
                       className="delete-btn"
                       disabled={
-                        deleting ===
-                        order._id
+                        status.toLowerCase() !== "cancelled" ||
+                        deleting === order._id
+                      }
+                      title={
+                        status.toLowerCase() !== "cancelled"
+                          ? "Only cancelled orders can be deleted."
+                          : "Permanently delete this cancelled order."
                       }
                       onClick={() =>
                         handleDelete(
