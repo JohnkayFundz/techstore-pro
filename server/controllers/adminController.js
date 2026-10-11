@@ -61,6 +61,7 @@ export const getDashboardStats = async (req, res) => {
       shippedOrders,
       deliveredOrders,
       cancelledOrders,
+      paidOrders,
     ] = await Promise.all([
       User.countDocuments(),
 
@@ -92,6 +93,10 @@ export const getDashboardStats = async (req, res) => {
       Order.countDocuments({
         status: "cancelled",
       }),
+
+      Order.countDocuments({
+        paymentStatus: "paid",
+      }),
     ]);
 
 
@@ -99,7 +104,7 @@ export const getDashboardStats = async (req, res) => {
       await Order.aggregate([
         {
           $match: {
-            status: "delivered",
+            paymentStatus: "paid",
           },
         },
 
@@ -134,6 +139,7 @@ export const getDashboardStats = async (req, res) => {
         shippedOrders,
         deliveredOrders,
         cancelledOrders,
+        paidOrders,
 
         totalRevenue,
       },
@@ -147,6 +153,7 @@ export const getDashboardStats = async (req, res) => {
       shippedOrders,
       deliveredOrders,
       cancelledOrders,
+      paidOrders,
 
       totalRevenue,
     });
@@ -176,7 +183,7 @@ export const getDashboardStats = async (req, res) => {
  * GET /api/admin/analytics
  * GET /api/admin/sales
  *
- * Sales analytics based on delivered orders.
+ * Sales analytics based on confirmed paid orders.
  */
 export const getSalesAnalytics = async (req, res) => {
   try {
@@ -203,7 +210,7 @@ export const getSalesAnalytics = async (req, res) => {
 
 
     /* --------------------------------------------------------
-       MONTHLY DELIVERED SALES
+       MONTHLY PAID SALES
     -------------------------------------------------------- */
 
     const salesData =
@@ -297,9 +304,9 @@ export const getSalesAnalytics = async (req, res) => {
     -------------------------------------------------------- */
 
     const averageOrderValue =
-      deliveredOrders > 0
+      paidOrders > 0
         ? totalRevenue /
-          deliveredOrders
+          paidOrders
         : 0;
 
 
@@ -347,6 +354,8 @@ export const getSalesAnalytics = async (req, res) => {
         deliveredOrders,
 
         cancelledOrders,
+
+        paidOrders,
 
         averageOrderValue,
       },
@@ -414,6 +423,8 @@ export const getSalesAnalytics = async (req, res) => {
 
       deliveredOrders,
 
+      paidOrders,
+
       totalOrders,
 
       cancelledOrders,
@@ -435,6 +446,8 @@ export const getSalesAnalytics = async (req, res) => {
         totalOrders: 0,
 
         deliveredOrders: 0,
+
+        paidOrders: 0,
 
         cancelledOrders: 0,
 
