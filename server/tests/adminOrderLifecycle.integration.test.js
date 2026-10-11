@@ -49,8 +49,18 @@ async function createOrder({
   status = "pending",
   paymentMethod = "cash",
   paymentStatus = "pending",
-  items = [],
+  items,
 } = {}) {
+  if (!items?.length) {
+    const product = await createProduct();
+    items = [{
+      product: product._id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+    }];
+  }
+
   return Order.create({
     user: user._id,
     items,
