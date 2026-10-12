@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 
 import {
   FiCheckCircle,
@@ -13,7 +13,7 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 
-import { getOrderById } from "../api/orderApi";
+import { getOrderById, verifyPayment } from "../api/orderApi";
 import { formatPrice } from "../utils/formatPrice";
 
 import "./OrderSuccess.css";
@@ -31,6 +31,8 @@ const formatStatus = (value) => {
 
 function OrderSuccess() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const paymentReference = searchParams.get("reference");
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,6 +50,17 @@ function OrderSuccess() {
       }
 
       try {
+        // Paystack redirects with a reference; treat it only as a lookup key.
+        // The backend verifies the transaction directly with Paystack.
+        if (paymentReference) {
+          try {
+            await verifyPayment(paymentReference);
+          } catch {
+            // The webhook may still be in flight; display the order's persisted
+            // payment status below instead of trusting the browser redirect.
+          }
+        }
+
         const response = await getOrderById(id);
         const payload = response?.data ?? response;
         const loadedOrder = payload?.order ?? payload?.data ?? null;
@@ -78,7 +91,7 @@ function OrderSuccess() {
     return () => {
       mounted = false;
     };
-  }, [id]);
+  }, [id, paymentReference]);
 
   if (loading) {
     return (
