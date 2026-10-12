@@ -120,10 +120,6 @@ export const verifyPayment = async (req, res) => {
       return res.status(404).json({ success: false, message: "Payment reference not found for this account." });
     }
 
-    if (order.status === "cancelled") {
-      return res.status(409).json({ success: false, message: "This order was cancelled; payment cannot be applied." });
-    }
-
     if (order.paymentStatus === "paid") {
       return res.status(200).json({ success: true, verified: true, order: publicOrder(order) });
     }
@@ -149,7 +145,6 @@ export const verifyPayment = async (req, res) => {
         _id: order._id,
         paymentMethod: "card",
         paymentStatus: "pending",
-        status: { $ne: "cancelled" },
         paystackReference: reference,
       },
       {
@@ -221,7 +216,6 @@ export const paystackWebhook = async (req, res) => {
         _id: order._id,
         paymentMethod: "card",
         paymentStatus: "pending",
-        status: { $ne: "cancelled" },
         paystackReference: reference,
       },
       {
