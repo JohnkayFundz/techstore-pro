@@ -113,6 +113,8 @@ function Checkout() {
       paymentMethod: formData.paymentMethod,
     };
 
+    let createdOrderId = null;
+
     try {
       setLoading(true);
       const response = await createOrder(orderData);
@@ -128,6 +130,7 @@ function Checkout() {
       if (!orderId) {
         throw new Error("Order was created, but no order ID was returned.");
       }
+      createdOrderId = orderId;
 
       if (formData.paymentMethod === "card") {
         const paymentResponse = await initializePayment(orderId);
@@ -144,6 +147,14 @@ function Checkout() {
       clearCart();
       navigate(`/order-success/${orderId}`);
     } catch (err) {
+      // The order may already exist if Paystack initialization failed. Keep the
+      // customer on that order instead of inviting a duplicate order submission.
+      if (createdOrderId && formData.paymentMethod === "card") {
+        clearCart();
+        navigate(`/order-success/${createdOrderId}`);
+        return;
+      }
+
       setError(
         err?.response?.data?.message ||
           err?.response?.data?.error ||
