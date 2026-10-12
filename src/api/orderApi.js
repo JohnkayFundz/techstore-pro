@@ -142,3 +142,23 @@ export const deleteOrder = async (id) => {
 
   return response;
 };
+
+/* ==========================================================
+   PAYSTACK - INITIALIZE CARD PAYMENT
+========================================================== */
+
+export const initializePayment = async (orderId) => {
+  if (!orderId) throw new Error("Order ID is required to initialize payment.");
+  const response = await api.post("/payments/init", { orderId });
+  return response?.data ?? response;
+};
+
+/* ==========================================================
+   PAYSTACK - SERVER-SIDE PAYMENT VERIFICATION
+========================================================== */
+
+export const verifyPayment = async (reference) => {
+  if (!reference) throw new Error("Payment reference is required.");
+  const response = await api.get(`/payments/verify/${encodeURIComponent(reference)}`);
+  return response?.data ?? response;
+};
