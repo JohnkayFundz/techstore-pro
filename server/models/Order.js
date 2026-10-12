@@ -173,6 +173,34 @@ const orderSchema = new mongoose.Schema(
     },
 
     /* --------------------------------------------------------
+       PAYSTACK PAYMENT AUDIT FIELDS
+    -------------------------------------------------------- */
+
+    paystackReference: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
+
+    paymentProvider: {
+      type: String,
+      enum: ["paystack"],
+    },
+
+    paidAt: {
+      type: Date,
+    },
+
+    paymentFailureAt: {
+      type: Date,
+    },
+
+    lastPaymentEventAt: {
+      type: Date,
+    },
+
+    /* --------------------------------------------------------
        ORDER STATUS
     -------------------------------------------------------- */
 
