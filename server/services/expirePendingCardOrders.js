@@ -50,7 +50,6 @@ export const expirePendingCardOrders = async () => {
             paystackReference: candidate.paystackReference,
             paymentMethod: "card",
             paymentStatus: "pending",
-            status: "pending",
           },
           {
             $set: {
