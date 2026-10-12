@@ -56,4 +56,17 @@ jobs:
         run: npm ci
 
       - name: Check JavaScript syntax
-        run: node --check server.js && node --check app.js
+        run: >-
+          node --check server.js &&
+          node --check app.js &&
+          node --check controllers/orderController.js &&
+          node --check controllers/paymentController.js &&
+          node --check models/Order.js &&
+          node --check middleware/csrfMiddleware.js &&
+          node --check routes/paymentRoutes.js &&
+          node --check services/paystackService.js &&
+          node --check services/paymentValidation.js &&
+          node --check services/expirePendingCardOrders.js
+
+      - name: Test Paystack signature validation
+        run: npm test

@@ -2,6 +2,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 
 import app from "./app.js";
+import { expirePendingCardOrders } from "./services/expirePendingCardOrders.js";
 
 const PORT = Number(process.env.PORT) || 5000;
 const MONGO_URI = process.env.MONGODB_URI;
@@ -35,6 +36,17 @@ const connectDB = async () => {
 const startServer = async () => {
   await connectDB();
 
+  // Reconcile abandoned card checkouts on a bounded interval. The worker
+  // checks Paystack before releasing stock for orders with a payment reference.
+  const runPaymentExpiry = () => {
+    expirePendingCardOrders().catch((error) => {
+      console.error("Pending card payment expiry worker failed:", error.message);
+    });
+  };
+  runPaymentExpiry();
+  const paymentExpiryInterval = setInterval(runPaymentExpiry, 5 * 60 * 1000);
+  paymentExpiryInterval.unref?.();
+
   const server = app.listen(PORT, () => {
     console.log(`TechStore Pro API listening on port ${PORT} (${NODE_ENV})`);
   });
@@ -42,6 +54,7 @@ const startServer = async () => {
   const shutdown = async (signal) => {
     console.log(`${signal} received. Shutting down gracefully...`);
 
+    clearInterval(paymentExpiryInterval);
     server.close(async () => {
       try {
         await mongoose.connection.close(false);

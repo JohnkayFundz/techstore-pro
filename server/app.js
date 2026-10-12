@@ -18,6 +18,7 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import aiAssistantRoutes from "./routes/aiAssistantRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import { csrfProtection } from "./middleware/csrfMiddleware.js";
@@ -65,7 +66,14 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({
+  limit: "2mb",
+  verify(req, res, buffer) {
+    if (req.originalUrl?.split("?")[0] === "/api/payments/webhook") {
+      req.rawBody = Buffer.from(buffer);
+    }
+  },
+}));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cookieParser());
 
@@ -98,6 +106,7 @@ app.get("/api", (req, res) => {
       products: "/api/products",
       aiAssistant: "/api/products/ai/assistant",
       orders: "/api/orders",
+      payments: "/api/payments",
       upload: "/api/upload",
       settings: "/api/settings",
     },
@@ -122,6 +131,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products/ai", aiAssistantRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/settings", settingsRoutes);
 

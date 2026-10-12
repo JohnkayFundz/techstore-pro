@@ -355,6 +355,10 @@ export const createOrder = async (req, res) => {
 
           paymentStatus: "pending",
 
+          ...(paymentMethod === "card" && {
+            expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+          }),
+
           status: "pending",
 
           totalAmount,
@@ -629,6 +633,23 @@ export const cancelOrder = async (
         success: false,
         message:
           "Only pending orders can be cancelled.",
+      });
+    }
+
+    /* --------------------------------------------------------
+       DO NOT CANCEL AN INITIALIZED CARD PAYMENT
+       A provider checkout may still complete asynchronously.
+    -------------------------------------------------------- */
+
+    if (
+      order.paymentMethod === "card" &&
+      order.paymentStatus === "pending" &&
+      order.paystackReference
+    ) {
+      await session.abortTransaction();
+      return res.status(409).json({
+        success: false,
+        message: "A card payment is in progress. Wait for its status to be confirmed before cancelling this order.",
       });
     }
 

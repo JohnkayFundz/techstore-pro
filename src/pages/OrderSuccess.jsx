@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 
 import {
   FiCheckCircle,
@@ -13,7 +13,7 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 
-import { getOrderById } from "../api/orderApi";
+import { getOrderById, verifyPayment } from "../api/orderApi";
 import { formatPrice } from "../utils/formatPrice";
 
 import "./OrderSuccess.css";
@@ -31,6 +31,8 @@ const formatStatus = (value) => {
 
 function OrderSuccess() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const paymentReference = searchParams.get("reference");
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,6 +50,17 @@ function OrderSuccess() {
       }
 
       try {
+        // Paystack redirects with a reference; treat it only as a lookup key.
+        // The backend verifies the transaction directly with Paystack.
+        if (paymentReference) {
+          try {
+            await verifyPayment(paymentReference);
+          } catch {
+            // The webhook may still be in flight; display the order's persisted
+            // payment status below instead of trusting the browser redirect.
+          }
+        }
+
         const response = await getOrderById(id);
         const payload = response?.data ?? response;
         const loadedOrder = payload?.order ?? payload?.data ?? null;
@@ -78,7 +91,7 @@ function OrderSuccess() {
     return () => {
       mounted = false;
     };
-  }, [id]);
+  }, [id, paymentReference]);
 
   if (loading) {
     return (
@@ -110,12 +123,16 @@ function OrderSuccess() {
   const status = String(order.status || "pending").toLowerCase();
   const cancelled = status === "cancelled";
   const delivered = status === "delivered";
-  const statusClass = cancelled ? "cancelled" : delivered ? "delivered" : "success";
-  const StatusIcon = cancelled ? FiXCircle : FiCheckCircle;
   const address = order.shippingAddress || {};
   const items = Array.isArray(order.items) ? order.items : [];
   const paymentMethod = formatStatus(order.paymentMethod || "cash");
   const paymentStatus = formatStatus(order.paymentStatus || "pending");
+  const paymentFailed = String(order.paymentStatus || "").toLowerCase() === "failed";
+  const paymentPending = !cancelled &&
+    String(order.paymentMethod || "").toLowerCase() === "card" &&
+    String(order.paymentStatus || "pending").toLowerCase() === "pending";
+  const statusClass = cancelled ? "cancelled" : paymentFailed ? "error" : delivered ? "delivered" : "success";
+  const StatusIcon = cancelled || paymentFailed ? FiXCircle : FiCheckCircle;
   const itemCount = items.reduce((total, item) => {
     const quantity = Number(item?.quantity);
     return total + (Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
@@ -128,11 +145,15 @@ function OrderSuccess() {
           <div className={`order-status-icon ${statusClass}`} aria-hidden="true">
             <StatusIcon />
           </div>
-          <h1>{cancelled ? "Order Cancelled" : "Order Confirmed"}</h1>
+          <h1>{cancelled ? "Order Cancelled" : paymentFailed ? "Payment Not Confirmed" : paymentPending ? "Order Received — Payment Pending" : "Order Confirmed"}</h1>
           <p className="success-message">
             {cancelled
               ? "This order has been cancelled."
-              : "Thank you for your purchase. Your order has been received."}
+              : paymentFailed
+                ? "Payment was not confirmed. Please check your order status before attempting another payment."
+                : paymentPending
+                  ? "Your order is saved, but we have not yet confirmed payment. Do not assume payment succeeded until the payment status shows Paid."
+                  : "Thank you for your purchase. Your order has been received."}
           </p>
           <p className="order-number">
             Order number: <strong>{order.orderNumber || order._id}</strong>
