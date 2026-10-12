@@ -129,8 +129,9 @@ function OrderSuccess() {
   const items = Array.isArray(order.items) ? order.items : [];
   const paymentMethod = formatStatus(order.paymentMethod || "cash");
   const paymentStatus = formatStatus(order.paymentStatus || "pending");
-  const paymentPending = !cancelled && String(order.paymentMethod || "").toLowerCase() === "card" &&
-    String(order.paymentStatus || "pending").toLowerCase() !== "paid";
+  const paymentPending = !cancelled &&
+    String(order.paymentMethod || "").toLowerCase() === "card" &&
+    String(order.paymentStatus || "pending").toLowerCase() === "pending";
   const paymentFailed = String(order.paymentStatus || "").toLowerCase() === "failed";
   const itemCount = items.reduce((total, item) => {
     const quantity = Number(item?.quantity);
