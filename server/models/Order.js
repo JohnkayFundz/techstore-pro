@@ -200,6 +200,11 @@ const orderSchema = new mongoose.Schema(
       type: Date,
     },
 
+    expiresAt: {
+      type: Date,
+      index: true,
+    },
+
     /* --------------------------------------------------------
        ORDER STATUS
     -------------------------------------------------------- */
