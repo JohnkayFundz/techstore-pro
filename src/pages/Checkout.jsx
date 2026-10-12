@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { createOrder } from "../api/orderApi";
+import { createOrder, initializePayment } from "../api/orderApi";
 import { useCart } from "../context/CartContext";
 import { formatPrice } from "../utils/formatPrice";
 
@@ -127,6 +127,18 @@ function Checkout() {
 
       if (!orderId) {
         throw new Error("Order was created, but no order ID was returned.");
+      }
+
+      if (formData.paymentMethod === "card") {
+        const paymentResponse = await initializePayment(orderId);
+        const authorizationUrl = paymentResponse?.authorizationUrl;
+        if (!paymentResponse?.success || !authorizationUrl) {
+          throw new Error(paymentResponse?.message || "Could not start secure card checkout.");
+        }
+
+        clearCart();
+        window.location.assign(authorizationUrl);
+        return;
       }
 
       clearCart();
