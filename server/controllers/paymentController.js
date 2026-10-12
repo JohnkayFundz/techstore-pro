@@ -58,8 +58,22 @@ export const initializePayment = async (req, res) => {
     }
 
     const reference = order.paystackReference || `TS_${order._id}_${crypto.randomUUID().replace(/-/g, "")}`;
-    order.paystackReference = reference;
-    await order.save();
+    const payableOrder = await Order.findOneAndUpdate(
+      {
+        _id: order._id,
+        user: req.user._id,
+        paymentMethod: "card",
+        paymentStatus: "pending",
+        status: "pending",
+        expiresAt: { $gt: new Date() },
+      },
+      { $set: { paystackReference: reference } },
+      { new: true }
+    );
+
+    if (!payableOrder) {
+      return res.status(409).json({ success: false, message: "This order is expired or no longer awaiting payment." });
+    }
 
     const clientUrl = process.env.CLIENT_URL?.replace(/\/$/, "");
     if (!clientUrl) {
@@ -68,13 +82,13 @@ export const initializePayment = async (req, res) => {
 
     const transaction = await initializePaystackTransaction({
       email: req.user.email,
-      amount: expectedAmountKobo(order),
+      amount: expectedAmountKobo(payableOrder),
       currency: "NGN",
       reference,
       callback_url: `${clientUrl}/order-success/${order._id}`,
       metadata: {
         orderId: order._id.toString(),
-        orderNumber: order.orderNumber,
+        orderNumber: payableOrder.orderNumber,
         userId: req.user._id.toString(),
       },
     });
@@ -87,7 +101,7 @@ export const initializePayment = async (req, res) => {
       success: true,
       authorizationUrl: transaction.authorization_url,
       reference,
-      order: publicOrder(order),
+      order: publicOrder(payableOrder),
     });
   } catch (error) {
     console.error("Paystack initialization error:", error.message);
