@@ -129,6 +129,9 @@ function OrderSuccess() {
   const items = Array.isArray(order.items) ? order.items : [];
   const paymentMethod = formatStatus(order.paymentMethod || "cash");
   const paymentStatus = formatStatus(order.paymentStatus || "pending");
+  const paymentPending = !cancelled && String(order.paymentMethod || "").toLowerCase() === "card" &&
+    String(order.paymentStatus || "pending").toLowerCase() !== "paid";
+  const paymentFailed = String(order.paymentStatus || "").toLowerCase() === "failed";
   const itemCount = items.reduce((total, item) => {
     const quantity = Number(item?.quantity);
     return total + (Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
@@ -141,11 +144,15 @@ function OrderSuccess() {
           <div className={`order-status-icon ${statusClass}`} aria-hidden="true">
             <StatusIcon />
           </div>
-          <h1>{cancelled ? "Order Cancelled" : "Order Confirmed"}</h1>
+          <h1>{cancelled ? "Order Cancelled" : paymentPending ? "Order Received — Payment Pending" : "Order Confirmed"}</h1>
           <p className="success-message">
             {cancelled
               ? "This order has been cancelled."
-              : "Thank you for your purchase. Your order has been received."}
+              : paymentFailed
+                ? "Payment was not confirmed. Please check your order status before attempting another payment."
+                : paymentPending
+                  ? "Your order is saved, but we have not yet confirmed payment. Do not assume payment succeeded until the payment status shows Paid."
+                  : "Thank you for your purchase. Your order has been received."}
           </p>
           <p className="order-number">
             Order number: <strong>{order.orderNumber || order._id}</strong>
