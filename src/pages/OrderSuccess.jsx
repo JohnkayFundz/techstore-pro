@@ -123,16 +123,16 @@ function OrderSuccess() {
   const status = String(order.status || "pending").toLowerCase();
   const cancelled = status === "cancelled";
   const delivered = status === "delivered";
-  const statusClass = cancelled ? "cancelled" : delivered ? "delivered" : "success";
-  const StatusIcon = cancelled ? FiXCircle : FiCheckCircle;
   const address = order.shippingAddress || {};
   const items = Array.isArray(order.items) ? order.items : [];
   const paymentMethod = formatStatus(order.paymentMethod || "cash");
   const paymentStatus = formatStatus(order.paymentStatus || "pending");
+  const paymentFailed = String(order.paymentStatus || "").toLowerCase() === "failed";
   const paymentPending = !cancelled &&
     String(order.paymentMethod || "").toLowerCase() === "card" &&
     String(order.paymentStatus || "pending").toLowerCase() === "pending";
-  const paymentFailed = String(order.paymentStatus || "").toLowerCase() === "failed";
+  const statusClass = cancelled ? "cancelled" : paymentFailed ? "error" : delivered ? "delivered" : "success";
+  const StatusIcon = cancelled || paymentFailed ? FiXCircle : FiCheckCircle;
   const itemCount = items.reduce((total, item) => {
     const quantity = Number(item?.quantity);
     return total + (Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
@@ -145,7 +145,7 @@ function OrderSuccess() {
           <div className={`order-status-icon ${statusClass}`} aria-hidden="true">
             <StatusIcon />
           </div>
-          <h1>{cancelled ? "Order Cancelled" : paymentPending ? "Order Received — Payment Pending" : "Order Confirmed"}</h1>
+          <h1>{cancelled ? "Order Cancelled" : paymentFailed ? "Payment Not Confirmed" : paymentPending ? "Order Received — Payment Pending" : "Order Confirmed"}</h1>
           <p className="success-message">
             {cancelled
               ? "This order has been cancelled."
