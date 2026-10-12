@@ -66,6 +66,9 @@ export const initializePayment = async (req, res) => {
         paymentStatus: "pending",
         status: "pending",
         expiresAt: { $gt: new Date() },
+        ...(order.paystackReference
+          ? { paystackReference: order.paystackReference }
+          : { paystackReference: { $exists: false } }),
       },
       { $set: { paystackReference: reference } },
       { new: true }
