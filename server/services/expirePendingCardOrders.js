@@ -2,14 +2,7 @@ import mongoose from "mongoose";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import { verifyPaystackTransaction } from "./paystackService.js";
-
-const amountInKobo = (order) => Math.round(Number(order.totalAmount) * 100);
-
-const transactionMatchesOrder = (transaction, order) =>
-  transaction?.status === "success" &&
-  transaction?.reference === order.paystackReference &&
-  transaction?.currency === "NGN" &&
-  Number(transaction?.amount) === amountInKobo(order);
+import { matchesSuccessfulTransaction } from "./paymentValidation.js";
 
 /**
  * Run periodically from the API process. A provider reference is verified
@@ -39,7 +32,7 @@ export const expirePendingCardOrders = async () => {
       }
 
       if (transaction?.status === "success") {
-        if (!transactionMatchesOrder(transaction, candidate)) {
+        if (!matchesSuccessfulTransaction(transaction, candidate)) {
           console.error("Payment expiry requires manual review: successful transaction did not match order", candidate._id.toString());
           continue;
         }
