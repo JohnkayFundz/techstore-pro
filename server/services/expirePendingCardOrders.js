@@ -27,8 +27,15 @@ export const expirePendingCardOrders = async () => {
       try {
         transaction = await verifyPaystackTransaction(candidate.paystackReference);
       } catch (error) {
-        console.warn("Payment expiry deferred; Paystack verification unavailable:", error.message);
-        continue;
+        // A definitive client/provider response (for example, an unknown
+        // reference after initialization failed) is terminal. Network and
+        // server errors remain uncertain and must not release stock.
+        if (error.statusCode === 400) {
+          transaction = { status: "failed" };
+        } else {
+          console.warn("Payment expiry deferred; Paystack verification unavailable:", error.message);
+          continue;
+        }
       }
 
       if (transaction?.status === "success") {
