@@ -65,6 +65,7 @@ jobs:
           node --check middleware/csrfMiddleware.js &&
           node --check routes/paymentRoutes.js &&
           node --check services/paystackService.js &&
+          node --check services/paymentValidation.js &&
           node --check services/expirePendingCardOrders.js
 
       - name: Test Paystack signature validation
