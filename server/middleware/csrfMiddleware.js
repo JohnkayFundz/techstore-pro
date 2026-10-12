@@ -5,7 +5,7 @@ export const csrfProtection = (req, res, next) => {
   // by Paystack's HMAC-SHA512 signature over the captured raw request body.
   if (
     req.method === "POST" &&
-    req.path === "/api/payments/webhook"
+    req.originalUrl?.split("?")[0] === "/api/payments/webhook"
   ) {
     return next();
   }
