@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import { isValidPaystackSignature } from "../services/paystackService.js";
+import { matchesSuccessfulTransaction } from "../services/paymentValidation.js";
 
 const secret = "sk_test_unit_test_secret";
 
@@ -37,4 +38,19 @@ test("refuses a live key while configured for test mode", () => {
   process.env.PAYSTACK_SECRET_KEY = "sk_live_not_allowed";
   assert.throws(() => isValidPaystackSignature(Buffer.from("{}"), "00"), /test secret key/);
   process.env.PAYSTACK_SECRET_KEY = secret;
+});
+
+test("accepts only a successful transaction matching reference, NGN currency, and exact kobo amount", () => {
+  const order = { totalAmount: 1250, paystackReference: "TS_ORDER_REFERENCE" };
+  const valid = {
+    status: "success",
+    reference: "TS_ORDER_REFERENCE",
+    currency: "NGN",
+    amount: 125000,
+  };
+  assert.equal(matchesSuccessfulTransaction(valid, order), true);
+  assert.equal(matchesSuccessfulTransaction({ ...valid, amount: 124999 }, order), false);
+  assert.equal(matchesSuccessfulTransaction({ ...valid, currency: "USD" }, order), false);
+  assert.equal(matchesSuccessfulTransaction({ ...valid, reference: "OTHER_REFERENCE" }, order), false);
+  assert.equal(matchesSuccessfulTransaction({ ...valid, status: "failed" }, order), false);
 });
