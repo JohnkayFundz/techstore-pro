@@ -7,14 +7,10 @@ import {
   isValidPaystackSignature,
 } from "../services/paystackService.js";
 
-const expectedAmountKobo = (order) =>
-  Math.round(Number(order.totalAmount) * 100);
-
-const matchesOrderTransaction = (transaction, order) =>
-  transaction?.status === "success" &&
-  transaction?.currency === "NGN" &&
-  Number(transaction?.amount) === expectedAmountKobo(order) &&
-  transaction?.reference === order.paystackReference;
+import {
+  expectedAmountKobo,
+  matchesSuccessfulTransaction,
+} from "../services/paymentValidation.js";
 
 const publicOrder = (order) => ({
   id: order._id,
@@ -49,7 +45,11 @@ export const initializePayment = async (req, res) => {
       return res.status(400).json({ success: false, message: "This order is not a card payment." });
     }
 
-    if (order.status === "cancelled" || order.paymentStatus !== "pending") {
+    if (
+      order.status === "cancelled" ||
+      order.paymentStatus !== "pending" ||
+      (order.expiresAt && order.expiresAt <= new Date())
+    ) {
       return res.status(409).json({ success: false, message: "This order is not awaiting payment." });
     }
 
@@ -125,14 +125,7 @@ export const verifyPayment = async (req, res) => {
     }
 
     const transaction = await verifyPaystackTransaction(reference);
-    if (!matchesOrderTransaction(transaction, order)) {
-      if (transaction?.reference === reference && transaction?.status && transaction.status !== "success") {
-        await Order.updateOne(
-          { _id: order._id, paymentStatus: "pending", status: { $ne: "cancelled" } },
-          { $set: { paymentStatus: "failed", paymentFailureAt: new Date() } }
-        );
-      }
-
+    if (!matchesSuccessfulTransaction(transaction, order)) {
       return res.status(402).json({
         success: false,
         verified: false,
@@ -203,7 +196,7 @@ export const paystackWebhook = async (req, res) => {
       return res.status(404).json({ success: false, message: "Order for payment reference was not found." });
     }
 
-    if (!matchesOrderTransaction(transaction, order)) {
+    if (!matchesSuccessfulTransaction(transaction, order)) {
       return res.status(400).json({ success: false, message: "Webhook transaction does not match the order." });
     }
 
