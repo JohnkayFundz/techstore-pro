@@ -86,7 +86,7 @@ No. It is a developer starter project. A clean installation, full functional ver
 
 ## Pre-publication checklist
 
-- [ ] Reconcile root `package.json` and `package-lock.json`.
+- [ ] Reconcile root `package.json` and `package-lock.json` using npm in a real Node.js environment; do not hand-edit lockfile metadata.
 - [ ] Fresh, cache-free install frontend and backend from clean copies (still outstanding; root lockfile mismatch must first be reconciled).
 - [x] Run repository-wide lint and frontend production build in GitHub Actions (Run #122, commit `92a6d36c138d2a5ea4f55cdecb4856b10ae984b9`).
 - [ ] Repeat lint/build after clean, reproducible installs.
