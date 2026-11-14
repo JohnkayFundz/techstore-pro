@@ -1,6 +1,5 @@
 import {
   memo,
-  useEffect,
   useMemo,
   useState,
 } from "react";
