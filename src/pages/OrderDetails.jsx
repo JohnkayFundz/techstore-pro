@@ -1,5 +1,4 @@
 import {
-  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -33,56 +32,25 @@ function OrderDetails() {
 
 
 
-  const loadOrder = useCallback(async () => {
-
-    try {
-      const result = await getOrderById(id);
-      setError("");
-
-
-
-      if (result.success) {
-
-        setOrder(result.order);
-
-
-      } else {
-
-        setError(
-          result.message ||
-          "Order not found."
-        );
-
-      }
-
-
-
-    } catch (err) {
-
-      console.error(
-        "Order Details Error:",
-        err
-      );
-
-
-      setError(
-        err.response?.data?.message ||
-        "Failed to load order."
-      );
-
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  }, [id]);
-
   useEffect(() => {
+    let cancelled = false;
+    const loadOrder = async () => {
+      try {
+        const result = await getOrderById(id);
+        if (cancelled) return;
+        if (result.success) setOrder(result.order);
+        else setError(result.message || "Order not found.");
+      } catch (err) {
+        if (cancelled) return;
+        console.error("Order Details Error:", err);
+        setError(err.response?.data?.message || "Failed to load order.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
     loadOrder();
-  }, [loadOrder]);
-
+    return () => { cancelled = true; };
+  }, [id]);
 
 
 
