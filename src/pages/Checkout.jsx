@@ -209,7 +209,6 @@ function Checkout() {
                 <label htmlFor="paymentMethod">Payment Method</label>
                 <select id="paymentMethod" name="paymentMethod" value={formData.paymentMethod} onChange={handleChange} disabled={loading}>
                   <option value="cash">Cash on Delivery</option>
-                  <option value="card">Card Payment</option>
                 </select>
               </div>
 
