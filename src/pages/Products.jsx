@@ -71,9 +71,9 @@ const Products = () => {
   const [error, setError] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(async ({ showLoading = true } = {}) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       setError("");
 
       const params = { sort, limit: PRODUCTS_PER_PAGE };
@@ -112,7 +112,7 @@ const Products = () => {
   }, [category, maxPrice, page, search, sort]);
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts({ showLoading: false });
   }, [fetchProducts]);
 
   const resetToFirstPage = () => setPage(1);
