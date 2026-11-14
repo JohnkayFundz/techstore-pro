@@ -178,3 +178,14 @@ This run confirms lint passed without weakening ESLint rules, the frontend build
 - The workflow does not perform MongoDB-backed integration tests, real Cloudinary uploads, authentication/order end-to-end tests, or payment processing.
 
 Runs #151 and #152 were triggered by compliance documentation updates and also passed. The current evidence does not change the release decision: dependency notices remain partial, artwork and trademark rights remain uncleared, the commercial license remains a draft, and no customer archive has been built or inspected. Keep release status **HOLD**.
+
+
+## Latest payment-safety and CI verification — 2026-11-14
+
+- Checkout no longer presents a card-payment option because no payment gateway is integrated.
+- The order API accepts only `cash`; the Order model also constrains payment method to `cash`. Unsupported methods, including `card`, are rejected.
+- Added isolated unit tests for supported payment methods. Backend unit test count is now **6/6 PASS**: four Cloudinary upload-helper tests and two payment-method tests.
+- Buyer setup documentation now explicitly describes cash-on-delivery-only behavior, the absence of a card gateway, and the need for server-side provider verification before online payments are introduced.
+- GitHub Actions Run #161: [43627452069](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43627452069), commit `0d30d96af134039c0b96aa8532a7dd0b40646cae` — **SUCCESS**. Clean installs, both dependency audits, repository lint, frontend build, backend tests, backend syntax checks, artifact upload, and workflow completion all passed.
+
+This does not establish MongoDB-backed integration behavior, authentication/order end-to-end behavior, live Cloudinary uploads, or payment-provider processing. MongoDB transaction-backed order tests remain outstanding. Asset provenance, third-party notices, commercial license, and customer archive remain unresolved. Commercial release remains **HOLD**.
