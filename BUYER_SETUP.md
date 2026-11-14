@@ -49,10 +49,10 @@ techstore-pro/
 
 ## 4. Install frontend dependencies
 
-Run these commands from the repository root:
+Run these commands from the repository root. `npm ci` installs the exact dependency versions recorded in the lockfile:
 
 ```bash
-npm install
+npm ci
 ```
 
 The root package scripts include:
@@ -68,7 +68,7 @@ Open a second terminal, move into the backend directory, and install its depende
 
 ```bash
 cd server
-npm install
+npm ci
 ```
 
 Backend scripts:
