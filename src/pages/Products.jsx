@@ -69,6 +69,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -112,7 +113,7 @@ const Products = () => {
 
     loadProducts();
     return () => { cancelled = true; };
-  }, [category, maxPrice, page, search, sort]);
+  }, [category, maxPrice, page, retryCount, search, sort]);
 
   const resetToFirstPage = () => setPage(1);
   const handleCategoryChange = (value) => { setCategory(value); resetToFirstPage(); };
@@ -215,7 +216,7 @@ const Products = () => {
         <section className="products-page__error" role="alert">
           <FiAlertCircle size={26} />
           <div><h2>Unable to load products</h2><p>{error}</p></div>
-          <button type="button" onClick={fetchProducts}><FiRefreshCw size={17} /> Try Again</button>
+          <button type="button" onClick={() => setRetryCount((count) => count + 1)}><FiRefreshCw size={17} /> Try Again</button>
         </section>
       )}
 
