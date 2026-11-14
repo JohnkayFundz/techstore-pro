@@ -10,6 +10,8 @@ jobs:
   frontend:
     name: Frontend lint and build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,6 +43,19 @@ jobs:
       - name: Build
         if: always()
         run: npm run build
+
+      - name: Commit verified root lockfile
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/product/paid-starter-kit-preparation'
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "Root lockfile already matches the manifest."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add package-lock.json
+            git commit -m "chore(deps): reconcile root npm lockfile"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
 
   backend:
     name: Backend validation
