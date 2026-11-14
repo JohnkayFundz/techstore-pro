@@ -36,11 +36,8 @@ function OrderDetails() {
   const loadOrder = useCallback(async () => {
 
     try {
-
-      setError("");
-
-
       const result = await getOrderById(id);
+      setError("");
 
 
 
