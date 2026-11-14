@@ -2,13 +2,13 @@
 
 **Status:** Preliminary metadata inventory only — NOT legal clearance.
 
-This review was generated from the committed root and `server/` npm lockfiles on the product-preparation branch. It records the license identifiers declared in package metadata. It does not replace inspection of each package's actual license text, notices, source-distribution obligations, trademark terms, or legal advice.
+This review was generated from the committed root and `server/` npm lockfiles on the product-preparation branch after the 2026-11-14 Capacitor reconciliation. Counts are lockfile package entries, excluding the root package itself. It records the license identifiers declared in package metadata. It does not replace inspection of each package's actual license text, notices, source-distribution obligations, trademark terms, or legal advice.
 
 ## Inventory
 
 | Dependency tree | Locked package entries | Declared license metadata |
 |---|---:|---|
-| Frontend/root | 324 | MIT 257; Apache-2.0 16; ISC 25; BSD-3-Clause 4; BSD-2-Clause 6; CC-BY-4.0 1; MPL-2.0 12; BlueOak-1.0.0 1; 0BSD 1; MIT AND ISC 1 |
+| Frontend/root (after Capacitor lockfile reconciliation) | 408 | MIT 318; ISC 32; Apache-2.0 18; BlueOak-1.0.0 13; MPL-2.0 12; BSD-2-Clause 6; BSD-3-Clause 4; Unlicense 2; CC-BY-4.0 1; 0BSD 1; MIT AND ISC 1 |
 | Backend/server | 165 | MIT 143; ISC 9; Apache-2.0 5; BSD-3-Clause 3; BSD-2-Clause 2; BlueOak-1.0.0 1; license metadata unspecified for 2 |
 
 ## Items requiring attention
@@ -18,6 +18,8 @@ This review was generated from the committed root and `server/` npm lockfiles on
 - `lightningcss` and its platform packages declare MPL-2.0 (12 lockfile entries).
 - `minimatch` declares BlueOak-1.0.0.
 - `victory-vendor` declares the combined expression MIT AND ISC.
+- The regenerated lockfile adds the Capacitor 8.6.2 CLI/core package entries and their dependency tree; the new dependency tree increases the root lockfile inventory from 324 to 408 entries.
+- Two packages declare Unlicense in the regenerated lockfile; retain the exact license text/notices for those packages in any source archive.
 
 ### Backend
 - `busboy@1.6.0` has no license identifier in the lockfile metadata.
