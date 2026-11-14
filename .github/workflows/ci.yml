@@ -7,8 +7,8 @@ on:
     branches: [main, product/paid-starter-kit-preparation]
 
 jobs:
-  frontend:
-    name: Frontend lint and build
+  validation:
+    name: Clean install, security audit, lint, build and backend tests
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,67 +21,71 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
 
-      - name: Reconcile root lockfile with the manifest
+      - name: Reconcile root lockfile with manifest
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Apply compatible root dependency security fixes
+        run: npm audit fix --package-lock-only --no-fund
 
       - name: Verify clean root installation
         run: npm ci --ignore-scripts --no-audit --no-fund
 
-      - name: Audit production frontend dependencies
-        run: npm audit --omit=dev --audit-level=high
-
-      - name: Upload generated root lockfile for review
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: techstore-pro-root-lockfile-candidate
-          path: package-lock.json
-          if-no-files-found: error
-          retention-days: 7
+      - name: Audit all root dependencies
+        run: npm audit --audit-level=high
 
       - name: Lint all frontend and repository JavaScript
         run: npm run lint
 
-      - name: Build
-        if: always()
+      - name: Build frontend
         run: npm run build
 
-      - name: Commit verified root lockfile
+      - name: Reconcile backend lockfile with manifest
+        working-directory: server
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Apply compatible backend dependency security fixes
+        working-directory: server
+        run: npm audit fix --package-lock-only --no-fund
+
+      - name: Verify clean backend installation
+        working-directory: server
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Audit all backend dependencies
+        working-directory: server
+        run: npm audit --audit-level=high
+
+      - name: Run backend unit tests
+        working-directory: server
+        run: npm test
+
+      - name: Check backend JavaScript syntax
+        working-directory: server
+        run: node --check server.js && node --check app.js
+
+      - name: Upload verified lockfiles
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstore-pro-verified-lockfiles
+          path: |
+            package-lock.json
+            server/package-lock.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Commit verified lockfiles
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/product/paid-starter-kit-preparation'
         run: |
-          if git diff --quiet -- package-lock.json; then
-            echo "Root lockfile already matches the manifest."
+          if git diff --quiet -- package-lock.json server/package-lock.json; then
+            echo "Lockfiles already match manifests and audit fixes."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add package-lock.json
-            git commit -m "chore(deps): reconcile root npm lockfile"
+            git add package-lock.json server/package-lock.json
+            git commit -m "chore(deps): apply verified security updates"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
-
-  backend:
-    name: Backend validation
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: server/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Audit production backend dependencies
-        run: npm audit --omit=dev --audit-level=high
-
-      - name: Check JavaScript syntax
-        run: node --check server.js && node --check app.js
