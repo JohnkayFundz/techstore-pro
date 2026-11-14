@@ -72,7 +72,29 @@ function AdminUsers() {
   ========================================================== */
 
   useEffect(() => {
-    fetchUsers();
+    let cancelled = false;
+    const loadInitialUsers = async () => {
+      try {
+        const response = await getUsers();
+        if (cancelled) return;
+        setMessage("");
+        if (response?.success === false) {
+          setUsers([]);
+          setMessage(response.message || "Failed to load users.");
+        } else {
+          setUsers(Array.isArray(response?.data) ? response.data : []);
+        }
+      } catch (loadError) {
+        if (cancelled) return;
+        console.error("Fetch Users Error:", loadError);
+        setUsers([]);
+        setMessage(loadError?.response?.data?.message || loadError?.message || "Failed to load users.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    loadInitialUsers();
+    return () => { cancelled = true; };
   }, []);
 
   /* ==========================================================
