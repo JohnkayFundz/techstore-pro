@@ -126,8 +126,8 @@ function Hero() {
           <div className="hero-image-wrapper">
             <div className="hero-image">
               <img
-                src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200"
-                alt="Illustrative technology photograph; replace with store-owned media before launch"
+                src="/techstore-hero.svg"
+                alt="Original abstract illustration of connected technology devices"
                 loading="lazy"
               />
             </div>
