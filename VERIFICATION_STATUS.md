@@ -221,3 +221,14 @@ This does not establish MongoDB-backed integration behavior, authentication/orde
 These are controller/middleware and database integration tests, not full browser-based end-to-end testing of the deployed application. They do not establish live Cloudinary uploads or payment-provider processing. Payment remains cash-on-delivery only.
 
 **Release decision remains HOLD:** asset and trademark redistribution rights are unresolved; third-party notices remain partial; the commercial license is a draft requiring owner/legal review; no final customer archive has been built and inspected. No merge to `main`, production deployment, or publication is authorized by these CI results.
+
+
+## Admin cash-payment lifecycle integration tests — 2026-11-14
+
+- Added two more MongoDB-backed controller integration tests: delivering an order must not imply that cash has been received, and an administrator's explicit cash-receipt action changes payment status once while rejecting a duplicate receipt update.
+- GitHub Actions Run #172: [43628284460](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43628284460), commit `4096ab934227dbee6313091bc9b1bc13c299cb5a` — **SUCCESS**.
+- Backend tests: **17/17 PASS** — 4 Cloudinary helper, 2 payment-method, 4 order transaction/stock, 5 registration/login/JWT, and 2 admin cash-payment lifecycle tests.
+- Root/backend clean installs, root/backend dependency audits (zero vulnerabilities), repository-wide ESLint, frontend build, backend syntax validation, and test suite all passed.
+- Documentation-only runs #168–#171 also completed successfully as their respective commits landed.
+
+This still does not verify live Cloudinary uploads, browser end-to-end flows, or a payment provider. Cash on delivery remains the only supported method. Asset/trademark rights, complete third-party notices, final commercial license, and the exact customer archive remain unresolved; release stays **HOLD**.
