@@ -167,3 +167,14 @@ Every job step completed successfully: checkout; Node setup; root lockfile recon
 This run confirms lint passed without weakening ESLint rules, the frontend build passed, and the workflow's backend validation passed. The backend test step remains limited to the four Cloudinary upload-helper unit tests; it does not establish a live Cloudinary upload, MongoDB-backed API behavior, authentication/order end-to-end behavior, or payment processing.
 
 **Release gates remain unchanged:** asset provenance and redistribution rights are not cleared; third-party notices are partial; commercial license is a draft; no final customer archive has been built or inspected; payment gateway integration is not implemented. This CI success does not authorize publication, merging to `main`, or production deployment.
+
+
+## Latest CI verification — Run #152 (2026-11-14)
+
+- Run: [43624722085](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43624722085)
+- Commit: `846bdf6622417826658c66f753657f0ad26c51a0`
+- Result: **SUCCESS**; job `Clean install, security audit, lint, build and backend tests` completed successfully.
+- All 17 workflow steps passed, including clean root/backend installs, root/backend dependency audits, repository-wide ESLint, frontend production build, backend unit tests (4/4), backend JavaScript syntax validation, verified-lockfile artifact upload, and lockfile commit step.
+- The workflow does not perform MongoDB-backed integration tests, real Cloudinary uploads, authentication/order end-to-end tests, or payment processing.
+
+Runs #151 and #152 were triggered by compliance documentation updates and also passed. The current evidence does not change the release decision: dependency notices remain partial, artwork and trademark rights remain uncleared, the commercial license remains a draft, and no customer archive has been built or inspected. Keep release status **HOLD**.
