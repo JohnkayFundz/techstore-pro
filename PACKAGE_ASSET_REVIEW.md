@@ -90,3 +90,12 @@ A content inspection of the SVG files confirms:
 - The 30 GIF frame PNGs were enumerated but not individually provenance-cleared or proven unused.
 
 No assets were deleted or replaced during this pass. A text-only repository-tree inventory cannot establish authorship, license, trademark permissions, or complete source-code references. The package remains blocked from commercial redistribution until those are verified or the uncertain assets are removed/replaced through a separately reviewed change and CI passes.
+
+
+## Follow-up scope and reference limitations — 2026-11-14
+
+The Git tree at preparation commit `846bdf6622417826658c66f753657f0ad26c51a0` confirms the tracked asset paths listed above and also contains `gifs/cart-b64.txt` and `gifs/cart-base64.txt` (23 and 24 bytes respectively). The tree is evidence of tracked paths only; it does not establish who created an asset or whether it can be redistributed.
+
+A GitHub code-search attempt for the literal filenames `hero.png`, `icons.svg`, and `favicon.svg` returned no indexed matches. Because GitHub code search reported incomplete results, this is **not** proof that the files are unused. No asset was removed, replaced, or declared cleared on that basis. A complete local reference scan and visual/provenance review are still required before archive composition.
+
+Run #151 and #152 passed after the dependency metadata and static-asset inventory documentation updates. These are documentation-only checks and do not close any licensing or asset-rights gate.
