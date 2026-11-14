@@ -62,11 +62,6 @@ function AdminDashboard() {
 
   const loadDashboard = useCallback(async () => {
     try {
-      setLoading(true);
-
-      setError("");
-
-
       // ======================================================
       // LOAD DASHBOARD + ANALYTICS
       // ======================================================
@@ -78,6 +73,7 @@ function AdminDashboard() {
         getDashboardStats(),
         getSalesAnalytics(),
       ]);
+      setError("");
 
 
       // ======================================================
