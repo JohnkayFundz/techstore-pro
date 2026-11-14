@@ -456,7 +456,7 @@ npm run dev
 
 The following features are planned for future versions:
 
-* ⬜ Stripe payment integration
+* ⬜ Payment gateway integration with server-side verification and webhooks
 * ⬜ Product reviews and ratings
 * ⬜ Email notifications
 * ⬜ Advanced analytics dashboard
@@ -523,7 +523,7 @@ Your support is appreciated!
 
 ## Payment processing notice
 
-The repository currently documents Stripe payment integration as a future improvement. The existing checkout and order workflow is not proof of a connected payment processor. Configure and test a payment provider separately before accepting real customer payments.
+A payment gateway is not integrated; checkout currently supports cash on delivery only. A future payment integration must use server-side verification and webhook handling. The existing checkout and order workflow is not proof of a connected payment processor. Configure and test a payment provider separately before accepting real customer payments.
 
 ## Environment files
 
