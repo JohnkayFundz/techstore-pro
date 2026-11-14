@@ -144,6 +144,22 @@ http://localhost:5173
 
 If you change either port or origin, keep the frontend API URL and backend `CLIENT_URL` configuration consistent.
 
+
+## 8A. MongoDB transaction requirement
+
+The order-creation and order-cancellation controllers use MongoDB sessions and multi-document transactions to keep order records and product stock changes consistent. MongoDB transactions require a replica set or a sharded cluster; a standalone local `mongod` instance is not sufficient.
+
+- For local development, use a local single-node replica set and initialize it before starting the API, or use a dedicated MongoDB Atlas deployment that supports transactions.
+- Confirm the selected database deployment supports transactions before testing order creation or cancellation.
+- Do not disable the transaction logic merely to make a standalone database work: doing so can leave stock and order records inconsistent.
+- Use a disposable database for initial tests. Never test order flows against a live store database.
+
+A successful MongoDB connection or frontend build does not prove that transaction-backed order flows work. Exercise both order creation and cancellation against a transaction-capable test database before deployment.
+
+## 8B. Payment method limitation
+
+The order API currently accepts `cash` and `card` as order payment-method values, but the repository has no integrated payment gateway or server-side card-payment verification. Selecting `card` must not be interpreted as a completed or verified payment. Do not collect card details in this application or mark an order paid based on a browser response. Add a payment provider with server-side verification and webhook handling before enabling online payments.
+
 ## 9. Build the frontend
 
 From the repository root:
