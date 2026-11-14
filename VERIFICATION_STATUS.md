@@ -189,3 +189,35 @@ Runs #151 and #152 were triggered by compliance documentation updates and also p
 - GitHub Actions Run #161: [43627452069](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43627452069), commit `0d30d96af134039c0b96aa8532a7dd0b40646cae` — **SUCCESS**. Clean installs, both dependency audits, repository lint, frontend build, backend tests, backend syntax checks, artifact upload, and workflow completion all passed.
 
 This does not establish MongoDB-backed integration behavior, authentication/order end-to-end behavior, live Cloudinary uploads, or payment-provider processing. MongoDB transaction-backed order tests remain outstanding. Asset provenance, third-party notices, commercial license, and customer archive remain unresolved. Commercial release remains **HOLD**.
+
+
+## MongoDB transaction and authentication integration tests — 2026-11-14
+
+### Run #165 — first replica-set integration coverage
+
+- Run: [43627837048](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43627837048)
+- Commit: `47b9d66d9b028125686c3a2597669f52749a4fa7`
+- Result: **SUCCESS**.
+- Root and backend clean installs, both dependency audits (0 vulnerabilities), full repository lint, frontend build, backend syntax checks, and all backend tests passed.
+- Backend tests: **10/10 PASS**, including 4 Cloudinary helper tests, 2 payment-method tests, and 4 MongoDB replica-set order/stock transaction tests. CI downloaded MongoDB 7.0.14 and ran a disposable single-node replica set. Tests exercised order creation, duplicate item aggregation and server-side prices, stock decrement, cancellation and stock restoration, insufficient-stock rejection, and card-payment rejection.
+- CI committed backend lockfile reconciliation as `95f4b5e` on the preparation branch.
+
+### Run #166 — authentication test setup issue
+
+- Run: [43628079065](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43628079065)
+- Commit: `0a0d2ec0ff3d4b10fc96e3c211b2827753422527`
+- Result: **FAILURE** — 12/15 backend tests passed; three authentication tests could not create JWTs because the test process had no `JWT_SECRET` configured. This was a test setup failure, not a production secret or CI secret.
+- Remediation: added a fixed test-only JWT secret in the integration test module. It is not a production credential and is not read from or written to a deployed environment.
+
+### Run #167 — authentication/JWT integration verification
+
+- Run: [43628110014](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43628110014)
+- Commit: `9501e8376c0329202dd0be8dcf22c254c3e945e1`
+- Result: **SUCCESS**.
+- Backend tests: **15/15 PASS** — 4 Cloudinary upload-helper tests, 2 payment-method tests, 4 MongoDB replica-set order/stock transaction tests, and 5 registration/login/JWT-protection tests.
+- Authentication coverage includes normalized registration email, password hashing, duplicate-account rejection, normalized login, invalid-password rejection, HTTP-only token cookie, bearer-token middleware, current-user response without password data, and malformed-token rejection.
+- Root/backend clean installs, both dependency audits, repository-wide lint, frontend production build, backend tests, syntax checks, artifact upload, and workflow completion all passed.
+
+These are controller/middleware and database integration tests, not full browser-based end-to-end testing of the deployed application. They do not establish live Cloudinary uploads or payment-provider processing. Payment remains cash-on-delivery only.
+
+**Release decision remains HOLD:** asset and trademark redistribution rights are unresolved; third-party notices remain partial; the commercial license is a draft requiring owner/legal review; no final customer archive has been built and inspected. No merge to `main`, production deployment, or publication is authorized by these CI results.
