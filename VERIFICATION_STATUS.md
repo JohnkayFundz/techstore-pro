@@ -81,7 +81,7 @@ The preceding Node 20 run emitted an engine warning because the resolved `@capac
 **Frontend preview build: PASS (limited scope).**  
 **Backend clean install: PASS in CI. Root clean install / reproducibility: NOT VERIFIED.**  
 **Repository lint on commit 92a6d36: PASS.**  
-**Backend / integration tests: NOT VERIFIED.**  
+**Backend unit tests: PASS (4/4 Cloudinary upload-helper tests). Backend runtime, MongoDB/API integration, and full end-to-end tests: NOT VERIFIED.**  
 **Commercial redistribution clearance: NOT VERIFIED.**  
 **Paid publication: NOT AUTHORIZED.**
 
@@ -129,4 +129,25 @@ The earlier Capacitor manifest/lockfile mismatch has been resolved on the prepar
 - CI Run #129: [run 43623584971](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43623584971) completed successfully. Backend `npm ci` and syntax validation, root lockfile regeneration, root `npm ci`, repository lint, and frontend build all passed. The workflow's final step committed the generated lockfile to the preparation branch.
 
 The lockfile reconciliation does not imply that third-party license clearance, backend runtime/database tests, full end-to-end testing, or paid-release approval are complete.
+
+
+
+## Security remediation and expanded CI — 2026-11-14
+
+Latest complete verification: **Run #142** — [43623995304](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43623995304), on preparation branch commit `72499f40238efb9db6eece2a6d666809c8f19853`.
+
+The workflow regenerated and audited both dependency trees, performed clean installs, ran repository lint and frontend build, executed backend unit tests, checked backend syntax, and committed the verified lockfiles after all checks passed.
+
+- Root `npm ci --ignore-scripts`: **PASS**.
+- Root `npm audit`: **PASS — 0 vulnerabilities**.
+- Repository-wide `npm run lint`: **PASS**, without disabling or weakening ESLint rules.
+- Frontend `npm run build`: **PASS**.
+- Backend `npm ci --ignore-scripts`: **PASS**.
+- Backend `npm audit`: **PASS — 0 vulnerabilities**.
+- Backend unit tests: **PASS — 4/4** tests for Cloudinary upload-buffer success, provider error propagation, incomplete responses, and invalid input.
+- Backend syntax checks: **PASS**.
+
+The workflow committed the tested dependency lockfile updates as `91a64f9e7df0a27feaef2d4ede5ec9e0cc60e979`. The committed root and backend lockfiles now match their manifests. Root resolved Axios to 1.21.1 and compression to 1.8.2. Backend resolved Cloudinary to 2.11.0 and Multer to 2.5.0; the incompatible `multer-storage-cloudinary` adapter and vulnerable `nodemon` development dependency were removed. The upload middleware now uses Multer memory storage and Cloudinary's upload stream API, with four isolated unit tests.
+
+These tests do not contact Cloudinary and do not prove live uploads, backend startup against MongoDB, authentication, order workflows, or end-to-end application behavior. The payment gateway remains unimplemented. Run #143 is rechecking the storefront demo-copy adjustment made after Run #142.
 
