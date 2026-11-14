@@ -29,8 +29,8 @@ function ProductDetails() {
   const { products = [], loading = false } = useProduct();
   const { dispatch } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
-  const [fetchedProduct, setFetchedProduct] = useState(null);
-  const [fetchingProduct, setFetchingProduct] = useState(false);
+  const [fetchedProductState, setFetchedProductState] = useState({ id: null, product: null });
+  const [fetchState, setFetchState] = useState({ id: null, loading: false });
 
   const listedProduct = useMemo(() => {
     if (!Array.isArray(products)) return null;
@@ -39,48 +39,38 @@ function ProductDetails() {
     );
   }, [products, id]);
 
+  const fetchedProduct = fetchedProductState.id === id ? fetchedProductState.product : null;
   const product = listedProduct || fetchedProduct;
+  const fetchingProduct = Boolean(id && !loading && !listedProduct && (fetchState.id !== id || fetchState.loading));
 
   useEffect(() => {
+    if (!id || loading || listedProduct) return undefined;
     let cancelled = false;
-
-    setFetchedProduct(null);
-
-    if (!id || loading || listedProduct) {
-      setFetchingProduct(false);
-      return undefined;
-    }
-
-    setFetchingProduct(true);
 
     getProductById(id)
       .then((response) => {
         if (!cancelled && response?.success && response?.product) {
-          setFetchedProduct(response.product);
+          setFetchedProductState({ id, product: response.product });
         }
       })
       .catch((error) => {
         if (!cancelled) console.error("Product details fetch error:", error);
       })
       .finally(() => {
-        if (!cancelled) setFetchingProduct(false);
+        if (!cancelled) setFetchState({ id, loading: false });
       });
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [id, loading, listedProduct]);
 
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [userRating, setUserRating] = useState(0);
+  const [productUiState, setProductUiState] = useState({ product: null, selectedImage: "", userRating: 0, quantity: 1 });
+  const selectedImage = productUiState.product === product ? productUiState.selectedImage : product?.image || product?.images?.[0] || product?.gallery?.[0] || "";
+  const userRating = productUiState.product === product ? productUiState.userRating : Number(product?.rating || 0);
+  const quantity = productUiState.product === product ? productUiState.quantity : 1;
   const [specsOpen, setSpecsOpen] = useState(false);
 
   useEffect(() => {
     if (!product) return undefined;
-    setSelectedImage(product.image || product.images?.[0] || product.gallery?.[0] || "");
-    setUserRating(Number(product.rating || 0));
-    setQuantity(1);
     document.title = `${product.name} | TechStore Pro`;
     return () => { document.title = "TechStore Pro"; };
   }, [product]);
@@ -185,15 +175,12 @@ function ProductDetails() {
   };
 
   const handleRate = (ratingValue) => {
-    setUserRating(ratingValue);
+    setProductUiState((current) => ({ product, selectedImage: current.product === product ? current.selectedImage : selectedImage, userRating: ratingValue, quantity: current.product === product ? current.quantity : 1 }));
     toast.success(`You rated ${product.name} ${ratingValue} ★`);
   };
 
   const changeQuantity = (direction) => {
-    setQuantity((current) => {
-      if (direction === "up") return Math.min(stock, current + 1);
-      return Math.max(1, current - 1);
-    });
+    setProductUiState((current) => { const currentQuantity = current.product === product ? current.quantity : 1; return { product, selectedImage: current.product === product ? current.selectedImage : selectedImage, userRating: current.product === product ? current.userRating : Number(product.rating || 0), quantity: direction === "up" ? Math.min(stock, currentQuantity + 1) : Math.max(1, currentQuantity - 1) }; });
   };
 
   const specRows = [
