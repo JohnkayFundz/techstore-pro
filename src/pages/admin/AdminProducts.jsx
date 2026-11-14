@@ -62,50 +62,6 @@ function AdminProducts() {
   // FETCH PRODUCTS
   // ==========================================================
 
-  const fetchProducts = async () => {
-    try {
-      const result =
-        await getAdminProducts();
-      setError("");
-
-      if (result?.success) {
-        const productList =
-          result.data ||
-          result.products ||
-          [];
-
-        setProducts(
-          Array.isArray(productList)
-            ? productList
-            : []
-        );
-      } else {
-        const message =
-          result?.message ||
-          "Failed to load products.";
-
-        setError(message);
-        showToast(message, "error");
-      }
-    } catch (error) {
-      console.error(
-        "Fetch Products Error:",
-        error
-      );
-
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Error loading products.";
-
-      setError(message);
-      showToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
   // ==========================================================
   // INITIAL LOAD
   // ==========================================================
