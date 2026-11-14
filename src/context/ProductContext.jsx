@@ -29,8 +29,9 @@ export function ProductProvider({ children }) {
      FETCH PRODUCTS
   ======================================================== */
 
-  const fetchProducts = useCallback(async (params = {}, { showLoading = true } = {}) => {
+  const fetchProducts = useCallback(async (params = {}) => {
     try {
+      setLoading(true);
       const response = await getProducts(params);
       setError("");
 
@@ -105,8 +106,54 @@ export function ProductProvider({ children }) {
   ======================================================== */
 
   useEffect(() => {
-    fetchProducts({ page: 1, limit: 10 }, { showLoading: false });
-  }, [fetchProducts]);
+    let cancelled = false;
+
+    const loadInitialProducts = async () => {
+      try {
+        const response = await getProducts({ page: 1, limit: 10 });
+        if (cancelled) return;
+        setError("");
+
+        if (!response?.success) {
+          setProducts([]);
+          setPagination({
+            currentPage: 1,
+            totalPages: 1,
+            totalProducts: 0,
+            hasNextPage: false,
+            hasPreviousPage: false,
+          });
+          setError(response?.message || "Failed to load products.");
+          return;
+        }
+
+        setProducts(Array.isArray(response.products) ? response.products : []);
+        setPagination({
+          currentPage: response.currentPage || 1,
+          totalPages: response.totalPages || 1,
+          totalProducts: response.totalProducts || 0,
+          hasNextPage: Boolean(response.hasNextPage),
+          hasPreviousPage: Boolean(response.hasPreviousPage),
+        });
+      } catch (loadError) {
+        if (cancelled) return;
+        setProducts([]);
+        setPagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalProducts: 0,
+          hasNextPage: false,
+          hasPreviousPage: false,
+        });
+        setError(loadError?.message || "Failed to load products.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    loadInitialProducts();
+    return () => { cancelled = true; };
+  }, []);
 
   /* ========================================================
      REFRESH PRODUCTS
