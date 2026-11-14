@@ -66,3 +66,26 @@ This resolves the two missing-license-metadata questions at the exact upstream v
 ## Security verification update — 2026-11-14
 
 GitHub Actions Run #142 passed `npm audit` for the complete root and backend dependency trees with **0 vulnerabilities** in each. Both clean installs passed. The committed lockfiles reflect the security updates. This is a point-in-time vulnerability scan, not a guarantee against future advisories, and it does not clear license obligations.
+
+
+## Recomputed lockfile inventory — 2026-11-14, commit bbe1fb39acc110d0b7820996d7688a366316f029
+
+The committed lockfiles were parsed again after Run #150. The counts below are an exact metadata snapshot of the current branch's lockfiles, excluding each root package entry.
+
+- Root: 417 package entries — MIT 328; ISC 32; Apache-2.0 18; BlueOak-1.0.0 12; MPL-2.0 12; BSD-2-Clause 6; BSD-3-Clause 4; Unlicense 2; CC-BY-4.0 1; 0BSD 1; MIT AND ISC 1.
+- Backend: 130 package entries — MIT 113; Apache-2.0 5; ISC 5; BSD-3-Clause 3; BSD-2-Clause 2; modern SPDX license metadata unspecified for `busboy@1.6.0` and `streamsearch@1.1.0` (their legacy MIT metadata and upstream LICENSE files were checked as recorded above).
+
+The 12 MPL-2.0 entries are `lightningcss@1.33.0` and its 11 platform-specific packages at the same version: android-arm64, darwin-arm64, darwin-x64, freebsd-x64, linux-arm-gnueabihf, linux-arm64-gnu, linux-arm64-musl, linux-x64-gnu, linux-x64-musl, win32-arm64-msvc, and win32-x64-msvc. The exact archive dependency scope must be finalized before deciding which notices/source obligations apply.
+
+Other non-MIT identifiers that require their exact upstream license texts/notices to be retained or reviewed include `caniuse-lite@1.0.30001826` (CC-BY-4.0), `victory-vendor@37.3.6` (MIT AND ISC), `big-integer@1.6.52` and `stream-buffers@2.2.0` (Unlicense), `tslib@2.8.1` (0BSD), and the BlueOak-1.0.0 packages enumerated by the lockfile. Counts are not a substitute for the package-specific texts.
+
+### What this automated pass establishes
+
+- Both committed lockfiles parse successfully as lockfile v3 JSON.
+- Every package entry in the root lockfile has a license metadata value.
+- Exactly two backend entries lack the modern SPDX `license` property; these are the two exact packages already investigated above.
+- This is metadata extraction only. It does not fetch or inspect every upstream license file, establish all attribution requirements, or provide legal clearance.
+
+### Latest technical validation
+
+Run #147 and follow-up documentation runs #148–#150 all completed successfully. Run #147's job passed root/backend clean installs, both full dependency audits, repository-wide lint, frontend build, backend unit tests (4/4), backend syntax checks, and verified lockfile artifact/commit. The current lockfile inventory is still not a complete third-party notices package.
