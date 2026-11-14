@@ -8,8 +8,8 @@ This review was generated from the committed root and `server/` npm lockfiles on
 
 | Dependency tree | Locked package entries | Declared license metadata |
 |---|---:|---|
-| Frontend/root (after Capacitor lockfile reconciliation) | 408 | MIT 318; ISC 32; Apache-2.0 18; BlueOak-1.0.0 13; MPL-2.0 12; BSD-2-Clause 6; BSD-3-Clause 4; Unlicense 2; CC-BY-4.0 1; 0BSD 1; MIT AND ISC 1 |
-| Backend/server | 165 | MIT 143; ISC 9; Apache-2.0 5; BSD-3-Clause 3; BSD-2-Clause 2; BlueOak-1.0.0 1; license metadata unspecified for 2 |
+| Frontend/root (after security updates) | 417 | MIT 328; ISC 32; Apache-2.0 18; BlueOak-1.0.0 12; MPL-2.0 12; BSD-2-Clause 6; BSD-3-Clause 4; Unlicense 2; CC-BY-4.0 1; 0BSD 1; MIT AND ISC 1 |
+| Backend/server (after security updates) | 130 | MIT 113; Apache-2.0 5; ISC 5; BSD-3-Clause 3; BSD-2-Clause 2; license metadata unspecified for 2 |
 
 ## Items requiring attention
 
@@ -61,3 +61,8 @@ The seller's commercial terms can cover only code and assets the seller is entit
 - `streamsearch@1.1.0`: upstream tag `v1.1.0` contains a legacy `licenses: [{ type: "MIT" }]` declaration and a full MIT-style `LICENSE` file.
 
 This resolves the two missing-license-metadata questions at the exact upstream versions reviewed. It does not constitute a complete audit of all dependency license texts, trademark terms, asset rights, or legal compliance. A consolidated notice file still needs to be included in the customer archive after the complete package/asset scope is finalized.
+
+
+## Security verification update — 2026-11-14
+
+GitHub Actions Run #142 passed `npm audit` for the complete root and backend dependency trees with **0 vulnerabilities** in each. Both clean installs passed. The committed lockfiles reflect the security updates. This is a point-in-time vulnerability scan, not a guarantee against future advisories, and it does not clear license obligations.
