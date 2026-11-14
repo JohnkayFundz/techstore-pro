@@ -99,3 +99,16 @@ The Git tree at preparation commit `846bdf6622417826658c66f753657f0ad26c51a0` co
 A GitHub code-search attempt for the literal filenames `hero.png`, `icons.svg`, and `favicon.svg` returned no indexed matches. Because GitHub code search reported incomplete results, this is **not** proof that the files are unused. No asset was removed, replaced, or declared cleared on that basis. A complete local reference scan and visual/provenance review are still required before archive composition.
 
 Run #151 and #152 passed after the dependency metadata and static-asset inventory documentation updates. These are documentation-only checks and do not close any licensing or asset-rights gate.
+
+
+## Neutral artwork replacement — 2026-11-14
+
+The preparation branch now uses original neutral artwork for the storefront's hero, favicon, and icon sprite:
+
+- `src/components/Hero.jsx` now loads the locally bundled `/techstore-hero.svg` illustration; the remote Unsplash hotlink is no longer used by this hero.
+- `index.html` and `public/manifest.webmanifest` now reference `/techstore-mark.svg` as the favicon/app icon.
+- `public/icons.svg` now contains neutral geometric/profile/document symbols rather than the recognizable Bluesky, Discord, GitHub, and X artwork. Existing symbol IDs are retained for compatibility.
+- The prior icon sprite and favicon are preserved unchanged under `public/reference-assets/icons-original.svg` and `public/reference-assets/favicon-original.svg` for reference only; do not include the reference copies in a customer package without separately clearing their rights.
+- New source assets: `public/techstore-hero.svg`, `public/techstore-mark.svg`, and `public/icons-neutral.svg` (the latter is the source of the active replacement sprite).
+
+This is an asset substitution, not a legal authorship certification or a complete asset clearance. `src/assets/hero.png`, React/Vite marks, the numbered GIF frames, and other non-placeholder product/demo media remain unreviewed for provenance and redistribution. A complete source reference scan and visual review are still required. The original files were preserved rather than deleted. Commercial release remains **HOLD** pending CI and all remaining legal, asset, test, and packaging gates.
