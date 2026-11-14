@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -32,17 +33,7 @@ function OrderDetails() {
 
 
 
-  useEffect(() => {
-
-    loadOrder();
-
-  }, [id]);
-
-
-
-
-
-  const loadOrder = async () => {
+  const loadOrder = useCallback(async () => {
 
     try {
 
@@ -91,7 +82,11 @@ function OrderDetails() {
 
     }
 
-  };
+  }, [id]);
+
+  useEffect(() => {
+    loadOrder();
+  }, [loadOrder]);
 
 
 
