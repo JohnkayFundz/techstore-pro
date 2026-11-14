@@ -144,10 +144,9 @@ function AdminAnalytics() {
         setLoading(true);
       }
 
-      setError("");
-
       const response =
         await getSalesAnalytics();
+      setError("");
 
       if (
         !response ||
