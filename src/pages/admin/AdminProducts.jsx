@@ -64,11 +64,9 @@ function AdminProducts() {
 
   const fetchProducts = async () => {
     try {
-      setLoading(true);
-      setError("");
-
       const result =
         await getAdminProducts();
+      setError("");
 
       if (result?.success) {
         const productList =
