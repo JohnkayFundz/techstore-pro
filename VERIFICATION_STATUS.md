@@ -19,6 +19,17 @@ Vercel has an automatically-created preview deployment for the product-preparati
 
 The Vercel build log also shows that dependency installation ran with `npm install` and reported `up to date in 4s`. It restored a build cache from an earlier deployment.
 
+
+
+A second deployment was triggered by the addition of this verification record:
+
+- Deployment: `dpl_5Yv48XQa2SzQUgzaUnQV7hCD7PgX`
+- Preview URL: `https://techstore-1nthrcq3d-deejayjohnkay-1047s-projects.vercel.app`
+- Source commit: `dbeb7ad0c31e7b0bd32e42429137492d3fc117ce`
+- Vercel state: `READY`
+- Build log again confirms dependency installation, `npm run build`, Vite 8.1.5, 1,946 modules transformed, and successful deployment.
+- The build restored the prior deployment cache. It is therefore another successful cached Vercel frontend build, not an independent clean-install test.
+
 ## What this establishes
 
 - The frontend source at the recorded commit can complete a Vercel-hosted production build in the observed environment.
