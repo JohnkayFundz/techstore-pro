@@ -78,11 +78,6 @@ function Navbar() {
   );
 
   useEffect(() => {
-    setMenuOpen(false);
-    setMobileOpen(false);
-  }, [location]);
-
-  useEffect(() => {
     function handleOutsideClick(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) setMenuOpen(false);
     }
@@ -106,6 +101,13 @@ function Navbar() {
     const query = searchQuery.trim();
     navigate(query ? `/products?search=${encodeURIComponent(query)}` : "/products");
     setSearchQuery("");
+    setMenuOpen(false);
+    setMobileOpen(false);
+  }
+
+  function closeNavigationMenus() {
+    setMenuOpen(false);
+    setMobileOpen(false);
   }
 
   function clearSearch() {
@@ -148,7 +150,7 @@ function Navbar() {
 
           <nav className="nav-links" aria-label="Main navigation">
             {navItems.map((item) => (
-              <NavLink key={item.path} to={item.path} end={item.end} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <NavLink key={item.path} to={item.path} end={item.end} onClick={closeNavigationMenus} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 {item.icon}<span>{item.label}</span>{item.count > 0 && <span className="badge">{item.count}</span>}
               </NavLink>
             ))}
@@ -170,11 +172,11 @@ function Navbar() {
                 <div className="profile-dropdown-header"><span className="profile-avatar large">{initials}</span><div><strong>{username}</strong>{user?.email && <p>{user.email}</p>}</div></div>
                 <hr />
                 {user?.role === "admin" && (
-                  <NavLink to="/admin" className="dropdown-item" role="menuitem"><FiShield /><span>Admin Panel</span></NavLink>
+                  <NavLink to="/admin" onClick={closeNavigationMenus} className="dropdown-item" role="menuitem"><FiShield /><span>Admin Panel</span></NavLink>
                 )}
-                <NavLink to="/my-orders" className="dropdown-item" role="menuitem"><FiPackage /><span>My Orders</span></NavLink>
-                <NavLink to="/wishlist" className="dropdown-item" role="menuitem"><FiHeart /><span>Wishlist</span>{wishlist.length > 0 && <span className="dropdown-count">{wishlist.length}</span>}</NavLink>
-                <NavLink to="/cart" className="dropdown-item" role="menuitem"><FiShoppingCart /><span>Cart</span>{cartCount > 0 && <span className="dropdown-count">{cartCount}</span>}</NavLink>
+                <NavLink to="/my-orders" onClick={closeNavigationMenus} className="dropdown-item" role="menuitem"><FiPackage /><span>My Orders</span></NavLink>
+                <NavLink to="/wishlist" onClick={closeNavigationMenus} className="dropdown-item" role="menuitem"><FiHeart /><span>Wishlist</span>{wishlist.length > 0 && <span className="dropdown-count">{wishlist.length}</span>}</NavLink>
+                <NavLink to="/cart" onClick={closeNavigationMenus} className="dropdown-item" role="menuitem"><FiShoppingCart /><span>Cart</span>{cartCount > 0 && <span className="dropdown-count">{cartCount}</span>}</NavLink>
                 <button className="dropdown-item" type="button" onClick={handleSettings} role="menuitem"><FiSettings /><span>Account Settings</span></button>
                 <hr />
                 <button className="dropdown-item danger" type="button" onClick={handleLogout} role="menuitem"><FiLogOut /><span>Logout</span></button>
@@ -188,7 +190,7 @@ function Navbar() {
           <div className="mobile-header"><Link to="/" className="logo" onClick={() => setMobileOpen(false)}><div className="logo-icon"><MdStorefront /></div><div className="logo-text">TechStore <span>Pro</span></div></Link><button type="button" className="mobile-close" onClick={() => setMobileOpen(false)} aria-label="Close menu"><FiX /></button></div>
           <form className="mobile-search" onSubmit={handleSearch}><FiSearch /><input type="search" placeholder="Search products..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} aria-label="Search products" /></form>
           <nav className="mobile-nav-links" aria-label="Mobile navigation links">
-            {navItems.map((item) => <NavLink key={item.path} to={item.path} end={item.end} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}><span className="mobile-nav-label">{item.icon}<span>{item.label}</span></span>{item.count > 0 && <span className="badge">{item.count}</span>}</NavLink>)}
+            {navItems.map((item) => <NavLink key={item.path} to={item.path} end={item.end} onClick={closeNavigationMenus} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}><span className="mobile-nav-label">{item.icon}<span>{item.label}</span></span>{item.count > 0 && <span className="badge">{item.count}</span>}</NavLink>)}
           </nav>
           {user && (
             <div className="mobile-account" aria-label="Account actions">
