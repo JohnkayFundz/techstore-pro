@@ -3,7 +3,6 @@
 // CATEGORY FILTER COMPONENT
 // ==========================================================
 
-import React from "react";
 import "./CategoryFilter.css";
 
 function CategoryFilter({
