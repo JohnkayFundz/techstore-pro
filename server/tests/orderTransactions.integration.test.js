@@ -9,6 +9,7 @@ import Order from "../models/Order.js";
 import { createOrder, cancelOrder } from "../controllers/orderController.js";
 import { registerUser, loginUser, getCurrentUser } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
+import { updateOrderStatusSafely, recordCashPaymentSafely } from "../controllers/adminOrderLifecycleController.js";
 
 process.env.JWT_SECRET ||= "techstore-pro-integration-test-secret-only";
 
@@ -318,4 +319,54 @@ test("protect middleware rejects a malformed bearer token", async () => {
   assert.equal(nextCalled, false);
   assert.equal(response.statusCode, 401);
   assert.equal(response.body.message, "Malformed authentication token.");
+});
+
+
+test("delivering an order does not falsely mark its cash payment as received", async () => {
+  const product = await createProduct();
+  const order = await Order.create({
+    user: user._id,
+    items: [{ product: product._id, name: product.name, price: product.price, quantity: 1 }],
+    shippingAddress,
+    paymentMethod: "cash",
+    paymentStatus: "pending",
+    status: "pending",
+    totalAmount: product.price,
+  });
+
+  const response = responseRecorder();
+  await updateOrderStatusSafely(
+    { params: { id: order._id.toString() }, body: { status: "delivered" } },
+    response
+  );
+
+  assert.equal(response.statusCode, 200);
+  const saved = await Order.findById(order._id);
+  assert.equal(saved.status, "delivered");
+  assert.equal(saved.paymentStatus, "pending");
+});
+
+test("records a cash receipt explicitly and prevents a second receipt update", async () => {
+  const product = await createProduct();
+  const order = await Order.create({
+    user: user._id,
+    items: [{ product: product._id, name: product.name, price: product.price, quantity: 1 }],
+    shippingAddress,
+    paymentMethod: "cash",
+    paymentStatus: "pending",
+    status: "delivered",
+    totalAmount: product.price,
+  });
+
+  const first = responseRecorder();
+  await recordCashPaymentSafely({ params: { id: order._id.toString() } }, first);
+
+  assert.equal(first.statusCode, 200);
+  assert.equal(first.body.order.paymentStatus, "paid");
+
+  const second = responseRecorder();
+  await recordCashPaymentSafely({ params: { id: order._id.toString() } }, second);
+
+  assert.equal(second.statusCode, 409);
+  assert.equal((await Order.findById(order._id)).paymentStatus, "paid");
 });
