@@ -30,6 +30,24 @@ A second deployment was triggered by the addition of this verification record:
 - Build log again confirms dependency installation, `npm run build`, Vite 8.1.5, 1,946 modules transformed, and successful deployment.
 - The build restored the prior deployment cache. It is therefore another successful cached Vercel frontend build, not an independent clean-install test.
 
+
+
+## GitHub Actions verification (2026-11-14)
+
+The CI workflow was expanded to run on the product-preparation branch and to run the full repository lint command. It now uses Node.js 22 and runs the frontend build even if lint fails, so the two results are independently visible.
+
+Run `43620850889` on commit `e323c28042a6a09b0855ff896b13203283bb9848` completed with an overall **FAILURE** because the full lint step failed. Its individual evidence:
+
+- Root dependency installation: completed with `npm install` (not `npm ci`).
+- Full `npm run lint`: **FAIL** — 122 findings: 114 errors and 8 warnings. Reported classes include Node globals not configured for backend files, unused variables/imports, and React Hooks rule violations. These are source/configuration findings; they have not been suppressed or waived.
+- Frontend `npm run build`: **PASS** — Vite 8.1.5, 1,946 modules transformed, build completed successfully.
+- Backend dependency installation: **PASS** — `npm ci` in `server/`.
+- Backend syntax check: **PASS** — `node --check server.js` and `node --check app.js`.
+
+The preceding Node 20 run emitted an engine warning because the resolved `@capacitor/cli@8.6.2` requires Node >=22. The CI workflow was updated to Node 22; run 72 confirms the build succeeded on that runtime.
+
+**Interpretation:** frontend build and limited backend syntax/dependency checks are now independently evidenced in GitHub Actions. The repository-wide lint gate fails and needs real source/configuration remediation. This CI run does not exercise MongoDB-backed API behavior, authentication, orders, uploads, or payment integration.
+
 ## What this establishes
 
 - The frontend source at the recorded commit can complete a Vercel-hosted production build in the observed environment.
