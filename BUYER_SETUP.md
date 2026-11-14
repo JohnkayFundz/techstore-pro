@@ -75,7 +75,7 @@ Backend scripts:
 
 - `npm run dev` — start the API with nodemon.
 - `npm start` — start the API with Node.js.
-- `npm run seed` — run the repository's seeder script. Inspect the seeder source and understand what it writes before running it against any database.
+- `npm run seed` — run the product seeder. The current script validates seed SKUs/names, creates missing seed products, and updates matching seeded products by SKU. It does not delete products; it preserves existing Cloudinary image URLs and leaves products not represented in the seed data untouched. **It does update matching seeded product fields**, so use a disposable database first and back up any database before running it. Never point it at a live store database unless you deliberately want those seeded products updated.
 
 ## 6. Configure the frontend
 
@@ -166,7 +166,7 @@ This starter kit is source code, not a hosted store or managed service. Before l
 6. Integrate a payment provider and verify payment status server-side before treating an order as paid.
 7. Test registration, login, product management, cart, checkout/order creation, order status changes, and admin access using test data.
 8. Configure backups, monitoring, HTTPS, and deployment settings.
-9. Review all third-party package licenses and any external service terms.
+9. Review all third-party package licenses and any external service terms. See `THIRD_PARTY_LICENSE_REVIEW.md` for a preliminary lockfile metadata inventory; it is not legal clearance.
 
 Do not use real customer or payment data during initial setup and testing.
 
