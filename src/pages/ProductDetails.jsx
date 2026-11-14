@@ -151,11 +151,6 @@ function ProductDetails() {
   const oldPrice = Number(product.oldPrice || 0);
   const rating = Number(product.rating || 0);
   const numReviews = Number(product.numReviews || 0);
-  const galleryImages = Array.isArray(product.gallery) && product.gallery.length
-    ? product.gallery
-    : Array.isArray(product.images) && product.images.length
-      ? product.images
-      : product.image ? [product.image] : [];
   const features = Array.isArray(product.features) ? product.features.filter(Boolean).slice(0, 6) : [];
   const featureCards = features.length
     ? features.slice(0, 3).map((feature, index) => ({
