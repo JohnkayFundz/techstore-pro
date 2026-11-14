@@ -5,11 +5,10 @@
 ![Node.js](https://img.shields.io/badge/Node.js-Express-green)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
 ![JWT](https://img.shields.io/badge/Auth-JWT-orange)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 **TechStore Pro** is a modern full-stack **MERN e-commerce application** built with React, Node.js, Express.js, and MongoDB.
 
-The project demonstrates real-world full-stack development through customer authentication, product discovery, shopping cart management, checkout, order tracking, wishlist functionality, and an administrative dashboard.
+The project demonstrates full-stack development through customer authentication, product discovery, shopping cart management, an order workflow, order tracking, wishlist functionality, and an administrative dashboard. A payment gateway is not currently integrated; checkout/order creation should not be represented as live payment processing.
 
 It was designed as a production-style application to demonstrate practical frontend, backend, database, authentication, API, and deployment skills.
 
@@ -238,16 +237,14 @@ Orders
 ```text
 techstore-pro/
 │
-├── client/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── pages/
-│   │   └── utils/
-│   │
-│   └── public/
+├── src/
+│   ├── api/
+│   ├── components/
+│   ├── context/
+│   ├── pages/
+│   └── utils/
 │
+├── public/
 ├── server/
 │   ├── config/
 │   ├── controllers/
@@ -280,17 +277,16 @@ cd techstore-pro
 
 ## 2. Install dependencies
 
-Install frontend dependencies:
+Install frontend dependencies from the repository root:
 
 ```bash
-cd client
 npm install
 ```
 
 Install backend dependencies:
 
 ```bash
-cd ../server
+cd server
 npm install
 ```
 
@@ -298,7 +294,7 @@ npm install
 
 ## 3. Configure environment variables
 
-Create a `.env` file inside the `server` directory.
+Create a frontend `.env` file in the repository root by copying `.env.example`, then create a backend `.env` file inside `server` by copying `server/.env.example`. Set the values required for the features you intend to use.
 
 ```env
 PORT=5000
@@ -334,7 +330,7 @@ http://localhost:5000
 
 ## 5. Start the frontend
 
-From the `client` directory:
+From the repository root:
 
 ```bash
 npm run dev
@@ -436,13 +432,13 @@ https://techstore-pro-zonk.onrender.com
 
 # 🧪 Development Commands
 
-### Start frontend
+### Start frontend (run from repository root)
 
 ```bash
 npm run dev
 ```
 
-### Create production build
+### Create production build (run from repository root)
 
 ```bash
 npm run build
@@ -523,4 +519,15 @@ Your support is appreciated!
 
 # 📄 License
 
-This project is licensed under the **MIT License**.
+**License status:** A root-level license file has not yet been verified in this repository. Do not assume that the project is distributed under MIT. Review the accompanying commercial license terms and all third-party dependency licenses before redistribution.
+
+## Payment processing notice
+
+The repository currently documents Stripe payment integration as a future improvement. The existing checkout and order workflow is not proof of a connected payment processor. Configure and test a payment provider separately before accepting real customer payments.
+
+## Environment files
+
+- Root `.env.example`: frontend API base URL.
+- `server/.env.example`: backend configuration, database, JWT, Cloudinary, and optional AI assistant settings.
+
+Never publish real API keys, database credentials, or production secrets.
