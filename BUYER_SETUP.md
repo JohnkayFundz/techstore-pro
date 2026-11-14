@@ -156,6 +156,15 @@ The order-creation and order-cancellation controllers use MongoDB sessions and m
 
 A successful MongoDB connection or frontend build does not prove that transaction-backed order flows work. Exercise both order creation and cancellation against a transaction-capable test database before deployment.
 
+To run the automated backend tests, open a terminal in `server/` and run:
+
+```bash
+npm ci
+npm test
+```
+
+The test suite uses `mongodb-memory-server` to start a disposable MongoDB 7.0.14 single-node replica set for integration tests. The first run downloads the MongoDB test binary (approximately 81 MB); it does not connect to your configured `MONGODB_URI`. The suite covers registration, login, JWT protection, order transactions, cash-only payment safeguards, and Cloudinary upload-helper behavior. Keep real `.env` credentials out of test fixtures.
+
 ## 8B. Payment method limitation
 
 The application currently supports cash on delivery only. The card option has been removed from checkout and the API rejects unsupported payment methods because no payment gateway or server-side card-payment verification is integrated. Do not collect card details in this application or mark an order paid based on a browser response. Add a payment provider with server-side verification and webhook handling before enabling online payments.
