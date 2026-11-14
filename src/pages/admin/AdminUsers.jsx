@@ -26,6 +26,7 @@ function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       const response = await getUsers();
       setMessage("");
 
