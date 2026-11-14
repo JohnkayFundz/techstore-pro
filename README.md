@@ -280,14 +280,14 @@ cd techstore-pro
 Install frontend dependencies from the repository root:
 
 ```bash
-npm install
+npm ci
 ```
 
 Install backend dependencies:
 
 ```bash
 cd server
-npm install
+npm ci
 ```
 
 ---
