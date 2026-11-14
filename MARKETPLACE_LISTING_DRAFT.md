@@ -36,7 +36,7 @@ TechStore Pro includes:
 - This is source code, not a hosted store, domain, hosting plan, MongoDB account, Cloudinary subscription, AI subscription, or managed service.
 - Buyers must configure their own database, environment variables, hosting, and external services.
 - GitHub Actions Run #122 on the preparation branch passed repository-wide ESLint, the frontend production build, and the workflow's backend dependency/syntax validation. This is not a fresh clean-install or end-to-end verification on a separate machine. Do not advertise the project as production-ready or fully tested until those checks are completed.
-- The root npm lockfile currently omits Capacitor dependencies declared in the root package manifest. The lockfile needs reconciliation and a clean install/build verification.
+- The root npm lockfile was regenerated on 2026-11-14 to include the declared Capacitor dependencies. GitHub Actions Runs #128 and #129 passed clean root `npm ci --ignore-scripts`, repository-wide lint, and frontend build. This is not a substitute for backend runtime/database or end-to-end testing.
 - The third-party dependency license inventory is preliminary, not legal clearance. Review `THIRD_PARTY_LICENSE_REVIEW.md` and all applicable package notices before distributing the final archive.
 - Product images, sample catalog content, fonts, and other non-code assets must be checked for redistribution rights before release.
 
@@ -86,8 +86,8 @@ No. It is a developer starter project. A clean installation, full functional ver
 
 ## Pre-publication checklist
 
-- [ ] Reconcile root `package.json` and `package-lock.json` using npm in a real Node.js environment; do not hand-edit lockfile metadata.
-- [ ] Fresh, cache-free install frontend and backend from clean copies (still outstanding; root lockfile mismatch must first be reconciled).
+- [x] Reconcile root `package.json` and `package-lock.json` using npm; clean root `npm ci --ignore-scripts` passed in GitHub Actions Runs #128 and #129.
+- [x] Root clean install (`npm ci --ignore-scripts`) and backend `npm ci` passed in GitHub Actions Runs #128 and #129. A separate buyer-machine install remains advisable.
 - [x] Run repository-wide lint and frontend production build in GitHub Actions (Run #122, commit `92a6d36c138d2a5ea4f55cdecb4856b10ae984b9`).
 - [ ] Repeat lint/build after clean, reproducible installs.
 - [ ] Run backend/API and frontend integration checks against disposable test data.
