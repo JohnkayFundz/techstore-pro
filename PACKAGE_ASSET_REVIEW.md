@@ -63,7 +63,7 @@ For the first commercial archive:
 - Trace the provenance and license/brand permissions for `hero.png`, `favicon.svg`, `icons.svg`, and all non-placeholder media. Replace unverified hero claims and confirm the remote Unsplash image terms/availability.
 - Confirm whether the `gifs/` and `scripts/capture-frames.cjs` files are referenced by the application.
 - Verify that frontend and backend seed records remain consistent and that all seeded catalog values are clearly identified as examples.
-- Clean root/backend installs, full dependency audits, repository lint, frontend build, backend syntax, and four upload-helper unit tests passed in Run #142. Backend runtime, MongoDB/API integration, and end-to-end functional tests remain outstanding.
+- Clean root/backend installs, full dependency audits, repository lint, frontend build, backend syntax, and four upload-helper unit tests passed in Run #147 (with documentation-only follow-up runs #148–#150 also passing). Backend runtime, MongoDB/API integration, and end-to-end functional tests remain outstanding.
 
 ## Decision
 
@@ -76,3 +76,17 @@ For the first commercial archive:
 ## Latest technical verification — 2026-11-14
 
 GitHub Actions Run #147 ([43624153579](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43624153579)) completed successfully on commit `e00dd776f8cc3f6d6e8d81dadbdd7cff5a8e05c8`. Root and backend clean installs, both dependency audits, repository-wide lint, frontend build, backend unit tests (4/4), backend syntax checks, and verified lockfile upload/commit all passed. This does not change the asset-rights findings above: the image/icon/trademark redistribution review remains **NOT CLEARED**, and the customer archive remains **NOT BUILT / NOT VERIFIED**.
+
+
+## Additional static asset inventory — 2026-11-14
+
+The branch tree contains the following image/vector assets: `gifs/frame000.png` through `gifs/frame029.png`, `public/favicon.svg`, `public/icons.svg`, `public/placeholder-product.png`, `src/assets/hero.png`, `src/assets/react.svg`, and `src/assets/vite.svg`.
+
+A content inspection of the SVG files confirms:
+- `public/icons.svg` contains recognizable Bluesky, Discord, GitHub, and X brand marks, plus other icon paths. The origin and permission basis for each copied brand mark is not recorded here.
+- `src/assets/react.svg` and `src/assets/vite.svg` are recognizable React/Vite project marks. Their presence in the source tree is not proof that their brand artwork is cleared for resale as part of a template.
+- `public/favicon.svg` is a custom-looking purple lightning/bolt illustration, but no creation record or provenance was found in the repository review.
+- `src/assets/hero.png` remains unverified. Its usage was not assumed absent merely because the reviewed Hero component hotlinks an Unsplash image.
+- The 30 GIF frame PNGs were enumerated but not individually provenance-cleared or proven unused.
+
+No assets were deleted or replaced during this pass. A text-only repository-tree inventory cannot establish authorship, license, trademark permissions, or complete source-code references. The package remains blocked from commercial redistribution until those are verified or the uncertain assets are removed/replaced through a separately reviewed change and CI passes.
