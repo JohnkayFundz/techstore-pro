@@ -10,7 +10,7 @@ import cloudinary from "../config/cloudinary.js";
 const storage = new CloudinaryStorage({
   cloudinary,
 
-  params: async (req, file) => ({
+  params: async () => ({
     folder: "techstore-products",
 
     allowed_formats: [
@@ -45,7 +45,7 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024,
   },
 
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_req, file, cb) => {
     const allowedTypes = [
       "image/jpeg",
       "image/png",
