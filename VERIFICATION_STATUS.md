@@ -151,3 +151,19 @@ The workflow committed the tested dependency lockfile updates as `91a64f9e7df0a2
 
 These tests do not contact Cloudinary and do not prove live uploads, backend startup against MongoDB, authentication, order workflows, or end-to-end application behavior. The payment gateway remains unimplemented. Run #143 is rechecking the storefront demo-copy adjustment made after Run #142.
 
+
+
+## Latest CI verification — Run #147 (2026-11-14)
+
+Latest GitHub Actions run observed on `product/paid-starter-kit-preparation`:
+
+- Run: [43624153579](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43624153579)
+- Commit: `e00dd776f8cc3f6d6e8d81dadbdd7cff5a8e05c8`
+- Overall result: **SUCCESS**.
+- Job: `Clean install, security audit, lint, build and backend tests` — **SUCCESS**.
+
+Every job step completed successfully: checkout; Node setup; root lockfile reconciliation; root security updates; clean root install; root dependency audit; repository-wide lint; frontend build; backend lockfile reconciliation; backend security updates; clean backend install; backend dependency audit; backend unit tests; backend JavaScript syntax checks; verified-lockfile artifact upload; and verified-lockfile commit.
+
+This run confirms lint passed without weakening ESLint rules, the frontend build passed, and the workflow's backend validation passed. The backend test step remains limited to the four Cloudinary upload-helper unit tests; it does not establish a live Cloudinary upload, MongoDB-backed API behavior, authentication/order end-to-end behavior, or payment processing.
+
+**Release gates remain unchanged:** asset provenance and redistribution rights are not cleared; third-party notices are partial; commercial license is a draft; no final customer archive has been built or inspected; payment gateway integration is not implemented. This CI success does not authorize publication, merging to `main`, or production deployment.
