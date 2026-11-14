@@ -112,3 +112,12 @@ The preparation branch now uses original neutral artwork for the storefront's he
 - New source assets: `public/techstore-hero.svg`, `public/techstore-mark.svg`, and `public/icons-neutral.svg` (the latter is the source of the active replacement sprite).
 
 This is an asset substitution, not a legal authorship certification or a complete asset clearance. `src/assets/hero.png`, React/Vite marks, the numbered GIF frames, and other non-placeholder product/demo media remain unreviewed for provenance and redistribution. A complete source reference scan and visual review are still required. The original files were preserved rather than deleted. Commercial release remains **HOLD** pending CI and all remaining legal, asset, test, and packaging gates.
+
+
+## Corrected status after neutral artwork substitution — 2026-11-14
+
+The specific active storefront hero, favicon/app mark, and social icon sprite substitutions listed above are complete and passed the preparation-branch CI workflow. The earlier checklist item naming `favicon.svg` and `icons.svg` as active replacement targets is now superseded: the active page/manifest point to `techstore-mark.svg`, the active hero points to `techstore-hero.svg`, and `public/icons.svg` contains neutral replacements. The old favicon and sprite are retained only in `public/reference-assets/`.
+
+Remaining asset gate: the repository still contains `src/assets/hero.png`, `src/assets/react.svg`, `src/assets/vite.svg`, `public/placeholder-product.png`, 30 numbered GIF frame PNGs, two tiny GIF base64 text files, and demo/product media whose authorship and redistribution scope have not been cleared. GitHub code search returned no indexed matches for several filename searches, but the index completeness is not established; this is not evidence that any file is unused. Do not delete or include uncertain assets in a paid archive until a complete reference scan and provenance review are available.
+
+**Current result:** requested hero/favicon/social-brand artwork replacement: **DONE**; complete repository asset clearance: **NOT DONE**; archive: **NOT BUILT**; commercial release: **HOLD**.
