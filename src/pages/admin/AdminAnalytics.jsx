@@ -181,8 +181,27 @@ function AdminAnalytics() {
   ======================================================== */
 
   useEffect(() => {
-    loadAnalytics(false, true);
-  }, [loadAnalytics]);
+    let cancelled = false;
+    const loadInitialAnalytics = async () => {
+      try {
+        const response = await getSalesAnalytics();
+        if (cancelled) return;
+        setError("");
+        if (!response || response.success === false) {
+          throw new Error(response?.message || "Failed to load sales analytics.");
+        }
+        setAnalytics(response);
+      } catch (loadError) {
+        if (cancelled) return;
+        console.error("Load Analytics Error:", loadError);
+        setError(loadError?.message || "Failed to load sales analytics.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    loadInitialAnalytics();
+    return () => { cancelled = true; };
+  }, []);
 
 
   /* ========================================================
