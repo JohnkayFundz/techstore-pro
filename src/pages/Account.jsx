@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -13,16 +13,12 @@ function Account() {
     updateUser,
   } = useAuth();
 
-  const [name, setName] = useState("");
+  const [nameState, setNameState] = useState({ user, name: user?.name || user?.displayName || "" });
+  const name = nameState.user === user ? nameState.name : user?.name || user?.displayName || "";
+  const setName = (nextName) => setNameState({ user, name: nextName });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    setName(
-      user?.name ||
-      user?.displayName ||
-      ""
-    );
-  }, [user]);
+
 
   if (loading) {
     return (
