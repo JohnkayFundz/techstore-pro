@@ -73,9 +73,6 @@ const Products = () => {
 
   const fetchProducts = useCallback(async ({ showLoading = true } = {}) => {
     try {
-      if (showLoading) setLoading(true);
-      setError("");
-
       const params = { sort, limit: PRODUCTS_PER_PAGE };
       if (category && category !== "All") params.category = category;
       if (maxPrice && Number(maxPrice) > 0) params.maxPrice = Number(maxPrice);
@@ -84,6 +81,7 @@ const Products = () => {
       if (trimmedSearch) params.search = trimmedSearch;
 
       const response = await getProductsPaginated(page, PRODUCTS_PER_PAGE, params);
+      setError("");
 
       if (response?.success === false) {
         setProducts([]);
