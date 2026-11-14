@@ -86,3 +86,31 @@ The preceding Node 20 run emitted an engine warning because the resolved `@capac
 **Paid publication: NOT AUTHORIZED.**
 
 This record is evidence tracking, not a release approval.
+
+
+## Latest GitHub Actions verification — 2026-11-14
+
+The latest confirmed CI run is **Run #122**, completed successfully on the preparation branch:
+
+- Run: [43623117504](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43623117504)
+- Commit: `92a6d36c138d2a5ea4f55cdecb4856b10ae984b9`
+- Frontend/repository ESLint (`eslint .`): **PASS**.
+- Frontend production build (`vite build`): **PASS**.
+- Backend validation (dependency installation and JavaScript syntax checks): **PASS**.
+
+The lint result passed without weakening ESLint rules or adding rule-suppression comments. This is a CI result for the exact commit above; it does not replace a clean, cache-free installation, backend runtime tests, MongoDB integration tests, or end-to-end browser tests.
+
+## Updated release decision
+
+- **CI lint: PASS** (Run #122).
+- **CI frontend build: PASS** (Run #122).
+- **CI backend validation: PASS** (Run #122; limited to the workflow's dependency/syntax checks).
+- **Clean root installation / reproducibility: NOT VERIFIED** — root manifest and lockfile remain inconsistent for Capacitor dependencies; CI used `npm install`, not `npm ci`.
+- **Clean backend install independent of CI cache: NOT VERIFIED**.
+- **Backend runtime and database integration: NOT VERIFIED**.
+- **Payment gateway integration: NOT IMPLEMENTED**.
+- **Asset and third-party redistribution clearance: NOT VERIFIED**.
+- **Commercial license and exact customer archive: NOT FINALIZED / NOT BUILT**.
+- **Paid publication: NOT AUTHORIZED**.
+
+The preparation branch remains a release candidate only. No merge to `main`, public release, storefront publication, or production deployment is implied by these checks.
