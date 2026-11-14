@@ -216,7 +216,7 @@ const Products = () => {
         <section className="products-page__error" role="alert">
           <FiAlertCircle size={26} />
           <div><h2>Unable to load products</h2><p>{error}</p></div>
-          <button type="button" onClick={() => setRetryCount((count) => count + 1)}><FiRefreshCw size={17} /> Try Again</button>
+          <button type="button" onClick={() => { setLoading(true); setRetryCount((count) => count + 1); }}><FiRefreshCw size={17} /> Try Again</button>
         </section>
       )}
 
