@@ -43,3 +43,8 @@ This file is the release-control summary. A successful CI workflow is necessary 
 GitHub Actions Run #185 (2026-11-14) passed root/backend clean installs, dependency audits, repository-wide lint, frontend build, all 17 backend tests, backend syntax checks, and lockfile verification/commit. See the linked workflow in the project verification record. Later documentation-only commits are being revalidated by their own GitHub Actions runs; always check the latest run before describing the branch as currently CI-green.
 
 **Final state:** the preparation work is materially advanced, but the commercial product is not yet cleared for sale. The remaining gates require package-specific license review, asset provenance, owner/legal decisions, application-level testing, and final archive inspection—not merely another CI run.
+
+
+## Latest CI confirmation — 2026-11-14
+
+GitHub Actions Run #190 ([43628998298](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43628998298)) completed successfully on commit `c3435ac8ff408c0deeffea697a55f3b19fe1d4b9`. All job steps passed: clean root install, root audit, repository-wide lint, frontend build, clean backend install, backend audit, 17 backend tests, backend syntax checks, and verified lockfile artifact/commit. This run includes the latest release-readiness documentation commit. The successful CI result does not close the non-CI commercial gates listed above.
