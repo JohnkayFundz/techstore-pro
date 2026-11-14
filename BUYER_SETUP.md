@@ -158,7 +158,7 @@ A successful MongoDB connection or frontend build does not prove that transactio
 
 ## 8B. Payment method limitation
 
-The order API currently accepts `cash` and `card` as order payment-method values, but the repository has no integrated payment gateway or server-side card-payment verification. Selecting `card` must not be interpreted as a completed or verified payment. Do not collect card details in this application or mark an order paid based on a browser response. Add a payment provider with server-side verification and webhook handling before enabling online payments.
+The application currently supports cash on delivery only. The card option has been removed from checkout and the API rejects unsupported payment methods because no payment gateway or server-side card-payment verification is integrated. Do not collect card details in this application or mark an order paid based on a browser response. Add a payment provider with server-side verification and webhook handling before enabling online payments.
 
 ## 9. Build the frontend
 
