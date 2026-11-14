@@ -4,7 +4,6 @@
 // ==========================================================
 
 import {
-  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -71,47 +70,49 @@ const Products = () => {
   const [error, setError] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-  const fetchProducts = useCallback(async ({ showLoading = true } = {}) => {
-    try {
-      const params = { sort, limit: PRODUCTS_PER_PAGE };
-      if (category && category !== "All") params.category = category;
-      if (maxPrice && Number(maxPrice) > 0) params.maxPrice = Number(maxPrice);
+  useEffect(() => {
+    let cancelled = false;
 
-      const trimmedSearch = search.trim();
-      if (trimmedSearch) params.search = trimmedSearch;
+    const loadProducts = async () => {
+      try {
+        const params = { sort, limit: PRODUCTS_PER_PAGE };
+        if (category && category !== "All") params.category = category;
+        if (maxPrice && Number(maxPrice) > 0) params.maxPrice = Number(maxPrice);
+        const trimmedSearch = search.trim();
+        if (trimmedSearch) params.search = trimmedSearch;
 
-      const response = await getProductsPaginated(page, PRODUCTS_PER_PAGE, params);
-      setError("");
+        const response = await getProductsPaginated(page, PRODUCTS_PER_PAGE, params);
+        if (cancelled) return;
+        setError("");
 
-      if (response?.success === false) {
+        if (response?.success === false) {
+          setProducts([]);
+          setTotalProducts(0);
+          setTotalPages(0);
+          setError(response.message || "Failed to load products.");
+          return;
+        }
+
+        const nextProducts = Array.isArray(response?.products) ? response.products : [];
+        setProducts(nextProducts);
+        const nextTotalProducts = Number(response?.totalProducts ?? response?.total ?? nextProducts.length);
+        setTotalProducts(Number.isFinite(nextTotalProducts) ? nextTotalProducts : nextProducts.length);
+        const nextTotalPages = Number(response?.totalPages ?? 0);
+        setTotalPages(Number.isFinite(nextTotalPages) ? nextTotalPages : 0);
+      } catch (err) {
+        if (cancelled) return;
         setProducts([]);
         setTotalProducts(0);
         setTotalPages(0);
-        setError(response.message || "Failed to load products.");
-        return;
+        setError(err?.response?.data?.message || err?.message || "Unable to load products.");
+      } finally {
+        if (!cancelled) setLoading(false);
       }
+    };
 
-      const nextProducts = Array.isArray(response?.products) ? response.products : [];
-      setProducts(nextProducts);
-
-      const nextTotalProducts = Number(response?.totalProducts ?? response?.total ?? nextProducts.length);
-      setTotalProducts(Number.isFinite(nextTotalProducts) ? nextTotalProducts : nextProducts.length);
-
-      const nextTotalPages = Number(response?.totalPages ?? 0);
-      setTotalPages(Number.isFinite(nextTotalPages) ? nextTotalPages : 0);
-    } catch (err) {
-      setProducts([]);
-      setTotalProducts(0);
-      setTotalPages(0);
-      setError(err?.response?.data?.message || err?.message || "Unable to load products.");
-    } finally {
-      setLoading(false);
-    }
+    loadProducts();
+    return () => { cancelled = true; };
   }, [category, maxPrice, page, search, sort]);
-
-  useEffect(() => {
-    fetchProducts({ showLoading: false });
-  }, [fetchProducts]);
 
   const resetToFirstPage = () => setPage(1);
   const handleCategoryChange = (value) => { setCategory(value); resetToFirstPage(); };
