@@ -32,10 +32,10 @@ TechStore Pro includes:
 
 ## Important limitations — read before purchase
 
-- **No payment gateway is integrated.** Checkout creates an order workflow; it does not charge a card or verify a provider payment. The backend includes a manual cash-payment recording workflow for an administrator. A real payment provider must be integrated and tested separately.
+- **No payment gateway is integrated.** Checkout creates an order workflow; it does not charge a card or verify a provider payment. Checkout currently supports cash on delivery only. The card option is disabled and the API rejects card orders until a real payment provider with server-side verification is integrated and tested separately.
 - This is source code, not a hosted store, domain, hosting plan, MongoDB account, Cloudinary subscription, AI subscription, or managed service.
 - Buyers must configure their own database, environment variables, hosting, and external services.
-- GitHub Actions Run #142 passed clean root and backend `npm ci --ignore-scripts`, full dependency audits (zero vulnerabilities in both trees), repository-wide ESLint, frontend production build, backend syntax checks, and four isolated backend Cloudinary-upload-helper unit tests. These checks do not include live Cloudinary uploads, MongoDB/API integration, authentication/order end-to-end tests, or a buyer-machine installation. Do not advertise the project as production-ready or fully tested.
+- GitHub Actions Run #161 passed clean root and backend `npm ci --ignore-scripts`, full dependency audits (zero vulnerabilities in both trees), repository-wide ESLint, frontend production build, backend syntax checks, and six isolated backend unit tests (four Cloudinary upload-helper tests and two payment-method tests). These checks do not include live Cloudinary uploads, MongoDB/API integration, authentication/order end-to-end tests, or a buyer-machine installation. Do not advertise the project as production-ready or fully tested.
 - The root npm lockfile was regenerated on 2026-11-14 to include the declared Capacitor dependencies. GitHub Actions Runs #128 and #129 passed clean root `npm ci --ignore-scripts`, repository-wide lint, and frontend build. This is not a substitute for backend runtime/database or end-to-end testing.
 - The third-party dependency license inventory is preliminary, not legal clearance. Review `THIRD_PARTY_LICENSE_REVIEW.md` and all applicable package notices before distributing the final archive.
 - Product images, sample catalog content, fonts, and other non-code assets must be checked for redistribution rights before release.
@@ -67,7 +67,7 @@ These are starting hypotheses only. Validate marketplace fees, payout eligibilit
 ## FAQ
 
 ### Does it accept online card payments?
-No. A payment gateway is not integrated. The checkout/order workflow is present, but card payments and provider-side verification must be implemented separately.
+No. A payment gateway is not integrated. Checkout supports cash on delivery only. Card payments and provider-side verification must be implemented separately.
 
 ### Is hosting included?
 No. Buyers supply their own hosting, domain, database, and any paid external services.
@@ -90,7 +90,7 @@ No. It is a developer starter project. A clean installation, full functional ver
 - [x] Root clean install (`npm ci --ignore-scripts`) and backend `npm ci` passed in GitHub Actions Runs #128 and #129. A separate buyer-machine install remains advisable.
 - [x] Run repository-wide lint and frontend production build in GitHub Actions (Run #122, commit `92a6d36c138d2a5ea4f55cdecb4856b10ae984b9`).
 - [x] Repository-wide lint and frontend build passed after clean root install in Run #142.
-- [ ] Run backend/API and frontend integration checks against disposable test data; current backend tests cover only the Cloudinary upload helper.
+- [ ] Run backend/API and frontend integration checks against disposable test data; current backend tests cover the Cloudinary upload helper and payment-method allowlist only.
 - [ ] Verify all advertised UI flows and correct screenshots.
 - [ ] Review every image/font/icon/sample asset for redistribution rights.
 - [ ] Resolve dependency-license items and include required notices.
