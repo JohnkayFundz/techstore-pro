@@ -153,6 +153,7 @@ function ProductManagement() {
 
   const loadProducts = async () => {
     try {
+      setLoading(true);
       const response = await getAdminProducts();
       setError("");
 
