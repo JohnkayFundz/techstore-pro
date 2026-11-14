@@ -153,16 +153,16 @@ function ProductGallery({ product }) {
      ACTIVE IMAGE
   ======================================================== */
 
-  const [activeIndex, setActiveIndex] =
-    useState(0);
-
-  /* ========================================================
-     RESET ACTIVE IMAGE WHEN PRODUCT CHANGES
-  ======================================================== */
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [productId]);
+  const [activeSelection, setActiveSelection] = useState({ productId, index: 0 });
+  const activeIndex = activeSelection.productId === productId ? activeSelection.index : 0;
+  const setActiveIndex = (indexOrUpdater) => {
+    setActiveSelection((previous) => ({
+      productId,
+      index: typeof indexOrUpdater === "function"
+        ? indexOrUpdater(previous.productId === productId ? previous.index : 0)
+        : indexOrUpdater,
+    }));
+  };
 
   /* ========================================================
      SAFETY
