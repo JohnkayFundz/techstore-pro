@@ -64,55 +64,40 @@ function AdminProductForm() {
      LOAD PRODUCT
   ======================================================== */
 
-    const fetchProduct = useCallback(async () => {
-    try {
-      const response = await getProduct(id);
-
-      if (!response?.success) {
-        throw new Error(
-          response?.message || "Failed to load product."
-        );
-      }
-
-      const product = response.product;
-
-      setForm({
-        name: product?.name || "",
-        brand: product?.brand || "",
-        sku: product?.sku || "",
-        category: CATEGORIES.includes(product?.category)
-          ? product.category
-          : "Laptops",
-        price: product?.price ?? "",
-        stock: product?.stock ?? "",
-        description: product?.description || "",
-        image: product?.image || "",
-        featured: Boolean(product?.featured),
-        bestseller: Boolean(product?.bestseller),
-        newArrival: Boolean(product?.newArrival),
-      });
-    } catch (error) {
-      console.error("Product Load Error:", error);
-
-      toast.error(
-        error.message || "Failed to load product."
-      );
-
-      navigate("/admin/products");
-    } finally {
-      setLoading(false);
-    }
-  }, [id, navigate]);
-
-  useEffect(() => {
+    useEffect(() => {
     if (!isEditing) return undefined;
-    let active = true;
-    const load = async () => {
-      await fetchProduct();
+    let cancelled = false;
+    const loadProduct = async () => {
+      try {
+        const response = await getProduct(id);
+        if (cancelled) return;
+        if (!response?.success) throw new Error(response?.message || "Failed to load product.");
+        const product = response.product;
+        setForm({
+          name: product?.name || "",
+          brand: product?.brand || "",
+          sku: product?.sku || "",
+          category: CATEGORIES.includes(product?.category) ? product.category : "Laptops",
+          price: product?.price ?? "",
+          stock: product?.stock ?? "",
+          description: product?.description || "",
+          image: product?.image || "",
+          featured: Boolean(product?.featured),
+          bestseller: Boolean(product?.bestseller),
+          newArrival: Boolean(product?.newArrival),
+        });
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Product Load Error:", error);
+        toast.error(error.message || "Failed to load product.");
+        navigate("/admin/products");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     };
-    if (active) load();
-    return () => { active = false; };
-  }, [fetchProduct, isEditing]);
+    loadProduct();
+    return () => { cancelled = true; };
+  }, [id, isEditing, navigate]);
 
     /* ========================================================
      HANDLE CHANGE
