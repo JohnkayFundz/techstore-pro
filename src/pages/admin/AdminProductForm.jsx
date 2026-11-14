@@ -105,9 +105,13 @@ function AdminProductForm() {
   }, [id, navigate]);
 
   useEffect(() => {
-    if (isEditing) {
-      fetchProduct();
-    }
+    if (!isEditing) return undefined;
+    let active = true;
+    const load = async () => {
+      await fetchProduct();
+    };
+    if (active) load();
+    return () => { active = false; };
   }, [fetchProduct, isEditing]);
 
     /* ========================================================
