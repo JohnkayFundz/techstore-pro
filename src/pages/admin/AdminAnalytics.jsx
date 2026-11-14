@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -132,13 +133,14 @@ function AdminAnalytics() {
      LOAD ANALYTICS
   ======================================================== */
 
-  const loadAnalytics = async (
-    isRefresh = false
+  const loadAnalytics = useCallback(async (
+    isRefresh = false,
+    isInitialLoad = false
   ) => {
     try {
       if (isRefresh) {
         setRefreshing(true);
-      } else {
+      } else if (!isInitialLoad) {
         setLoading(true);
       }
 
@@ -172,7 +174,7 @@ function AdminAnalytics() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, []);
 
 
   /* ========================================================
@@ -180,8 +182,8 @@ function AdminAnalytics() {
   ======================================================== */
 
   useEffect(() => {
-    loadAnalytics();
-  }, []);
+    loadAnalytics(false, true);
+  }, [loadAnalytics]);
 
 
   /* ========================================================
