@@ -188,7 +188,24 @@ function ProductManagement() {
   ======================================================== */
 
   useEffect(() => {
-    loadProducts();
+    let cancelled = false;
+    const loadInitialProducts = async () => {
+      try {
+        const response = await getAdminProducts();
+        if (cancelled) return;
+        setError("");
+        if (!response?.success) throw new Error(response?.message || "Failed to load products.");
+        setProducts(Array.isArray(response.products) ? response.products : []);
+      } catch (loadError) {
+        if (cancelled) return;
+        console.error("❌ Product Management Load Error:", loadError);
+        setError(loadError.message || "Failed to load products.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    loadInitialProducts();
+    return () => { cancelled = true; };
   }, []);
 
   /* ========================================================
