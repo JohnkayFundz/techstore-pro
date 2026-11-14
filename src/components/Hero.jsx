@@ -17,7 +17,7 @@ function Hero() {
           <div className="hero-content">
             <div className="hero-badge">
               <FiStar />
-              <span>New Collection 2026</span>
+              <span>Demo Storefront</span>
             </div>
 
             <h1>
@@ -25,10 +25,9 @@ function Hero() {
             </h1>
 
             <p>
-              Shop the latest laptops, smartphones, gaming gear,
-              accessories, and premium electronics from the world's
-              leading brands at unbeatable prices with secure checkout
-              and nationwide delivery.
+              Explore this sample electronics storefront. Replace the demo catalog,
+              prices, delivery terms, payment setup, and support details before
+              launching your own store.
             </p>
 
             {/* Action Buttons */}
@@ -65,16 +64,16 @@ function Hero() {
               <div className="stat-card">
                 <FiStar className="stat-icon" />
                 <div>
-                  <h3>15+</h3>
-                  <span>Brands</span>
+                  <h3>Demo</h3>
+                  <span>Brand Content</span>
                 </div>
               </div>
 
               <div className="stat-card">
                 <FiShield className="stat-icon" />
                 <div>
-                  <h3>24/7</h3>
-                  <span>Support</span>
+                  <h3>You</h3>
+                  <span>Set Support Hours</span>
                 </div>
               </div>
             </div>
@@ -87,8 +86,8 @@ function Hero() {
                 </div>
 
                 <div>
-                  <h4>Fast Delivery</h4>
-                  <p>Quick shipping nationwide</p>
+                  <h4>Delivery Policy</h4>
+                  <p>Configure your own shipping terms</p>
                 </div>
               </div>
 
@@ -98,8 +97,8 @@ function Hero() {
                 </div>
 
                 <div>
-                  <h4>Secure Payment</h4>
-                  <p>100% protected checkout</p>
+                  <h4>Payment Setup</h4>
+                  <p>Connect and verify a payment provider</p>
                 </div>
               </div>
 
@@ -109,17 +108,17 @@ function Hero() {
                 </div>
 
                 <div>
-                  <h4>Premium Quality</h4>
-                  <p>Trusted global brands</p>
+                  <h4>Your Store Content</h4>
+                  <p>Use product details and media you can verify</p>
                 </div>
               </div>
             </div>
 
             {/* Trust Indicators */}
             <div className="hero-trust">
-              <span>⭐ Rated 4.9/5</span>
-              <span>🚚 Free Shipping</span>
-              <span>🔒 Secure Checkout</span>
+              <span>Demo catalog — replace before launch</span>
+              <span>Shipping terms set by seller</span>
+              <span>Card payments require integration</span>
             </div>
           </div>
 
@@ -128,23 +127,23 @@ function Hero() {
             <div className="hero-image">
               <img
                 src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200"
-                alt="Premium technology products"
+                alt="Illustrative technology photograph; replace with store-owned media before launch"
                 loading="lazy"
               />
             </div>
 
             {/* Discount Card */}
             <div className="discount-card">
-              <span>UP TO</span>
-              <h2>40% OFF</h2>
-              <p>Limited Time Offer</p>
+              <span>DEMO</span>
+              <h2>OFFER</h2>
+              <p>Set your own promotion</p>
             </div>
 
             {/* Rating Card */}
             <div className="rating-card">
               <div className="rating-stars">★★★★★</div>
-              <h3>4.9/5</h3>
-              <span>Customer Rating</span>
+              <h3>Demo</h3>
+              <span>Replace with verified reviews</span>
             </div>
           </div>
         </div>
