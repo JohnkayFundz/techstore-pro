@@ -10,6 +10,8 @@ import { createOrder, cancelOrder } from "../controllers/orderController.js";
 import { registerUser, loginUser, getCurrentUser } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
+process.env.JWT_SECRET ||= "techstore-pro-integration-test-secret-only";
+
 let replicaSet;
 let user;
 
