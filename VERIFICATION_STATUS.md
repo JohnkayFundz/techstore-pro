@@ -79,8 +79,8 @@ The preceding Node 20 run emitted an engine warning because the resolved `@capac
 ## Decision
 
 **Frontend preview build: PASS (limited scope).**  
-**Clean installation / reproducibility: NOT VERIFIED.**  
-**Lint: NOT VERIFIED.**  
+**Backend clean install: PASS in CI. Root clean install / reproducibility: NOT VERIFIED.**  
+**Repository lint on commit 92a6d36: PASS.**  
 **Backend / integration tests: NOT VERIFIED.**  
 **Commercial redistribution clearance: NOT VERIFIED.**  
 **Paid publication: NOT AUTHORIZED.**
