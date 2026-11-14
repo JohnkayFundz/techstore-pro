@@ -28,9 +28,9 @@ An unspecified lockfile license field does not prove that a package is unlicense
 
 ## Lockfile consistency finding
 
-The root `package.json` declares `@capacitor/core` and `@capacitor/cli`, but the root lockfile's root package entry does not include those dependencies. The backend package manifest and backend lockfile root dependency declarations match.
+The earlier root lockfile mismatch was resolved on 2026-11-14. GitHub Actions Runs #128 and #129 regenerated the root lockfile with npm, verified that the root lockfile declarations match `package.json`, and passed `npm ci --ignore-scripts`. The backend manifest and lockfile declarations also match.
 
-The root lockfile mismatch must be reconciled with npm before claiming reproducible `npm ci` installation. This connector review cannot run npm or regenerate a lockfile. Do not describe the current lockfile as verified.
+The two backend packages with absent modern SPDX `license` fields were checked against their exact upstream tags: `busboy@1.6.0` and `streamsearch@1.1.0` each include a legacy `licenses` array identifying MIT and an MIT-style `LICENSE` file. Preserve Brian White's copyright and the full permission/warranty text in the distributed third-party notices. The absence of a modern SPDX field is a metadata-format issue, not evidence that these packages are unlicensed.
 
 ## Redistribution checklist
 
@@ -48,3 +48,14 @@ Before publishing a paid source archive:
 The seller's commercial terms can cover only code and assets the seller is entitled to license. Third-party packages remain subject to their own licenses and terms. This inventory does not establish ownership of every image, font, icon, sample product asset, or other repository asset; those must be reviewed separately.
 
 **Conclusion:** The repository can be prepared for a source-code product, but this metadata inventory is not sufficient to claim that all third-party redistribution obligations have been cleared.
+
+
+## Follow-up verification — 2026-11-14
+
+- Root lockfile consistency: **RESOLVED**; Capacitor declarations and resolved entries are now present in the committed lockfile.
+- Root clean install: **PASS** in GitHub Actions Runs #128 and #129 using `npm ci --ignore-scripts`.
+- Backend clean install: **PASS** in GitHub Actions Runs #128 and #129 using `npm ci`.
+- `busboy@1.6.0`: upstream tag `v1.6.0` contains a legacy `licenses: [{ type: "MIT" }]` declaration and a full MIT-style `LICENSE` file.
+- `streamsearch@1.1.0`: upstream tag `v1.1.0` contains a legacy `licenses: [{ type: "MIT" }]` declaration and a full MIT-style `LICENSE` file.
+
+This resolves the two missing-license-metadata questions at the exact upstream versions reviewed. It does not constitute a complete audit of all dependency license texts, trademark terms, asset rights, or legal compliance. A consolidated notice file still needs to be included in the customer archive after the complete package/asset scope is finalized.
