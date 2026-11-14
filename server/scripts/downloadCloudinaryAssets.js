@@ -14,7 +14,9 @@ const download = (url, filepath) =>
         file.close();
         try {
           fs.unlinkSync(filepath);
-        } catch {}
+        } catch {
+          // Ignore cleanup failures; the original download error is reported.
+        }
 
         reject(
           new Error(`HTTP ${response.statusCode} for ${url}`)
@@ -33,7 +35,9 @@ const download = (url, filepath) =>
 
       try {
         fs.unlinkSync(filepath);
-      } catch {}
+      } catch {
+        // Ignore cleanup failures; preserve the original request error.
+      }
 
       reject(error);
     });
