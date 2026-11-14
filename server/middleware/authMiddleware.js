@@ -318,7 +318,7 @@ export const optionalAuth = async (
 
 
 
-  } catch (error) {
+  } catch {
 
     // Optional auth should never block request
 
