@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -55,7 +55,7 @@ function AdminProductForm() {
 
   const fileInputRef = useRef(null);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(Boolean(id));
   const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState(EMPTY_FORM);
@@ -64,19 +64,8 @@ function AdminProductForm() {
      LOAD PRODUCT
   ======================================================== */
 
-  useEffect(() => {
-    if (!isEditing) {
-      setForm(EMPTY_FORM);
-      return;
-    }
-
-    fetchProduct();
-  }, [id, isEditing]);
-
-  const fetchProduct = async () => {
+    const fetchProduct = useCallback(async () => {
     try {
-      setLoading(true);
-
       const response = await getProduct(id);
 
       if (!response?.success) {
@@ -113,9 +102,15 @@ function AdminProductForm() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
 
-  /* ========================================================
+  useEffect(() => {
+    if (isEditing) {
+      fetchProduct();
+    }
+  }, [fetchProduct, isEditing]);
+
+    /* ========================================================
      HANDLE CHANGE
   ======================================================== */
 
