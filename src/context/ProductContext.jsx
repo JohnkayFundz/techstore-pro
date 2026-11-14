@@ -31,10 +31,8 @@ export function ProductProvider({ children }) {
 
   const fetchProducts = useCallback(async (params = {}, { showLoading = true } = {}) => {
     try {
-      if (showLoading) setLoading(true);
-      setError("");
-
       const response = await getProducts(params);
+      setError("");
 
       if (!response?.success) {
         setProducts([]);
