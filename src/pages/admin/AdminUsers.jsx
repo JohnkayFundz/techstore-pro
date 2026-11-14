@@ -26,10 +26,8 @@ function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
-      setMessage("");
-
       const response = await getUsers();
+      setMessage("");
 
       if (response?.success === false) {
         setUsers([]);
