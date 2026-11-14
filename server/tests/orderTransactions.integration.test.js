@@ -7,6 +7,8 @@ import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import { createOrder, cancelOrder } from "../controllers/orderController.js";
+import { registerUser, loginUser, getCurrentUser } from "../controllers/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 let replicaSet;
 let user;
@@ -30,6 +32,14 @@ const responseRecorder = () => {
     },
     json(body) {
       this.body = body;
+      return this;
+    },
+    cookie(name, value, options) {
+      this.cookieData = { name, value, options };
+      return this;
+    },
+    clearCookie(name, options) {
+      this.clearedCookie = { name, options };
       return this;
     },
   };
@@ -200,4 +210,110 @@ test("rejects unsupported card payment before opening an order transaction", asy
   assert.equal(response.body.message, "Invalid payment method.");
   assert.equal((await Product.findById(product._id)).stock, 10);
   assert.equal(await Order.countDocuments({}), 0);
+});
+
+
+test("registers a normalized account, hashes its password, and issues an HTTP-only token cookie", async () => {
+  const response = responseRecorder();
+  const email = `auth-register-${new mongoose.Types.ObjectId()}@example.test`;
+
+  await registerUser(
+    { body: { name: "  Integration Buyer  ", email: ` ${email.toUpperCase()} `, password: "secure-pass-123" } },
+    response
+  );
+
+  assert.equal(response.statusCode, 201);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.user.email, email);
+  assert.equal(response.body.user.name, "Integration Buyer");
+  assert.equal(response.cookieData.name, "token");
+  assert.equal(response.cookieData.options.httpOnly, true);
+
+  const saved = await User.findOne({ email }).select("+password");
+  assert.ok(saved);
+  assert.notEqual(saved.password, "secure-pass-123");
+  assert.equal(await saved.matchPassword("secure-pass-123"), true);
+});
+
+test("rejects duplicate registration without creating a second account", async () => {
+  const email = `auth-duplicate-${new mongoose.Types.ObjectId()}@example.test`;
+  await User.create({ name: "Existing Buyer", email, password: "secure-pass-123" });
+
+  const response = responseRecorder();
+  await registerUser(
+    { body: { name: "Another Buyer", email: email.toUpperCase(), password: "secure-pass-123" } },
+    response
+  );
+
+  assert.equal(response.statusCode, 409);
+  assert.equal(await User.countDocuments({ email }), 1);
+});
+
+test("logs in with normalized email and rejects an incorrect password", async () => {
+  const email = `auth-login-${new mongoose.Types.ObjectId()}@example.test`;
+  await User.create({ name: "Login Buyer", email, password: "secure-pass-123" });
+
+  const success = responseRecorder();
+  await loginUser(
+    { body: { email: email.toUpperCase(), password: "secure-pass-123" } },
+    success
+  );
+
+  assert.equal(success.statusCode, 200);
+  assert.equal(success.body.success, true);
+  assert.equal(success.cookieData.name, "token");
+  assert.equal(success.cookieData.options.httpOnly, true);
+
+  const failure = responseRecorder();
+  await loginUser(
+    { body: { email, password: "incorrect-password" } },
+    failure
+  );
+
+  assert.equal(failure.statusCode, 401);
+  assert.equal(failure.body.message, "Invalid email or password.");
+});
+
+test("protect middleware authenticates the issued bearer token and current-user response excludes password", async () => {
+  const email = `auth-protect-${new mongoose.Types.ObjectId()}@example.test`;
+  const registration = responseRecorder();
+  await registerUser(
+    { body: { name: "Protected Buyer", email, password: "secure-pass-123" } },
+    registration
+  );
+
+  const req = {
+    headers: { authorization: `Bearer ${registration.cookieData.value}` },
+    cookies: {},
+  };
+  const middlewareResponse = responseRecorder();
+  let nextCalled = false;
+
+  await protect(req, middlewareResponse, () => {
+    nextCalled = true;
+  });
+
+  assert.equal(nextCalled, true);
+  assert.equal(req.user.email, email);
+
+  const current = responseRecorder();
+  await getCurrentUser({ user: req.user }, current);
+  assert.equal(current.statusCode, 200);
+  assert.equal(current.body.user.email, email);
+  assert.equal(Object.hasOwn(current.body.user, "password"), false);
+});
+
+test("protect middleware rejects a malformed bearer token", async () => {
+  const response = responseRecorder();
+  let nextCalled = false;
+
+  await protect(
+    { headers: { authorization: "Bearer not-a-jwt" }, cookies: {} },
+    response,
+    () => { nextCalled = true; }
+  );
+
+  assert.equal(nextCalled, false);
+  assert.equal(response.statusCode, 401);
+  assert.equal(response.body.message, "Malformed authentication token.");
 });
