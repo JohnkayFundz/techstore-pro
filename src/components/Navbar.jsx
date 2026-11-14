@@ -8,7 +8,6 @@ import {
 import {
   NavLink,
   Link,
-  useLocation,
   useNavigate,
 } from "react-router-dom";
 
@@ -38,7 +37,6 @@ function Navbar() {
   const { user, logout } = useAuth();
   const { cart = [] } = useCart();
   const { wishlist = [] } = useWishlist();
-  const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const searchInputRef = useRef(null);
