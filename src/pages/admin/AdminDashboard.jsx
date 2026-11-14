@@ -225,8 +225,58 @@ function AdminDashboard() {
   // ==========================================================
 
   useEffect(() => {
-    loadDashboard();
-  }, [loadDashboard]);
+    let cancelled = false;
+    const loadInitialDashboard = async () => {
+      try {
+        const [dashboardResponse, analyticsResponse] = await Promise.all([
+          getDashboardStats(),
+          getSalesAnalytics(),
+        ]);
+        if (cancelled) return;
+        setError("");
+
+        if (!dashboardResponse?.success) {
+          throw new Error(dashboardResponse?.message || "Failed to load dashboard.");
+        }
+        const dashboard = dashboardResponse.stats || {};
+        setStats({
+          totalUsers: dashboard.totalUsers || 0,
+          totalProducts: dashboard.totalProducts || 0,
+          activeProducts: dashboard.activeProducts || 0,
+          inactiveProducts: dashboard.inactiveProducts || 0,
+          totalOrders: dashboard.totalOrders || 0,
+          pendingOrders: dashboard.pendingOrders || 0,
+          processingOrders: dashboard.processingOrders || 0,
+          shippedOrders: dashboard.shippedOrders || 0,
+          deliveredOrders: dashboard.deliveredOrders || 0,
+          cancelledOrders: dashboard.cancelledOrders || 0,
+          totalRevenue: dashboard.totalRevenue || 0,
+        });
+
+        if (!analyticsResponse?.success) {
+          throw new Error(analyticsResponse?.message || "Failed to load sales analytics.");
+        }
+        const analytics = analyticsResponse || {};
+        setSalesSummary(analytics.summary || {
+          totalRevenue: 0,
+          totalOrders: 0,
+          deliveredOrders: 0,
+          cancelledOrders: 0,
+          averageOrderValue: 0,
+        });
+        setSalesByDay(Array.isArray(analytics.salesByDay) ? analytics.salesByDay : []);
+        setTopProducts(Array.isArray(analytics.topProducts) ? analytics.topProducts : []);
+      } catch (loadError) {
+        if (cancelled) return;
+        console.error("Dashboard Error:", loadError);
+        setError(loadError.message || "Failed to load dashboard.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    loadInitialDashboard();
+    return () => { cancelled = true; };
+  }, []);
 
 
   // ==========================================================
