@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function ProductForm({
   initialValues,
@@ -6,6 +6,7 @@ function ProductForm({
   loading,
   submitText = "Save Product",
 }) {
+  const [previousInitialValues, setPreviousInitialValues] = useState(initialValues);
   const [form, setForm] = useState({
     name: "",
     brand: "",
@@ -19,14 +20,13 @@ function ProductForm({
     newArrival: false,
   });
 
-  useEffect(() => {
-    if (initialValues) {
-      setForm({
-        ...form,
-        ...initialValues,
-      });
-    }
-  }, [initialValues]);
+  if (initialValues && previousInitialValues !== initialValues) {
+    setPreviousInitialValues(initialValues);
+    setForm((previous) => ({
+      ...previous,
+      ...initialValues,
+    }));
+  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
