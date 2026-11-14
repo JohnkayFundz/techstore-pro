@@ -452,7 +452,8 @@ const restoreProducts = async () => {
         JSON.parse(backupText);
     } catch (error) {
       throw new Error(
-        `Invalid JSON in products-backup.json: ${error.message}`
+        `Invalid JSON in products-backup.json: ${error.message}`,
+        { cause: error }
       );
     }
 
