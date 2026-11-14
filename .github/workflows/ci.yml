@@ -20,9 +20,20 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
-        # npm install is temporary until the root manifest and lockfile are reconciled.
-        run: npm install --no-audit --no-fund
+      - name: Reconcile root lockfile with the manifest
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Verify clean root installation
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Upload generated root lockfile for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstore-pro-root-lockfile-candidate
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Lint all frontend and repository JavaScript
         run: npm run lint
