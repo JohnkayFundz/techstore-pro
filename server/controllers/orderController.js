@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import { isSupportedPaymentMethod } from "../utils/paymentMethods.js";
 
 /* ==========================================================
    CREATE ORDER
@@ -49,12 +50,7 @@ export const createOrder = async (req, res) => {
        VALIDATE PAYMENT METHOD
     -------------------------------------------------------- */
 
-    const allowedPaymentMethods = [
-      "cash",
-      "card",
-    ];
-
-    if (!allowedPaymentMethods.includes(paymentMethod)) {
+    if (!isSupportedPaymentMethod(paymentMethod)) {
       return res.status(400).json({
         success: false,
         message: "Invalid payment method.",
