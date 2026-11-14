@@ -5,7 +5,6 @@
 
 import {
   memo,
-  useEffect,
   useState,
 } from "react";
 
@@ -163,31 +162,18 @@ const ProductCard = ({ product }) => {
      IMAGE STATE
   ======================================================== */
 
-  const [imageSrc, setImageSrc] =
-    useState(
-      getProductImage(product)
-    );
-
-  const [imageError, setImageError] =
-    useState(false);
-
-  /* ========================================================
-     RESET IMAGE WHEN PRODUCT CHANGES
-  ======================================================== */
-
-  useEffect(() => {
-    setImageSrc(
-      getProductImage(product)
-    );
-
-    setImageError(false);
-  }, [
-    product?._id,
-    product?.id,
-    product?.image,
-    product?.imageUrl,
-    product?.images,
-  ]);
+  const [imageState, setImageState] = useState({ productId, src: getProductImage(product), error: false });
+  const imageMatchesProduct = imageState.productId === productId;
+  const imageSrc = imageMatchesProduct ? imageState.src : getProductImage(product);
+  const imageError = imageMatchesProduct ? imageState.error : false;
+  const updateImageState = (updates) => {
+    setImageState((previous) => ({
+      productId,
+      src: imageMatchesProduct ? previous.src : getProductImage(product),
+      error: imageMatchesProduct ? previous.error : false,
+      ...updates,
+    }));
+  };
 
   /* ========================================================
      SAFETY CHECK
@@ -210,15 +196,11 @@ const ProductCard = ({ product }) => {
       imageSrc ===
       PLACEHOLDER_IMAGE
     ) {
-      setImageError(true);
+      updateImageState({ error: true });
       return;
     }
 
-    setImageSrc(
-      PLACEHOLDER_IMAGE
-    );
-
-    setImageError(true);
+    updateImageState({ src: PLACEHOLDER_IMAGE, error: true });
   };
 
   /* ========================================================
