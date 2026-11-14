@@ -37,8 +37,6 @@ function OrderDetails() {
 
     try {
 
-      setLoading(true);
-
       setError("");
 
 
