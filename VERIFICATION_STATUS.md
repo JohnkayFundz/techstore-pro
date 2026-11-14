@@ -58,7 +58,7 @@ The preceding Node 20 run emitted an engine warning because the resolved `@capac
 
 - This was **not** a clean, cache-free install.
 - Vercel ran `npm install`, not `npm ci`; it does not establish that the committed root lockfile is reproducible.
-- The root manifest/lockfile mismatch remains: `package.json` declares `@capacitor/core` and `@capacitor/cli`, but the root lockfile root entry and package entries do not include them.
+- Historical note: the root manifest/lockfile mismatch was resolved on 2026-11-14. The regenerated root lockfile now contains `@capacitor/core` and `@capacitor/cli` (8.6.2) and matches the manifest; see the Run #128/#129 evidence below.
 - No `npm run lint` result was observed in this deployment.
 - No backend dependency installation, API startup, MongoDB connection, authentication, order workflow, Cloudinary upload, or AI integration test was run by this frontend deployment.
 - No end-to-end browser test, accessibility review, mobile-device review, security review, or production-readiness assessment was performed.
@@ -66,7 +66,7 @@ The preceding Node 20 run emitted an engine warning because the resolved `@capac
 
 ## Remaining release gates
 
-1. Reconcile root `package.json` and `package-lock.json` using npm in a real Node.js environment; inspect the resulting diff rather than hand-editing lockfile data.
+1. Keep root `package.json` and `package-lock.json` synchronized whenever dependencies change; the 2026-11-14 reconciliation and clean-install check passed.
 2. Run fresh, cache-free installs for both root and `server/` dependency trees.
 3. Run frontend lint and build from the clean checkout.
 4. Start the backend against a disposable MongoDB database and test core API flows.
@@ -105,7 +105,7 @@ The lint result passed without weakening ESLint rules or adding rule-suppression
 - **CI lint: PASS** (Run #122).
 - **CI frontend build: PASS** (Run #122).
 - **CI backend validation: PASS** (Run #122; limited to the workflow's dependency/syntax checks).
-- **Clean root installation / reproducibility: NOT VERIFIED** — root manifest and lockfile remain inconsistent for Capacitor dependencies; CI used `npm install`, not `npm ci`.
+- **Clean root installation / reproducibility: PASS** — the root lockfile was regenerated with npm, then `npm ci --ignore-scripts` passed in GitHub Actions Run #128 and #129. The verified lockfile was committed to the preparation branch only after lint and build succeeded.
 - **Clean backend install independent of CI cache: NOT VERIFIED**.
 - **Backend runtime and database integration: NOT VERIFIED**.
 - **Payment gateway integration: NOT IMPLEMENTED**.
@@ -114,3 +114,19 @@ The lint result passed without weakening ESLint rules or adding rule-suppression
 - **Paid publication: NOT AUTHORIZED**.
 
 The preparation branch remains a release candidate only. No merge to `main`, public release, storefront publication, or production deployment is implied by these checks.
+
+
+## Root lockfile reconciliation and clean-install verification — 2026-11-14
+
+The earlier Capacitor manifest/lockfile mismatch has been resolved on the preparation branch.
+
+- CI Run #128: [run 43623505751](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43623505751) generated a candidate lockfile using `npm install --package-lock-only --ignore-scripts --no-audit --no-fund`.
+- The candidate root lockfile includes `@capacitor/core` and `@capacitor/cli` at resolved version 8.6.2, and the root `packages[""]` dependency declarations now match `package.json`.
+- `npm ci --ignore-scripts --no-audit --no-fund`: **PASS** in Run #128.
+- Repository-wide `npm run lint`: **PASS** in Run #128.
+- Frontend `npm run build`: **PASS** in Run #128.
+- The generated candidate was uploaded as artifact `techstore-pro-root-lockfile-candidate` (artifact ID 14125056762; SHA-256 `4135a101d3b8e2edb04c4c7d8f423fcf11c366d7301064f2fb7c5161dd835f87`) and inspected. The verified lockfile was then committed to this preparation branch by the CI workflow after all checks passed.
+- CI Run #129: [run 43623584971](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43623584971) completed successfully. Backend `npm ci` and syntax validation, root lockfile regeneration, root `npm ci`, repository lint, and frontend build all passed. The workflow's final step committed the generated lockfile to the preparation branch.
+
+The lockfile reconciliation does not imply that third-party license clearance, backend runtime/database tests, full end-to-end testing, or paid-release approval are complete.
+
