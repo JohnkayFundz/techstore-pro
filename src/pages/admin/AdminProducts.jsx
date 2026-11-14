@@ -111,8 +111,33 @@ function AdminProducts() {
   // ==========================================================
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    let cancelled = false;
+    const loadInitialProducts = async () => {
+      try {
+        const result = await getAdminProducts();
+        if (cancelled) return;
+        setError("");
+        if (result?.success) {
+          const productList = result.data || result.products || [];
+          setProducts(Array.isArray(productList) ? productList : []);
+        } else {
+          const message = result?.message || "Failed to load products.";
+          setError(message);
+          showToast(message, "error");
+        }
+      } catch (loadError) {
+        if (cancelled) return;
+        console.error("Fetch Products Error:", loadError);
+        const message = loadError?.response?.data?.message || loadError?.message || "Error loading products.";
+        setError(message);
+        showToast(message, "error");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    loadInitialProducts();
+    return () => { cancelled = true; };
+  }, [showToast]);
 
 
   // ==========================================================
