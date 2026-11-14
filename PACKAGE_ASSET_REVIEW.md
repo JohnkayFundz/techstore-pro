@@ -30,16 +30,13 @@ This is not a legal clearance. Do not describe all artwork, logos, or catalog im
 
 ## 2A. Storefront demo claims and remotely hosted hero media
 
-The inspected `src/components/Hero.jsx` contains the following sample marketing statements:
+The inspected `src/components/Hero.jsx` previously contained unverified sample marketing claims. These were replaced on 2026-11-14 with explicit demo-store copy:
 
-- "30+ Products" and "15+ Brands".
-- "24/7 Support".
-- "Rated 4.9/5" / "Customer Rating".
-- "Free Shipping" and "UP TO 40% OFF".
-- "Secure Payment" / "100% protected checkout".
-- "nationwide delivery" and "Fast Delivery".
+- The hero now identifies the page as a demo storefront and tells buyers to replace sample catalog, pricing, delivery, payment, and support details.
+- Promotional and rating cards are labelled as demo content.
+- Delivery and payment feature text directs the buyer to configure real shipping terms and connect/verify a payment provider.
 
-These are unverified sample claims, not evidence of actual inventory, customer ratings, support coverage, discount terms, shipping policies, or payment security. Replace them with buyer-confirmed information before a buyer deploys a real store or before screenshots are used to market the starter kit.
+The sample text still needs buyer-specific customization before deployment. Do not use demo content as a factual claim about a real business.
 
 The same hero component hotlinks a technology photograph from Unsplash (`images.unsplash.com/photo-1518770660439-4636190af475`). It is not a locally bundled image. Do not promise that this external image will remain available; verify its applicable use terms and replace it with buyer-owned media for a real store.
 
@@ -66,7 +63,7 @@ For the first commercial archive:
 - Trace the provenance and license/brand permissions for `hero.png`, `favicon.svg`, `icons.svg`, and all non-placeholder media. Replace unverified hero claims and confirm the remote Unsplash image terms/availability.
 - Confirm whether the `gifs/` and `scripts/capture-frames.cjs` files are referenced by the application.
 - Verify that frontend and backend seed records remain consistent and that all seeded catalog values are clearly identified as examples.
-- Complete the clean install, lint, backend runtime, and functional test gates in `VERIFICATION_STATUS.md`.
+- Clean root/backend installs, full dependency audits, repository lint, frontend build, backend syntax, and four upload-helper unit tests passed in Run #142. Backend runtime, MongoDB/API integration, and end-to-end functional tests remain outstanding.
 
 ## Decision
 
