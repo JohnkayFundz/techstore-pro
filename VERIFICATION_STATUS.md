@@ -232,3 +232,10 @@ These are controller/middleware and database integration tests, not full browser
 - Documentation-only runs #168–#171 also completed successfully as their respective commits landed.
 
 This still does not verify live Cloudinary uploads, browser end-to-end flows, or a payment provider. Cash on delivery remains the only supported method. Asset/trademark rights, complete third-party notices, final commercial license, and the exact customer archive remain unresolved; release stays **HOLD**.
+
+
+## Neutral storefront artwork update — 2026-11-14
+
+On the preparation branch, the hero now uses a locally bundled original abstract technology illustration; the page and web-app manifest use a new neutral TechStore mark; and the active SVG icon sprite replaces recognizable Bluesky, Discord, GitHub, and X marks with neutral geometric/profile/document symbols. The previous favicon and icon sprite are preserved in `public/reference-assets/` for reference. The original external hero hotlink is no longer referenced by `src/components/Hero.jsx`.
+
+This closes only the specific hero/favicon/social-brand-artwork substitution task. It does not clear `src/assets/hero.png`, React/Vite project marks, numbered GIF frames, product/demo media, third-party package licenses, or commercial redistribution terms. Full source-reference and visual asset review remain outstanding. Run a fresh GitHub Actions workflow on the updated branch before treating the change as technically verified. Release remains **HOLD**; no merge, production deployment, publication, or customer archive is authorized.
