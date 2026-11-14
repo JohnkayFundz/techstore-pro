@@ -29,9 +29,9 @@ export function ProductProvider({ children }) {
      FETCH PRODUCTS
   ======================================================== */
 
-  const fetchProducts = useCallback(async (params = {}) => {
+  const fetchProducts = useCallback(async (params = {}, { showLoading = true } = {}) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       setError("");
 
       const response = await getProducts(params);
@@ -107,10 +107,7 @@ export function ProductProvider({ children }) {
   ======================================================== */
 
   useEffect(() => {
-    fetchProducts({
-      page: 1,
-      limit: 10,
-    });
+    fetchProducts({ page: 1, limit: 10 }, { showLoading: false });
   }, [fetchProducts]);
 
   /* ========================================================
