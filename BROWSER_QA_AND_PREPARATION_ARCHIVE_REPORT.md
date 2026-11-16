@@ -45,7 +45,7 @@ A source-only archive was created from the tested commit using `git archive`:
 - Contents: 382 tracked files
 - Uncompressed contents: 2,764,539 bytes
 - ZIP integrity check: passed (`unzip -t`, no compressed-data errors)
-- SHA-256: `ef916e4a3deb19db3e4b1d8b3fb78964bc0a4d5fcb3c05008c6494fe91a4497c92`
+- SHA-256: `ef916e4a3deb19db8d3fb78964bc0a4d5fcb3c05008c6494fe91a4497c92`
 - Git metadata and installed `node_modules` are not included.
 - Only environment templates (`.env.example`, `server/.env.example`) are included; no populated `.env` file was found in the archive.
 
