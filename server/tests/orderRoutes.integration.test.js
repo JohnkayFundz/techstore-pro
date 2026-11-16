@@ -45,7 +45,7 @@ const register = async (name, email) => {
 
   assert.equal(response.status, 201);
   const cookie = response.headers.get("set-cookie") || "";
-  const token = cookie.match(/(?:^|;\\s*)token=([^;]+)/)?.[1];
+  const token = cookie.match(/(?:^|;\s*)token=([^;]+)/)?.[1];
 
   assert.ok(token, "registration should issue an HTTP-only auth cookie");
   return { token: decodeURIComponent(token), body: await response.json() };
