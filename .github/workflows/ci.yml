@@ -3,7 +3,7 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    branches: [main, product/paid-starter-kit-preparation]
+    branches: [main, product/paid-starter-kit-preparation, qa/customer-e2e]
   pull_request:
     branches: [main, product/paid-starter-kit-preparation]
 
