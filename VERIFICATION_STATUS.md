@@ -313,3 +313,25 @@ This Vercel build is not a substitute for the full GitHub Actions job. The lates
 The CI workflow's push trigger targets both `main` and this preparation branch. The validation job performs root and server clean installs, high-severity dependency audits, repository lint, frontend build, backend tests, and syntax checks. Its lockfile reconciliation/auto-commit step is restricted to successful pushes on the preparation branch.
 
 **Release decision remains HOLD.** The code is not cleared for customer delivery until browser E2E, isolated Cloudinary verification, full asset provenance/redistribution review, complete third-party notices, final owner/legal licence approval, and an inspected customer archive are complete. No merge to `main`, production deployment, paid publication, or payment activation is authorized by this verification record.
+
+
+## Exact-commit GitHub Actions result — 2026-11-16
+
+GitHub Actions **Run #196** ([run 43913908114](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43913908114)) ran on push for exact preparation-branch commit `f14fb8f84e5ff492917556caacd1b558de64c40c` and completed **SUCCESS**.
+
+All job steps completed successfully:
+- Root lockfile reconciliation and compatible audit-fix pass.
+- Root clean install (`npm ci --ignore-scripts --no-audit --no-fund`).
+- Root dependency audit: **0 vulnerabilities**.
+- Repository-wide ESLint (`npm run lint`): **PASS**, with no rule weakening or suppressions introduced by this work.
+- Frontend Vite production build: **PASS**, 1,952 modules transformed.
+- Server lockfile reconciliation and compatible audit-fix pass.
+- Server clean install.
+- Server dependency audit: **0 vulnerabilities**.
+- Backend unit tests: **17 passed, 0 failed**.
+- Backend syntax checks: **PASS**.
+- Verified lockfile artifact upload: **PASS**; the workflow confirmed lockfiles already matched manifests and audit fixes, so no additional lockfile commit was needed.
+
+Non-failing maintenance warnings remain in the logs: Node.js 20 deprecation notices for the pinned GitHub Actions v4 actions (runner forced Node 24), plus dependency deprecation notices for `punycode` and legacy `url.parse()` behavior. These did not fail the job and should be addressed in a later CI-maintenance change after checking compatible action versions.
+
+This run closes the previously open exact-commit CI verification gate for `f14fb8f`. It does not close browser-based end-to-end/accessibility testing, live Cloudinary testing, full asset provenance/redistribution review, complete third-party notices, final commercial licence review, or customer archive inspection. **Release remains HOLD.**
