@@ -18,8 +18,10 @@ test.beforeEach(async ({ page }) => {
   page.on("requestfailed", (request) => console.error("[browser requestfailed]", request.method(), request.url(), request.failure()?.errorText));
 
   // All API traffic is stubbed: no database, credentials, payment, or live service.
-  await page.route("**/api/**", async (route) => {
+  await page.route("**/*", async (route) => {
     const url = new URL(route.request().url());
+    // Only mock backend API URLs. A broad **/api/** matcher also catches Vite source modules under /src/api/.
+    if (!url.pathname.startsWith("/api/")) return route.continue();
     if (url.pathname.endsWith("/settings")) {
       return route.fulfill({
         status: 200,
