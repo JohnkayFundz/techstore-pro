@@ -282,3 +282,15 @@ The previously authorized neutral artwork substitution is recorded as complete o
 - Marketplace eligibility and listing requirements.
 
 **Decision: HOLD.** The current preview is reachable and its key static assets return HTTP 200, but the current commit lacks a confirmed matching CI run and the commercial/legal delivery gates remain open. No merge to `main`, production deployment, public publication, or paid release is authorized or performed.
+
+
+### Follow-up after this verification record was committed
+
+The verification refresh itself was committed on the preparation branch as `1b3255bc8b5e972e28f08122b5978f6c5912702c`. Vercel automatically created a new preview deployment for that exact commit:
+
+- Deployment: `dpl_BrHxKV3re9p2QaywQnq1ztnKKtTc`
+- Preview URL: `https://techstore-l5370d272-deejayjohnkay-1047s-projects.vercel.app`
+- Vercel state: **READY**; the GitHub Vercel status context is **SUCCESS**.
+- HTTP checks against this deployment: storefront document, `/favicon.svg`, and `/manifest.webmanifest` each returned **200 OK**. The HTML and manifest both reference the neutral `/techstore-mark.svg`.
+
+No GitHub Actions workflow run was returned for this documentation commit. The last fully inspected GitHub Actions run remains #190 on `c3435ac`; therefore a fresh Actions pass for current HEAD `1b3255b` is still unverified. The successful Vercel preview build/status is not a substitute for the full CI workflow.
