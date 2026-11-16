@@ -63,7 +63,7 @@ test("storefront renders and primary navigation opens the catalogue", async ({ p
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /technology,/i })).toBeVisible();
   await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "Products" }).click();
-  await expect(page).toHaveURL(/\\/products$/);
+  await expect(page).toHaveURL((url) => url.pathname === "/products");
   await expect(page.getByRole("heading", { name: "TechStore Products" })).toBeVisible();
 });
 
@@ -90,12 +90,12 @@ test("empty cart offers a route back to shopping", async ({ page }) => {
   await page.goto("/cart");
   await expect(page.getByRole("heading", { name: /shopping cart/i })).toBeVisible();
   await page.getByRole("link", { name: "Continue Shopping" }).click();
-  await expect(page).toHaveURL(/\\/products$/);
+  await expect(page).toHaveURL((url) => url.pathname === "/products");
   await expect(page.getByRole("heading", { name: "TechStore Products" })).toBeVisible();
 });
 
 test("protected checkout redirects a guest to sign in", async ({ page }) => {
   await page.goto("/checkout");
-  await expect(page).toHaveURL(/\\/login$/);
+  await expect(page).toHaveURL((url) => url.pathname === "/login");
   await expect(page.getByRole("heading", { name: "Welcome Back" })).toBeVisible();
 });
