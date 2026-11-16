@@ -6,7 +6,6 @@ import {
   FiChevronRight,
   FiSearch,
   FiX,
-  FiShield,
   FiTruck,
   FiHeadphones,
   FiAward,
@@ -177,10 +176,10 @@ const Home = () => {
 
       <section className="home-value-strip" aria-label="Shopping benefits" data-reveal>
         <div className="home-container home-value-strip__grid">
-          <div><FiShield aria-hidden="true" /><span><strong>Secure</strong> checkout</span></div>
-          <div><FiTruck aria-hidden="true" /><span><strong>Reliable</strong> delivery</span></div>
+          <div><FiLayers aria-hidden="true" /><span><strong>Order</strong> management</span></div>
+          <div><FiTruck aria-hidden="true" /><span><strong>Delivery</strong> options</span></div>
           <div><FiAward aria-hidden="true" /><span><strong>Curated</strong> quality</span></div>
-          <div><FiHeadphones aria-hidden="true" /><span><strong>Human</strong> support</span></div>
+          <div><FiHeadphones aria-hidden="true" /><span><strong>Support</strong> details</span></div>
         </div>
       </section>
 
