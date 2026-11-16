@@ -335,3 +335,37 @@ All job steps completed successfully:
 Non-failing maintenance warnings remain in the logs: Node.js 20 deprecation notices for the pinned GitHub Actions v4 actions (runner forced Node 24), plus dependency deprecation notices for `punycode` and legacy `url.parse()` behavior. These did not fail the job and should be addressed in a later CI-maintenance change after checking compatible action versions.
 
 This run closes the previously open exact-commit CI verification gate for `f14fb8f`. It does not close browser-based end-to-end/accessibility testing, live Cloudinary testing, full asset provenance/redistribution review, complete third-party notices, final commercial licence review, or customer archive inspection. **Release remains HOLD.**
+
+
+## Final preparation-branch verification refresh — 2026-11-16
+
+### CI after checkout-claim correction
+
+- Run #198: [43914202382](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43914202382), commit `bffe359da207f473890bed534a30c7a0d2ce07f2` — **SUCCESS**.
+- Run #199: [43914207613](https://github.com/JohnkayFundz/techstore-pro/actions/runs/43914207613), commit `ae63ed1304bedd3d8833aff69aa1ff8a87f6b1cf` — **SUCCESS**.
+
+Both runs completed every configured job step: root and server lockfile reconciliation, root and server clean installs, both dependency audits, repository-wide ESLint, frontend build, backend tests (17 passed / 0 failed), backend syntax checks, and lockfile artifact upload. The workflow confirmed lockfiles already matched manifests and audit fixes. No ESLint rules were weakened.
+
+### Storefront claim correction
+
+The active home page previously described the order flow as “Secure checkout” and “Reliable delivery”, claims not established by the current product because no payment gateway or fulfilment service is integrated. On the preparation branch these labels now read “Order management”, “Delivery options”, and “Support details”. The page metadata now describes product discovery, order placement, and order management without implying secure payment processing. The frontend lint/build and backend CI checks passed after these changes.
+
+### Latest preview
+
+- Source commit: `ae63ed1304bedd3d8833aff69aa1ff8a87f6b1cf`.
+- Preview: `https://techstore-q6tlbt305-deejayjohnkay-1047s-projects.vercel.app`.
+- Vercel deployment: `dpl_BpzyycMURVetqdFm4149dVD8z78u` — **READY**, target is preview (not production).
+- HTTP checks: storefront document, main bundle, home-page lazy bundle, main stylesheet, neutral TechStore icon, and web manifest all returned **200 OK**.
+- The built home-page bundle contains the corrected order/delivery/support labels and no longer contains the “Secure checkout” claim.
+- Sample seed catalog uses the local placeholder product image; this does not establish rights for every other repository image or GIF.
+
+### Remaining blockers and limits
+
+- No real-browser automation or desktop/mobile/accessibility journey was run in this connector session; HTTP delivery checks are not browser E2E tests.
+- Live Cloudinary verification remains blocked until isolated test credentials and a disposable test environment are available.
+- The complete provenance and redistribution review for all image/GIF assets, original references, sample media, and third-party marks remains open.
+- The package-license inventory is preliminary; exact third-party licence texts and notices for the distributable archive still need completion.
+- The commercial licence remains a draft requiring the seller's final business decisions and qualified legal review.
+- The exact customer source archive has not been assembled, inspected, checksummed, and extraction-tested.
+
+**Decision: RELEASE HOLD.** The latest source has passing CI and a READY preview, but the remaining browser, credentialed integration, intellectual-property, legal, and packaging gates prevent an honest commercial-release sign-off. No merge to `main`, production deployment, paid publication, or payment activation was performed.
