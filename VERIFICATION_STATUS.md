@@ -294,3 +294,22 @@ The verification refresh itself was committed on the preparation branch as `1b32
 - HTTP checks against this deployment: storefront document, `/favicon.svg`, and `/manifest.webmanifest` each returned **200 OK**. The HTML and manifest both reference the neutral `/techstore-mark.svg`.
 
 No GitHub Actions workflow run was returned for this documentation commit. The last fully inspected GitHub Actions run remains #190 on `c3435ac`; therefore a fresh Actions pass for current HEAD `1b3255b` is still unverified. The successful Vercel preview build/status is not a substitute for the full CI workflow.
+
+
+## Verification continuation — 2026-11-16
+
+The preparation branch CI workflow now includes a `workflow_dispatch` trigger in addition to its existing push and pull-request triggers. The change was committed as `ec98605d6d235cb48db4333edf746252f630bed1`. This makes manual dispatch available in the GitHub Actions UI; the connected GitHub actions tools available in this session do not expose a workflow-dispatch operation.
+
+A Vercel preview was created for that exact commit:
+- Preview URL: `https://techstore-4m5wch101-deejayjohnkay-1047s-projects.vercel.app`
+- Deployment: `dpl_38KHYyFXCokrybNyaEi5Gv64CPPA`
+- Build state: **READY**.
+- Build log: Vite 8.3.8 transformed 1,952 modules and completed the frontend build successfully.
+- HTTP checks: `/`, `/techstore-mark.svg`, `/manifest.webmanifest`, the main JavaScript bundle, and the main stylesheet returned **200 OK**.
+- The HTML and manifest both reference `/techstore-mark.svg`. The Vercel fallback `/favicon.svg` may still serve Vercel's default artwork, but it is not referenced by the storefront HTML or manifest.
+
+This Vercel build is not a substitute for the full GitHub Actions job. The latest exact-commit Actions result has not yet been independently retrieved; Run #190 on `c3435ac` remains the latest fully inspected Actions evidence in this record. Do not claim that Run #190 verifies `ec98605`.
+
+The CI workflow's push trigger targets both `main` and this preparation branch. The validation job performs root and server clean installs, high-severity dependency audits, repository lint, frontend build, backend tests, and syntax checks. Its lockfile reconciliation/auto-commit step is restricted to successful pushes on the preparation branch.
+
+**Release decision remains HOLD.** The code is not cleared for customer delivery until browser E2E, isolated Cloudinary verification, full asset provenance/redistribution review, complete third-party notices, final owner/legal licence approval, and an inspected customer archive are complete. No merge to `main`, production deployment, paid publication, or payment activation is authorized by this verification record.
