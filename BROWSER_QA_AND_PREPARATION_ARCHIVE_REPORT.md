@@ -124,3 +124,12 @@ The browser test intentionally stopped before submitting an order. It did not cr
 The isolated browser QA is a meaningful improvement over the earlier frontend-only smoke test: the local frontend now ran against a working disposable backend/database, and the guest, registration, catalogue, search, product detail, cart, and checkout-form paths were exercised. It does not close the remaining hosted integration, Cloudinary, legal, or release-package gates.
 
 **Release decision: HOLD.** No application code was changed by this addendum. No changes were made to `main`, production, payment configuration, or public release state.
+
+
+### CI and preview verification for this addendum
+
+- GitHub Actions Run #207 (ID `43921863672`) completed successfully against this addendum's source commit `9588607e4c25d4d6e2b7e080eb2059edb4c21334`.
+- All workflow steps passed: root/backend clean installation, dependency audits, ESLint, frontend build, backend tests, syntax validation, lockfile artifact upload, and lockfile commit step.
+- Run: https://github.com/JohnkayFundz/techstore-pro/actions/runs/43921863672
+- Vercel deployment for commit `9588607e4c25d4d6e2b7e080eb2059edb4c21334` reached `READY`; its homepage and web manifest both returned HTTP 200 through the authenticated Vercel fetch.
+- This preview deployment is delivery verification only; protected browser E2E against the deployed preview remains open.
