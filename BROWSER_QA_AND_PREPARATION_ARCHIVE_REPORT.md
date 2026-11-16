@@ -53,7 +53,7 @@ This is a **preparation archive only**. It has not been released or supplied as 
 
 ## Remaining release gates
 
-1. Browser E2E against a deployed, access-controlled preview with a disposable test backend/database; cover authentication, catalogue, search/filter, cart, checkout/COD, order management and admin workflows.
+1. Complete browser E2E against the deployed, access-controlled preview with an isolated hosted test backend/database; cover order submission and lifecycle, admin workflows, and confirm parity with the isolated local tests below.
 2. Resolve and test Cloudinary integration with isolated disposable credentials.
 3. Complete provenance and redistribution-rights review for all images, GIFs, fonts, icons and brand/trademark references.
 4. Complete third-party licence notices and verify the final package contents.
@@ -73,3 +73,54 @@ A separate rerun of the backend test suite inside the disposable Vercel sandbox 
 The application-code HEAD covered by Run #202 is `564a300abbe7c498e65058492b236cff8dbefa3d`. The subsequent commits `41ccab75da836840e54cdf0744c61f238d9bb532` and `e259342aa2f113987857518965e659d94945a59a` update this report only; they do not change application code. Run #205 (ID `43919063713`) completed successfully against final documentation commit `26fb8a36d482e02b1e35a5b088d5986b3b337870`; all job steps passed, including lint, build, audits, backend tests and syntax checks. Run: https://github.com/JohnkayFundz/techstore-pro/actions/runs/43919063713.
 
 **Release decision: HOLD.** No changes were made to `main`, production, payment configuration, or public release state.
+
+
+## Isolated full-stack browser QA addendum — 2026-11-16
+
+An isolated, disposable full-stack test environment was assembled inside the Vercel sandbox. This is additional test evidence and does not change the release decision.
+
+### Test environment
+
+- Backend: the repository's Express application, running locally in the sandbox.
+- Database: a one-node `MongoMemoryReplSet` replica set; ephemeral and discarded with the sandbox process.
+- Seed data: 12 repository sample products.
+- Frontend: a fresh Vite production build with `VITE_API_URL` pointed to the isolated local API at `/api`.
+- Browser: Playwright Chromium.
+- Test-only JWT secret and test customer accounts were created inside the disposable sandbox. No production credentials, external database, Cloudinary credentials, or live payment services were used.
+
+### Browser results
+
+The integrated frontend and API were exercised at desktop (1440 px), tablet (820 px), and mobile (390 px) widths.
+
+All three viewports:
+- Homepage returned HTTP 200 and rendered the expected title and heading.
+- Product catalogue rendered 10 product cards.
+- Product and settings API requests returned HTTP 200.
+- No horizontal overflow was detected.
+- No uncaught browser page errors or failed network requests were observed.
+- No product-loading, network, route-not-found, or connection-error state appeared.
+
+The initial `GET /api/auth/me` returned HTTP 401 while the browser was unauthenticated; this is the expected guest response, not a failed catalogue request.
+
+### Functional paths verified
+
+- Test customer registration returned HTTP 201; authenticated customer identity appeared in the site header after reload.
+- Product list API returned HTTP 200 with 12 seeded products.
+- Product search for `iPad` returned HTTP 200 and the matching `iPad Pro M4` item.
+- Category filtering for `Laptops` returned HTTP 200 and matching laptop records.
+- The `iPad Pro M4` product detail route rendered the expected product details.
+- Adding the product to the cart updated the cart; the cart page displayed one item and the expected total.
+- The checkout page rendered the delivery form fields (full name, phone, address, city, state, country) and the supported Cash on Delivery option.
+
+The browser test intentionally stopped before submitting an order. It did not create an order, charge money, or change any external system. Existing backend automated tests separately exercise order transaction/stock handling and cash-on-delivery lifecycle behavior. This browser run does not claim full order submission, customer order-history, or admin-workflow E2E coverage.
+
+### Remaining integration limitations
+
+- The deployed Vercel preview is still only verified for successful HTTP delivery of the homepage and web manifest. Its protected browser route redirects direct Playwright navigation to Vercel authentication, so the deployed preview has not received full browser E2E coverage.
+- Cloudinary credentials were absent in the isolated environment; the application logged the expected missing-configuration warning. Live upload integration remains unverified.
+- No real payment gateway is integrated; the available checkout method remains Cash on Delivery.
+- Full asset provenance, redistribution rights, third-party licence notices, and legal review remain open.
+
+The isolated browser QA is a meaningful improvement over the earlier frontend-only smoke test: the local frontend now ran against a working disposable backend/database, and the guest, registration, catalogue, search, product detail, cart, and checkout-form paths were exercised. It does not close the remaining hosted integration, Cloudinary, legal, or release-package gates.
+
+**Release decision: HOLD.** No application code was changed by this addendum. No changes were made to `main`, production, payment configuration, or public release state.
