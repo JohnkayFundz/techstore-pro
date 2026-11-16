@@ -9,11 +9,18 @@ const jsxParserOptions = { ecmaFeatures: { jsx: true } }
 export default defineConfig([
   globalIgnores(['dist']),
   {
-    files: ['server/**/*.{js,jsx}', 'scripts/**/*.{js,jsx}', '*.config.{js,mjs}'],
+    files: ['server/**/*.{js,jsx}', 'scripts/**/*.{js,jsx,cjs}', '*.config.{js,mjs}'],
     extends: [js.configs.recommended],
     languageOptions: {
       globals: globals.node,
       parserOptions: jsxParserOptions,
+    },
+  },
+  {
+    files: ['public/sw.js'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      globals: globals.serviceworker,
     },
   },
   {
