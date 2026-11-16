@@ -11,6 +11,12 @@ const emptyProducts = {
 };
 
 test.beforeEach(async ({ page }) => {
+  page.on("pageerror", (error) => console.error("[browser pageerror]", error.stack || error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") console.error("[browser console]", message.text());
+  });
+  page.on("requestfailed", (request) => console.error("[browser requestfailed]", request.method(), request.url(), request.failure()?.errorText));
+
   // All API traffic is stubbed: no database, credentials, payment, or live service.
   await page.route("**/api/**", async (route) => {
     const url = new URL(route.request().url());
@@ -47,11 +53,17 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test.afterEach(async ({ page }) => {
+  console.log("[browser diagnostic] URL:", page.url());
+  console.log("[browser diagnostic] title:", await page.title().catch(() => "<unavailable>"));
+  console.log("[browser diagnostic] body:", (await page.locator("body").innerText().catch(() => "<unavailable>")).slice(0, 1200));
+});
+
 test("storefront renders and primary navigation opens the catalogue", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /technology,/i })).toBeVisible();
   await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "Products" }).click();
-  await expect(page).toHaveURL(/\/products$/);
+  await expect(page).toHaveURL(/\\/products$/);
   await expect(page.getByRole("heading", { name: "TechStore Products" })).toBeVisible();
 });
 
@@ -78,12 +90,12 @@ test("empty cart offers a route back to shopping", async ({ page }) => {
   await page.goto("/cart");
   await expect(page.getByRole("heading", { name: /shopping cart/i })).toBeVisible();
   await page.getByRole("link", { name: "Continue Shopping" }).click();
-  await expect(page).toHaveURL(/\/products$/);
+  await expect(page).toHaveURL(/\\/products$/);
   await expect(page.getByRole("heading", { name: "TechStore Products" })).toBeVisible();
 });
 
 test("protected checkout redirects a guest to sign in", async ({ page }) => {
   await page.goto("/checkout");
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\\/login$/);
   await expect(page.getByRole("heading", { name: "Welcome Back" })).toBeVisible();
 });
