@@ -45,7 +45,7 @@ A source-only archive was created from the tested commit using `git archive`:
 - Contents: 382 tracked files
 - Uncompressed contents: 2,764,539 bytes
 - ZIP integrity check: passed (`unzip -t`, no compressed-data errors)
-- SHA-256: `ef916e4a3deb19db4e1b8d3fb78964bc0a4d5fcb3c05008c6494fe91a4497c92`
+- SHA-256: `ef916e4a3deb19db3e4b1d8b3fb78964bc0a4d5fcb3c05008c6494fe91a4497c92`
 - Git metadata and installed `node_modules` are not included.
 - Only environment templates (`.env.example`, `server/.env.example`) are included; no populated `.env` file was found in the archive.
 
@@ -59,5 +59,17 @@ This is a **preparation archive only**. It has not been released or supplied as 
 4. Complete third-party licence notices and verify the final package contents.
 5. Finalize the owner-approved commercial licence and obtain qualified legal review.
 6. Produce a customer archive only after the above gates, then perform clean extraction, setup, smoke and checksum verification.
+
+## Verification addendum — latest branch HEAD
+
+The preparation branch advanced to `564a300abbe7c498e65058492b236cff8dbefa3d` (documentation-only report commit). GitHub Actions Run #202 then completed successfully against that exact HEAD:
+- Run ID: `43917596780`; run number: #202; event: push; result: `success`.
+- Job: `Clean install, security audit, lint, build and backend tests`.
+- All job steps passed, including clean installs, root and backend dependency audits, ESLint, frontend build, backend tests and backend syntax validation.
+- Run: https://github.com/JohnkayFundz/techstore-pro/actions/runs/43917596780
+
+A separate rerun of the backend test suite inside the disposable Vercel sandbox also passed: 17 tests, 17 passed, 0 failed, 0 skipped. Coverage included Cloudinary upload-helper behavior (mocked, not a live Cloudinary account), order transactions/stock handling against an in-memory replica-set test database, authentication, and cash-on-delivery payment lifecycle rules. No Docker executable was available in that sandbox, and no disposable deployed backend/database credentials were configured, so this did not close the browser E2E or live Cloudinary gates.
+
+The latest branch HEAD remains `564a300abbe7c498e65058492b236cff8dbefa3d` as of this addendum. No application code was changed by this addendum.
 
 **Release decision: HOLD.** No changes were made to `main`, production, payment configuration, or public release state.
