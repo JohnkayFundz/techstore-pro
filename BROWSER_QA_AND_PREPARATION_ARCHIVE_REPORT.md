@@ -70,6 +70,6 @@ The preparation branch advanced to `564a300abbe7c498e65058492b236cff8dbefa3d` (d
 
 A separate rerun of the backend test suite inside the disposable Vercel sandbox also passed: 17 tests, 17 passed, 0 failed, 0 skipped. Coverage included Cloudinary upload-helper behavior (mocked, not a live Cloudinary account), order transactions/stock handling against an in-memory replica-set test database, authentication, and cash-on-delivery payment lifecycle rules. No Docker executable was available in that sandbox, and no disposable deployed backend/database credentials were configured, so this did not close the browser E2E or live Cloudinary gates.
 
-The latest branch HEAD remains `564a300abbe7c498e65058492b236cff8dbefa3d` as of this addendum. No application code was changed by this addendum.
+The application-code HEAD covered by Run #202 is `564a300abbe7c498e65058492b236cff8dbefa3d`. The subsequent commits `41ccab75da836840e54cdf0744c61f238d9bb532` and `e259342aa2f113987857518965e659d94945a59a` update this report only; they do not change application code. Run #204 was triggered for the final documentation commit and was queued at the time this report was updated.
 
 **Release decision: HOLD.** No changes were made to `main`, production, payment configuration, or public release state.
