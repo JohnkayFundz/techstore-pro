@@ -1,7 +1,7 @@
 {
   "name": "TechStore Pro",
   "short_name": "TechStore Pro",
-  "description": "A modern electronics store with secure checkout, product discovery, and order management.",
+  "description": "A modern electronics store for product discovery, order placement, and order management.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
