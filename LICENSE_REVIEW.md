@@ -72,9 +72,16 @@ Verify exact package-version license files and preserve any package copyright/pr
 Exact package: https://unpkg.com/victory-vendor@37.3.6/package.json  
 Upstream project: https://github.com/FormidableLabs/victory
 
-The package declares the compound expression `MIT AND ISC`. Both license texts and relevant vendored D3 component notices/attributions must be checked and preserved. Do not collapse this to MIT-only.
+The package lockfile declares the compound expression `MIT AND ISC`. Separately, `LICENSE_SOURCE_REGISTER.md` records an additional `BSD-3-Clause` obligation for vendored components based on its upstream review. These statements are not necessarily contradictory, but the archive-specific package metadata, actual vendored component files, and retained notices must be reconciled so that the final notice set covers every applicable component license. Do not collapse this to MIT-only or assume the lockfile expression captures every vendored component obligation.
 
-## 4. Remaining work before distribution
+## 4. Documentation reconciliation required
+
+- [ ] For `victory-vendor@37.3.6`, reconcile the package metadata expression `MIT AND ISC` with the additional `BSD-3-Clause` vendored-component obligation recorded in `LICENSE_SOURCE_REGISTER.md`; inspect the exact package contents and confirm all applicable texts/attributions are present in the final archive-specific notices.
+- [ ] Inspect CI notice-collection artifact `14354280618` from run #252 and reconcile it with the current tracked dependency lockfiles and the exact buyer archive. The reported 296 production entries / 0 unresolved collector entries is collection evidence only, not human or legal clearance.
+- [ ] Reconcile the `THIRD-PARTY-NOTICES.md` summary against the collected artifact; do not treat the summary's pending copyright-header column as proof that the collector failed, or the collector's zero-unresolved result as proof that human review passed.
+- [ ] Recheck `ASSET_PROVENANCE_REGISTER.md` against the current QA branch tree before packaging; its reviewed source commit is an earlier snapshot and the register itself requires a current-head verification.
+
+## 5. Remaining work before distribution
 
 - [ ] Retrieve and compare exact-version upstream LICENSE/COPYING/NOTICE files for all 582 lockfile records, including MIT, ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause packages.
 - [ ] Resolve package-level notices and copyright holders for vendored or bundled code, especially `victory-vendor`.
@@ -83,6 +90,6 @@ The package declares the compound expression `MIT AND ISC`. Both license texts a
 - [ ] Generate a final archive-specific notices bundle and verify that every included dependency is represented.
 - [ ] Have the final distribution terms reviewed by qualified counsel.
 
-## 5. Release gate
+## 6. Release gate
 
 This register is an engineering compliance aid, not legal advice or a legal opinion. The lockfile SPDX inventory plus the two retained MIT texts do not establish complete legal clearance. **Commercial release remains HOLD.** Do not merge to `main`, deploy production, publish a paid listing, or distribute a buyer archive while the archive-specific notice review and other release gates remain open.
