@@ -1,3 +1,26 @@
+## Current verification snapshot — 2026-11-17
+
+The current QA branch verification snapshot supersedes historical records below.
+
+- Branch: `qa/customer-e2e`
+- Verified commit: `b80769f1475faaa2303905d78eb5091a324a63e3`
+- GitHub Actions Run #230: [44126982219](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44126982219) — **SUCCESS**.
+- Root/backend clean installs and dependency audits: **PASS**.
+- Repository lint and frontend build: **PASS**.
+- Chromium Playwright E2E: **PASS** (4 tests).
+- Backend tests: **21/21 PASS**.
+- Backend syntax checks and lockfile artifact upload: **PASS**.
+- Root lockfile now contains `@playwright/test@1.65.1`; the previous manifest/lockfile mismatch is resolved on this branch.
+- CI confirmed backend lockfile already matches its manifest and audit fixes.
+- The QA Vercel preview for this exact commit is READY with preview target; this is not a production deployment.
+- The current main branch remains `4713a3506ba64036b16768a3713bc4956d000fb4`; no merge or production change was made.
+- Exact-version upstream MIT license texts for `busboy@1.6.0` and `streamsearch@1.1.0` are now retained in `licenses/`. Complete dependency notices/legal review remain outstanding.
+- No buyer-machine clean install, real Cloudinary upload, final archive extraction/checksum review, or final commercial/legal sign-off has been completed.
+
+**Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD.** See `RELEASE_READINESS.md` for the current blockers and restrictions.
+
+---
+
 # TechStore Pro — Verification Status
 
 **Review date:** 2026-11-16  
