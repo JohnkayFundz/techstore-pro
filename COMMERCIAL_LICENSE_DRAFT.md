@@ -10,7 +10,11 @@ Product: TechStore Pro source-code starter kit. This license covers only origina
 
 ## 2. Proposed buyer usage rights
 
-After valid purchase, the buyer receives a non-exclusive license to download and retain the source, install, run, study and modify the covered original materials, and use them to build and operate **one end product**: one commercial or internal storefront/web application for the buyer or for one named client. Reasonable backup, development and staging copies for that same end product are permitted. The license does not authorize multi-tenant SaaS resale, white-label template redistribution, or deployment across multiple independent storefronts; each additional end product requires a separate license.\n\nThe buyer may provide temporary source access to employees and third-party contractors solely to build, customize or maintain the permitted end product, provided each person is bound by written confidentiality and non-redistribution obligations. On completion of their work, those individuals must delete their source copies and cease access, except for any copy strictly required by law. Neither the buyer nor any helper may resell, sublicense, open-source, publish in a public repository, or redistribute the raw or modified source as a standalone template, starter kit or competing product.\n\nWhere the buyer obtained the license to deliver the permitted end product to one named client, the buyer may transfer the license to that client at project handover, provided the client accepts the license terms and the buyer retains no source copies for future use. This client-transfer provision is limited to that single end product and remains subject to applicable third-party license terms.
+After valid purchase, the buyer receives a non-exclusive license to download and retain the source, install, run, study and modify the covered original materials, and use them to build and operate **one end product**: one commercial or internal storefront/web application for the buyer or for one named client. Reasonable backup, development and staging copies for that same end product are permitted. The license does not authorize multi-tenant SaaS resale, white-label template redistribution, or deployment across multiple independent storefronts; each additional end product requires a separate license.
+
+The buyer may provide temporary source access to employees and third-party contractors solely to build, customize or maintain the permitted end product, provided each person is bound by written confidentiality and non-redistribution obligations. On completion of their work, those individuals must delete their source copies and cease access, except for any copy strictly required by law. Neither the buyer nor any helper may resell, sublicense, open-source, publish in a public repository, or redistribute the raw or modified source as a standalone template, starter kit or competing product.
+
+Where the buyer obtained the license to deliver the permitted end product to one named client, the buyer may transfer the license to that client at project handover, provided the client accepts the license terms and the buyer retains no source copies for future use. This client-transfer provision is limited to that single end product and remains subject to applicable third-party license terms.
 
 ## 3. Restrictions
 
@@ -18,7 +22,11 @@ Unless separately authorized in writing, the buyer may not resell, sublicense, r
 
 ## 4. Ownership and third-party rights
 
-The licensor retains rights in original materials they own. The buyer retains rights in independently created content, data and branding to the extent permitted by law. Third-party software and assets are not relicensed by this agreement. No statement in this draft establishes ownership of any asset without evidence.
+**Seller ownership representation — confirmed by seller:** The seller represents that all original TechStore Pro source code, application architecture, custom UI components and bespoke SVG/graphic assets included in the seller-created work were created exclusively by the seller, with sole ownership and commercial licensing rights, and that no third-party proprietary code or unauthorized contributor work is knowingly included in those original materials. This representation applies only to the seller's original work; it does not replace item-level provenance checks or grant rights in third-party materials.
+
+Third-party libraries, fonts, icons, media and other external assets remain subject to their own licenses and are not relicensed by this agreement. Their exact notices, attribution, source and redistribution conditions must be verified against the actual release package and recorded in `THIRD-PARTY-NOTICES.md` and the Asset Provenance Register before distribution. The seller's ownership confirmation is a recorded seller statement, not an independent legal or forensic audit.
+
+The licensor retains rights in original materials they own. The buyer retains rights in independently created content, data and branding to the extent permitted by law. No statement in this draft establishes ownership of any third-party asset without evidence.
 
 ## 5. Support, defect fixes and external services
 
@@ -50,6 +58,6 @@ Warranty disclaimers, limitation of liability, indemnity, termination, governing
 - Update policy approved by seller: 30 days of defect fixes for reproducible defects in the unmodified delivered version affecting documented core storefront or checkout functionality, subject to the scope and exclusions in section 5. New features, major framework/runtime upgrades and post-window compatibility patches require a separate agreement or paid upgrade.
 - Refund policy approved in principle by seller: proposed 14-calendar-day request window and conditions in section 6, always subject to mandatory marketplace rules and non-waivable statutory rights. Refund-related license termination and deletion obligations remain subject to legal review.
 - Select governing law and dispute process with legal advice.
-- Complete exact dependency notices and asset clearance for the delivered archive.
+- Seller confirmed sole creation and commercial rights in original TechStore Pro code, architecture, custom UI and bespoke graphics; recorded as a seller representation in section 4. Independent third-party dependency and asset provenance clearance remains outstanding.
 
 **Release gate:** do not attach this draft to a paid download until the seller confirms all business terms and obtains appropriate legal review.
