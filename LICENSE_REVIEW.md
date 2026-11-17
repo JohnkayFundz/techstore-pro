@@ -2,7 +2,7 @@
 
 ## Automated notice-collection update — 2026-11-17
 
-The QA CI notice collector now recursively gathers package license/notice files and complete README license sections, with exact-version source handling recorded in `LICENSE_SOURCE_REGISTER.md`. Run #252 produced `THIRD-PARTY-NOTICES.md` with **296 production dependency entries and 0 unresolved collector entries**. The workflow uploaded review artifact ID `14354280618` (run #252).
+The QA CI notice collector recursively gathers package license/notice files and complete README license sections, with exact-version source handling recorded in `LICENSE_SOURCE_REGISTER.md`. Run #252 produced a full `THIRD-PARTY-NOTICES.md` collection with **296 production dependency entries and 0 unresolved collector entries**. I downloaded and inspected artifact `14354280618`: it contains the generated 319,855-byte notice bundle and `notice-generation.log`, whose output confirms 296 entries and 0 unresolved. The generated bundle includes package copyright/notice headers, individual license texts and nested vendor license files, and ends with the `<!-- RELEASE-NOTICES-COMPLETE -->` sentinel.
 
 This is a collection-completeness result for the production dependency scope, not proof that every license was legally interpreted or every attribution/source obligation satisfied. Human review of the collected texts, archive-specific applicability, the MPL-2.0/CC-BY/BlueOak/Unlicense/0BSD and compound-license obligations, and qualified legal review remain mandatory. The seller must still decide the exact archive contents. Do not describe the automated report as blanket commercial clearance.
 
@@ -72,12 +72,12 @@ Verify exact package-version license files and preserve any package copyright/pr
 Exact package: https://unpkg.com/victory-vendor@37.3.6/package.json  
 Upstream project: https://github.com/FormidableLabs/victory
 
-The package lockfile declares the compound expression `MIT AND ISC`. Separately, `LICENSE_SOURCE_REGISTER.md` records an additional `BSD-3-Clause` obligation for vendored components based on its upstream review. These statements are not necessarily contradictory, but the archive-specific package metadata, actual vendored component files, and retained notices must be reconciled so that the final notice set covers every applicable component license. Do not collapse this to MIT-only or assume the lockfile expression captures every vendored component obligation.
+The lockfile's package metadata declares `MIT AND ISC`. The run #252 generated notice bundle reports the effective expression as `MIT AND ISC AND BSD-3-Clause` and includes nested D3 vendor license files. This aligns with the additional `BSD-3-Clause` obligation recorded in `LICENSE_SOURCE_REGISTER.md`. The exact buyer archive still needs confirmation that the same vendored files are included and that all applicable texts/attributions are preserved. Do not collapse this to MIT-only or assume the lockfile expression captures every vendored component obligation.
 
 ## 4. Documentation reconciliation required
 
 - [ ] For `victory-vendor@37.3.6`, reconcile the package metadata expression `MIT AND ISC` with the additional `BSD-3-Clause` vendored-component obligation recorded in `LICENSE_SOURCE_REGISTER.md`; inspect the exact package contents and confirm all applicable texts/attributions are present in the final archive-specific notices.
-- [ ] Inspect CI notice-collection artifact `14354280618` from run #252 and reconcile it with the current tracked dependency lockfiles and the exact buyer archive. The reported 296 production entries / 0 unresolved collector entries is collection evidence only, not human or legal clearance.
+- [x] Downloaded and inspected CI notice-collection artifact `14354280618` from run #252. It contains 296 production entries, 0 unresolved collector entries, full collected package license/notice material, nested vendor notices and the completion sentinel. This verifies the artifact's collection output only; it does not establish that every file belongs in the buyer archive or provide legal clearance. Exact archive-to-artifact reconciliation remains open.
 - [ ] Reconcile the `THIRD-PARTY-NOTICES.md` summary against the collected artifact; do not treat the summary's pending copyright-header column as proof that the collector failed, or the collector's zero-unresolved result as proof that human review passed.
 - [ ] Recheck `ASSET_PROVENANCE_REGISTER.md` against the current QA branch tree before packaging; its reviewed source commit is an earlier snapshot and the register itself requires a current-head verification.
 
