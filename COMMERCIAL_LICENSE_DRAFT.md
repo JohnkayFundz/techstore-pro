@@ -22,7 +22,7 @@ The licensor retains rights in original materials they own. The buyer retains ri
 
 ## 5. Support, updates and external services
 
-Unless separately agreed in writing, purchase includes no hosting, domain, database, email, payment processing, Cloudinary, AI/API usage, installation, customization, deployment, maintenance, support, future updates or compatibility guarantee. The current demo checkout is not a promise of card-payment processing. Any payment provider requires separate configuration, integration and server-side verification.
+Purchase includes **30 days of basic installation and setup support** from the date of purchase. This support is limited to helping the buyer install and configure the unmodified product in a supported environment. It excludes custom development, hosting, domains, databases, email, payment processing, Cloudinary, AI/API usage, bespoke deployment work, ongoing maintenance, third-party service support, future updates and compatibility guarantees unless separately agreed in writing. The current demo checkout is not a promise of card-payment processing. Any payment provider requires separate configuration, integration and server-side verification.
 
 ## 6. Refund terms — proposed policy for seller review
 
@@ -36,7 +36,7 @@ Warranty disclaimers, limitation of liability, indemnity, termination, governing
 
 - Confirm legal registration status, contracting capacity, address and support contact.
 - Confirm one-end-product scope and contractor access.
-- Set support duration, response scope and update policy.
+- Support duration confirmed by seller: 30 days of basic installation and setup support. Custom development, hosting and ongoing maintenance are excluded. Confirm the final response channel, response hours and update policy before publication.
 - Confirm refund window and process against marketplace rules and applicable law.
 - Select governing law and dispute process with legal advice.
 - Complete exact dependency notices and asset clearance for the delivered archive.
