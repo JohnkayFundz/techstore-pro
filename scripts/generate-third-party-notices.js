@@ -10,7 +10,7 @@ const scopes = [
   { name: "backend", base: path.join(root, "server"), lock: path.join(root, "server", "package-lock.json") },
 ];
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
-const isLicenseFile = (name) => /^(licen[cs]e|copying|notice|copyright)(\\.|$)/i.test(name);
+const isLicenseFile = (name) => /^(licen[cs]e|copying|notice|copyright)(\.|$)/i.test(name);
 const entries = [];
 const unresolved = [];
 
@@ -33,7 +33,7 @@ for (const scope of scopes) {
     const texts = files.map((file) => ({ file, text: fs.readFileSync(path.join(packageDir, file), "utf8").trim() })).filter((x) => x.text);
     const copyright = [...new Set([
       ...(manifest.author ? [typeof manifest.author === "string" ? manifest.author : JSON.stringify(manifest.author)] : []),
-      ...texts.flatMap(({ text }) => text.split(/\\r?\\n/).slice(0, 12).filter((line) => /copyright/i.test(line))),
+      ...texts.flatMap(({ text }) => text.split(/\r?\n/).slice(0, 12).filter((line) => /copyright/i.test(line))),
     ])];
     if (!texts.length) unresolved.push(`${scope.name}:${lockPath}: no LICENSE/COPYING/NOTICE file found`);
     entries.push({
@@ -80,6 +80,6 @@ if (unresolved.length) {
 } else {
   lines.push("<!-- RELEASE-NOTICES-COMPLETE -->", "");
 }
-fs.writeFileSync(path.join(root, "THIRD-PARTY-NOTICES.md"), lines.join("\\n"), "utf8");
+fs.writeFileSync(path.join(root, "THIRD-PARTY-NOTICES.md"), lines.join("\n"), "utf8");
 console.log(`Wrote THIRD-PARTY-NOTICES.md: ${entries.length} production package entries; ${unresolved.length} unresolved.`);
 if (unresolved.length) process.exitCode = 2;
