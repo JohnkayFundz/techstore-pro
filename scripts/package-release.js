@@ -51,7 +51,6 @@ try {
   const manifestPath = path.join(backend, "package.json");
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   if (!manifest.dependencies || Object.keys(manifest.dependencies).length === 0) fail("Backend production dependencies are not declared.");
-  delete manifest.devDependencies;
   delete manifest.scripts?.dev;
   delete manifest.scripts?.test;
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\\n");
