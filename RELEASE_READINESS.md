@@ -3,8 +3,8 @@
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD**  
 **Reviewed:** 2026-11-17  
 **Branch:** `qa/customer-e2e`  
-**Verified source commit:** `b80769f1475faaa2303905d78eb5091a324a63e3`  
-**GitHub Actions:** Run #230 — `44126982219` — SUCCESS  
+**Latest QA branch commit:** `ae44d1e00e707f0ee98152e1bf5b1661587b0542` (license-review documentation only)\n**Latest completed technical CI commit:** `3523faf5154dfb6f40f1e3b0b0210da5f2414f2c`  
+**GitHub Actions:** Run #231 — `44127313661` — SUCCESS on `3523faf`; no new workflow run was triggered for documentation-only commit `ae44d1e`  
 **Production/main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` (unchanged)
 
 This record supersedes earlier stale status summaries in this file. Historical notes elsewhere in the repository are retained as history and must not be treated as current state.
@@ -24,7 +24,7 @@ This record supersedes earlier stale status summaries in this file. Historical n
 - [x] QA Vercel preview for this exact commit is READY; target is preview (`target: null`), not production.
 - [x] Main branch remains unchanged at `4713a3506ba64036b16768a3713bc4956d000fb4`.
 
-Run #230: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44126982219
+Run #231: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127313661\n\nThe follow-up license-review documentation commit is on the QA branch, but its own workflow status is not yet verified. The successful CI result above applies to its parent code commit.
 
 ## Asset and demo-content status
 
@@ -36,9 +36,9 @@ Run #230: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44126982219
 
 ## Third-party license status
 
-- `THIRD-PARTY-NOTICES.md` records lockfile SPDX metadata for the root and backend dependency trees.
+- `THIRD-PARTY-NOTICES.md` records lockfile SPDX metadata for the root and backend dependency trees.\n- `LICENSE_REVIEW.md` now records the focused nonstandard/compound license inventory and key obligations: 12 MPL-2.0 entries, one CC-BY-4.0 entry, 12 BlueOak entries, two Unlicense entries, two 0BSD entries, and one MIT AND ISC entry. This is a partial review, not final legal clearance.
 - The exact-version upstream MIT license texts for `busboy@1.6.0` and `streamsearch@1.1.0` were verified against their upstream tags and retained in `licenses/`.
-- This resolves those two missing-modern-SPDX-metadata cases only.
+- This resolves those two missing-modern-SPDX-metadata cases only. The focused review register now records special handling for the nonstandard/compound groups, but exact-version notices and file-level applicability remain outstanding for the complete dependency set.
 - Exact upstream notices and package-specific obligations for the complete dependency set are not yet collated/reviewed. Particular attention remains due for MPL-2.0 Lightning CSS packages, CC-BY-4.0 `caniuse-lite`, BlueOak, Unlicense, 0BSD, compound expressions, and any package-specific notices/attributions.
 - Prefer a source-plus-lockfiles delivery with buyer-side dependency installation. Do not include `node_modules` until its exact contents and all required notices/source obligations are verified.
 - A metadata table and two retained license texts are not a complete legal notice package.
