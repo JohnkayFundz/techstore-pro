@@ -1,3 +1,41 @@
+# CURRENT STATUS OVERRIDE — 2026-11-17 (supersedes the historical snapshot below)
+
+**Decision: QA FUNCTIONAL CHECKS PASS / SECURITY AND COMMERCIAL RELEASE HOLD**  
+**QA branch head reviewed:** `a4e05234edd6bfd383053ac2389725248f61d21f`  
+**Latest CI:** Run #252 — `44138866044` — overall FAILED only at the enforced root high-severity security gate.  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — verified unchanged.
+
+## Current verified results
+
+- Root clean install, lint, Vite production build, Chromium installation and all 4 Playwright browser tests passed.
+- Backend clean install, backend security audit (0 vulnerabilities), syntax checks and all 21 backend tests passed.
+- Independent third-party notice collection completed: 296 production package entries, 0 unresolved collector entries. This is a completed automated collection, not human/legal clearance.
+- Vercel deployment for this exact QA commit is READY as a preview (`target: null`); it is not a production deployment.
+- The only failing CI gate is the root dependency audit: 5 high-severity audit findings are reported against one installed `picomatch@4.0.7` package path.
+
+## Security investigation — picomatch
+
+The current root lockfile places `picomatch@4.0.7` under development dependencies. Its recorded dependency path is `vite` / `tinyglobby` / `fdir`; the backend `server/package-lock.json` contains no picomatch package. This reduces exposure in the shipped application runtime but does not make the build-tool vulnerability disappear or justify suppressing the security gate.
+
+The advisory is GHSA-fc5q-39xc-vjpf / CVE-2026-112366 (ReDoS via single-branch repeated extglobs). GitHub's advisory still reports affected and patched version ranges as unknown. The upstream proposed fix, picomatch PR #237, is still OPEN and unmerged as of this review; it has no released fixed package version. An earlier PR #240 was closed without merge. The upstream PR #237 is therefore evidence of active remediation work, not a released dependency that this project can safely claim to have installed.
+
+CI's suggested `npm audit fix --force` would replace the declared Vite 8 line with Vite 6.2.7, a breaking downgrade. It was not applied. No vulnerable-code override, audit suppression, gate bypass, or unverified fork patch has been introduced. Keep the final security gate enforced until an official fixed release or a fully reviewed, tested, maintainable remediation is available.
+
+## Remaining release blockers
+
+1. Root build-tool security finding remains open; obtain and validate an official fixed picomatch release or a separately reviewed safe dependency path.
+2. Automated third-party notices are collected, but package-specific legal review and archive-specific obligations remain open.
+3. `COMMERCIAL_LICENSE_DRAFT.md` remains unapproved; seller decisions and qualified legal review are required.
+4. Independent buyer-machine archive extraction, clean installation, configuration and customer/admin smoke testing have not been executed.
+5. Genuine Cloudinary upload verification requires a dedicated non-production account and securely configured test credentials.
+6. No final customer archive or checksum has been created; catalogue, identity, content and distribution decisions still require seller confirmation.
+
+## Safety disposition
+
+No merge, main update, production deployment, production data/configuration mutation, buyer archive, marketplace publication, or live payment activation has occurred. Cash on delivery remains the only verified payment method. Keep this project on HOLD.
+
+---
+
 # TechStore Pro — Current Release Readiness
 
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD**  
