@@ -56,8 +56,8 @@ function Hero() {
               <div className="stat-card">
                 <FiBox className="stat-icon" />
                 <div>
-                  <h3>30+</h3>
-                  <span>Products</span>
+                  <h3>Demo</h3>
+                  <span>Sample Catalog</span>
                 </div>
               </div>
 
@@ -141,7 +141,7 @@ function Hero() {
 
             {/* Rating Card */}
             <div className="rating-card">
-              <div className="rating-stars">★★★★★</div>
+              <div className="rating-stars">DEMO</div>
               <h3>Demo</h3>
               <span>Replace with verified reviews</span>
             </div>
