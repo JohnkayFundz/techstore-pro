@@ -37,6 +37,10 @@ No package is deemed legally cleared solely because a lockfile declares an SPDX 
 
 All counts are lockfile records, not counts of files copied into a buyer archive. Platform-specific optional packages are listed because they are locked; actual installation and archive contents may differ.
 
+## 2B. Notice-register snapshot discrepancy
+
+The downloaded run #252 artifact is the authoritative output of the current collector for that run: its package table contains collected copyright/header information and its full-text section contains the package license/notice files. The currently tracked `THIRD-PARTY-NOTICES.md` at this QA branch snapshot is not identical to that artifact: its 296 table rows still say "Not yet extracted from exact upstream license file" and its introductory text says the table is only a summary. The current generator source, `scripts/generate-third-party-notices.js`, emits actual `entry.copyright` values in that column and full license texts below. Therefore, the tracked summary appears stale relative to the inspected artifact/generator and must be regenerated from the exact QA lockfiles and installed package contents, then committed and compared against CI output. Do not mark this reconciliation complete until the generated tracked file and artifact agree by content or documented deterministic differences.
+
 ## 2A. Production versus development-only special-license scope
 
 A direct inspection of the committed root and backend lockfiles at the reviewed QA snapshot confirms that the special-license groups below are not all runtime dependencies:
