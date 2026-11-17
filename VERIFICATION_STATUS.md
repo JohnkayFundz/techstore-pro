@@ -1,8 +1,9 @@
-## Current verification snapshot — 2026-11-17 (refreshed after Run #235)
+## Current verification snapshot — 2026-11-17 (refreshed after Run #236)
 
 - Branch: `qa/customer-e2e`
-- Latest QA branch HEAD at this refresh: `711800ede24f68c7d46d49eb082fb58644233562`
-- GitHub Actions Run #235: [44129232519](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44129232519) — **SUCCESS** on exact branch HEAD `711800ede24f68c7d46d49eb082fb58644233562`.
+- Latest QA branch HEAD at this refresh: `ff3625f8d799daad50d77f928287d5a1fe100f51`
+- GitHub Actions Run #236: [44131168536](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131168536) — **SUCCESS** on exact branch HEAD `ff3625f8d799daad50d77f928287d5a1fe100f51` (all 39 workflow steps passed).
+- Run #235: [44129232519](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44129232519) — **SUCCESS** on `711800e`.
 - Run #233: [44127942696](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127942696) — **SUCCESS** on commit `1cc09a2a91591fe23351de3344afc0b1cded77f8`.
 - GitHub Actions Run #232: [44127887960](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127887960) — **SUCCESS** on commit `ae44d1e00e707f0ee98152e1bf5b1661587b0542`.
 - Root/backend clean installs and dependency audits: **PASS**.

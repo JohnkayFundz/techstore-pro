@@ -3,17 +3,16 @@
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD**  
 **Reviewed:** 2026-11-17  
 **Branch:** `qa/customer-e2e`  
-**Latest QA branch commit at this review:** `711800ede24f68c7d46d49eb082fb58644233562`
-**Latest completed CI:** Run #235 — `44129232519` — SUCCESS on exact QA HEAD `711800e`  
-**GitHub Actions:** Run #235 — `44129232519` — SUCCESS on `711800e`  
+**Latest QA branch commit at this review:** `ff3625f8d799daad50d77f928287d5a1fe100f51`
+**Latest completed CI:** Run #236 — `44131168536` — SUCCESS on exact QA HEAD `ff3625f`  
+**GitHub Actions:** Run #236 — `44131168536` — SUCCESS on `ff3625f`  
 **Production/main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` (unchanged)
 
 This record supersedes earlier stale status summaries in this file. Historical notes elsewhere in the repository are retained as history and must not be treated as current state.
 
-## Verified on the current QA commit (Run #235)
+## Verified on the current QA commit (Run #236)
 
-- [x] Latest exact-HEAD CI Run #235 completed successfully on `711800ede24f68c7d46d49eb082fb58644233562`. The workflow job completed with conclusion `success`.
-- [x] This supersedes the prior #233 status reference for this QA snapshot.
+- [x] Latest exact-HEAD CI Run #236 completed successfully on `ff3625f8d799daad50d77f928287d5a1fe100f51`. All 39 workflow steps completed successfully, including root/backend clean installs, high-severity audits, lint, frontend build, Chromium installation, four Playwright tests, backend tests, syntax checks, lockfile artifact upload, and lockfile commit step.
 
 ## Verified on the current QA commit
 
@@ -29,6 +28,8 @@ This record supersedes earlier stale status summaries in this file. Historical n
 - [x] Verified lockfile artifact uploaded; CI confirmed lockfiles already match manifests and audit fixes.
 - [x] QA Vercel preview for this exact commit is READY; target is preview (`target: null`), not production.
 - [x] Main branch remains unchanged at `4713a3506ba64036b16768a3713bc4956d000fb4`.
+
+Run #236: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131168536
 
 Run #235: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44129232519
 
