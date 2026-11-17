@@ -3,18 +3,18 @@
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD**  
 **Reviewed:** 2026-11-17  
 **Branch:** `qa/customer-e2e`  
-**Latest QA branch commit at this review:** `ff3625f8d799daad50d77f928287d5a1fe100f51`
-**Latest completed CI:** Run #236 — `44131168536` — SUCCESS on exact QA HEAD `ff3625f`  
-**GitHub Actions:** Run #236 — `44131168536` — SUCCESS on `ff3625f`  
+**Latest QA branch commit at this review:** `b4a0a754b132116e3d592fac2f145e41296e5ffa`
+**Latest completed CI:** Run #237 — `44131455385` — SUCCESS on exact QA HEAD `b4a0a75`  
+**GitHub Actions:** Run #237 — `44131455385` — SUCCESS on `b4a0a75`  
 **Production/main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` (unchanged)
 
 This record supersedes earlier stale status summaries in this file. Historical notes elsewhere in the repository are retained as history and must not be treated as current state.
 
-## Verified on the current QA commit (Run #236)
+## Verified on the current QA commit (Run #237)
 
-- [x] Latest exact-HEAD CI Run #236 completed successfully on `ff3625f8d799daad50d77f928287d5a1fe100f51`. All 39 workflow steps completed successfully, including root/backend clean installs, high-severity audits, lint, frontend build, Chromium installation, four Playwright tests, backend tests, syntax checks, lockfile artifact upload, and lockfile commit step.
+- [x] Latest exact-HEAD CI Run #237 completed successfully on `b4a0a754b132116e3d592fac2f145e41296e5ffa`. All 39 workflow steps completed successfully, including root/backend clean installs, high-severity audits, lint, frontend build, Chromium installation, four Playwright tests, backend tests, syntax checks, lockfile artifact upload, and lockfile commit step.
 
-## Verified on the current QA commit
+## Verified on the QA preparation line (revalidated by Run #237)
 
 - [x] Root dependency lockfile reconciled with the manifest; committed `package-lock.json` contains `@playwright/test@1.65.1`, satisfying the declared `^1.61.1` range.
 - [x] Backend lockfile reconciliation completed; CI confirmed no backend lockfile changes were needed.
@@ -28,6 +28,8 @@ This record supersedes earlier stale status summaries in this file. Historical n
 - [x] Verified lockfile artifact uploaded; CI confirmed lockfiles already match manifests and audit fixes.
 - [x] QA Vercel preview for this exact commit is READY; target is preview (`target: null`), not production.
 - [x] Main branch remains unchanged at `4713a3506ba64036b16768a3713bc4956d000fb4`.
+
+Run #237: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131455385
 
 Run #236: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131168536
 
