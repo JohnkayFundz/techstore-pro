@@ -46,18 +46,26 @@ Subject to mandatory law and marketplace rules, the seller proposes that the pol
 
 If a refund is issued, the proposed condition is that the buyer's license to use the covered materials terminates and the buyer ceases use and deletes copies under their control, including deployed copies, to the extent legally permissible. Treatment of derivative works, backups and legally required retention must be confirmed by qualified legal review before publication.
 
-## 7. Warranties, liability, termination and governing law
+## 7. Governing law and dispute resolution — proposed, subject to legal review
 
-Warranty disclaimers, limitation of liability, indemnity, termination, governing law, venue, dispute resolution and consumer-rights clauses must be drafted or reviewed by a qualified lawyer for the seller's and buyer's jurisdictions. This draft is not final enforceable wording.
+The seller proposes that this agreement be governed by and construed in accordance with the laws of the **Federal Republic of Nigeria**, without regard to conflict-of-law principles.
 
-## 8. Seller decisions required
+The parties should first attempt to resolve any dispute arising out of or relating to this license through good-faith negotiation for **14 days** after written notice of the dispute. If unresolved, the seller proposes submission to the exclusive jurisdiction of the competent courts in **Lagos State, Nigeria**, subject always to mandatory consumer-protection laws, non-waivable statutory rights and binding marketplace dispute-resolution rules that preserve or grant a buyer a different mandatory venue or remedy.
+
+If a provision is held unenforceable under applicable non-waivable consumer legislation in the buyer's jurisdiction, the parties intend that provision to be modified only to the minimum extent necessary to make it enforceable, where legally permitted, without invalidating the remainder of the agreement. This severability wording must not be used to reduce mandatory consumer protections.
+
+## 8. Warranties, liability and termination — legal drafting required
+
+Warranty disclaimers, limitation of liability, indemnity, termination, governing law, venue, dispute resolution and consumer-rights clauses must be drafted or reviewed by a qualified Nigerian legal practitioner, with advice on cross-border sales and buyer jurisdictions. This draft is not final enforceable wording.
+
+## 9. Seller decisions and publication requirements
 
 - Confirm legal registration status, contracting capacity, address and support contact.
 - One-end-product scope, confidential employee/contractor assistance, post-completion copy deletion, source non-redistribution and one-time named-client handover approved by seller in principle; see section 2. Legal review and third-party license compatibility remain required.
 - Support duration confirmed by seller: 30 days of basic installation and setup support. Custom development, hosting and ongoing maintenance are excluded. Confirm the final response channel, response hours and update policy before publication.
 - Update policy approved by seller: 30 days of defect fixes for reproducible defects in the unmodified delivered version affecting documented core storefront or checkout functionality, subject to the scope and exclusions in section 5. New features, major framework/runtime upgrades and post-window compatibility patches require a separate agreement or paid upgrade.
 - Refund policy approved in principle by seller: proposed 14-calendar-day request window and conditions in section 6, always subject to mandatory marketplace rules and non-waivable statutory rights. Refund-related license termination and deletion obligations remain subject to legal review.
-- Select governing law and dispute process with legal advice.
+- Governing law and dispute-resolution approach approved in principle: Nigeria law; 14-day good-faith negotiation; proposed competent-court venue in Lagos State; statutory and marketplace carve-outs and severability as set out in section 7. Qualified legal review remains mandatory.
 - Seller confirmed sole creation and commercial rights in original TechStore Pro code, architecture, custom UI and bespoke graphics; recorded as a seller representation in section 4. Independent third-party dependency and asset provenance clearance remains outstanding.
 
 **Release gate:** do not attach this draft to a paid download until the seller confirms all business terms and obtains appropriate legal review.
