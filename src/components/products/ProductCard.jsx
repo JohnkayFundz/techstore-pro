@@ -28,7 +28,7 @@ import "./ProductCard.css";
 ========================================================== */
 
 const PLACEHOLDER_IMAGE =
-  "/placeholder-product.png";
+  "/placeholder-product.svg";
 
 /* ==========================================================
    SAFE IMAGE URL

@@ -19,11 +19,11 @@ import "./ProductGallery.css";
    LOCAL FALLBACK IMAGE
 
    File:
-   public/placeholder-product.png
+   public/placeholder-product.svg
 ========================================================== */
 
 const FALLBACK_IMAGE =
-  "/placeholder-product.png";
+  "/placeholder-product.svg";
 
 /* ==========================================================
    GET PRODUCT ID

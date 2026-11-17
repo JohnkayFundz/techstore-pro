@@ -190,6 +190,13 @@ const seedProducts = async () => {
   try {
     await connectDB();
 
+    if (process.argv.includes('--clear-demo')) {
+      const result = await Product.deleteMany({ sku: /^DEMO-/ });
+      console.log(`Removed ${result.deletedCount} demo catalog item(s).`);
+      await mongoose.connection.close();
+      process.exit(0);
+    }
+
     console.log("");
     console.log("==========================================");
     console.log("       TECHSTORE PRO SAFE SEEDER");
