@@ -10,7 +10,19 @@ const scopes = [
   { name: "backend", base: path.join(root, "server"), lock: path.join(root, "server", "package-lock.json") },
 ];
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
-const isLicenseFile = (name) => /^(licen[cs]e|copying|notice|copyright)(\.|$)/i.test(name);
+const isLicenseFile = (name) => /(^|[-_.])(licen[cs]e|copying|notice|copyright)([-_.]|$)/i.test(name);
+const findLicenseFiles = (dir, relative = "", depth = 0) => {
+  if (depth > 10) return [];
+  const found = [];
+  for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (item.isSymbolicLink() || item.name === "node_modules" || item.name === ".git") continue;
+    const rel = path.join(relative, item.name);
+    const absolute = path.join(dir, item.name);
+    if (item.isFile() && isLicenseFile(item.name)) found.push({ absolute, relative: rel });
+    else if (item.isDirectory()) found.push(...findLicenseFiles(absolute, rel, depth + 1));
+  }
+  return found.sort((a, b) => a.relative.localeCompare(b.relative));
+};
 const entries = [];
 const unresolved = [];
 
@@ -29,13 +41,14 @@ for (const scope of scopes) {
       unresolved.push(`${scope.name}:${lockPath}: expected ${locked.version}, found ${manifest.version}`);
       continue;
     }
-    const files = fs.readdirSync(packageDir).filter(isLicenseFile).sort();
-    const texts = files.map((file) => ({ file, text: fs.readFileSync(path.join(packageDir, file), "utf8").trim() })).filter((x) => x.text);
+    const files = findLicenseFiles(packageDir);
+    const texts = files.map(({ absolute, relative }) => ({ file: relative.split(path.sep).join("/"), rootLevel: !relative.includes(path.sep), text: fs.readFileSync(absolute, "utf8").trim() })).filter((x) => x.text);
+    const rootTexts = texts.filter((x) => x.rootLevel);
     const copyright = [...new Set([
       ...(manifest.author ? [typeof manifest.author === "string" ? manifest.author : JSON.stringify(manifest.author)] : []),
       ...texts.flatMap(({ text }) => text.split(/\r?\n/).slice(0, 12).filter((line) => /copyright/i.test(line))),
     ])];
-    if (!texts.length) unresolved.push(`${scope.name}:${lockPath}: no LICENSE/COPYING/NOTICE file found`);
+    if (!rootTexts.length) unresolved.push(`${scope.name}:${lockPath}: no package-root LICENSE/COPYING/NOTICE file found (nested notices, if any, are included for review)`);
     entries.push({
       scope: scope.name,
       name: manifest.name || lockPath.split("node_modules/").pop(),
@@ -53,7 +66,7 @@ const lines = [
   "",
   unresolved.length ? "**STATUS: INCOMPLETE — DO NOT DISTRIBUTE.**" : "**STATUS: COMPLETE COLLECTION — human/legal review still required.**",
   "",
-  "Generated from the exact root and backend npm lockfiles and matching installed package contents. This collection is not legal advice or a legal clearance opinion.",
+  "Generated from the exact root and backend npm lockfiles and matching installed package contents. License/notice files are recursively collected within each package, while a missing package-root license remains unresolved. Nested vendor notices do not replace the package own-license requirement. This collection is not legal advice or a legal clearance opinion.",
   "",
   `Production package entries: ${entries.length}. Unresolved entries: ${unresolved.length}.`,
   "",
