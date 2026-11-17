@@ -30,12 +30,14 @@ jobs:
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
       - name: Apply compatible root dependency security fixes
+        continue-on-error: true
         run: npm audit fix --package-lock-only --no-fund
 
       - name: Verify clean root installation
         run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Audit all root dependencies
+        continue-on-error: true
         run: npm audit --audit-level=high
 
       - name: Lint all frontend and repository JavaScript
@@ -55,6 +57,7 @@ jobs:
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
       - name: Apply compatible backend dependency security fixes
+        continue-on-error: true
         working-directory: server
         run: npm audit fix --package-lock-only --no-fund
 
@@ -81,6 +84,7 @@ jobs:
           retention-days: 7
 
       - name: Audit all backend dependencies
+        continue-on-error: true
         working-directory: server
         run: npm audit --audit-level=high
 
@@ -101,6 +105,17 @@ jobs:
             server/package-lock.json
           if-no-files-found: error
           retention-days: 7
+
+      - name: Enforce high-severity security gate after validation
+        run: |
+          root_status=0
+          backend_status=0
+          npm audit --audit-level=high || root_status=$?
+          (cd server && npm audit --audit-level=high) || backend_status=$?
+          if [ "$root_status" -ne 0 ] || [ "$backend_status" -ne 0 ]; then
+            echo "Security gate remains blocked: root status=$root_status, backend status=$backend_status"
+            exit 1
+          fi
 
       - name: Commit verified lockfiles
         if: success() && github.event_name == 'push' && (github.ref == 'refs/heads/product/paid-starter-kit-preparation' || github.ref == 'refs/heads/qa/customer-e2e')
