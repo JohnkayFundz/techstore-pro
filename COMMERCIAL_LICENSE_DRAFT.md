@@ -20,9 +20,9 @@ Unless separately authorized in writing, the buyer may not resell, sublicense, r
 
 The licensor retains rights in original materials they own. The buyer retains rights in independently created content, data and branding to the extent permitted by law. Third-party software and assets are not relicensed by this agreement. No statement in this draft establishes ownership of any asset without evidence.
 
-## 5. Support, updates and external services
+## 5. Support, defect fixes and external services
 
-Purchase includes **30 days of basic installation and setup support** from the date of purchase. This support is limited to helping the buyer install and configure the unmodified product in a supported environment. It excludes custom development, hosting, domains, databases, email, payment processing, Cloudinary, AI/API usage, bespoke deployment work, ongoing maintenance, third-party service support, future updates and compatibility guarantees unless separately agreed in writing. The current demo checkout is not a promise of card-payment processing. Any payment provider requires separate configuration, integration and server-side verification.
+Purchase includes **30 days of basic installation and setup support** from the date of purchase. This support is limited to helping the buyer install and configure the unmodified product in a supported environment. It excludes custom development, hosting, domains, databases, email, payment processing, Cloudinary, AI/API usage, bespoke deployment work, ongoing maintenance, third-party service support, future updates and compatibility guarantees unless separately agreed in writing. For **30 days from purchase**, the seller proposes to correct reproducible defects in the unmodified delivered codebase (`dist/` and `backend/`) that prevent documented core storefront or checkout functionality from operating as specified. The buyer must provide sufficient steps and information to reproduce the defect. This commitment is limited to the delivered version and does not promise a particular resolution where a defect cannot reasonably be reproduced or is outside the covered materials.\n\nDefect-fix coverage excludes issues caused by buyer code modifications, custom themes or plugins, unauthorized database schema changes, third-party API or service deprecations or breaking changes after delivery (including Paystack or Cloudinary changes), and unsupported hosting environments. It does not cover new features, major framework or runtime upgrades, or compatibility patches after the 30-day window. Those items require a separate written agreement or paid upgrade package. Nothing in this proposed policy limits mandatory statutory consumer rights.\n\nThe current demo checkout is not a promise of card-payment processing. Any payment provider requires separate configuration, integration and server-side verification.
 
 ## 6. Refund terms — proposed policy for seller review
 
@@ -37,7 +37,7 @@ Warranty disclaimers, limitation of liability, indemnity, termination, governing
 - Confirm legal registration status, contracting capacity, address and support contact.
 - Confirm one-end-product scope and contractor access.
 - Support duration confirmed by seller: 30 days of basic installation and setup support. Custom development, hosting and ongoing maintenance are excluded. Confirm the final response channel, response hours and update policy before publication.
-- Confirm refund window and process against marketplace rules and applicable law.
+- Update policy approved by seller: 30 days of defect fixes for reproducible defects in the unmodified delivered version affecting documented core storefront or checkout functionality, subject to the scope and exclusions in section 5. New features, major framework/runtime upgrades and post-window compatibility patches require a separate agreement or paid upgrade.\n- Confirm refund window and process against marketplace rules and applicable law.
 - Select governing law and dispute process with legal advice.
 - Complete exact dependency notices and asset clearance for the delivered archive.
 
