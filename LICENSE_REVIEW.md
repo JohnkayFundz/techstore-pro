@@ -76,10 +76,11 @@ The lockfile's package metadata declares `MIT AND ISC`. The run #252 generated n
 
 ## 4. Documentation reconciliation required
 
+- [x] Identified that the existing `COMMERCIAL_LICENSE.md` was an older, conflicting buyer-license draft (including different support and refund assumptions and an unselected governing law). It is now explicitly marked **SUPERSEDED — DO NOT PUBLISH OR DISTRIBUTE** and points to `COMMERCIAL_LICENSE_DRAFT.md` as the active seller-terms record. The release packager still requires the separate approval marker, which remains absent; do not add it before seller decisions and qualified legal review are complete.
 - [ ] For `victory-vendor@37.3.6`, reconcile the package metadata expression `MIT AND ISC` with the additional `BSD-3-Clause` vendored-component obligation recorded in `LICENSE_SOURCE_REGISTER.md`; inspect the exact package contents and confirm all applicable texts/attributions are present in the final archive-specific notices.
 - [x] Downloaded and inspected CI notice-collection artifact `14354280618` from run #252. It contains 296 production entries, 0 unresolved collector entries, full collected package license/notice material, nested vendor notices and the completion sentinel. This verifies the artifact's collection output only; it does not establish that every file belongs in the buyer archive or provide legal clearance. Exact archive-to-artifact reconciliation remains open.
 - [ ] Reconcile the `THIRD-PARTY-NOTICES.md` summary against the collected artifact; do not treat the summary's pending copyright-header column as proof that the collector failed, or the collector's zero-unresolved result as proof that human review passed.
-- [ ] Recheck `ASSET_PROVENANCE_REGISTER.md` against the current QA branch tree before packaging; its reviewed source commit is an earlier snapshot and the register itself requires a current-head verification.
+- [x] Performed a limited current-head path spot-check for the five SVGs listed in `ASSET_PROVENANCE_REGISTER.md`; all five paths exist, and the two icon-sprite paths currently share the same blob. The register now records the exact checked commit. A full tracked-tree, reference, visual and rights review against the final release-candidate commit remains open.
 
 ## 5. Remaining work before distribution
 
