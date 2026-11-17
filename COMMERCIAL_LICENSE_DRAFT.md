@@ -1,6 +1,6 @@
-# TechStore Pro — Proposed Commercial License (Draft)
+# JohnKay Fundz TechStore Pro Commercial License v1.0 — Draft
 
-**DRAFT ONLY — NOT READY FOR SALE. Seller confirmation and qualified legal review are required.**
+**DRAFT ONLY — NOT READY FOR SALE. Version: 1.0 (proposed initial commercial license). Effective date: to be assigned only upon authorized commercial release. Seller confirmation and qualified legal review are required.**
 
 ## 1. Parties and covered materials
 
