@@ -4,7 +4,7 @@
 
 ## 1. Parties and covered materials
 
-Proposed licensor: **John Kalumba, trading as JohnKay Fundz**. The seller has confirmed this proposed public contracting identity. Legal registration status, contracting capacity, service address and formal support contact remain to be verified before publication.
+Proposed licensor: **John Kalumba, trading as JohnKay Fundz**, an individual sole proprietor operating in Lagos State, Federal Republic of Nigeria. The seller has confirmed that JohnKay Fundz is not currently a CAC-registered limited liability company or registered business name. John Kalumba proposes to enter this agreement in his individual capacity and represents that he holds sole legal authority to grant the commercial rights described in this draft, subject to verification of ownership, third-party rights and applicable law. His service address and formal support contact remain to be confirmed before publication.
 
 Product: TechStore Pro source-code starter kit. This license covers only original source code and documentation the licensor owns or is authorized to license and that are expressly included in the delivered package. Third-party dependencies, fonts, marks, media and services are excluded and remain governed by their own terms.
 
@@ -54,13 +54,20 @@ The parties should first attempt to resolve any dispute arising out of or relati
 
 If a provision is held unenforceable under applicable non-waivable consumer legislation in the buyer's jurisdiction, the parties intend that provision to be modified only to the minimum extent necessary to make it enforceable, where legally permitted, without invalidating the remainder of the agreement. This severability wording must not be used to reduce mandatory consumer protections.
 
-## 8. Warranties, liability and termination — legal drafting required
+## 8. Seller capacity, future entity assignment, warranties and termination — legal drafting required
+
+The proposed contracting party is **John Kalumba in his individual capacity, trading as JohnKay Fundz**, not a CAC-registered company or registered business name. The seller confirms that he currently operates as an individual/sole proprietor without CAC registration and represents that he has sole authority to grant the rights in the original materials that he owns or is otherwise authorized to license. This is a seller statement and is not an independent verification of title or legal capacity.
+
+**Proposed future-entity assignment:** If John Kalumba later establishes or controls a CAC-registered business name or incorporated entity, the draft proposes that he may assign or transfer his rights and obligations as licensor under this agreement to that entity by giving the buyer written notice and reasonable updated documentation identifying the assignee and its effective date. The assignee must agree in writing to assume the licensor's applicable obligations under the agreement. The transfer must not reduce any buyer rights, remedies, accrued claims or protections, and must remain subject to mandatory law and marketplace rules. Whether buyer consent is required, and the precise effect on accrued liabilities and personal responsibility, must be settled by qualified legal counsel before publication; this draft does not assert that an assignment automatically releases the original licensor.
+
+
 
 Warranty disclaimers, limitation of liability, indemnity, termination, governing law, venue, dispute resolution and consumer-rights clauses must be drafted or reviewed by a qualified Nigerian legal practitioner, with advice on cross-border sales and buyer jurisdictions. This draft is not final enforceable wording.
 
 ## 9. Seller decisions and publication requirements
 
-- Confirm legal registration status, contracting capacity, address and support contact.
+- Seller confirmed current status: individual/sole proprietor without CAC registration, trading as JohnKay Fundz. Proposed contracting identity is John Kalumba in his individual capacity; sole authority to grant the described rights is recorded as a seller representation. Service address and formal support contact remain outstanding.
+- Proposed future-entity assignment to a later CAC-registered entity wholly owned or controlled by John Kalumba is recorded in section 8, subject to written notice, assumption of obligations, preservation of buyer rights and qualified legal review.
 - One-end-product scope, confidential employee/contractor assistance, post-completion copy deletion, source non-redistribution and one-time named-client handover approved by seller in principle; see section 2. Legal review and third-party license compatibility remain required.
 - Support duration confirmed by seller: 30 days of basic installation and setup support. Custom development, hosting and ongoing maintenance are excluded. Confirm the final response channel, response hours and update policy before publication.
 - Update policy approved by seller: 30 days of defect fixes for reproducible defects in the unmodified delivered version affecting documented core storefront or checkout functionality, subject to the scope and exclusions in section 5. New features, major framework/runtime upgrades and post-window compatibility patches require a separate agreement or paid upgrade.
@@ -68,4 +75,4 @@ Warranty disclaimers, limitation of liability, indemnity, termination, governing
 - Governing law and dispute-resolution approach approved in principle: Nigeria law; 14-day good-faith negotiation; proposed competent-court venue in Lagos State; statutory and marketplace carve-outs and severability as set out in section 7. Qualified legal review remains mandatory.
 - Seller confirmed sole creation and commercial rights in original TechStore Pro code, architecture, custom UI and bespoke graphics; recorded as a seller representation in section 4. Independent third-party dependency and asset provenance clearance remains outstanding.
 
-**Release gate:** do not attach this draft to a paid download until the seller confirms all business terms and obtains appropriate legal review.
+**Release gate:** do not attach this draft to a paid download until the seller confirms all business terms, verifies the rights being licensed, resolves the remaining publication details and obtains appropriate legal review.
