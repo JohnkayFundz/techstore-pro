@@ -1,3 +1,42 @@
+# CURRENT STATUS OVERRIDE — 2026-11-17 (supersedes historical snapshot below)
+
+**Decision: QA FUNCTIONAL CHECKS PASS / RELEASE HOLD**  
+**QA branch head:** `84d1f549b818f21055850b12ebbced2326869786`  
+**Latest CI run:** #254 — `44140014181` — failed at the enforced root high-severity security gate.  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — verified unchanged.
+
+## Latest CI evidence
+
+Run #254 confirms:
+- Root clean installation, lint, frontend production build, Chromium setup, and all 4 browser E2E tests passed.
+- Backend clean installation, backend audit (0 vulnerabilities), and all 21 backend tests passed.
+- The separate notice-collection job passed and uploaded its review bundle.
+- Root audit still fails with 5 high findings associated with the installed `picomatch@4.0.7` package path. The CI step that reconciles the lockfile cannot remediate it; the final security enforcement step correctly fails.
+- The workflow skipped committing its verified lockfile changes because the root security gate failed.
+
+The earlier statement that the root `picomatch` path was development-only was based on the lockfile's `dev` metadata. The audit output also traverses `fdir`, `tinyglobby`, and `vite`. This is the frontend build-tool chain; the backend runtime lockfile has no picomatch and its audit is clean. Do not interpret that distinction as clearance of the root build environment or as permission to bypass the root audit.
+
+## Upstream remediation status — refreshed 2026-11-17
+
+GitHub's primary advisory GHSA-fc5q-39xc-vjpf / CVE-2026-112366 still lists affected and patched versions as unknown. The upstream picomatch PR #237 proposes a targeted fix for single-branch repeated extglobs and reports 1,999 upstream tests passing, but GitHub currently shows the PR as **OPEN and NOT MERGED**. It is not a released package, and its reported test result is upstream PR evidence, not a test result for this repository. Do not install an unmerged branch, use an unreviewed fork, or claim the vulnerability fixed.
+
+The advisory describes a high-severity ReDoS affecting picomatch through 4.0.7. The published npm latest tag remains 4.0.7. No official patched release was found in this review. The npm force-fix recommendation is not acceptable because it proposes a breaking Vite downgrade. No forced downgrade, audit suppression, vulnerable-code override, or security-gate bypass was applied.
+
+## Remaining release blockers
+
+1. Root build-tool dependency audit: 5 high picomatch findings remain. Wait for an official fixed release or independently review and test a maintainable remediation without weakening the security gate.
+2. Third-party notices: automated collection is complete (296 production entries, zero unresolved collector entries), but full human/legal review and archive-specific obligations remain open.
+3. Commercial license: draft remains unapproved; seller decisions and qualified legal review are required.
+4. Buyer installation: independent archive extraction, clean installation, configuration, and customer/admin smoke tests have not been executed.
+5. Cloudinary upload: requires a dedicated non-production account and credentials configured securely outside chat.
+6. No buyer archive/checksum exists; seller content, identity, and distribution decisions remain outstanding.
+
+## Safety disposition
+
+No merge, main update, production deployment, production data/configuration mutation, buyer archive, marketplace publication, or live payment activation has occurred. Cash on delivery remains the only verified payment method. Keep this project on HOLD.
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-17 (supersedes the historical snapshot below)
 
 **Decision: QA FUNCTIONAL CHECKS PASS / SECURITY AND COMMERCIAL RELEASE HOLD**  
