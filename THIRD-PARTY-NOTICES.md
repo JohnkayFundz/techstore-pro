@@ -1,12 +1,12 @@
 # TechStore Pro — Third-Party Notices
 
-**REVIEW BUNDLE — NOT YET COMPLETE / NOT LEGAL CLEARANCE.** This commit adds the exact-version production dependency register and an automated notice collector. The copyright headers and full upstream license texts for all packages have not yet been independently collected. Do not distribute a buyer archive until the collector reports complete, the results are reviewed, and the commercial license is finalized.
+**REVIEW BUNDLE — COLLECTION REPORTED COMPLETE; HUMAN REVIEW AND LEGAL CLEARANCE OUTSTANDING.** QA CI run #252 reported 296 production dependency entries and 0 unresolved collector entries, and uploaded review artifact `14354280618`. That is an automated collection result, not independent legal review or proof that every notice obligation is satisfied. The artifact-specific contents must be inspected and reconciled with the exact buyer archive; this summary register does not itself reproduce every collected upstream license text or copyright header. Do not distribute a buyer archive until the artifact and archive contents are reviewed, required notices are included, and the commercial license is finalized and legally reviewed.
 
 ## Scope and source
 
 The table below covers 296 production dependency lockfile entries: 166 root entries and 130 backend entries. Versions and SPDX expressions are read from the committed `package-lock.json` and `server/package-lock.json`; they are not inferred from semver ranges. Nested copies are listed separately because they can have distinct versions.
 
-The `Copyright / notice header` column is deliberately marked pending rather than guessed. Run `npm ci` at the repository root and `npm ci` in `server/`, then run `npm run notices:generate`. The collector verifies installed package versions against both lockfiles, extracts package metadata and full license/notice files, and writes a detailed package-by-package notice bundle. It exits non-zero if any production package lacks verifiable license text or an exact installed version.
+The `Copyright / notice header` column is deliberately marked pending in this summary rather than guessed; the CI artifact is the collected evidence bundle and still requires package-by-package human review. To reproduce the collection, run `npm ci` at the repository root and `npm ci` in `server/`, then run `npm run notices:generate`. The collector verifies installed package versions against both lockfiles, extracts package metadata and available full license/notice files, and writes a detailed package-by-package notice bundle. It exits non-zero if any production package lacks verifiable license text or an exact installed version. A zero-unresolved collector result does not mean the human review is complete.
 
 ## Production package register
 
