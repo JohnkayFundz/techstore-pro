@@ -16,6 +16,10 @@
 
 These entries document the stated origin of the replacement SVGs. They do not clear future seller uploads, third-party logos, fonts, photography, video, or promotional content.
 
+### Limited current-head path spot-check
+
+At QA commit `a58f33559ebb703584684958cf00e8e305bc8bd6`, each of the five SVG paths listed above was fetched successfully from the repository. `public/icons.svg` and `public/icons-neutral.svg` had the same Git blob (`5e87e9119f84e3fc4d063e5a93b22cfa07fd618c`) at that checked commit. This is a limited existence/content-identity check of the five registered paths only; it is not a full tracked-tree scan, reference scan, visual review, authorship verification, or legal clearance. Re-run the full tree/reference review against the release-candidate commit before packaging.
+
 ## Historical files removed from this branch
 
 The following items were removed in the QA cleanup and are **not current repository assets**:
