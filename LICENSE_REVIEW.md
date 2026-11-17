@@ -4,7 +4,7 @@
 
 The QA CI notice collector recursively gathers package license/notice files and complete README license sections, with exact-version source handling recorded in `LICENSE_SOURCE_REGISTER.md`. Run #252 produced a full `THIRD-PARTY-NOTICES.md` collection with **296 production dependency entries and 0 unresolved collector entries**. I downloaded and inspected artifact `14354280618`: it contains the generated 319,855-byte notice bundle and `notice-generation.log`, whose output confirms 296 entries and 0 unresolved. The generated bundle includes package copyright/notice headers, individual license texts and nested vendor license files, and ends with the `<!-- RELEASE-NOTICES-COMPLETE -->` sentinel.
 
-This is a collection-completeness result for the production dependency scope, not proof that every license was legally interpreted or every attribution/source obligation satisfied. Human review of the collected texts, archive-specific applicability, the MPL-2.0/CC-BY/BlueOak/Unlicense/0BSD and compound-license obligations, and qualified legal review remain mandatory. The seller must still decide the exact archive contents. Do not describe the automated report as blanket commercial clearance.
+This is a collection-completeness result for the production dependency scope, not proof that every license was legally interpreted or every attribution/source obligation satisfied. Human review of the collected production texts, archive-specific applicability, the production 0BSD and compound-license obligations, and qualified legal review remain mandatory. The MPL-2.0, CC-BY-4.0, BlueOak-1.0.0 and Unlicense groups listed in the full lockfile inventory are marked development-only in the inspected lockfiles; verify the generated frontend bundle does not embed or redistribute covered material before excluding those groups from buyer-facing notices. The seller must still decide the exact archive contents. Do not describe the automated report as blanket commercial clearance.
 
 The QA workflow also validates the root and server dependency trees separately. The root lockfile currently contains `picomatch@4.0.7` as a development dependency through Vite tooling; the server lockfile contains no picomatch entry. This is a security gate issue, not a license finding, and does not change this register's distribution HOLD.
 
@@ -36,6 +36,21 @@ No package is deemed legally cleared solely because a lockfile declares an SPDX 
 | MIT AND ISC | `victory-vendor@37.3.6` | 1 |
 
 All counts are lockfile records, not counts of files copied into a buyer archive. Platform-specific optional packages are listed because they are locked; actual installation and archive contents may differ.
+
+## 2A. Production versus development-only special-license scope
+
+A direct inspection of the committed root and backend lockfiles at the reviewed QA snapshot confirms that the special-license groups below are not all runtime dependencies:
+
+| Group | Lockfile scope | `dev` flag | Distribution implication |
+|---|---|---|---|
+| MPL-2.0 — `lightningcss@1.33.0` and platform packages (12 records) | Root | `true` on all 12 | Development/build tooling; not intended as a buyer runtime dependency. Verify the final generated `dist/` does not embed covered Lightning CSS source or other MPL-covered files. |
+| CC-BY-4.0 — `caniuse-lite@1.0.30001826` (1 record) | Root | `true` | Development/build tooling; verify generated output does not redistribute the dataset or derived data requiring attribution. |
+| BlueOak-1.0.0 (12 records) | Root | `true` on all 12 | Development/build tooling; verify none of these packages or their code is copied into the buyer archive or embedded in generated output. |
+| Unlicense — `big-integer@1.6.52`, `stream-buffers@2.2.0` (2 records) | Root | `true` on both | Development-only according to the lockfile; verify no code is bundled into `dist/`. |
+| 0BSD — root `tslib@2.8.1` (1 record) | Root | No `dev` flag | Production dependency record; preserve and verify its applicable notice/attribution in the final archive. |
+| 0BSD — backend `tslib@2.9.1` (1 record) | Backend | `true` | Backend development-only dependency; not expected in the production backend install. |
+
+This corrects an important scope distinction: the special-license inventory in Section 2 describes lockfile records across production and development dependency trees, not 29 (or 30) additional production runtime obligations. The CI artifact's 296-entry production collection does not include the dev-only MPL, CC-BY, BlueOak or Unlicense groups. The actual build output must still be inspected for bundled or derived material before concluding that no notice obligation applies.
 
 ## 3. Conditions and actions
 
@@ -79,7 +94,7 @@ The lockfile's package metadata declares `MIT AND ISC`. The run #252 generated n
 - [x] Identified that the existing `COMMERCIAL_LICENSE.md` was an older, conflicting buyer-license draft (including different support and refund assumptions and an unselected governing law). It is now explicitly marked **SUPERSEDED — DO NOT PUBLISH OR DISTRIBUTE** and points to `COMMERCIAL_LICENSE_DRAFT.md` as the active seller-terms record. The release packager still requires the separate approval marker, which remains absent; do not add it before seller decisions and qualified legal review are complete.
 - [x] For `victory-vendor@37.3.6`, the run #252 generated notice bundle reports `MIT AND ISC AND BSD-3-Clause` and contains nested D3 vendor license files, consistent with `LICENSE_SOURCE_REGISTER.md`. Final buyer-archive inclusion and attribution checks remain open.
 - [x] Downloaded and inspected CI notice-collection artifact `14354280618` from run #252. It contains 296 production entries, 0 unresolved collector entries, full collected package license/notice material, nested vendor notices and the completion sentinel. This verifies the artifact's collection output only; it does not establish that every file belongs in the buyer archive or provide legal clearance. Exact archive-to-artifact reconciliation remains open.
-- [ ] Reconcile the `THIRD-PARTY-NOTICES.md` summary against the collected artifact; do not treat the summary's pending copyright-header column as proof that the collector failed, or the collector's zero-unresolved result as proof that human review passed.
+- [x] Reconciled the special-license inventory against both committed lockfiles: all 12 MPL-2.0 Lightning CSS records, the CC-BY-4.0 caniuse-lite record, all 12 BlueOak records and both Unlicense records have `dev: true`; backend `tslib@2.9.1` is also dev-only. Root `tslib@2.8.1` is a production record under 0BSD. The 296-entry CI artifact is a production-only collection and therefore does not list the dev-only special groups. Final `dist/` inspection is still required to rule out bundled/derived material, and root tslib's buyer-archive notice remains to be verified.
 - [x] Performed a limited current-head path spot-check for the five SVGs listed in `ASSET_PROVENANCE_REGISTER.md`; all five paths exist, and the two icon-sprite paths currently share the same blob. The register now records the exact checked commit. A full tracked-tree, reference, visual and rights review against the final release-candidate commit remains open.
 
 ## 5. Static buyer-archive dependency inclusion map
