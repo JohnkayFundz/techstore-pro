@@ -1,8 +1,8 @@
-## Current verification snapshot — 2026-11-17 (refreshed after Run #236)
+## Current verification snapshot — 2026-11-17 (refreshed after Run #238)
 
 - Branch: `qa/customer-e2e`
-- Latest QA branch HEAD at this refresh: `ff3625f8d799daad50d77f928287d5a1fe100f51`
-- GitHub Actions Run #236: [44131168536](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131168536) — **SUCCESS** on exact branch HEAD `ff3625f8d799daad50d77f928287d5a1fe100f51` (all 39 workflow steps passed).
+- Latest QA branch HEAD at this refresh: `e27c092b97de873e86fdb2b7d4efd0786e3deab5`
+- GitHub Actions Run #238: [44131874383](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131874383) — **SUCCESS** on exact branch HEAD `e27c092b97de873e86fdb2b7d4efd0786e3deab5` (all 39 workflow steps passed).
 - Run #235: [44129232519](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44129232519) — **SUCCESS** on `711800e`.
 - Run #233: [44127942696](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127942696) — **SUCCESS** on commit `1cc09a2a91591fe23351de3344afc0b1cded77f8`.
 - GitHub Actions Run #232: [44127887960](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127887960) — **SUCCESS** on commit `ae44d1e00e707f0ee98152e1bf5b1661587b0542`.
@@ -12,7 +12,7 @@
 - Backend tests: **21/21 PASS**.
 - Backend syntax checks and lockfile artifact upload: **PASS**.
 - Dependency license register now records the full lockfile metadata inventory and focused special handling for MPL-2.0, CC-BY-4.0, BlueOak, Unlicense, 0BSD, and MIT AND ISC. Exact-version notice collation and archive-specific applicability review remain incomplete.
-- QA Vercel preview for code commit `3523faf5154dfb6f40f1e3b0b0210da5f2414f2c` is READY with preview target; documentation-only commits do not change the application bundle.
+- QA Vercel preview for the current QA HEAD is READY with preview target (`target: null`); it is not a production deployment.
 - Current `main` remains `4713a3506ba64036b16768a3713bc4956d000fb4`; no merge or production change was made.
 - No buyer-machine clean install, real Cloudinary upload, final archive extraction/checksum review, or final commercial/legal sign-off has been completed.
 

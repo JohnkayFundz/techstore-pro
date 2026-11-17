@@ -3,16 +3,16 @@
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD**  
 **Reviewed:** 2026-11-17  
 **Branch:** `qa/customer-e2e`  
-**Latest QA branch commit at this review:** `b4a0a754b132116e3d592fac2f145e41296e5ffa`
-**Latest completed CI:** Run #237 — `44131455385` — SUCCESS on exact QA HEAD `b4a0a75`  
-**GitHub Actions:** Run #237 — `44131455385` — SUCCESS on `b4a0a75`  
+**Latest QA branch commit at this review:** `e27c092b97de873e86fdb2b7d4efd0786e3deab5`
+**Latest completed CI:** Run #238 — `44131874383` — SUCCESS on exact QA HEAD `e27c092`  
+**GitHub Actions:** Run #238 — `44131874383` — SUCCESS on `e27c092`  
 **Production/main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` (unchanged)
 
 This record supersedes earlier stale status summaries in this file. Historical notes elsewhere in the repository are retained as history and must not be treated as current state.
 
-## Verified on the current QA commit (Run #237)
+## Verified on the current QA commit (Run #238)
 
-- [x] Latest exact-HEAD CI Run #237 completed successfully on `b4a0a754b132116e3d592fac2f145e41296e5ffa`. All 39 workflow steps completed successfully, including root/backend clean installs, high-severity audits, lint, frontend build, Chromium installation, four Playwright tests, backend tests, syntax checks, lockfile artifact upload, and lockfile commit step.
+- [x] Latest exact-HEAD CI Run #238 completed successfully on `e27c092b97de873e86fdb2b7d4efd0786e3deab5`. All 39 workflow steps completed successfully, including root/backend clean installs, high-severity audits, lint, frontend build, Chromium installation, four Playwright tests, backend tests, syntax checks, lockfile artifact upload, and lockfile commit step.
 
 ## Verified on the QA preparation line (revalidated by Run #237)
 
@@ -28,6 +28,8 @@ This record supersedes earlier stale status summaries in this file. Historical n
 - [x] Verified lockfile artifact uploaded; CI confirmed lockfiles already match manifests and audit fixes.
 - [x] QA Vercel preview for this exact commit is READY; target is preview (`target: null`), not production.
 - [x] Main branch remains unchanged at `4713a3506ba64036b16768a3713bc4956d000fb4`.
+
+Run #238: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131874383
 
 Run #237: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44131455385
 
