@@ -85,7 +85,7 @@ jobs:
           retention-days: 7
 
       - name: Commit verified lockfiles
-        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/product/paid-starter-kit-preparation'
+        if: success() && github.event_name == 'push' && (github.ref == 'refs/heads/product/paid-starter-kit-preparation' || github.ref == 'refs/heads/qa/customer-e2e')
         run: |
           if git diff --quiet -- package-lock.json server/package-lock.json; then
             echo "Lockfiles already match manifests and audit fixes."
