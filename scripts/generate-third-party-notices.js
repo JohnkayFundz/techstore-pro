@@ -5,6 +5,12 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const upstreamLicenseOverrides = new Map([
+  ["root|victory-vendor@37.3.6", path.join(root, "licenses", "victory-vendor-37.3.6-MIT-LICENSE.txt")],
+]);
+const spdxOverrides = new Map([
+  ["root|victory-vendor@37.3.6", "MIT AND ISC AND BSD-3-Clause"],
+]);
 const scopes = [
   { name: "root", base: root, lock: path.join(root, "package-lock.json") },
   { name: "backend", base: path.join(root, "server"), lock: path.join(root, "server", "package-lock.json") },
@@ -60,8 +66,9 @@ for (const scope of scopes) {
     const texts = files.map(({ absolute, relative }) => ({ file: relative.split(path.sep).join("/"), rootLevel: !relative.includes(path.sep), text: fs.readFileSync(absolute, "utf8").trim() })).filter((x) => x.text);
     let rootTexts = texts.filter((x) => x.rootLevel);
     if (!rootTexts.length) {
-      const readmePath = path.join(packageDir, "README.md");
-      if (fs.existsSync(readmePath)) {
+      const readmeName = fs.readdirSync(packageDir).find((name) => /^readme\.md$/i.test(name));
+      const readmePath = readmeName ? path.join(packageDir, readmeName) : null;
+      if (readmePath) {
         const licenseSection = extractReadmeLicense(fs.readFileSync(readmePath, "utf8"));
         if (licenseSection) {
           const item = { file: "README.md#License", rootLevel: true, text: licenseSection };
@@ -69,6 +76,16 @@ for (const scope of scopes) {
           rootTexts = [item];
         }
       }
+    }
+    const overridePath = upstreamLicenseOverrides.get(`${scope.name}|${manifest.name}@${manifest.version}`);
+    if (!rootTexts.length && overridePath && fs.existsSync(overridePath)) {
+      const item = {
+        file: path.relative(root, overridePath).split(path.sep).join("/"),
+        rootLevel: true,
+        text: fs.readFileSync(overridePath, "utf8").trim(),
+      };
+      texts.push(item);
+      rootTexts = [item];
     }
     const copyright = [...new Set([
       ...(manifest.author ? [typeof manifest.author === "string" ? manifest.author : JSON.stringify(manifest.author)] : []),
@@ -79,7 +96,7 @@ for (const scope of scopes) {
       scope: scope.name,
       name: manifest.name || lockPath.split("node_modules/").pop(),
       version: manifest.version,
-      spdx: typeof locked.license === "string" ? locked.license : "UNKNOWN",
+      spdx: spdxOverrides.get(`${scope.name}|${manifest.name}@${manifest.version}`) || (typeof locked.license === "string" ? locked.license : "UNKNOWN"),
       copyright,
       texts,
       digest: texts.map((x) => crypto.createHash("sha256").update(x.text).digest("hex")),
@@ -92,7 +109,7 @@ const lines = [
   "",
   unresolved.length ? "**STATUS: INCOMPLETE — DO NOT DISTRIBUTE.**" : "**STATUS: COMPLETE COLLECTION — human/legal review still required.**",
   "",
-  "Generated from the exact root and backend npm lockfiles and matching installed package contents. License/notice files are recursively collected within each package, while a missing package-root license remains unresolved. Nested vendor notices do not replace the package own-license requirement. This collection is not legal advice or a legal clearance opinion.",
+  "Generated from the exact root and backend npm lockfiles and matching installed package contents. License/notice files are recursively collected within each package; full license sections in README files and narrowly scoped, source-documented exact-version upstream overrides are also accepted. Nested vendor notices are retained. This collection is not legal advice or a legal clearance opinion.",
   "",
   `Production package entries: ${entries.length}. Unresolved entries: ${unresolved.length}.`,
   "",
