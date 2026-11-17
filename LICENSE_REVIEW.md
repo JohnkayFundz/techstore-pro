@@ -77,15 +77,15 @@ The lockfile's package metadata declares `MIT AND ISC`. The run #252 generated n
 ## 4. Documentation reconciliation required
 
 - [x] Identified that the existing `COMMERCIAL_LICENSE.md` was an older, conflicting buyer-license draft (including different support and refund assumptions and an unselected governing law). It is now explicitly marked **SUPERSEDED — DO NOT PUBLISH OR DISTRIBUTE** and points to `COMMERCIAL_LICENSE_DRAFT.md` as the active seller-terms record. The release packager still requires the separate approval marker, which remains absent; do not add it before seller decisions and qualified legal review are complete.
-- [ ] For `victory-vendor@37.3.6`, reconcile the package metadata expression `MIT AND ISC` with the additional `BSD-3-Clause` vendored-component obligation recorded in `LICENSE_SOURCE_REGISTER.md`; inspect the exact package contents and confirm all applicable texts/attributions are present in the final archive-specific notices.
+- [x] For `victory-vendor@37.3.6`, the run #252 generated notice bundle reports `MIT AND ISC AND BSD-3-Clause` and contains nested D3 vendor license files, consistent with `LICENSE_SOURCE_REGISTER.md`. Final buyer-archive inclusion and attribution checks remain open.
 - [x] Downloaded and inspected CI notice-collection artifact `14354280618` from run #252. It contains 296 production entries, 0 unresolved collector entries, full collected package license/notice material, nested vendor notices and the completion sentinel. This verifies the artifact's collection output only; it does not establish that every file belongs in the buyer archive or provide legal clearance. Exact archive-to-artifact reconciliation remains open.
 - [ ] Reconcile the `THIRD-PARTY-NOTICES.md` summary against the collected artifact; do not treat the summary's pending copyright-header column as proof that the collector failed, or the collector's zero-unresolved result as proof that human review passed.
 - [x] Performed a limited current-head path spot-check for the five SVGs listed in `ASSET_PROVENANCE_REGISTER.md`; all five paths exist, and the two icon-sprite paths currently share the same blob. The register now records the exact checked commit. A full tracked-tree, reference, visual and rights review against the final release-candidate commit remains open.
 
 ## 5. Remaining work before distribution
 
-- [ ] Retrieve and compare exact-version upstream LICENSE/COPYING/NOTICE files for all 582 lockfile records, including MIT, ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause packages.
-- [ ] Resolve package-level notices and copyright holders for vendored or bundled code, especially `victory-vendor`.
+- [ ] Human-review the exact-version LICENSE/COPYING/NOTICE texts collected for all 582 lockfile records, including MIT, ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause packages; verify provenance, completeness, attribution wording and applicability to the actual buyer archive.
+- [ ] Complete human review of package-level notices and copyright holders for vendored or bundled code, especially `victory-vendor`; confirm all applicable notices are preserved in the buyer archive.
 - [ ] Determine which dependencies and generated artifacts are actually included in the final source-only archive and which are installed by the buyer.
 - [ ] Inspect the final archive and production build file-by-file for embedded third-party code, license headers, notices, and source-form obligations.
 - [ ] Generate a final archive-specific notices bundle and verify that every included dependency is represented.
