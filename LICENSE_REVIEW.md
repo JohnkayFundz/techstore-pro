@@ -1,5 +1,14 @@
 # TechStore Pro — Dependency License Review Register
 
+## Automated notice-collection update — 2026-11-17
+
+The QA CI notice collector now recursively gathers package license/notice files and complete README license sections, with exact-version source handling recorded in `LICENSE_SOURCE_REGISTER.md`. Run #252 produced `THIRD-PARTY-NOTICES.md` with **296 production dependency entries and 0 unresolved collector entries**. The workflow uploaded review artifact ID `14354280618` (run #252).
+
+This is a collection-completeness result for the production dependency scope, not proof that every license was legally interpreted or every attribution/source obligation satisfied. Human review of the collected texts, archive-specific applicability, the MPL-2.0/CC-BY/BlueOak/Unlicense/0BSD and compound-license obligations, and qualified legal review remain mandatory. The seller must still decide the exact archive contents. Do not describe the automated report as blanket commercial clearance.
+
+The QA workflow also validates the root and server dependency trees separately. The root lockfile currently contains `picomatch@4.0.7` as a development dependency through Vite tooling; the server lockfile contains no picomatch entry. This is a security gate issue, not a license finding, and does not change this register's distribution HOLD.
+
+
 **Review date:** 2026-11-17  
 **Scope snapshot:** `qa/customer-e2e`, commit `3523faf5154dfb6f40f1e3b0b0210da5f2414f2c`  
 **Inputs:** root `package-lock.json` (417 non-root package records), `server/package-lock.json` (165 non-root package records), and upstream license references listed below.  
