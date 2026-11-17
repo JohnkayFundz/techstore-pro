@@ -620,3 +620,39 @@ This generated table is a complete snapshot of lockfile license metadata, not a 
 - `busboy@1.6.0`: upstream tag `v1.6.0`, `LICENSE`; SHA/source reference recorded by the upstream GitHub repository. Full text copied to `licenses/busboy-1.6.0-LICENSE.txt`.
 - `streamsearch@1.1.0`: upstream tag `v1.1.0`, `LICENSE`; full text copied to `licenses/streamsearch-1.1.0-LICENSE.txt`.
 - These two missing-metadata cases are resolved for the listed versions. This does not mean the other package notices, attribution, MPL-2.0 obligations, or the final archive have been fully reviewed.
+
+
+## Focused license-obligation review — 2026-11-17
+
+The lockfiles contain the following non-MIT or compound SPDX groups that require explicit treatment in the final distribution review:
+
+| Declared expression | Root locked entries | Backend locked entries | Review note |
+|---|---:|---:|---|
+| MPL-2.0 | 12 | 0 | Lightning CSS 1.33.0 and platform packages. Retain the MPL notice and check source-form / executable-form obligations for the actual files shipped. |
+| CC-BY-4.0 | 1 | 0 | `caniuse-lite@1.0.30001826`. Preserve attribution to caniuse.com and the CC BY 4.0 license reference. |
+| BlueOak-1.0.0 | 12 | 0 | Include the Blue Oak license text or its canonical link with distributed copies. |
+| Unlicense | 2 | 0 | `big-integer@1.6.52`, `stream-buffers@2.2.0`. Retain exact package notices and verify their version-specific contents. |
+| 0BSD | 1 | 1 | Root `tslib@2.8.1`; backend `tslib@2.9.1`. Verify the exact package notices for both versions. |
+| MIT AND ISC | 1 | 0 | `victory-vendor@37.3.6`; preserve both sides of the compound expression and inspect vendored component attributions. |
+
+The backend lockfile has two entries without modern SPDX metadata: `busboy@1.6.0` and `streamsearch@1.1.0`. Their exact-version upstream MIT texts are retained in `licenses/` as noted above. The remaining standard SPDX groups in both lockfiles are still subject to exact-version package notice review; this table does not replace that work.
+
+### Canonical license references
+
+- MPL-2.0: https://www.mozilla.org/en-US/MPL/2.0/
+- CC BY 4.0 legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+- Blue Oak Model License 1.0.0: https://blueoakcouncil.org/license/1.0.0
+- Unlicense: https://unlicense.org/
+- 0BSD: https://spdx.org/licenses/0BSD.html
+- MIT: https://spdx.org/licenses/MIT.html
+- ISC: https://spdx.org/licenses/ISC.html
+
+### Specific handling notes
+
+- **MPL-2.0:** the MPL distinguishes Source Code Form from Executable Form. Do not apply a blanket conclusion to the whole application. Identify whether any Lightning CSS covered source or modifications are actually included in the archive or distributed build output, preserve existing notices, and provide recipients the applicable source-form rights and a way to obtain the MPL text. The lockfile alone cannot answer that file-level question.
+- **CC-BY-4.0:** the caniuse project states that its data is available under CC BY 4.0 and requests attribution to caniuse.com. Confirm whether the relevant data is present in the final archive or output and preserve attribution in a reasonable location.
+- **BlueOak-1.0.0:** the license requires recipients of copies of any part of the licensed software to receive the license text or a link to it. A canonical link is available above; package-level notices and exact versions still need verification.
+- **Unlicense / 0BSD:** permissive declarations do not remove the need to retain accurate provenance and verify the actual package license files and copyright notices.
+- **MIT AND ISC:** both license grants must be retained. Do not normalize the expression to MIT alone; inspect the vendored files and upstream notice bundle before shipping.
+
+This focused review records the nonstandard/compound inventory and relevant license conditions. It does **not** close the full dependency-notice blocker, establish file-level applicability, or provide legal advice. A final archive-specific review remains mandatory.
