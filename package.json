@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "cap:sync": "npm run build && cap sync",
     "cap:open:android": "cap open android",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "notices:generate": "node scripts/generate-third-party-notices.js",
+    "package:release": "node scripts/package-release.js"
   },
   "dependencies": {
     "@capacitor/core": "^8.0.0",

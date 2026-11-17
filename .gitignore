@@ -121,3 +121,7 @@ cloudinary-preview/
 # Local product backups and Cloudinary preview files
 cloudinary-preview-assets/
 server/data/products-backup*.json
+
+# Generated release output (never commit buyer archives)
+.release-staging/
+release-artifacts/

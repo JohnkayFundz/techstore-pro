@@ -6,7 +6,7 @@
     "rootLockfileSha": "67685edb4940344c258501aeaa6bc056b9365fc2",
     "backendLockfileSha": "e0e0a6b1ea2cc9fce62989252b1a99eaed2131b0"
   },
-  "description": "Exact locked package versions and SPDX expressions read from package-lock metadata. This is an inventory, not a substitute for inspecting exact-version upstream LICENSE/NOTICE files or legal review.",
+  "description": "Exact locked package versions and SPDX expressions read from package-lock metadata. This is an inventory, not a substitute for inspecting exact-version upstream LICENSE/NOTICE files or legal review. Production package notice collection and release packaging are implemented as fail-closed scripts; exact upstream license texts and legal review remain required.",
   "totals": {
     "root": 417,
     "backend": 165,

@@ -1,658 +1,377 @@
-# Third-Party Notices — Lockfile SPDX Inventory
+# TechStore Pro — Third-Party Notices
 
-**Status: complete lockfile metadata inventory; upstream notice texts and legal redistribution review remain outstanding. This is not a complete legal notice package and must not be presented as legal clearance.**
+**REVIEW BUNDLE — NOT YET COMPLETE / NOT LEGAL CLEARANCE.** This commit adds the exact-version production dependency register and an automated notice collector. The copyright headers and full upstream license texts for all packages have not yet been independently collected. Do not distribute a buyer archive until the collector reports complete, the results are reviewed, and the commercial license is finalized.
 
-This file enumerates every non-root package entry in both committed npm lockfiles, including resolved version and the license expression declared in lockfile metadata. Lockfile metadata does not replace inspection of exact upstream LICENSE/COPYING/NOTICE files, attribution, patent terms, source obligations, or trademark terms for the final archive.
+## Scope and source
 
-## Root dependency tree (417 locked package entries)
+The table below covers 296 production dependency lockfile entries: 166 root entries and 130 backend entries. Versions and SPDX expressions are read from the committed `package-lock.json` and `server/package-lock.json`; they are not inferred from semver ranges. Nested copies are listed separately because they can have distinct versions.
 
-| Package | Locked version | Declared SPDX license expression |
-|---|---|---|
-| `@babel/code-frame` | `7.29.7` | MIT |
-| `@babel/compat-data` | `7.29.7` | MIT |
-| `@babel/core` | `7.29.7` | MIT |
-| `@babel/generator` | `7.29.7` | MIT |
-| `@babel/helper-compilation-targets` | `7.29.7` | MIT |
-| `@babel/helper-globals` | `7.29.7` | MIT |
-| `@babel/helper-module-imports` | `7.29.7` | MIT |
-| `@babel/helper-module-transforms` | `7.29.7` | MIT |
-| `@babel/helper-string-parser` | `7.29.7` | MIT |
-| `@babel/helper-validator-identifier` | `7.29.7` | MIT |
-| `@babel/helper-validator-option` | `7.29.7` | MIT |
-| `@babel/helpers` | `7.29.7` | MIT |
-| `@babel/parser` | `7.29.7` | MIT |
-| `@babel/template` | `7.29.7` | MIT |
-| `@babel/traverse` | `7.29.7` | MIT |
-| `@babel/types` | `7.29.7` | MIT |
-| `@cacheable/memory` | `2.2.0` | MIT |
-| `@cacheable/utils` | `2.5.0` | MIT |
-| `@capacitor/cli` | `8.6.2` | MIT |
-| `@capacitor/cli/node_modules/semver` | `7.8.6` | ISC |
-| `@capacitor/core` | `8.6.2` | MIT |
-| `@emnapi/core` | `2.0.0-beta.2` | MIT |
-| `@emnapi/runtime` | `2.0.0-beta.2` | MIT |
-| `@emnapi/wasi-threads` | `2.2.0` | MIT |
-| `@eslint-community/eslint-utils` | `4.9.1` | MIT |
-| `@eslint-community/eslint-utils/node_modules/eslint-visitor-keys` | `3.4.3` | Apache-2.0 |
-| `@eslint-community/regexpp` | `4.12.2` | MIT |
-| `@eslint/config-array` | `0.23.6` | Apache-2.0 |
-| `@eslint/config-helpers` | `0.7.0` | Apache-2.0 |
-| `@eslint/core` | `1.2.1` | Apache-2.0 |
-| `@eslint/js` | `10.0.1` | MIT |
-| `@eslint/object-schema` | `3.0.5` | Apache-2.0 |
-| `@eslint/plugin-kit` | `0.7.3` | Apache-2.0 |
-| `@humanfs/core` | `0.19.2` | Apache-2.0 |
-| `@humanfs/node` | `0.16.8` | Apache-2.0 |
-| `@humanfs/types` | `0.15.0` | Apache-2.0 |
-| `@humanwhocodes/module-importer` | `1.0.1` | Apache-2.0 |
-| `@humanwhocodes/retry` | `0.4.3` | Apache-2.0 |
-| `@ionic/cli-framework-output` | `2.2.8` | MIT |
-| `@ionic/utils-array` | `2.1.6` | MIT |
-| `@ionic/utils-fs` | `3.1.7` | MIT |
-| `@ionic/utils-fs/node_modules/fs-extra` | `9.1.0` | MIT |
-| `@ionic/utils-object` | `2.1.6` | MIT |
-| `@ionic/utils-process` | `2.1.12` | MIT |
-| `@ionic/utils-stream` | `3.1.7` | MIT |
-| `@ionic/utils-subprocess` | `3.0.1` | MIT |
-| `@ionic/utils-terminal` | `2.3.5` | MIT |
-| `@isaacs/fs-minipass` | `4.0.1` | ISC |
-| `@isaacs/nonrecursive-glob-match` | `1.1.0` | BlueOak-1.0.0 |
-| `@jridgewell/gen-mapping` | `0.3.13` | MIT |
-| `@jridgewell/remapping` | `2.3.5` | MIT |
-| `@jridgewell/resolve-uri` | `3.1.2` | MIT |
-| `@jridgewell/sourcemap-codec` | `1.5.5` | MIT |
-| `@jridgewell/trace-mapping` | `0.3.31` | MIT |
-| `@keyv/bigmap` | `1.3.1` | MIT |
-| `@keyv/serialize` | `1.1.1` | MIT |
-| `@kurkle/color` | `0.3.4` | MIT |
-| `@napi-rs/wasm-runtime` | `1.2.6` | MIT |
-| `@oxc-project/types` | `0.156.0` | MIT |
-| `@reduxjs/toolkit` | `2.12.0` | MIT |
-| `@rolldown/binding-android-arm-eabi` | `1.2.19` | MIT |
-| `@rolldown/binding-android-arm64` | `1.2.19` | MIT |
-| `@rolldown/binding-darwin-arm64` | `1.2.19` | MIT |
-| `@rolldown/binding-darwin-x64` | `1.2.19` | MIT |
-| `@rolldown/binding-freebsd-x64` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-arm-gnueabihf` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-arm64-gnu` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-arm64-musl` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-ppc64-gnu` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-s390x-gnu` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-x64-gnu` | `1.2.19` | MIT |
-| `@rolldown/binding-linux-x64-musl` | `1.2.19` | MIT |
-| `@rolldown/binding-openharmony-arm64` | `1.2.19` | MIT |
-| `@rolldown/binding-wasm32-wasi` | `1.2.19` | MIT |
-| `@rolldown/binding-win32-arm64-msvc` | `1.2.19` | MIT |
-| `@rolldown/binding-win32-x64-msvc` | `1.2.19` | MIT |
-| `@rolldown/pluginutils` | `1.0.1` | MIT |
-| `@standard-schema/spec` | `1.1.0` | MIT |
-| `@standard-schema/utils` | `0.3.0` | MIT |
-| `@tybys/wasm-util` | `0.10.4` | MIT |
-| `@types/d3-array` | `3.2.2` | MIT |
-| `@types/d3-color` | `3.1.3` | MIT |
-| `@types/d3-ease` | `3.0.2` | MIT |
-| `@types/d3-interpolate` | `3.0.4` | MIT |
-| `@types/d3-path` | `3.1.1` | MIT |
-| `@types/d3-scale` | `4.0.9` | MIT |
-| `@types/d3-shape` | `3.1.8` | MIT |
-| `@types/d3-time` | `3.0.4` | MIT |
-| `@types/d3-timer` | `3.0.2` | MIT |
-| `@types/esrecurse` | `4.3.1` | MIT |
-| `@types/estree` | `1.0.9` | MIT |
-| `@types/fs-extra` | `8.1.5` | MIT |
-| `@types/json-schema` | `7.0.15` | MIT |
-| `@types/node` | `26.6.6` | MIT |
-| `@types/react` | `19.2.17` | MIT |
-| `@types/react-dom` | `19.2.3` | MIT |
-| `@types/slice-ansi` | `4.0.0` | MIT |
-| `@types/use-sync-external-store` | `0.0.6` | MIT |
-| `@vitejs/plugin-react` | `6.0.3` | MIT |
-| `@xmldom/xmldom` | `0.9.12` | MIT |
-| `accepts` | `2.0.0` | MIT |
-| `accepts/node_modules/mime-db` | `1.54.0` | MIT |
-| `accepts/node_modules/mime-types` | `3.0.2` | MIT |
-| `accepts/node_modules/negotiator` | `1.0.0` | MIT |
-| `acorn` | `8.17.0` | MIT |
-| `acorn-jsx` | `5.3.2` | MIT |
-| `agent-base` | `6.0.2` | MIT |
-| `ajv` | `6.15.0` | MIT |
-| `ansi-regex` | `5.0.1` | MIT |
-| `ansi-styles` | `4.3.0` | MIT |
-| `astral-regex` | `2.0.0` | MIT |
-| `asynckit` | `0.4.0` | MIT |
-| `at-least-node` | `1.0.0` | ISC |
-| `axios` | `1.21.1` | MIT |
-| `balanced-match` | `4.0.4` | MIT |
-| `base64-js` | `1.5.1` | MIT |
-| `baseline-browser-mapping` | `2.11.37` | Apache-2.0 |
-| `big-integer` | `1.6.52` | Unlicense |
-| `body-parser` | `2.4.0` | MIT |
-| `body-parser/node_modules/content-type` | `2.1.0` | MIT |
-| `bplist-creator` | `0.1.0` | MIT |
-| `bplist-parser` | `0.3.2` | MIT |
-| `brace-expansion` | `5.0.13` | MIT |
-| `browserslist` | `4.29.5` | MIT |
-| `buffer-crc32` | `0.2.13` | MIT |
-| `bytes` | `3.1.2` | MIT |
-| `cacheable` | `2.5.0` | MIT |
-| `call-bind-apply-helpers` | `1.0.2` | MIT |
-| `call-bound` | `1.0.4` | MIT |
-| `caniuse-lite` | `1.0.30001826` | CC-BY-4.0 |
-| `chart.js` | `4.5.1` | MIT |
-| `chownr` | `3.0.0` | BlueOak-1.0.0 |
-| `clsx` | `2.1.1` | MIT |
-| `color-convert` | `2.0.1` | MIT |
-| `color-name` | `1.1.4` | MIT |
-| `combined-stream` | `1.0.8` | MIT |
-| `commander` | `12.1.0` | MIT |
-| `compressible` | `2.0.18` | MIT |
-| `compression` | `1.8.2` | MIT |
-| `compression/node_modules/debug` | `2.6.9` | MIT |
-| `compression/node_modules/ms` | `2.0.0` | MIT |
-| `content-disposition` | `1.1.0` | MIT |
-| `content-type` | `1.0.5` | MIT |
-| `convert-source-map` | `2.0.0` | MIT |
-| `cookie` | `1.1.1` | MIT |
-| `cookie-signature` | `1.2.2` | MIT |
-| `countup.js` | `2.10.1` | MIT |
-| `cross-spawn` | `7.0.6` | MIT |
-| `csstype` | `3.2.3` | MIT |
-| `d3-array` | `3.2.4` | ISC |
-| `d3-color` | `3.1.0` | ISC |
-| `d3-ease` | `3.0.1` | BSD-3-Clause |
-| `d3-format` | `3.1.2` | ISC |
-| `d3-interpolate` | `3.0.1` | ISC |
-| `d3-path` | `3.1.0` | ISC |
-| `d3-scale` | `4.0.2` | ISC |
-| `d3-shape` | `3.2.0` | ISC |
-| `d3-time` | `3.1.0` | ISC |
-| `d3-time-format` | `4.1.0` | ISC |
-| `d3-timer` | `3.0.1` | ISC |
-| `debug` | `4.4.3` | MIT |
-| `decimal.js-light` | `2.5.1` | MIT |
-| `deep-is` | `0.1.4` | MIT |
-| `define-lazy-prop` | `2.0.0` | MIT |
-| `delayed-stream` | `1.0.0` | MIT |
-| `depd` | `2.0.0` | MIT |
-| `destroy` | `1.2.0` | MIT |
-| `detect-libc` | `2.1.2` | Apache-2.0 |
-| `dunder-proto` | `1.0.1` | MIT |
-| `ee-first` | `1.1.1` | MIT |
-| `electron-to-chromium` | `1.5.485` | ISC |
-| `elementtree` | `0.1.7` | Apache-2.0 |
-| `emoji-regex` | `8.0.0` | MIT |
-| `encodeurl` | `2.0.0` | MIT |
-| `env-paths` | `2.2.1` | MIT |
-| `es-define-property` | `1.0.1` | MIT |
-| `es-errors` | `1.3.0` | MIT |
-| `es-object-atoms` | `1.1.2` | MIT |
-| `es-set-tostringtag` | `2.1.0` | MIT |
-| `es-toolkit` | `1.50.0` | MIT |
-| `escalade` | `3.2.0` | MIT |
-| `escape-html` | `1.0.3` | MIT |
-| `escape-string-regexp` | `4.0.0` | MIT |
-| `eslint` | `10.15.0` | MIT |
-| `eslint-plugin-react-hooks` | `7.1.1` | MIT |
-| `eslint-plugin-react-refresh` | `0.5.3` | MIT |
-| `eslint-scope` | `9.1.2` | BSD-2-Clause |
-| `eslint-visitor-keys` | `5.0.1` | Apache-2.0 |
-| `espree` | `11.2.0` | BSD-2-Clause |
-| `esquery` | `1.7.0` | BSD-3-Clause |
-| `esrecurse` | `4.3.0` | BSD-2-Clause |
-| `estraverse` | `5.3.0` | BSD-2-Clause |
-| `esutils` | `2.0.3` | BSD-2-Clause |
-| `etag` | `1.8.1` | MIT |
-| `eventemitter3` | `5.0.4` | MIT |
-| `express` | `5.2.1` | MIT |
-| `express-rate-limit` | `8.6.1` | MIT |
-| `express/node_modules/cookie` | `0.7.2` | MIT |
-| `express/node_modules/mime-db` | `1.54.0` | MIT |
-| `express/node_modules/mime-types` | `3.0.2` | MIT |
-| `fast-deep-equal` | `3.1.3` | MIT |
-| `fast-json-stable-stringify` | `2.1.0` | MIT |
-| `fast-levenshtein` | `2.0.6` | MIT |
-| `fd-slicer` | `1.1.0` | MIT |
-| `fdir` | `6.5.0` | MIT |
-| `file-entry-cache` | `11.1.5` | MIT |
-| `finalhandler` | `2.1.1` | MIT |
-| `find-up` | `5.0.0` | MIT |
-| `flat-cache` | `6.1.23` | MIT |
-| `flatted` | `3.4.4` | ISC |
-| `follow-redirects` | `1.16.3` | MIT |
-| `form-data` | `4.0.6` | MIT |
-| `forwarded` | `0.2.0` | MIT |
-| `framer-motion` | `12.42.2` | MIT |
-| `fresh` | `2.0.0` | MIT |
-| `fs-extra` | `11.4.1` | MIT |
-| `fsevents` | `2.3.3` | MIT |
-| `function-bind` | `1.1.2` | MIT |
-| `gensync` | `1.0.0-beta.2` | MIT |
-| `get-intrinsic` | `1.3.0` | MIT |
-| `get-proto` | `1.0.1` | MIT |
-| `glob` | `14.0.6` | BlueOak-1.0.0 |
-| `glob-parent` | `6.0.2` | ISC |
-| `globals` | `17.7.0` | MIT |
-| `goober` | `2.1.19` | MIT |
-| `gopd` | `1.2.0` | MIT |
-| `graceful-fs` | `4.2.12` | BlueOak-1.0.0 |
-| `has-symbols` | `1.1.0` | MIT |
-| `has-tostringtag` | `1.0.2` | MIT |
-| `hashery` | `1.5.1` | MIT |
-| `hasown` | `2.0.4` | MIT |
-| `hermes-estree` | `0.25.1` | MIT |
-| `hermes-parser` | `0.25.1` | MIT |
-| `hookified` | `1.15.1` | MIT |
-| `http-errors` | `2.0.1` | MIT |
-| `https-proxy-agent` | `5.0.1` | MIT |
-| `iconv-lite` | `0.7.3` | MIT |
-| `ignore` | `5.3.2` | MIT |
-| `immer` | `11.1.15` | MIT |
-| `imurmurhash` | `0.1.4` | MIT |
-| `inherits` | `2.0.4` | ISC |
-| `ini` | `4.1.3` | ISC |
-| `internmap` | `2.0.3` | ISC |
-| `ip-address` | `10.7.6` | MIT |
-| `ipaddr.js` | `1.9.1` | MIT |
-| `is-docker` | `2.2.1` | MIT |
-| `is-extglob` | `2.1.1` | MIT |
-| `is-fullwidth-code-point` | `3.0.0` | MIT |
-| `is-glob` | `4.0.3` | MIT |
-| `is-promise` | `4.0.0` | MIT |
-| `is-wsl` | `2.2.0` | MIT |
-| `isexe` | `2.0.0` | ISC |
-| `js-tokens` | `4.0.0` | MIT |
-| `jsesc` | `3.1.0` | MIT |
-| `json-schema-traverse` | `0.4.1` | MIT |
-| `json-stable-stringify-without-jsonify` | `1.0.1` | MIT |
-| `json5` | `2.2.3` | MIT |
-| `jsonfile` | `6.2.1` | MIT |
-| `keyv` | `5.6.0` | MIT |
-| `kleur` | `4.1.5` | MIT |
-| `levn` | `0.4.1` | MIT |
-| `lightningcss` | `1.33.0` | MPL-2.0 |
-| `lightningcss-android-arm64` | `1.33.0` | MPL-2.0 |
-| `lightningcss-darwin-arm64` | `1.33.0` | MPL-2.0 |
-| `lightningcss-darwin-x64` | `1.33.0` | MPL-2.0 |
-| `lightningcss-freebsd-x64` | `1.33.0` | MPL-2.0 |
-| `lightningcss-linux-arm-gnueabihf` | `1.33.0` | MPL-2.0 |
-| `lightningcss-linux-arm64-gnu` | `1.33.0` | MPL-2.0 |
-| `lightningcss-linux-arm64-musl` | `1.33.0` | MPL-2.0 |
-| `lightningcss-linux-x64-gnu` | `1.33.0` | MPL-2.0 |
-| `lightningcss-linux-x64-musl` | `1.33.0` | MPL-2.0 |
-| `lightningcss-win32-arm64-msvc` | `1.33.0` | MPL-2.0 |
-| `lightningcss-win32-x64-msvc` | `1.33.0` | MPL-2.0 |
-| `locate-path` | `6.0.0` | MIT |
-| `lodash.debounce` | `4.0.8` | MIT |
-| `loose-envify` | `1.4.0` | MIT |
-| `lru-cache` | `5.1.1` | ISC |
-| `lucide-react` | `1.25.0` | ISC |
-| `math-intrinsics` | `1.1.0` | MIT |
-| `media-typer` | `1.1.1` | MIT |
-| `merge-descriptors` | `2.0.0` | MIT |
-| `mime-db` | `1.52.0` | MIT |
-| `mime-types` | `2.1.35` | MIT |
-| `minimatch` | `11.0.8` | BlueOak-1.0.0 |
-| `minipass` | `7.1.3` | BlueOak-1.0.0 |
-| `minizlib` | `3.1.0` | MIT |
-| `motion-dom` | `12.42.2` | MIT |
-| `motion-utils` | `12.39.0` | MIT |
-| `ms` | `2.1.3` | MIT |
-| `nanoid` | `3.3.20` | MIT |
-| `native-run` | `2.1.0` | MIT |
-| `natural-compare` | `1.4.0` | MIT |
-| `negotiator` | `0.6.4` | MIT |
-| `node-releases` | `2.0.64` | MIT |
-| `object-assign` | `4.1.1` | MIT |
-| `object-inspect` | `1.13.4` | MIT |
-| `on-finished` | `2.4.1` | MIT |
-| `on-headers` | `1.1.0` | MIT |
-| `once` | `1.4.0` | ISC |
-| `open` | `8.4.2` | MIT |
-| `optionator` | `0.9.4` | MIT |
-| `p-limit` | `3.1.0` | MIT |
-| `p-locate` | `5.0.0` | MIT |
-| `package-json-from-dist` | `1.0.1` | BlueOak-1.0.0 |
-| `parseurl` | `1.3.3` | MIT |
-| `path-exists` | `4.0.0` | MIT |
-| `path-key` | `3.1.1` | MIT |
-| `path-scurry` | `3.0.0` | BlueOak-1.0.0 |
-| `path-scurry/node_modules/lru-cache` | `11.5.3` | BlueOak-1.0.0 |
-| `path-to-regexp` | `8.4.2` | MIT |
-| `pend` | `1.2.0` | MIT |
-| `picocolors` | `1.1.1` | ISC |
-| `picomatch` | `4.0.7` | MIT |
-| `playwright` | `1.61.1` | Apache-2.0 |
-| `playwright-core` | `1.61.1` | Apache-2.0 |
-| `playwright/node_modules/fsevents` | `2.3.2` | MIT |
-| `plist` | `3.1.1` | MIT |
-| `postcss` | `8.5.33` | MIT |
-| `prelude-ls` | `1.2.1` | MIT |
-| `prompts` | `2.4.2` | MIT |
-| `prompts/node_modules/kleur` | `3.0.3` | MIT |
-| `prop-types` | `15.8.1` | MIT |
-| `proxy-addr` | `2.0.8` | MIT |
-| `proxy-from-env` | `2.1.0` | MIT |
-| `punycode` | `2.3.1` | MIT |
-| `qified` | `0.10.1` | MIT |
-| `qified/node_modules/hookified` | `2.2.0` | MIT |
-| `qs` | `6.17.1` | BSD-3-Clause |
-| `range-parser` | `1.3.0` | MIT |
-| `raw-body` | `3.0.2` | MIT |
-| `react` | `19.2.7` | MIT |
-| `react-chartjs-2` | `5.3.1` | MIT |
-| `react-countup` | `6.5.3` | MIT |
-| `react-dom` | `19.2.7` | MIT |
-| `react-error-boundary` | `6.1.2` | MIT |
-| `react-hot-toast` | `2.6.0` | MIT |
-| `react-icons` | `5.7.0` | MIT |
-| `react-is` | `16.13.1` | MIT |
-| `react-redux` | `9.3.0` | MIT |
-| `react-router` | `7.18.2` | MIT |
-| `react-router-dom` | `7.18.2` | MIT |
-| `react-toastify` | `11.1.0` | MIT |
-| `readable-stream` | `3.6.2` | MIT |
-| `recharts` | `3.10.1` | MIT |
-| `redux` | `5.0.1` | MIT |
-| `redux-thunk` | `3.1.0` | MIT |
-| `reselect` | `5.2.0` | MIT |
-| `rimraf` | `6.1.4` | BlueOak-1.0.0 |
-| `rolldown` | `1.2.19` | MIT |
-| `router` | `2.2.0` | MIT |
-| `safe-buffer` | `5.2.1` | MIT |
-| `safer-buffer` | `2.1.2` | MIT |
-| `sax` | `1.1.4` | ISC |
-| `scheduler` | `0.27.0` | MIT |
-| `semver` | `6.3.1` | ISC |
-| `send` | `1.2.1` | MIT |
-| `send/node_modules/mime-db` | `1.54.0` | MIT |
-| `send/node_modules/mime-types` | `3.0.2` | MIT |
-| `serve-static` | `2.2.1` | MIT |
-| `set-cookie-parser` | `2.7.2` | MIT |
-| `setprototypeof` | `1.2.0` | ISC |
-| `shebang-command` | `2.0.0` | MIT |
-| `shebang-regex` | `3.0.0` | MIT |
-| `side-channel` | `1.1.1` | MIT |
-| `side-channel-list` | `1.0.1` | MIT |
-| `side-channel-map` | `1.0.1` | MIT |
-| `side-channel-weakmap` | `1.0.2` | MIT |
-| `signal-exit` | `3.0.7` | ISC |
-| `simple-plist` | `1.3.1` | MIT |
-| `simple-plist/node_modules/bplist-parser` | `0.3.1` | MIT |
-| `sisteransi` | `1.0.5` | MIT |
-| `slice-ansi` | `4.0.0` | MIT |
-| `source-map-js` | `1.2.2` | BSD-3-Clause |
-| `split2` | `4.2.0` | ISC |
-| `statuses` | `2.0.2` | MIT |
-| `stream-buffers` | `2.2.0` | Unlicense |
-| `string_decoder` | `1.3.0` | MIT |
-| `string-width` | `4.2.3` | MIT |
-| `strip-ansi` | `6.0.1` | MIT |
-| `swiper` | `14.0.6` | MIT |
-| `tar` | `7.5.23` | BlueOak-1.0.0 |
-| `tar/node_modules/yallist` | `5.0.0` | BlueOak-1.0.0 |
-| `through2` | `4.0.2` | MIT |
-| `tiny-invariant` | `1.3.3` | MIT |
-| `tinyglobby` | `0.2.17` | MIT |
-| `toidentifier` | `1.0.1` | MIT |
-| `tree-kill` | `1.2.2` | MIT |
-| `tslib` | `2.8.1` | 0BSD |
-| `type-check` | `0.4.0` | MIT |
-| `type-is` | `2.1.0` | MIT |
-| `type-is/node_modules/content-type` | `2.0.0` | MIT |
-| `type-is/node_modules/mime-db` | `1.54.0` | MIT |
-| `type-is/node_modules/mime-types` | `3.0.2` | MIT |
-| `undici-types` | `8.9.0` | MIT |
-| `universalify` | `2.0.1` | MIT |
-| `unpipe` | `1.0.0` | MIT |
-| `untildify` | `4.0.0` | MIT |
-| `update-browserslist-db` | `1.3.4` | MIT |
-| `uri-js` | `4.4.1` | BSD-2-Clause |
-| `use-sync-external-store` | `1.6.0` | MIT |
-| `util-deprecate` | `1.0.2` | MIT |
-| `vary` | `1.1.2` | MIT |
-| `victory-vendor` | `37.3.6` | MIT AND ISC |
-| `vite` | `8.3.8` | MIT |
-| `which` | `2.0.2` | ISC |
-| `word-wrap` | `1.2.5` | MIT |
-| `wrap-ansi` | `7.0.0` | MIT |
-| `wrappy` | `1.0.2` | ISC |
-| `xcode` | `4.0.0` | Apache-2.0 |
-| `xml2js` | `0.6.2` | MIT |
-| `xml2js/node_modules/xmlbuilder` | `11.0.1` | MIT |
-| `xmlbuilder` | `15.1.1` | MIT |
-| `yallist` | `3.1.1` | ISC |
-| `yauzl` | `2.10.0` | MIT |
-| `yocto-queue` | `0.1.0` | MIT |
-| `zod` | `4.6.7` | MIT |
-| `zod-validation-error` | `4.0.2` | MIT |
+The `Copyright / notice header` column is deliberately marked pending rather than guessed. Run `npm ci` at the repository root and `npm ci` in `server/`, then run `npm run notices:generate`. The collector verifies installed package versions against both lockfiles, extracts package metadata and full license/notice files, and writes a detailed package-by-package notice bundle. It exits non-zero if any production package lacks verifiable license text or an exact installed version.
 
-## Backend dependency tree (165 locked package entries)
+## Production package register
 
-| Package | Locked version | Declared SPDX license expression |
-|---|---|---|
-| `@mongodb-js/saslprep` | `1.4.13` | MIT |
-| `@types/webidl-conversions` | `7.0.3` | MIT |
-| `@types/whatwg-url` | `11.0.5` | MIT |
-| `accepts` | `2.0.0` | MIT |
-| `agent-base` | `7.1.4` | MIT |
-| `append-field` | `1.0.0` | MIT |
-| `async-mutex` | `0.5.0` | MIT |
-| `b4a` | `1.9.0` | Apache-2.0 |
-| `bare-buffer` | `3.7.2` | Apache-2.0 |
-| `bare-events` | `2.9.2` | Apache-2.0 |
-| `bare-fs` | `4.8.4` | Apache-2.0 |
-| `bare-path` | `3.1.3` | Apache-2.0 |
-| `bare-stream` | `2.13.4` | Apache-2.0 |
-| `bare-url` | `2.5.7` | Apache-2.0 |
-| `basic-auth` | `2.0.1` | MIT |
-| `basic-auth/node_modules/safe-buffer` | `5.1.2` | MIT |
-| `bcryptjs` | `3.0.3` | BSD-3-Clause |
-| `body-parser` | `2.4.0` | MIT |
-| `body-parser/node_modules/content-type` | `2.1.0` | MIT |
-| `bson` | `6.10.4` | Apache-2.0 |
-| `buffer-equal-constant-time` | `1.0.1` | BSD-3-Clause |
-| `busboy` | `1.6.0` | MIT (verified from upstream v1.6.0 LICENSE; retained in `licenses/busboy-1.6.0-LICENSE.txt`) |
-| `bytes` | `3.1.2` | MIT |
-| `call-bind-apply-helpers` | `1.0.2` | MIT |
-| `call-bound` | `1.0.4` | MIT |
-| `camelcase` | `6.3.0` | MIT |
-| `cloudinary` | `2.11.0` | MIT |
-| `commondir` | `1.0.1` | MIT |
-| `compressible` | `2.0.18` | MIT |
-| `compression` | `1.8.2` | MIT |
-| `compression/node_modules/debug` | `2.6.9` | MIT |
-| `compression/node_modules/ms` | `2.0.0` | MIT |
-| `compression/node_modules/negotiator` | `0.6.4` | MIT |
-| `content-disposition` | `1.1.0` | MIT |
-| `content-type` | `1.0.5` | MIT |
-| `cookie` | `0.7.2` | MIT |
-| `cookie-parser` | `1.4.7` | MIT |
-| `cookie-signature` | `1.0.6` | MIT |
-| `cors` | `2.8.6` | MIT |
-| `debug` | `4.4.3` | MIT |
-| `depd` | `2.0.0` | MIT |
-| `destroy` | `1.2.0` | MIT |
-| `dotenv` | `17.4.2` | BSD-2-Clause |
-| `dunder-proto` | `1.0.1` | MIT |
-| `ecdsa-sig-formatter` | `1.0.11` | Apache-2.0 |
-| `ee-first` | `1.1.1` | MIT |
-| `encodeurl` | `2.0.0` | MIT |
-| `es-define-property` | `1.0.1` | MIT |
-| `es-errors` | `1.3.0` | MIT |
-| `es-object-atoms` | `1.1.2` | MIT |
-| `escape-html` | `1.0.3` | MIT |
-| `etag` | `1.8.1` | MIT |
-| `events-universal` | `1.0.1` | Apache-2.0 |
-| `express` | `5.2.1` | MIT |
-| `express-rate-limit` | `8.6.2` | MIT |
-| `express/node_modules/cookie-signature` | `1.2.2` | MIT |
-| `fast-fifo` | `1.3.2` | MIT |
-| `finalhandler` | `2.1.1` | MIT |
-| `find-cache-dir` | `3.3.2` | MIT |
-| `find-up` | `4.1.0` | MIT |
-| `follow-redirects` | `1.16.3` | MIT |
-| `forwarded` | `0.2.0` | MIT |
-| `fresh` | `2.0.0` | MIT |
-| `function-bind` | `1.1.2` | MIT |
-| `get-intrinsic` | `1.3.0` | MIT |
-| `get-proto` | `1.0.1` | MIT |
-| `gopd` | `1.2.0` | MIT |
-| `has-symbols` | `1.1.0` | MIT |
-| `hasown` | `2.0.4` | MIT |
-| `helmet` | `8.3.0` | MIT |
-| `http-errors` | `2.0.1` | MIT |
-| `https-proxy-agent` | `7.0.6` | MIT |
-| `iconv-lite` | `0.7.3` | MIT |
-| `inherits` | `2.0.4` | ISC |
-| `ip-address` | `10.7.6` | MIT |
-| `ipaddr.js` | `1.9.1` | MIT |
-| `is-promise` | `4.0.0` | MIT |
-| `jsonwebtoken` | `9.0.3` | MIT |
-| `jwa` | `2.0.1` | MIT |
-| `jws` | `4.0.1` | MIT |
-| `kareem` | `2.6.3` | Apache-2.0 |
-| `locate-path` | `5.0.0` | MIT |
-| `lodash` | `4.18.1` | MIT |
-| `lodash.includes` | `4.3.0` | MIT |
-| `lodash.isboolean` | `3.0.3` | MIT |
-| `lodash.isinteger` | `4.0.4` | MIT |
-| `lodash.isnumber` | `3.0.3` | MIT |
-| `lodash.isplainobject` | `4.0.6` | MIT |
-| `lodash.isstring` | `4.0.1` | MIT |
-| `lodash.once` | `4.1.1` | MIT |
-| `make-dir` | `3.1.0` | MIT |
-| `make-dir/node_modules/semver` | `6.3.2` | ISC |
-| `math-intrinsics` | `1.1.0` | MIT |
-| `media-typer` | `1.1.1` | MIT |
-| `memory-pager` | `1.5.0` | MIT |
-| `merge-descriptors` | `2.0.0` | MIT |
-| `mime-db` | `1.54.0` | MIT |
-| `mime-types` | `3.0.2` | MIT |
-| `mongodb` | `6.20.0` | Apache-2.0 |
-| `mongodb-connection-string-url` | `3.0.2` | Apache-2.0 |
-| `mongodb-memory-server` | `10.4.3` | MIT |
-| `mongodb-memory-server-core` | `10.4.3` | MIT |
-| `mongoose` | `8.24.9` | MIT |
-| `morgan` | `1.12.1` | MIT |
-| `morgan/node_modules/debug` | `2.6.9` | MIT |
-| `morgan/node_modules/ms` | `2.0.0` | MIT |
-| `mpath` | `0.9.0` | MIT |
-| `mquery` | `5.0.1` | MIT |
-| `ms` | `2.1.3` | MIT |
-| `multer` | `2.5.0` | MIT |
-| `multer/node_modules/media-typer` | `0.3.0` | MIT |
-| `multer/node_modules/mime-db` | `1.52.0` | MIT |
-| `multer/node_modules/mime-types` | `2.1.35` | MIT |
-| `multer/node_modules/type-is` | `1.6.18` | MIT |
-| `negotiator` | `1.0.0` | MIT |
-| `new-find-package-json` | `2.0.0` | MIT |
-| `object-assign` | `4.1.1` | MIT |
-| `object-inspect` | `1.13.4` | MIT |
-| `on-finished` | `2.4.1` | MIT |
-| `on-headers` | `1.1.0` | MIT |
-| `once` | `1.4.0` | ISC |
-| `p-limit` | `2.3.0` | MIT |
-| `p-locate` | `4.1.0` | MIT |
-| `p-try` | `2.2.0` | MIT |
-| `parseurl` | `1.3.3` | MIT |
-| `path-exists` | `4.0.0` | MIT |
-| `path-to-regexp` | `8.4.2` | MIT |
-| `pend` | `1.2.0` | MIT |
-| `pkg-dir` | `4.2.0` | MIT |
-| `proxy-addr` | `2.0.8` | MIT |
-| `punycode` | `2.3.1` | MIT |
-| `qs` | `6.17.1` | BSD-3-Clause |
-| `range-parser` | `1.3.0` | MIT |
-| `raw-body` | `3.0.2` | MIT |
-| `router` | `2.2.0` | MIT |
-| `safe-buffer` | `5.2.1` | MIT |
-| `safer-buffer` | `2.1.2` | MIT |
-| `semver` | `7.8.5` | ISC |
-| `send` | `1.2.1` | MIT |
-| `serve-static` | `2.2.1` | MIT |
-| `setprototypeof` | `1.2.0` | ISC |
-| `side-channel` | `1.1.1` | MIT |
-| `side-channel-list` | `1.0.1` | MIT |
-| `side-channel-map` | `1.0.1` | MIT |
-| `side-channel-weakmap` | `1.0.2` | MIT |
-| `sift` | `17.1.3` | MIT |
-| `sparse-bitfield` | `3.0.3` | MIT |
-| `statuses` | `2.0.2` | MIT |
-| `streamsearch` | `1.1.0` | MIT (verified from upstream v1.1.0 LICENSE; retained in `licenses/streamsearch-1.1.0-LICENSE.txt`) |
-| `streamx` | `2.28.1` | MIT |
-| `tar-stream` | `3.2.2` | MIT |
-| `teex` | `1.0.1` | MIT |
-| `text-decoder` | `1.2.7` | Apache-2.0 |
-| `toidentifier` | `1.0.1` | MIT |
-| `tr46` | `5.1.1` | MIT |
-| `tslib` | `2.9.1` | 0BSD |
-| `type-is` | `2.1.0` | MIT |
-| `type-is/node_modules/content-type` | `2.0.0` | MIT |
-| `unpipe` | `1.0.0` | MIT |
-| `validator` | `13.15.35` | MIT |
-| `vary` | `1.1.2` | MIT |
-| `webidl-conversions` | `7.0.0` | BSD-2-Clause |
-| `whatwg-url` | `14.2.0` | MIT |
-| `wrappy` | `1.0.2` | ISC |
-| `yauzl` | `3.4.0` | MIT |
+| Scope | Package | Locked version | Lockfile SPDX expression | Copyright / notice header |
+|---|---|---:|---|---|
+| backend | `@mongodb-js/saslprep` | `1.4.13` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `@types/webidl-conversions` | `7.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `@types/whatwg-url` | `11.0.5` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `accepts` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `append-field` | `1.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `basic-auth` | `2.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `bcryptjs` | `3.0.3` | `BSD-3-Clause` | Not yet extracted from exact upstream license file |
+| backend | `body-parser` | `2.4.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `bson` | `6.10.4` | `Apache-2.0` | Not yet extracted from exact upstream license file |
+| backend | `buffer-equal-constant-time` | `1.0.1` | `BSD-3-Clause` | Not yet extracted from exact upstream license file |
+| backend | `busboy` | `1.6.0` | `UNKNOWN` | Not yet extracted from exact upstream license file |
+| backend | `bytes` | `3.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `call-bind-apply-helpers` | `1.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `call-bound` | `1.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `cloudinary` | `2.11.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `compressible` | `2.0.18` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `compression` | `1.8.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `content-disposition` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `content-type` | `2.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `content-type` | `1.0.5` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `content-type` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `cookie` | `0.7.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `cookie-parser` | `1.4.7` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `cookie-signature` | `1.0.6` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `cookie-signature` | `1.2.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `cors` | `2.8.6` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `debug` | `2.6.9` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `debug` | `4.4.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `debug` | `2.6.9` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `depd` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `destroy` | `1.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `dotenv` | `17.4.2` | `BSD-2-Clause` | Not yet extracted from exact upstream license file |
+| backend | `dunder-proto` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `ecdsa-sig-formatter` | `1.0.11` | `Apache-2.0` | Not yet extracted from exact upstream license file |
+| backend | `ee-first` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `encodeurl` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `es-define-property` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `es-errors` | `1.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `es-object-atoms` | `1.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `escape-html` | `1.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `etag` | `1.8.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `express` | `5.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `express-rate-limit` | `8.6.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `finalhandler` | `2.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `forwarded` | `0.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `fresh` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `function-bind` | `1.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `get-intrinsic` | `1.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `get-proto` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `gopd` | `1.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `has-symbols` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `hasown` | `2.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `helmet` | `8.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `http-errors` | `2.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `iconv-lite` | `0.7.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `inherits` | `2.0.4` | `ISC` | Not yet extracted from exact upstream license file |
+| backend | `ip-address` | `10.7.6` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `ipaddr.js` | `1.9.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `is-promise` | `4.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `jsonwebtoken` | `9.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `jwa` | `2.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `jws` | `4.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `kareem` | `2.6.3` | `Apache-2.0` | Not yet extracted from exact upstream license file |
+| backend | `lodash` | `4.18.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.includes` | `4.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.isboolean` | `3.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.isinteger` | `4.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.isnumber` | `3.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.isplainobject` | `4.0.6` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.isstring` | `4.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `lodash.once` | `4.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `math-intrinsics` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `media-typer` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `media-typer` | `0.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `memory-pager` | `1.5.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `merge-descriptors` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mime-db` | `1.54.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mime-db` | `1.52.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mime-types` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mime-types` | `2.1.35` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mongodb` | `6.20.0` | `Apache-2.0` | Not yet extracted from exact upstream license file |
+| backend | `mongodb-connection-string-url` | `3.0.2` | `Apache-2.0` | Not yet extracted from exact upstream license file |
+| backend | `mongoose` | `8.24.9` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `morgan` | `1.12.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mpath` | `0.9.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `mquery` | `5.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `ms` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `ms` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `ms` | `2.1.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `multer` | `2.5.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `negotiator` | `0.6.4` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `negotiator` | `1.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `object-assign` | `4.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `object-inspect` | `1.13.4` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `on-finished` | `2.4.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `on-headers` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `once` | `1.4.0` | `ISC` | Not yet extracted from exact upstream license file |
+| backend | `parseurl` | `1.3.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `path-to-regexp` | `8.4.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `proxy-addr` | `2.0.8` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `punycode` | `2.3.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `qs` | `6.17.1` | `BSD-3-Clause` | Not yet extracted from exact upstream license file |
+| backend | `range-parser` | `1.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `raw-body` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `router` | `2.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `safe-buffer` | `5.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `safe-buffer` | `5.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `safer-buffer` | `2.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `semver` | `7.8.5` | `ISC` | Not yet extracted from exact upstream license file |
+| backend | `send` | `1.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `serve-static` | `2.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `setprototypeof` | `1.2.0` | `ISC` | Not yet extracted from exact upstream license file |
+| backend | `side-channel` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `side-channel-list` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `side-channel-map` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `side-channel-weakmap` | `1.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `sift` | `17.1.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `sparse-bitfield` | `3.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `statuses` | `2.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `streamsearch` | `1.1.0` | `UNKNOWN` | Not yet extracted from exact upstream license file |
+| backend | `toidentifier` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `tr46` | `5.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `type-is` | `1.6.18` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `type-is` | `2.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `unpipe` | `1.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `validator` | `13.15.35` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `vary` | `1.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `webidl-conversions` | `7.0.0` | `BSD-2-Clause` | Not yet extracted from exact upstream license file |
+| backend | `whatwg-url` | `14.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| backend | `wrappy` | `1.0.2` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `@capacitor/core` | `8.6.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@kurkle/color` | `0.3.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@reduxjs/toolkit` | `2.12.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@standard-schema/spec` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@standard-schema/utils` | `0.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-array` | `3.2.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-color` | `3.1.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-ease` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-interpolate` | `3.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-path` | `3.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-scale` | `4.0.9` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-shape` | `3.1.8` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-time` | `3.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/d3-timer` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/react` | `19.2.17` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `@types/use-sync-external-store` | `0.0.6` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `accepts` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `agent-base` | `6.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `asynckit` | `0.4.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `axios` | `1.21.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `body-parser` | `2.4.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `bytes` | `3.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `call-bind-apply-helpers` | `1.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `call-bound` | `1.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `chart.js` | `4.5.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `clsx` | `2.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `combined-stream` | `1.0.8` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `compressible` | `2.0.18` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `compression` | `1.8.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `content-disposition` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `content-type` | `2.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `content-type` | `1.0.5` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `content-type` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `cookie` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `cookie` | `0.7.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `cookie-signature` | `1.2.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `countup.js` | `2.10.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `csstype` | `3.2.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `d3-array` | `3.2.4` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-color` | `3.1.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-ease` | `3.0.1` | `BSD-3-Clause` | Not yet extracted from exact upstream license file |
+| root | `d3-format` | `3.1.2` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-interpolate` | `3.0.1` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-path` | `3.1.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-scale` | `4.0.2` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-shape` | `3.2.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-time` | `3.1.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-time-format` | `4.1.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `d3-timer` | `3.0.1` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `debug` | `2.6.9` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `debug` | `4.4.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `decimal.js-light` | `2.5.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `delayed-stream` | `1.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `depd` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `destroy` | `1.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `dunder-proto` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `ee-first` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `encodeurl` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `es-define-property` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `es-errors` | `1.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `es-object-atoms` | `1.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `es-set-tostringtag` | `2.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `es-toolkit` | `1.50.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `escape-html` | `1.0.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `etag` | `1.8.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `eventemitter3` | `5.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `express` | `5.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `express-rate-limit` | `8.6.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `finalhandler` | `2.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `follow-redirects` | `1.16.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `form-data` | `4.0.6` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `forwarded` | `0.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `framer-motion` | `12.42.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `fresh` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `function-bind` | `1.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `get-intrinsic` | `1.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `get-proto` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `goober` | `2.1.19` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `gopd` | `1.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `has-symbols` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `has-tostringtag` | `1.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `hasown` | `2.0.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `http-errors` | `2.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `https-proxy-agent` | `5.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `iconv-lite` | `0.7.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `immer` | `11.1.15` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `inherits` | `2.0.4` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `internmap` | `2.0.3` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `ip-address` | `10.7.6` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `ipaddr.js` | `1.9.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `is-promise` | `4.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `js-tokens` | `4.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `lodash.debounce` | `4.0.8` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `loose-envify` | `1.4.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `lucide-react` | `1.25.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `math-intrinsics` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `media-typer` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `merge-descriptors` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-db` | `1.54.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-db` | `1.54.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-db` | `1.52.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-db` | `1.54.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-db` | `1.54.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-types` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-types` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-types` | `2.1.35` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-types` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `mime-types` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `motion-dom` | `12.42.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `motion-utils` | `12.39.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `ms` | `2.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `ms` | `2.1.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `negotiator` | `1.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `negotiator` | `0.6.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `object-assign` | `4.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `object-inspect` | `1.13.4` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `on-finished` | `2.4.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `on-headers` | `1.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `once` | `1.4.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `parseurl` | `1.3.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `path-to-regexp` | `8.4.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `prop-types` | `15.8.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `proxy-addr` | `2.0.8` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `proxy-from-env` | `2.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `qs` | `6.17.1` | `BSD-3-Clause` | Not yet extracted from exact upstream license file |
+| root | `range-parser` | `1.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `raw-body` | `3.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react` | `19.2.7` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-chartjs-2` | `5.3.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-countup` | `6.5.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-dom` | `19.2.7` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-error-boundary` | `6.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-hot-toast` | `2.6.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-icons` | `5.7.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-is` | `16.13.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-redux` | `9.3.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-router` | `7.18.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-router-dom` | `7.18.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `react-toastify` | `11.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `recharts` | `3.10.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `redux` | `5.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `redux-thunk` | `3.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `reselect` | `5.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `router` | `2.2.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `safe-buffer` | `5.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `safer-buffer` | `2.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `scheduler` | `0.27.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `send` | `1.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `serve-static` | `2.2.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `set-cookie-parser` | `2.7.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `setprototypeof` | `1.2.0` | `ISC` | Not yet extracted from exact upstream license file |
+| root | `side-channel` | `1.1.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `side-channel-list` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `side-channel-map` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `side-channel-weakmap` | `1.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `statuses` | `2.0.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `swiper` | `14.0.6` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `tiny-invariant` | `1.3.3` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `toidentifier` | `1.0.1` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `tslib` | `2.8.1` | `0BSD` | Not yet extracted from exact upstream license file |
+| root | `type-is` | `2.1.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `unpipe` | `1.0.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `use-sync-external-store` | `1.6.0` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `vary` | `1.1.2` | `MIT` | Not yet extracted from exact upstream license file |
+| root | `victory-vendor` | `37.3.6` | `MIT AND ISC` | Not yet extracted from exact upstream license file |
+| root | `wrappy` | `1.0.2` | `ISC` | Not yet extracted from exact upstream license file |
 
-## Manifest/lockfile verification findings
+## Known exact-version license texts already retained
 
-- Root lockfile: 417 non-root package entries in the prior inventory; CI reconciled the manifest and committed the updated lockfile at `9af534bdb09a1c1fbd5df465a16f751d3f37ba73`.
-- Backend lockfile: 165 non-root package entries; CI reconciled it and confirmed no backend lockfile change was required.
-- The current root lockfile now contains `node_modules/@playwright/test` version `1.65.1`, matching the manifest range `^1.61.1`. The prior manifest/lockfile mismatch is resolved on this QA branch.
-- `busboy@1.6.0` and `streamsearch@1.1.0` have no modern SPDX metadata in the lockfile. Their exact-version upstream LICENSE files were checked at the `v1.6.0` and `v1.1.0` tags, respectively; both are MIT, and the full texts are retained under `licenses/`.
+The following upstream license texts were previously verified against the exact tagged versions and are retained in the repository. The lockfile currently records their license field as `UNKNOWN`; the text is not silently substituted into the lockfile inventory.
 
-## Required notice completion before distribution
+### busboy@1.6.0 — MIT
 
-- Retain exact upstream license text and any NOTICE/attribution files for every dependency actually included in the customer archive.
-- Preserve compound expressions such as `MIT AND ISC`; do not collapse them to one license.
-- Review MIT, ISC, Apache-2.0, BSD-2-Clause, BSD-3-Clause, BlueOak-1.0.0, MPL-2.0, CC-BY-4.0, Unlicense and 0BSD obligations for the exact versions listed above.
-- Check MPL-2.0 source-distribution obligations against the precise archive contents. Source-only delivery with buyer-side `npm ci` differs from bundling installed dependency copies.
-- Prefer source plus lockfiles and buyer-side dependency installation. Do not bundle `node_modules` before package-specific notices and source obligations are verified.
-- Re-run the inventory whenever either manifest or lockfile changes, then inspect the final archive.
+Source file: `licenses/busboy-1.6.0-LICENSE.txt`
 
-This generated table is a complete snapshot of lockfile license metadata, not a complete set of upstream legal notices. It does not independently establish legal compliance.
+```text
+Copyright Brian White. All rights reserved.
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-## Exact upstream license texts verified in this review
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-- `busboy@1.6.0`: upstream tag `v1.6.0`, `LICENSE`; SHA/source reference recorded by the upstream GitHub repository. Full text copied to `licenses/busboy-1.6.0-LICENSE.txt`.
-- `streamsearch@1.1.0`: upstream tag `v1.1.0`, `LICENSE`; full text copied to `licenses/streamsearch-1.1.0-LICENSE.txt`.
-- These two missing-metadata cases are resolved for the listed versions. This does not mean the other package notices, attribution, MPL-2.0 obligations, or the final archive have been fully reviewed.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+```
 
+### streamsearch@1.1.0 — MIT
 
-## Focused license-obligation review — 2026-11-17
+Source file: `licenses/streamsearch-1.1.0-LICENSE.txt`
 
-The lockfiles contain the following non-MIT or compound SPDX groups that require explicit treatment in the final distribution review:
+```text
+Copyright Brian White. All rights reserved.
 
-| Declared expression | Root locked entries | Backend locked entries | Review note |
-|---|---:|---:|---|
-| MPL-2.0 | 12 | 0 | Lightning CSS 1.33.0 and platform packages. Retain the MPL notice and check source-form / executable-form obligations for the actual files shipped. |
-| CC-BY-4.0 | 1 | 0 | `caniuse-lite@1.0.30001826`. Preserve attribution to caniuse.com and the CC BY 4.0 license reference. |
-| BlueOak-1.0.0 | 12 | 0 | Include the Blue Oak license text or its canonical link with distributed copies. |
-| Unlicense | 2 | 0 | `big-integer@1.6.52`, `stream-buffers@2.2.0`. Retain exact package notices and verify their version-specific contents. |
-| 0BSD | 1 | 1 | Root `tslib@2.8.1`; backend `tslib@2.9.1`. Verify the exact package notices for both versions. |
-| MIT AND ISC | 1 | 0 | `victory-vendor@37.3.6`; preserve both sides of the compound expression and inspect vendored component attributions. |
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The backend lockfile has two entries without modern SPDX metadata: `busboy@1.6.0` and `streamsearch@1.1.0`. Their exact-version upstream MIT texts are retained in `licenses/` as noted above. The remaining standard SPDX groups in both lockfiles are still subject to exact-version package notice review; this table does not replace that work.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-### Canonical license references
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+```
 
-- MPL-2.0: https://www.mozilla.org/en-US/MPL/2.0/
-- CC BY 4.0 legal code: https://creativecommons.org/licenses/by/4.0/legalcode
-- Blue Oak Model License 1.0.0: https://blueoakcouncil.org/license/1.0.0
-- Unlicense: https://unlicense.org/
-- 0BSD: https://spdx.org/licenses/0BSD.html
-- MIT: https://spdx.org/licenses/MIT.html
-- ISC: https://spdx.org/licenses/ISC.html
+## Special review items
 
-### Specific handling notes
+- `victory-vendor@37.3.6` is a production dependency with the compound expression `MIT AND ISC`. The collector retains every discovered LICENSE/COPYING/NOTICE file; review vendored component attributions as well.
+- `busboy@1.6.0` and `streamsearch@1.1.0` are production backend dependencies whose lockfile license field is `UNKNOWN`. Their retained exact-version upstream texts are MIT; keep both texts in every applicable distribution.
+- Development-only MPL-2.0, BlueOak-1.0.0 and CC-BY-4.0 entries are not included in this production-only table. They remain recorded in `LICENSE_INVENTORY.json` and should be assessed if build tooling or its output is distributed.
+- A package SPDX expression alone does not establish copyright ownership, notice sufficiency, or the legal effect of bundling. Review the actual files and applicable terms.
 
-- **MPL-2.0:** the MPL distinguishes Source Code Form from Executable Form. Do not apply a blanket conclusion to the whole application. Identify whether any Lightning CSS covered source or modifications are actually included in the archive or distributed build output, preserve existing notices, and provide recipients the applicable source-form rights and a way to obtain the MPL text. The lockfile alone cannot answer that file-level question.
-- **CC-BY-4.0:** the caniuse project states that its data is available under CC BY 4.0 and requests attribution to caniuse.com. Confirm whether the relevant data is present in the final archive or output and preserve attribution in a reasonable location.
-- **BlueOak-1.0.0:** the license requires recipients of copies of any part of the licensed software to receive the license text or a link to it. A canonical link is available above; package-level notices and exact versions still need verification.
-- **Unlicense / 0BSD:** permissive declarations do not remove the need to retain accurate provenance and verify the actual package license files and copyright notices.
-- **MIT AND ISC:** both license grants must be retained. Do not normalize the expression to MIT alone; inspect the vendored files and upstream notice bundle before shipping.
+## Distribution gate
 
-This focused review records the nonstandard/compound inventory and relevant license conditions. It does **not** close the full dependency-notice blocker, establish file-level applicability, or provide legal advice. A final archive-specific review remains mandatory.
+The release packager requires the collector's completion marker `<!-- RELEASE-NOTICES-COMPLETE -->` and a reviewed `COMMERCIAL_LICENSE.md`. Neither is present in this review bundle, so archive creation must fail closed until those gates are satisfied.
