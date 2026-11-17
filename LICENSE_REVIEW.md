@@ -82,7 +82,16 @@ The lockfile's package metadata declares `MIT AND ISC`. The run #252 generated n
 - [ ] Reconcile the `THIRD-PARTY-NOTICES.md` summary against the collected artifact; do not treat the summary's pending copyright-header column as proof that the collector failed, or the collector's zero-unresolved result as proof that human review passed.
 - [x] Performed a limited current-head path spot-check for the five SVGs listed in `ASSET_PROVENANCE_REGISTER.md`; all five paths exist, and the two icon-sprite paths currently share the same blob. The register now records the exact checked commit. A full tracked-tree, reference, visual and rights review against the final release-candidate commit remains open.
 
-## 5. Remaining work before distribution
+## 5. Static buyer-archive dependency inclusion map
+
+A static review of `scripts/package-release.js`, the root `package.json`, and `server/package.json` establishes the intended archive layout, but no buyer archive was generated or inspected (the approval marker is intentionally absent and the release gate remains HOLD).
+
+- **Frontend:** the packager runs the root Vite build and copies `dist/` into the archive. The root `package.json` and root `package-lock.json` are not copied. Therefore, root production dependencies are expected to be represented through the generated frontend bundle where actually included by the build; root development dependencies are build-time tooling and are not shipped as a runtime installation tree.
+- **Backend:** the packager copies selected server runtime directories/files plus `server/package.json` and `server/package-lock.json` into `backend/`. It removes the `dev` and `test` scripts from the copied manifest and validates an `npm ci --omit=dev` installation. Thus the buyer installs backend production dependencies from the copied backend manifest/lockfile; backend development dependencies are not intended for the runtime archive.
+- **Notices:** the packager copies the generated `THIRD-PARTY-NOTICES.md` into the archive. The collected notice register covers 166 root and 130 backend production dependency entries (296 total). This is a conservative inventory; exact inclusion of root packages in the final frontend bundle and backend production install must be checked against the actual release build and archive.
+- **Open archive verification:** inspect the actual release-candidate `dist/`, backend manifest/lockfile and extracted archive; map bundled frontend modules and installed backend production packages to the notices; confirm generated assets do not contain unregistered third-party code; and retain the final archive hash plus an archive-specific dependency/notice manifest. Do not run packaging or bypass the approval gate while release remains HOLD.
+
+## 6. Remaining work before distribution
 
 - [ ] Human-review the exact-version LICENSE/COPYING/NOTICE texts collected for all 582 lockfile records, including MIT, ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause packages; verify provenance, completeness, attribution wording and applicability to the actual buyer archive.
 - [ ] Complete human review of package-level notices and copyright holders for vendored or bundled code, especially `victory-vendor`; confirm all applicable notices are preserved in the buyer archive.
@@ -91,6 +100,6 @@ The lockfile's package metadata declares `MIT AND ISC`. The run #252 generated n
 - [ ] Generate a final archive-specific notices bundle and verify that every included dependency is represented.
 - [ ] Have the final distribution terms reviewed by qualified counsel.
 
-## 6. Release gate
+## 7. Release gate
 
 This register is an engineering compliance aid, not legal advice or a legal opinion. The lockfile SPDX inventory plus the two retained MIT texts do not establish complete legal clearance. **Commercial release remains HOLD.** Do not merge to `main`, deploy production, publish a paid listing, or distribute a buyer archive while the archive-specific notice review and other release gates remain open.
