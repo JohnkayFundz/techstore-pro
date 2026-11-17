@@ -1,6 +1,6 @@
-# TechStore Pro — Proposed Buyer License
+# TechStore Pro — Superseded Buyer License Working Draft
 
-**DRAFT FOR SELLER DECISIONS AND QUALIFIED LEGAL REVIEW — NOT APPROVED FOR SALE.**
+**SUPERSEDED — DO NOT PUBLISH OR DISTRIBUTE.** This earlier working draft contains seller decisions and terms that are not aligned with the current decision record. The active seller-terms draft is `COMMERCIAL_LICENSE_DRAFT.md` on `qa/customer-e2e`. This file is retained only as historical working material; it is not the approved buyer license. The release packager must continue to fail closed because the required `<!-- COMMERCIAL-LICENSE-APPROVED -->` marker is intentionally absent.
 
 This document is a commercial-terms working draft, not legal advice or an enforceable final agreement. Do not publish it or include it in a buyer archive until the seller has completed the decision register, obtained qualified legal review for the relevant jurisdictions, and deliberately added the approval marker specified at the end.
 
