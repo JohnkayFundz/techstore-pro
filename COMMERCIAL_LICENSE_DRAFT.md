@@ -4,7 +4,9 @@
 
 ## 1. Parties and covered materials
 
-Proposed licensor: John Kalumba, trading as JohnKay Fundz, subject to confirmation of the legal contracting identity and contact details. Product: TechStore Pro source-code starter kit. This license covers only original source code and documentation the licensor owns or is authorized to license and that are expressly included in the delivered package. Third-party dependencies, fonts, marks, media and services are excluded and remain governed by their own terms.
+Proposed licensor: **John Kalumba, trading as JohnKay Fundz**. The seller has confirmed this proposed public contracting identity. Legal registration status, contracting capacity, service address and formal support contact remain to be verified before publication.
+
+Product: TechStore Pro source-code starter kit. This license covers only original source code and documentation the licensor owns or is authorized to license and that are expressly included in the delivered package. Third-party dependencies, fonts, marks, media and services are excluded and remain governed by their own terms.
 
 ## 2. Proposed buyer usage rights
 
@@ -32,7 +34,7 @@ Warranty disclaimers, limitation of liability, indemnity, termination, governing
 
 ## 8. Seller decisions required
 
-- Confirm legal contracting name, business status, address and support contact.
+- Confirm legal registration status, contracting capacity, address and support contact.
 - Confirm one-end-product scope and contractor access.
 - Set support duration, response scope and update policy.
 - Confirm refund window and process against marketplace rules and applicable law.
