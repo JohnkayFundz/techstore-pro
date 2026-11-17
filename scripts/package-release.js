@@ -26,6 +26,8 @@ const fail = (message) => { console.error(`RELEASE BLOCKED: ${message}`); proces
 try {
   if (!fs.existsSync(path.join(root, "package-lock.json")) || !fs.existsSync(path.join(root, "server", "package-lock.json"))) fail("Both committed npm lockfiles are required.");
   if (!fs.existsSync(path.join(root, "COMMERCIAL_LICENSE.md"))) fail("Reviewed buyer-facing COMMERCIAL_LICENSE.md is missing. The draft is not substituted.");
+  const commercialTerms = fs.readFileSync(path.join(root, "COMMERCIAL_LICENSE.md"), "utf8");
+  if (!commercialTerms.includes("<!-- COMMERCIAL-LICENSE-APPROVED -->")) fail("COMMERCIAL_LICENSE.md has not passed seller confirmation and qualified legal review; the approval marker is absent.");
   await run("npm", ["run", "build"]);
   await run("node", ["scripts/generate-third-party-notices.js"]);
   const notices = fs.readFileSync(path.join(root, "THIRD-PARTY-NOTICES.md"), "utf8");

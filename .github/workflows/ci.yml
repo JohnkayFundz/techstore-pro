@@ -62,6 +62,24 @@ jobs:
         working-directory: server
         run: npm ci --ignore-scripts --no-audit --no-fund
 
+      - name: Collect exact-version production dependency notices (QA only)
+        if: github.ref == 'refs/heads/qa/customer-e2e'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm run notices:generate 2>&1 | tee notice-generation.log
+
+      - name: Upload notice review bundle (QA only)
+        if: always() && github.ref == 'refs/heads/qa/customer-e2e'
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstore-pro-third-party-notices
+          path: |
+            THIRD-PARTY-NOTICES.md
+            notice-generation.log
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: Audit all backend dependencies
         working-directory: server
         run: npm audit --audit-level=high
