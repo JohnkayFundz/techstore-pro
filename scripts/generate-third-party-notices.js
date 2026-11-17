@@ -12,16 +12,16 @@ const scopes = [
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
 const isLicenseFile = (name) => /(^|[-_.])(licen[cs]e|copying|notice|copyright)([-_.]|$)/i.test(name);
 const extractReadmeLicense = (readme) => {
-  const lines = readme.split(/\\r?\\n/);
+  const lines = readme.split(/\r?\n/);
   for (let i = 0; i < lines.length; i += 1) {
-    if (!/^(?:#{1,6}\\s+)?licen[cs]es?\\s*$/i.test(lines[i].trim())) continue;
+    if (!/^(?:#{1,6}\s+)?licen[cs]es?\s*$/i.test(lines[i].trim())) continue;
     let start = i + 1;
-    if (start < lines.length && /^[-=]{3,}\\s*$/.test(lines[start])) start += 1;
+    if (start < lines.length && /^[-=]{3,}\s*$/.test(lines[start])) start += 1;
     let end = lines.length;
     for (let j = start; j < lines.length; j += 1) {
-      if (/^#{1,6}\\s+/.test(lines[j]) || /^[-=]{3,}\\s*$/.test(lines[j])) { end = j; break; }
+      if (/^#{1,6}\s+/.test(lines[j]) || /^[-=]{3,}\s*$/.test(lines[j])) { end = j; break; }
     }
-    const section = lines.slice(start, end).join("\\n").trim();
+    const section = lines.slice(start, end).join("\n").trim();
     if (/Permission is hereby granted|Redistribution and use|Mozilla Public License/i.test(section)) return section;
   }
   return "";
