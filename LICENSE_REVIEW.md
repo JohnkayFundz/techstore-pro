@@ -122,3 +122,10 @@ A static review of `scripts/package-release.js`, the root `package.json`, and `s
 ## 7. Release gate
 
 This register is an engineering compliance aid, not legal advice or a legal opinion. The lockfile SPDX inventory plus the two retained MIT texts do not establish complete legal clearance. **Commercial release remains HOLD.** Do not merge to `main`, deploy production, publish a paid listing, or distribute a buyer archive while the archive-specific notice review and other release gates remain open.
+
+
+## Clean notice-regeneration execution route — 2026-11-17
+
+The QA workflow at `.github/workflows/ci.yml` defines a dedicated `notice-review` job for `qa/customer-e2e`. It checks out the branch, installs the exact root and backend dependencies with `npm ci --ignore-scripts --no-audit --no-fund`, runs `npm run notices:generate`, and uploads `THIRD-PARTY-NOTICES.md` plus `notice-generation.log` as the `techstore-pro-third-party-notices` artifact. A push to this QA branch triggers the workflow; this is the available connected-plugin route because no workflow-dispatch action is exposed by the GitHub integration.
+
+This record is procedural only. It does not represent a new generator execution. The next QA artifact must be tied to the resulting workflow run and commit, then compared with the tracked notice file and the prior run #252 artifact. The separate validation job also runs and may report the known high-severity dependency audit blocker; no security-gate bypass is authorized. No release packaging, main-branch update, production deployment, or live payment action is part of this step.
