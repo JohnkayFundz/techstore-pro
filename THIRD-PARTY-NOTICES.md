@@ -374,4 +374,4 @@ IN THE SOFTWARE.
 
 ## Distribution gate
 
-The release packager requires the collector's completion marker `<!-- RELEASE-NOTICES-COMPLETE -->` and a reviewed `COMMERCIAL_LICENSE.md`. Neither is present in this review bundle, so archive creation must fail closed until those gates are satisfied.
+The release packager requires a completion sentinel emitted only by a successful full collection, plus a reviewed `COMMERCIAL_LICENSE.md`. Neither gate is satisfied in this review bundle, so archive creation must fail closed.
