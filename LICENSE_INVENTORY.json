@@ -1,0 +1,5529 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": {
+    "branch": "qa/customer-e2e",
+    "sourceCommit": "026a10544c9c1a5519385e37b425cbf775990a4b",
+    "rootLockfileSha": "67685edb4940344c258501aeaa6bc056b9365fc2",
+    "backendLockfileSha": "e0e0a6b1ea2cc9fce62989252b1a99eaed2131b0"
+  },
+  "description": "Exact locked package versions and SPDX expressions read from package-lock metadata. This is an inventory, not a substitute for inspecting exact-version upstream LICENSE/NOTICE files or legal review.",
+  "totals": {
+    "root": 417,
+    "backend": 165,
+    "all": 582
+  },
+  "licenseCounts": {
+    "root|MIT": 327,
+    "root|ISC": 32,
+    "root|Apache-2.0": 19,
+    "root|BlueOak-1.0.0": 12,
+    "root|Unlicense": 2,
+    "root|CC-BY-4.0": 1,
+    "root|BSD-3-Clause": 4,
+    "root|BSD-2-Clause": 6,
+    "root|MPL-2.0": 12,
+    "root|0BSD": 1,
+    "root|MIT AND ISC": 1,
+    "backend|MIT": 137,
+    "backend|Apache-2.0": 14,
+    "backend|BSD-3-Clause": 3,
+    "backend|UNKNOWN": 2,
+    "backend|BSD-2-Clause": 2,
+    "backend|ISC": 6,
+    "backend|0BSD": 1
+  },
+  "reviewFlags": [
+    {
+      "scope": "root",
+      "packagePath": "@isaacs/nonrecursive-glob-match",
+      "name": "@isaacs/nonrecursive-glob-match",
+      "version": "1.1.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "caniuse-lite",
+      "name": "caniuse-lite",
+      "version": "1.0.30001826",
+      "spdxExpression": "CC-BY-4.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "chownr",
+      "name": "chownr",
+      "version": "3.0.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "glob",
+      "name": "glob",
+      "version": "14.0.6",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "graceful-fs",
+      "name": "graceful-fs",
+      "version": "4.2.12",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss",
+      "name": "lightningcss",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-android-arm64",
+      "name": "lightningcss-android-arm64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-darwin-arm64",
+      "name": "lightningcss-darwin-arm64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-darwin-x64",
+      "name": "lightningcss-darwin-x64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-freebsd-x64",
+      "name": "lightningcss-freebsd-x64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-arm-gnueabihf",
+      "name": "lightningcss-linux-arm-gnueabihf",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-arm64-gnu",
+      "name": "lightningcss-linux-arm64-gnu",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-arm64-musl",
+      "name": "lightningcss-linux-arm64-musl",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-x64-gnu",
+      "name": "lightningcss-linux-x64-gnu",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-x64-musl",
+      "name": "lightningcss-linux-x64-musl",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-win32-arm64-msvc",
+      "name": "lightningcss-win32-arm64-msvc",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-win32-x64-msvc",
+      "name": "lightningcss-win32-x64-msvc",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "minimatch",
+      "name": "minimatch",
+      "version": "11.0.8",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "minipass",
+      "name": "minipass",
+      "version": "7.1.3",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "package-json-from-dist",
+      "name": "package-json-from-dist",
+      "version": "1.0.1",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-scurry",
+      "name": "path-scurry",
+      "version": "3.0.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-scurry/node_modules/lru-cache",
+      "name": "lru-cache",
+      "version": "11.5.3",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "rimraf",
+      "name": "rimraf",
+      "version": "6.1.4",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tar",
+      "name": "tar",
+      "version": "7.5.23",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tar/node_modules/yallist",
+      "name": "yallist",
+      "version": "5.0.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "victory-vendor",
+      "name": "victory-vendor",
+      "version": "37.3.6",
+      "spdxExpression": "MIT AND ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "busboy",
+      "name": "busboy",
+      "version": "1.6.0",
+      "spdxExpression": "UNKNOWN",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "streamsearch",
+      "name": "streamsearch",
+      "version": "1.1.0",
+      "spdxExpression": "UNKNOWN",
+      "devDependency": false,
+      "optionalDependency": false
+    }
+  ],
+  "packages": [
+    {
+      "scope": "root",
+      "packagePath": "@babel/code-frame",
+      "name": "@babel/code-frame",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/compat-data",
+      "name": "@babel/compat-data",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/core",
+      "name": "@babel/core",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/generator",
+      "name": "@babel/generator",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-compilation-targets",
+      "name": "@babel/helper-compilation-targets",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-globals",
+      "name": "@babel/helper-globals",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-module-imports",
+      "name": "@babel/helper-module-imports",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-module-transforms",
+      "name": "@babel/helper-module-transforms",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-string-parser",
+      "name": "@babel/helper-string-parser",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-validator-identifier",
+      "name": "@babel/helper-validator-identifier",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helper-validator-option",
+      "name": "@babel/helper-validator-option",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/helpers",
+      "name": "@babel/helpers",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/parser",
+      "name": "@babel/parser",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/template",
+      "name": "@babel/template",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/traverse",
+      "name": "@babel/traverse",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@babel/types",
+      "name": "@babel/types",
+      "version": "7.29.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@cacheable/memory",
+      "name": "@cacheable/memory",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@cacheable/utils",
+      "name": "@cacheable/utils",
+      "version": "2.5.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@capacitor/cli",
+      "name": "@capacitor/cli",
+      "version": "8.6.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@capacitor/cli/node_modules/semver",
+      "name": "semver",
+      "version": "7.8.6",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@capacitor/core",
+      "name": "@capacitor/core",
+      "version": "8.6.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@emnapi/core",
+      "name": "@emnapi/core",
+      "version": "2.0.0-beta.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@emnapi/runtime",
+      "name": "@emnapi/runtime",
+      "version": "2.0.0-beta.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@emnapi/wasi-threads",
+      "name": "@emnapi/wasi-threads",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint-community/eslint-utils",
+      "name": "@eslint-community/eslint-utils",
+      "version": "4.9.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint-community/eslint-utils/node_modules/eslint-visitor-keys",
+      "name": "eslint-visitor-keys",
+      "version": "3.4.3",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint-community/regexpp",
+      "name": "@eslint-community/regexpp",
+      "version": "4.12.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint/config-array",
+      "name": "@eslint/config-array",
+      "version": "0.23.6",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint/config-helpers",
+      "name": "@eslint/config-helpers",
+      "version": "0.7.0",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint/core",
+      "name": "@eslint/core",
+      "version": "1.2.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint/js",
+      "name": "@eslint/js",
+      "version": "10.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint/object-schema",
+      "name": "@eslint/object-schema",
+      "version": "3.0.5",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@eslint/plugin-kit",
+      "name": "@eslint/plugin-kit",
+      "version": "0.7.3",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@humanfs/core",
+      "name": "@humanfs/core",
+      "version": "0.19.2",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@humanfs/node",
+      "name": "@humanfs/node",
+      "version": "0.16.8",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@humanfs/types",
+      "name": "@humanfs/types",
+      "version": "0.15.0",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@humanwhocodes/module-importer",
+      "name": "@humanwhocodes/module-importer",
+      "version": "1.0.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@humanwhocodes/retry",
+      "name": "@humanwhocodes/retry",
+      "version": "0.4.3",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/cli-framework-output",
+      "name": "@ionic/cli-framework-output",
+      "version": "2.2.8",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-array",
+      "name": "@ionic/utils-array",
+      "version": "2.1.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-fs",
+      "name": "@ionic/utils-fs",
+      "version": "3.1.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-fs/node_modules/fs-extra",
+      "name": "fs-extra",
+      "version": "9.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-object",
+      "name": "@ionic/utils-object",
+      "version": "2.1.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-process",
+      "name": "@ionic/utils-process",
+      "version": "2.1.12",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-stream",
+      "name": "@ionic/utils-stream",
+      "version": "3.1.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-subprocess",
+      "name": "@ionic/utils-subprocess",
+      "version": "3.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@ionic/utils-terminal",
+      "name": "@ionic/utils-terminal",
+      "version": "2.3.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@isaacs/fs-minipass",
+      "name": "@isaacs/fs-minipass",
+      "version": "4.0.1",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@isaacs/nonrecursive-glob-match",
+      "name": "@isaacs/nonrecursive-glob-match",
+      "version": "1.1.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@jridgewell/gen-mapping",
+      "name": "@jridgewell/gen-mapping",
+      "version": "0.3.13",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@jridgewell/remapping",
+      "name": "@jridgewell/remapping",
+      "version": "2.3.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@jridgewell/resolve-uri",
+      "name": "@jridgewell/resolve-uri",
+      "version": "3.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@jridgewell/sourcemap-codec",
+      "name": "@jridgewell/sourcemap-codec",
+      "version": "1.5.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@jridgewell/trace-mapping",
+      "name": "@jridgewell/trace-mapping",
+      "version": "0.3.31",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@keyv/bigmap",
+      "name": "@keyv/bigmap",
+      "version": "1.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@keyv/serialize",
+      "name": "@keyv/serialize",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@kurkle/color",
+      "name": "@kurkle/color",
+      "version": "0.3.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@napi-rs/wasm-runtime",
+      "name": "@napi-rs/wasm-runtime",
+      "version": "1.2.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@oxc-project/types",
+      "name": "@oxc-project/types",
+      "version": "0.156.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@playwright/test",
+      "name": "@playwright/test",
+      "version": "1.65.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@reduxjs/toolkit",
+      "name": "@reduxjs/toolkit",
+      "version": "2.12.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-android-arm-eabi",
+      "name": "@rolldown/binding-android-arm-eabi",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-android-arm64",
+      "name": "@rolldown/binding-android-arm64",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-darwin-arm64",
+      "name": "@rolldown/binding-darwin-arm64",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-darwin-x64",
+      "name": "@rolldown/binding-darwin-x64",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-freebsd-x64",
+      "name": "@rolldown/binding-freebsd-x64",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-arm-gnueabihf",
+      "name": "@rolldown/binding-linux-arm-gnueabihf",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-arm64-gnu",
+      "name": "@rolldown/binding-linux-arm64-gnu",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-arm64-musl",
+      "name": "@rolldown/binding-linux-arm64-musl",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-ppc64-gnu",
+      "name": "@rolldown/binding-linux-ppc64-gnu",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-s390x-gnu",
+      "name": "@rolldown/binding-linux-s390x-gnu",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-x64-gnu",
+      "name": "@rolldown/binding-linux-x64-gnu",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-linux-x64-musl",
+      "name": "@rolldown/binding-linux-x64-musl",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-openharmony-arm64",
+      "name": "@rolldown/binding-openharmony-arm64",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-wasm32-wasi",
+      "name": "@rolldown/binding-wasm32-wasi",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-win32-arm64-msvc",
+      "name": "@rolldown/binding-win32-arm64-msvc",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/binding-win32-x64-msvc",
+      "name": "@rolldown/binding-win32-x64-msvc",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@rolldown/pluginutils",
+      "name": "@rolldown/pluginutils",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@standard-schema/spec",
+      "name": "@standard-schema/spec",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@standard-schema/utils",
+      "name": "@standard-schema/utils",
+      "version": "0.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@tybys/wasm-util",
+      "name": "@tybys/wasm-util",
+      "version": "0.10.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-array",
+      "name": "@types/d3-array",
+      "version": "3.2.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-color",
+      "name": "@types/d3-color",
+      "version": "3.1.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-ease",
+      "name": "@types/d3-ease",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-interpolate",
+      "name": "@types/d3-interpolate",
+      "version": "3.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-path",
+      "name": "@types/d3-path",
+      "version": "3.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-scale",
+      "name": "@types/d3-scale",
+      "version": "4.0.9",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-shape",
+      "name": "@types/d3-shape",
+      "version": "3.1.8",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-time",
+      "name": "@types/d3-time",
+      "version": "3.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/d3-timer",
+      "name": "@types/d3-timer",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/esrecurse",
+      "name": "@types/esrecurse",
+      "version": "4.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/estree",
+      "name": "@types/estree",
+      "version": "1.0.9",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/fs-extra",
+      "name": "@types/fs-extra",
+      "version": "8.1.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/json-schema",
+      "name": "@types/json-schema",
+      "version": "7.0.15",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/node",
+      "name": "@types/node",
+      "version": "26.6.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/react",
+      "name": "@types/react",
+      "version": "19.2.17",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/react-dom",
+      "name": "@types/react-dom",
+      "version": "19.2.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/slice-ansi",
+      "name": "@types/slice-ansi",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@types/use-sync-external-store",
+      "name": "@types/use-sync-external-store",
+      "version": "0.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@vitejs/plugin-react",
+      "name": "@vitejs/plugin-react",
+      "version": "6.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "@xmldom/xmldom",
+      "name": "@xmldom/xmldom",
+      "version": "0.9.12",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "accepts",
+      "name": "accepts",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "accepts/node_modules/mime-db",
+      "name": "mime-db",
+      "version": "1.54.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "accepts/node_modules/mime-types",
+      "name": "mime-types",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "accepts/node_modules/negotiator",
+      "name": "negotiator",
+      "version": "1.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "acorn",
+      "name": "acorn",
+      "version": "8.17.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "acorn-jsx",
+      "name": "acorn-jsx",
+      "version": "5.3.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "agent-base",
+      "name": "agent-base",
+      "version": "6.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ajv",
+      "name": "ajv",
+      "version": "6.15.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ansi-regex",
+      "name": "ansi-regex",
+      "version": "5.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ansi-styles",
+      "name": "ansi-styles",
+      "version": "4.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "astral-regex",
+      "name": "astral-regex",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "asynckit",
+      "name": "asynckit",
+      "version": "0.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "at-least-node",
+      "name": "at-least-node",
+      "version": "1.0.0",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "axios",
+      "name": "axios",
+      "version": "1.21.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "balanced-match",
+      "name": "balanced-match",
+      "version": "4.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "base64-js",
+      "name": "base64-js",
+      "version": "1.5.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "baseline-browser-mapping",
+      "name": "baseline-browser-mapping",
+      "version": "2.11.37",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "big-integer",
+      "name": "big-integer",
+      "version": "1.6.52",
+      "spdxExpression": "Unlicense",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "body-parser",
+      "name": "body-parser",
+      "version": "2.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "body-parser/node_modules/content-type",
+      "name": "content-type",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "bplist-creator",
+      "name": "bplist-creator",
+      "version": "0.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "bplist-parser",
+      "name": "bplist-parser",
+      "version": "0.3.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "brace-expansion",
+      "name": "brace-expansion",
+      "version": "5.0.13",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "browserslist",
+      "name": "browserslist",
+      "version": "4.29.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "buffer-crc32",
+      "name": "buffer-crc32",
+      "version": "0.2.13",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "bytes",
+      "name": "bytes",
+      "version": "3.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "cacheable",
+      "name": "cacheable",
+      "version": "2.5.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "call-bind-apply-helpers",
+      "name": "call-bind-apply-helpers",
+      "version": "1.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "call-bound",
+      "name": "call-bound",
+      "version": "1.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "caniuse-lite",
+      "name": "caniuse-lite",
+      "version": "1.0.30001826",
+      "spdxExpression": "CC-BY-4.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "chart.js",
+      "name": "chart.js",
+      "version": "4.5.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "chownr",
+      "name": "chownr",
+      "version": "3.0.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "clsx",
+      "name": "clsx",
+      "version": "2.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "color-convert",
+      "name": "color-convert",
+      "version": "2.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "color-name",
+      "name": "color-name",
+      "version": "1.1.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "combined-stream",
+      "name": "combined-stream",
+      "version": "1.0.8",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "commander",
+      "name": "commander",
+      "version": "12.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "compressible",
+      "name": "compressible",
+      "version": "2.0.18",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "compression",
+      "name": "compression",
+      "version": "1.8.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "compression/node_modules/debug",
+      "name": "debug",
+      "version": "2.6.9",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "compression/node_modules/ms",
+      "name": "ms",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "content-disposition",
+      "name": "content-disposition",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "content-type",
+      "name": "content-type",
+      "version": "1.0.5",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "convert-source-map",
+      "name": "convert-source-map",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "cookie",
+      "name": "cookie",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "cookie-signature",
+      "name": "cookie-signature",
+      "version": "1.2.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "countup.js",
+      "name": "countup.js",
+      "version": "2.10.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "cross-spawn",
+      "name": "cross-spawn",
+      "version": "7.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "csstype",
+      "name": "csstype",
+      "version": "3.2.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-array",
+      "name": "d3-array",
+      "version": "3.2.4",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-color",
+      "name": "d3-color",
+      "version": "3.1.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-ease",
+      "name": "d3-ease",
+      "version": "3.0.1",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-format",
+      "name": "d3-format",
+      "version": "3.1.2",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-interpolate",
+      "name": "d3-interpolate",
+      "version": "3.0.1",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-path",
+      "name": "d3-path",
+      "version": "3.1.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-scale",
+      "name": "d3-scale",
+      "version": "4.0.2",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-shape",
+      "name": "d3-shape",
+      "version": "3.2.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-time",
+      "name": "d3-time",
+      "version": "3.1.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-time-format",
+      "name": "d3-time-format",
+      "version": "4.1.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "d3-timer",
+      "name": "d3-timer",
+      "version": "3.0.1",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "debug",
+      "name": "debug",
+      "version": "4.4.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "decimal.js-light",
+      "name": "decimal.js-light",
+      "version": "2.5.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "deep-is",
+      "name": "deep-is",
+      "version": "0.1.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "define-lazy-prop",
+      "name": "define-lazy-prop",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "delayed-stream",
+      "name": "delayed-stream",
+      "version": "1.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "depd",
+      "name": "depd",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "destroy",
+      "name": "destroy",
+      "version": "1.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "detect-libc",
+      "name": "detect-libc",
+      "version": "2.1.2",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "dunder-proto",
+      "name": "dunder-proto",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ee-first",
+      "name": "ee-first",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "electron-to-chromium",
+      "name": "electron-to-chromium",
+      "version": "1.5.485",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "elementtree",
+      "name": "elementtree",
+      "version": "0.1.7",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "emoji-regex",
+      "name": "emoji-regex",
+      "version": "8.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "encodeurl",
+      "name": "encodeurl",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "env-paths",
+      "name": "env-paths",
+      "version": "2.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "es-define-property",
+      "name": "es-define-property",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "es-errors",
+      "name": "es-errors",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "es-object-atoms",
+      "name": "es-object-atoms",
+      "version": "1.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "es-set-tostringtag",
+      "name": "es-set-tostringtag",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "es-toolkit",
+      "name": "es-toolkit",
+      "version": "1.50.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "escalade",
+      "name": "escalade",
+      "version": "3.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "escape-html",
+      "name": "escape-html",
+      "version": "1.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "escape-string-regexp",
+      "name": "escape-string-regexp",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "eslint",
+      "name": "eslint",
+      "version": "10.15.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "eslint-plugin-react-hooks",
+      "name": "eslint-plugin-react-hooks",
+      "version": "7.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "eslint-plugin-react-refresh",
+      "name": "eslint-plugin-react-refresh",
+      "version": "0.5.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "eslint-scope",
+      "name": "eslint-scope",
+      "version": "9.1.2",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "eslint-visitor-keys",
+      "name": "eslint-visitor-keys",
+      "version": "5.0.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "espree",
+      "name": "espree",
+      "version": "11.2.0",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "esquery",
+      "name": "esquery",
+      "version": "1.7.0",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "esrecurse",
+      "name": "esrecurse",
+      "version": "4.3.0",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "estraverse",
+      "name": "estraverse",
+      "version": "5.3.0",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "esutils",
+      "name": "esutils",
+      "version": "2.0.3",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "etag",
+      "name": "etag",
+      "version": "1.8.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "eventemitter3",
+      "name": "eventemitter3",
+      "version": "5.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "express",
+      "name": "express",
+      "version": "5.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "express-rate-limit",
+      "name": "express-rate-limit",
+      "version": "8.6.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "express/node_modules/cookie",
+      "name": "cookie",
+      "version": "0.7.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "express/node_modules/mime-db",
+      "name": "mime-db",
+      "version": "1.54.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "express/node_modules/mime-types",
+      "name": "mime-types",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fast-deep-equal",
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fast-json-stable-stringify",
+      "name": "fast-json-stable-stringify",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fast-levenshtein",
+      "name": "fast-levenshtein",
+      "version": "2.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fd-slicer",
+      "name": "fd-slicer",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fdir",
+      "name": "fdir",
+      "version": "6.5.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "file-entry-cache",
+      "name": "file-entry-cache",
+      "version": "11.1.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "finalhandler",
+      "name": "finalhandler",
+      "version": "2.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "find-up",
+      "name": "find-up",
+      "version": "5.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "flat-cache",
+      "name": "flat-cache",
+      "version": "6.1.23",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "flatted",
+      "name": "flatted",
+      "version": "3.4.4",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "follow-redirects",
+      "name": "follow-redirects",
+      "version": "1.16.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "form-data",
+      "name": "form-data",
+      "version": "4.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "forwarded",
+      "name": "forwarded",
+      "version": "0.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "framer-motion",
+      "name": "framer-motion",
+      "version": "12.42.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fresh",
+      "name": "fresh",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fs-extra",
+      "name": "fs-extra",
+      "version": "11.4.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "fsevents",
+      "name": "fsevents",
+      "version": "2.3.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "function-bind",
+      "name": "function-bind",
+      "version": "1.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "gensync",
+      "name": "gensync",
+      "version": "1.0.0-beta.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "get-intrinsic",
+      "name": "get-intrinsic",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "get-proto",
+      "name": "get-proto",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "glob",
+      "name": "glob",
+      "version": "14.0.6",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "glob-parent",
+      "name": "glob-parent",
+      "version": "6.0.2",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "globals",
+      "name": "globals",
+      "version": "17.7.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "goober",
+      "name": "goober",
+      "version": "2.1.19",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "gopd",
+      "name": "gopd",
+      "version": "1.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "graceful-fs",
+      "name": "graceful-fs",
+      "version": "4.2.12",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "has-symbols",
+      "name": "has-symbols",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "has-tostringtag",
+      "name": "has-tostringtag",
+      "version": "1.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "hashery",
+      "name": "hashery",
+      "version": "1.5.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "hasown",
+      "name": "hasown",
+      "version": "2.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "hermes-estree",
+      "name": "hermes-estree",
+      "version": "0.25.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "hermes-parser",
+      "name": "hermes-parser",
+      "version": "0.25.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "hookified",
+      "name": "hookified",
+      "version": "1.15.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "http-errors",
+      "name": "http-errors",
+      "version": "2.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "https-proxy-agent",
+      "name": "https-proxy-agent",
+      "version": "5.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "iconv-lite",
+      "name": "iconv-lite",
+      "version": "0.7.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ignore",
+      "name": "ignore",
+      "version": "5.3.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "immer",
+      "name": "immer",
+      "version": "11.1.15",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "imurmurhash",
+      "name": "imurmurhash",
+      "version": "0.1.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "inherits",
+      "name": "inherits",
+      "version": "2.0.4",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ini",
+      "name": "ini",
+      "version": "4.1.3",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "internmap",
+      "name": "internmap",
+      "version": "2.0.3",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ip-address",
+      "name": "ip-address",
+      "version": "10.7.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ipaddr.js",
+      "name": "ipaddr.js",
+      "version": "1.9.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "is-docker",
+      "name": "is-docker",
+      "version": "2.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "is-extglob",
+      "name": "is-extglob",
+      "version": "2.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "is-fullwidth-code-point",
+      "name": "is-fullwidth-code-point",
+      "version": "3.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "is-glob",
+      "name": "is-glob",
+      "version": "4.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "is-promise",
+      "name": "is-promise",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "is-wsl",
+      "name": "is-wsl",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "isexe",
+      "name": "isexe",
+      "version": "2.0.0",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "js-tokens",
+      "name": "js-tokens",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "jsesc",
+      "name": "jsesc",
+      "version": "3.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "json-schema-traverse",
+      "name": "json-schema-traverse",
+      "version": "0.4.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "json-stable-stringify-without-jsonify",
+      "name": "json-stable-stringify-without-jsonify",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "json5",
+      "name": "json5",
+      "version": "2.2.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "jsonfile",
+      "name": "jsonfile",
+      "version": "6.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "keyv",
+      "name": "keyv",
+      "version": "5.6.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "kleur",
+      "name": "kleur",
+      "version": "4.1.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "levn",
+      "name": "levn",
+      "version": "0.4.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss",
+      "name": "lightningcss",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-android-arm64",
+      "name": "lightningcss-android-arm64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-darwin-arm64",
+      "name": "lightningcss-darwin-arm64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-darwin-x64",
+      "name": "lightningcss-darwin-x64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-freebsd-x64",
+      "name": "lightningcss-freebsd-x64",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-arm-gnueabihf",
+      "name": "lightningcss-linux-arm-gnueabihf",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-arm64-gnu",
+      "name": "lightningcss-linux-arm64-gnu",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-arm64-musl",
+      "name": "lightningcss-linux-arm64-musl",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-x64-gnu",
+      "name": "lightningcss-linux-x64-gnu",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-linux-x64-musl",
+      "name": "lightningcss-linux-x64-musl",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-win32-arm64-msvc",
+      "name": "lightningcss-win32-arm64-msvc",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "lightningcss-win32-x64-msvc",
+      "name": "lightningcss-win32-x64-msvc",
+      "version": "1.33.0",
+      "spdxExpression": "MPL-2.0",
+      "devDependency": true,
+      "optionalDependency": true
+    },
+    {
+      "scope": "root",
+      "packagePath": "locate-path",
+      "name": "locate-path",
+      "version": "6.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lodash.debounce",
+      "name": "lodash.debounce",
+      "version": "4.0.8",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "loose-envify",
+      "name": "loose-envify",
+      "version": "1.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lru-cache",
+      "name": "lru-cache",
+      "version": "5.1.1",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "lucide-react",
+      "name": "lucide-react",
+      "version": "1.25.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "math-intrinsics",
+      "name": "math-intrinsics",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "media-typer",
+      "name": "media-typer",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "merge-descriptors",
+      "name": "merge-descriptors",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "mime-db",
+      "name": "mime-db",
+      "version": "1.52.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "mime-types",
+      "name": "mime-types",
+      "version": "2.1.35",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "minimatch",
+      "name": "minimatch",
+      "version": "11.0.8",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "minipass",
+      "name": "minipass",
+      "version": "7.1.3",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "minizlib",
+      "name": "minizlib",
+      "version": "3.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "motion-dom",
+      "name": "motion-dom",
+      "version": "12.42.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "motion-utils",
+      "name": "motion-utils",
+      "version": "12.39.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "ms",
+      "name": "ms",
+      "version": "2.1.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "nanoid",
+      "name": "nanoid",
+      "version": "3.3.20",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "native-run",
+      "name": "native-run",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "natural-compare",
+      "name": "natural-compare",
+      "version": "1.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "negotiator",
+      "name": "negotiator",
+      "version": "0.6.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "node-releases",
+      "name": "node-releases",
+      "version": "2.0.64",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "object-assign",
+      "name": "object-assign",
+      "version": "4.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "object-inspect",
+      "name": "object-inspect",
+      "version": "1.13.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "on-finished",
+      "name": "on-finished",
+      "version": "2.4.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "on-headers",
+      "name": "on-headers",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "once",
+      "name": "once",
+      "version": "1.4.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "open",
+      "name": "open",
+      "version": "8.4.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "optionator",
+      "name": "optionator",
+      "version": "0.9.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "p-limit",
+      "name": "p-limit",
+      "version": "3.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "p-locate",
+      "name": "p-locate",
+      "version": "5.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "package-json-from-dist",
+      "name": "package-json-from-dist",
+      "version": "1.0.1",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "parseurl",
+      "name": "parseurl",
+      "version": "1.3.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-exists",
+      "name": "path-exists",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-key",
+      "name": "path-key",
+      "version": "3.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-scurry",
+      "name": "path-scurry",
+      "version": "3.0.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-scurry/node_modules/lru-cache",
+      "name": "lru-cache",
+      "version": "11.5.3",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "path-to-regexp",
+      "name": "path-to-regexp",
+      "version": "8.4.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "pend",
+      "name": "pend",
+      "version": "1.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "picocolors",
+      "name": "picocolors",
+      "version": "1.1.1",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "picomatch",
+      "name": "picomatch",
+      "version": "4.0.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "playwright",
+      "name": "playwright",
+      "version": "1.65.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "playwright-core",
+      "name": "playwright-core",
+      "version": "1.65.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "plist",
+      "name": "plist",
+      "version": "3.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "postcss",
+      "name": "postcss",
+      "version": "8.5.33",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "prelude-ls",
+      "name": "prelude-ls",
+      "version": "1.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "prompts",
+      "name": "prompts",
+      "version": "2.4.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "prompts/node_modules/kleur",
+      "name": "kleur",
+      "version": "3.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "prop-types",
+      "name": "prop-types",
+      "version": "15.8.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "proxy-addr",
+      "name": "proxy-addr",
+      "version": "2.0.8",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "proxy-from-env",
+      "name": "proxy-from-env",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "punycode",
+      "name": "punycode",
+      "version": "2.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "qified",
+      "name": "qified",
+      "version": "0.10.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "qified/node_modules/hookified",
+      "name": "hookified",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "qs",
+      "name": "qs",
+      "version": "6.17.1",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "range-parser",
+      "name": "range-parser",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "raw-body",
+      "name": "raw-body",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react",
+      "name": "react",
+      "version": "19.2.7",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-chartjs-2",
+      "name": "react-chartjs-2",
+      "version": "5.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-countup",
+      "name": "react-countup",
+      "version": "6.5.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-dom",
+      "name": "react-dom",
+      "version": "19.2.7",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-error-boundary",
+      "name": "react-error-boundary",
+      "version": "6.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-hot-toast",
+      "name": "react-hot-toast",
+      "version": "2.6.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-icons",
+      "name": "react-icons",
+      "version": "5.7.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-is",
+      "name": "react-is",
+      "version": "16.13.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-redux",
+      "name": "react-redux",
+      "version": "9.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-router",
+      "name": "react-router",
+      "version": "7.18.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-router-dom",
+      "name": "react-router-dom",
+      "version": "7.18.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "react-toastify",
+      "name": "react-toastify",
+      "version": "11.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "readable-stream",
+      "name": "readable-stream",
+      "version": "3.6.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "recharts",
+      "name": "recharts",
+      "version": "3.10.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "redux",
+      "name": "redux",
+      "version": "5.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "redux-thunk",
+      "name": "redux-thunk",
+      "version": "3.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "reselect",
+      "name": "reselect",
+      "version": "5.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "rimraf",
+      "name": "rimraf",
+      "version": "6.1.4",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "rolldown",
+      "name": "rolldown",
+      "version": "1.2.19",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "router",
+      "name": "router",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "safe-buffer",
+      "name": "safe-buffer",
+      "version": "5.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "safer-buffer",
+      "name": "safer-buffer",
+      "version": "2.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "sax",
+      "name": "sax",
+      "version": "1.1.4",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "scheduler",
+      "name": "scheduler",
+      "version": "0.27.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "semver",
+      "name": "semver",
+      "version": "6.3.1",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "send",
+      "name": "send",
+      "version": "1.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "send/node_modules/mime-db",
+      "name": "mime-db",
+      "version": "1.54.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "send/node_modules/mime-types",
+      "name": "mime-types",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "serve-static",
+      "name": "serve-static",
+      "version": "2.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "set-cookie-parser",
+      "name": "set-cookie-parser",
+      "version": "2.7.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "setprototypeof",
+      "name": "setprototypeof",
+      "version": "1.2.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "shebang-command",
+      "name": "shebang-command",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "shebang-regex",
+      "name": "shebang-regex",
+      "version": "3.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "side-channel",
+      "name": "side-channel",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "side-channel-list",
+      "name": "side-channel-list",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "side-channel-map",
+      "name": "side-channel-map",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "side-channel-weakmap",
+      "name": "side-channel-weakmap",
+      "version": "1.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "signal-exit",
+      "name": "signal-exit",
+      "version": "3.0.7",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "simple-plist",
+      "name": "simple-plist",
+      "version": "1.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "simple-plist/node_modules/bplist-parser",
+      "name": "bplist-parser",
+      "version": "0.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "sisteransi",
+      "name": "sisteransi",
+      "version": "1.0.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "slice-ansi",
+      "name": "slice-ansi",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "source-map-js",
+      "name": "source-map-js",
+      "version": "1.2.2",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "split2",
+      "name": "split2",
+      "version": "4.2.0",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "statuses",
+      "name": "statuses",
+      "version": "2.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "stream-buffers",
+      "name": "stream-buffers",
+      "version": "2.2.0",
+      "spdxExpression": "Unlicense",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "string_decoder",
+      "name": "string_decoder",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "string-width",
+      "name": "string-width",
+      "version": "4.2.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "strip-ansi",
+      "name": "strip-ansi",
+      "version": "6.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "swiper",
+      "name": "swiper",
+      "version": "14.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tar",
+      "name": "tar",
+      "version": "7.5.23",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tar/node_modules/yallist",
+      "name": "yallist",
+      "version": "5.0.0",
+      "spdxExpression": "BlueOak-1.0.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "through2",
+      "name": "through2",
+      "version": "4.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tiny-invariant",
+      "name": "tiny-invariant",
+      "version": "1.3.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tinyglobby",
+      "name": "tinyglobby",
+      "version": "0.2.17",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "toidentifier",
+      "name": "toidentifier",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tree-kill",
+      "name": "tree-kill",
+      "version": "1.2.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "tslib",
+      "name": "tslib",
+      "version": "2.8.1",
+      "spdxExpression": "0BSD",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "type-check",
+      "name": "type-check",
+      "version": "0.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "type-is",
+      "name": "type-is",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "type-is/node_modules/content-type",
+      "name": "content-type",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "type-is/node_modules/mime-db",
+      "name": "mime-db",
+      "version": "1.54.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "type-is/node_modules/mime-types",
+      "name": "mime-types",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "undici-types",
+      "name": "undici-types",
+      "version": "8.9.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "universalify",
+      "name": "universalify",
+      "version": "2.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "unpipe",
+      "name": "unpipe",
+      "version": "1.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "untildify",
+      "name": "untildify",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "update-browserslist-db",
+      "name": "update-browserslist-db",
+      "version": "1.3.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "uri-js",
+      "name": "uri-js",
+      "version": "4.4.1",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "use-sync-external-store",
+      "name": "use-sync-external-store",
+      "version": "1.6.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "util-deprecate",
+      "name": "util-deprecate",
+      "version": "1.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "vary",
+      "name": "vary",
+      "version": "1.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "victory-vendor",
+      "name": "victory-vendor",
+      "version": "37.3.6",
+      "spdxExpression": "MIT AND ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "vite",
+      "name": "vite",
+      "version": "8.3.8",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "which",
+      "name": "which",
+      "version": "2.0.2",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "word-wrap",
+      "name": "word-wrap",
+      "version": "1.2.5",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "wrap-ansi",
+      "name": "wrap-ansi",
+      "version": "7.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "wrappy",
+      "name": "wrappy",
+      "version": "1.0.2",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "xcode",
+      "name": "xcode",
+      "version": "4.0.0",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "xml2js",
+      "name": "xml2js",
+      "version": "0.6.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "xml2js/node_modules/xmlbuilder",
+      "name": "xmlbuilder",
+      "version": "11.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "xmlbuilder",
+      "name": "xmlbuilder",
+      "version": "15.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "yallist",
+      "name": "yallist",
+      "version": "3.1.1",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "yauzl",
+      "name": "yauzl",
+      "version": "2.10.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "yocto-queue",
+      "name": "yocto-queue",
+      "version": "0.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "zod",
+      "name": "zod",
+      "version": "4.6.7",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "root",
+      "packagePath": "zod-validation-error",
+      "name": "zod-validation-error",
+      "version": "4.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "@mongodb-js/saslprep",
+      "name": "@mongodb-js/saslprep",
+      "version": "1.4.13",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "@types/webidl-conversions",
+      "name": "@types/webidl-conversions",
+      "version": "7.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "@types/whatwg-url",
+      "name": "@types/whatwg-url",
+      "version": "11.0.5",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "accepts",
+      "name": "accepts",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "agent-base",
+      "name": "agent-base",
+      "version": "7.1.4",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "append-field",
+      "name": "append-field",
+      "version": "1.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "async-mutex",
+      "name": "async-mutex",
+      "version": "0.5.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "b4a",
+      "name": "b4a",
+      "version": "1.9.0",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bare-buffer",
+      "name": "bare-buffer",
+      "version": "3.7.2",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bare-events",
+      "name": "bare-events",
+      "version": "2.9.2",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bare-fs",
+      "name": "bare-fs",
+      "version": "4.8.4",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bare-path",
+      "name": "bare-path",
+      "version": "3.1.3",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bare-stream",
+      "name": "bare-stream",
+      "version": "2.13.4",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bare-url",
+      "name": "bare-url",
+      "version": "2.5.7",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "basic-auth",
+      "name": "basic-auth",
+      "version": "2.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "basic-auth/node_modules/safe-buffer",
+      "name": "safe-buffer",
+      "version": "5.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bcryptjs",
+      "name": "bcryptjs",
+      "version": "3.0.3",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "body-parser",
+      "name": "body-parser",
+      "version": "2.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "body-parser/node_modules/content-type",
+      "name": "content-type",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bson",
+      "name": "bson",
+      "version": "6.10.4",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "buffer-equal-constant-time",
+      "name": "buffer-equal-constant-time",
+      "version": "1.0.1",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "busboy",
+      "name": "busboy",
+      "version": "1.6.0",
+      "spdxExpression": "UNKNOWN",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "bytes",
+      "name": "bytes",
+      "version": "3.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "call-bind-apply-helpers",
+      "name": "call-bind-apply-helpers",
+      "version": "1.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "call-bound",
+      "name": "call-bound",
+      "version": "1.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "camelcase",
+      "name": "camelcase",
+      "version": "6.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "cloudinary",
+      "name": "cloudinary",
+      "version": "2.11.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "commondir",
+      "name": "commondir",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "compressible",
+      "name": "compressible",
+      "version": "2.0.18",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "compression",
+      "name": "compression",
+      "version": "1.8.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "compression/node_modules/debug",
+      "name": "debug",
+      "version": "2.6.9",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "compression/node_modules/ms",
+      "name": "ms",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "compression/node_modules/negotiator",
+      "name": "negotiator",
+      "version": "0.6.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "content-disposition",
+      "name": "content-disposition",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "content-type",
+      "name": "content-type",
+      "version": "1.0.5",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "cookie",
+      "name": "cookie",
+      "version": "0.7.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "cookie-parser",
+      "name": "cookie-parser",
+      "version": "1.4.7",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "cookie-signature",
+      "name": "cookie-signature",
+      "version": "1.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "cors",
+      "name": "cors",
+      "version": "2.8.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "debug",
+      "name": "debug",
+      "version": "4.4.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "depd",
+      "name": "depd",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "destroy",
+      "name": "destroy",
+      "version": "1.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "dotenv",
+      "name": "dotenv",
+      "version": "17.4.2",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "dunder-proto",
+      "name": "dunder-proto",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "ecdsa-sig-formatter",
+      "name": "ecdsa-sig-formatter",
+      "version": "1.0.11",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "ee-first",
+      "name": "ee-first",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "encodeurl",
+      "name": "encodeurl",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "es-define-property",
+      "name": "es-define-property",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "es-errors",
+      "name": "es-errors",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "es-object-atoms",
+      "name": "es-object-atoms",
+      "version": "1.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "escape-html",
+      "name": "escape-html",
+      "version": "1.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "etag",
+      "name": "etag",
+      "version": "1.8.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "events-universal",
+      "name": "events-universal",
+      "version": "1.0.1",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "express",
+      "name": "express",
+      "version": "5.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "express-rate-limit",
+      "name": "express-rate-limit",
+      "version": "8.6.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "express/node_modules/cookie-signature",
+      "name": "cookie-signature",
+      "version": "1.2.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "fast-fifo",
+      "name": "fast-fifo",
+      "version": "1.3.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "finalhandler",
+      "name": "finalhandler",
+      "version": "2.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "find-cache-dir",
+      "name": "find-cache-dir",
+      "version": "3.3.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "find-up",
+      "name": "find-up",
+      "version": "4.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "follow-redirects",
+      "name": "follow-redirects",
+      "version": "1.16.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "forwarded",
+      "name": "forwarded",
+      "version": "0.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "fresh",
+      "name": "fresh",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "function-bind",
+      "name": "function-bind",
+      "version": "1.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "get-intrinsic",
+      "name": "get-intrinsic",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "get-proto",
+      "name": "get-proto",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "gopd",
+      "name": "gopd",
+      "version": "1.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "has-symbols",
+      "name": "has-symbols",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "hasown",
+      "name": "hasown",
+      "version": "2.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "helmet",
+      "name": "helmet",
+      "version": "8.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "http-errors",
+      "name": "http-errors",
+      "version": "2.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "https-proxy-agent",
+      "name": "https-proxy-agent",
+      "version": "7.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "iconv-lite",
+      "name": "iconv-lite",
+      "version": "0.7.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "inherits",
+      "name": "inherits",
+      "version": "2.0.4",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "ip-address",
+      "name": "ip-address",
+      "version": "10.7.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "ipaddr.js",
+      "name": "ipaddr.js",
+      "version": "1.9.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "is-promise",
+      "name": "is-promise",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "jsonwebtoken",
+      "name": "jsonwebtoken",
+      "version": "9.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "jwa",
+      "name": "jwa",
+      "version": "2.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "jws",
+      "name": "jws",
+      "version": "4.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "kareem",
+      "name": "kareem",
+      "version": "2.6.3",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "locate-path",
+      "name": "locate-path",
+      "version": "5.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash",
+      "name": "lodash",
+      "version": "4.18.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.includes",
+      "name": "lodash.includes",
+      "version": "4.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.isboolean",
+      "name": "lodash.isboolean",
+      "version": "3.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.isinteger",
+      "name": "lodash.isinteger",
+      "version": "4.0.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.isnumber",
+      "name": "lodash.isnumber",
+      "version": "3.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.isplainobject",
+      "name": "lodash.isplainobject",
+      "version": "4.0.6",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.isstring",
+      "name": "lodash.isstring",
+      "version": "4.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "lodash.once",
+      "name": "lodash.once",
+      "version": "4.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "make-dir",
+      "name": "make-dir",
+      "version": "3.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "make-dir/node_modules/semver",
+      "name": "semver",
+      "version": "6.3.2",
+      "spdxExpression": "ISC",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "math-intrinsics",
+      "name": "math-intrinsics",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "media-typer",
+      "name": "media-typer",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "memory-pager",
+      "name": "memory-pager",
+      "version": "1.5.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "merge-descriptors",
+      "name": "merge-descriptors",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mime-db",
+      "name": "mime-db",
+      "version": "1.54.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mime-types",
+      "name": "mime-types",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mongodb",
+      "name": "mongodb",
+      "version": "6.20.0",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mongodb-connection-string-url",
+      "name": "mongodb-connection-string-url",
+      "version": "3.0.2",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mongodb-memory-server",
+      "name": "mongodb-memory-server",
+      "version": "10.4.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mongodb-memory-server-core",
+      "name": "mongodb-memory-server-core",
+      "version": "10.4.3",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mongoose",
+      "name": "mongoose",
+      "version": "8.24.9",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "morgan",
+      "name": "morgan",
+      "version": "1.12.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "morgan/node_modules/debug",
+      "name": "debug",
+      "version": "2.6.9",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "morgan/node_modules/ms",
+      "name": "ms",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mpath",
+      "name": "mpath",
+      "version": "0.9.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "mquery",
+      "name": "mquery",
+      "version": "5.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "ms",
+      "name": "ms",
+      "version": "2.1.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "multer",
+      "name": "multer",
+      "version": "2.5.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "multer/node_modules/media-typer",
+      "name": "media-typer",
+      "version": "0.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "multer/node_modules/mime-db",
+      "name": "mime-db",
+      "version": "1.52.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "multer/node_modules/mime-types",
+      "name": "mime-types",
+      "version": "2.1.35",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "multer/node_modules/type-is",
+      "name": "type-is",
+      "version": "1.6.18",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "negotiator",
+      "name": "negotiator",
+      "version": "1.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "new-find-package-json",
+      "name": "new-find-package-json",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "object-assign",
+      "name": "object-assign",
+      "version": "4.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "object-inspect",
+      "name": "object-inspect",
+      "version": "1.13.4",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "on-finished",
+      "name": "on-finished",
+      "version": "2.4.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "on-headers",
+      "name": "on-headers",
+      "version": "1.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "once",
+      "name": "once",
+      "version": "1.4.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "p-limit",
+      "name": "p-limit",
+      "version": "2.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "p-locate",
+      "name": "p-locate",
+      "version": "4.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "p-try",
+      "name": "p-try",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "parseurl",
+      "name": "parseurl",
+      "version": "1.3.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "path-exists",
+      "name": "path-exists",
+      "version": "4.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "path-to-regexp",
+      "name": "path-to-regexp",
+      "version": "8.4.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "pend",
+      "name": "pend",
+      "version": "1.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "pkg-dir",
+      "name": "pkg-dir",
+      "version": "4.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "proxy-addr",
+      "name": "proxy-addr",
+      "version": "2.0.8",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "punycode",
+      "name": "punycode",
+      "version": "2.3.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "qs",
+      "name": "qs",
+      "version": "6.17.1",
+      "spdxExpression": "BSD-3-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "range-parser",
+      "name": "range-parser",
+      "version": "1.3.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "raw-body",
+      "name": "raw-body",
+      "version": "3.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "router",
+      "name": "router",
+      "version": "2.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "safe-buffer",
+      "name": "safe-buffer",
+      "version": "5.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "safer-buffer",
+      "name": "safer-buffer",
+      "version": "2.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "semver",
+      "name": "semver",
+      "version": "7.8.5",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "send",
+      "name": "send",
+      "version": "1.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "serve-static",
+      "name": "serve-static",
+      "version": "2.2.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "setprototypeof",
+      "name": "setprototypeof",
+      "version": "1.2.0",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "side-channel",
+      "name": "side-channel",
+      "version": "1.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "side-channel-list",
+      "name": "side-channel-list",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "side-channel-map",
+      "name": "side-channel-map",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "side-channel-weakmap",
+      "name": "side-channel-weakmap",
+      "version": "1.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "sift",
+      "name": "sift",
+      "version": "17.1.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "sparse-bitfield",
+      "name": "sparse-bitfield",
+      "version": "3.0.3",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "statuses",
+      "name": "statuses",
+      "version": "2.0.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "streamsearch",
+      "name": "streamsearch",
+      "version": "1.1.0",
+      "spdxExpression": "UNKNOWN",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "streamx",
+      "name": "streamx",
+      "version": "2.28.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "tar-stream",
+      "name": "tar-stream",
+      "version": "3.2.2",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "teex",
+      "name": "teex",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "text-decoder",
+      "name": "text-decoder",
+      "version": "1.2.7",
+      "spdxExpression": "Apache-2.0",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "toidentifier",
+      "name": "toidentifier",
+      "version": "1.0.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "tr46",
+      "name": "tr46",
+      "version": "5.1.1",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "tslib",
+      "name": "tslib",
+      "version": "2.9.1",
+      "spdxExpression": "0BSD",
+      "devDependency": true,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "type-is",
+      "name": "type-is",
+      "version": "2.1.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "type-is/node_modules/content-type",
+      "name": "content-type",
+      "version": "2.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "unpipe",
+      "name": "unpipe",
+      "version": "1.0.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "validator",
+      "name": "validator",
+      "version": "13.15.35",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "vary",
+      "name": "vary",
+      "version": "1.1.2",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "webidl-conversions",
+      "name": "webidl-conversions",
+      "version": "7.0.0",
+      "spdxExpression": "BSD-2-Clause",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "whatwg-url",
+      "name": "whatwg-url",
+      "version": "14.2.0",
+      "spdxExpression": "MIT",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "wrappy",
+      "name": "wrappy",
+      "version": "1.0.2",
+      "spdxExpression": "ISC",
+      "devDependency": false,
+      "optionalDependency": false
+    },
+    {
+      "scope": "backend",
+      "packagePath": "yauzl",
+      "name": "yauzl",
+      "version": "3.4.0",
+      "spdxExpression": "MIT",
+      "devDependency": true,
+      "optionalDependency": false
+    }
+  ]
+}
