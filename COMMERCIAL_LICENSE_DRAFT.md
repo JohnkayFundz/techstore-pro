@@ -1,80 +1,42 @@
-# TechStore Pro — Proposed Commercial Source License (Draft)
+# TechStore Pro — Proposed Commercial License (Draft)
 
-**Status: DRAFT FOR OWNER AND LEGAL REVIEW — NOT A FINAL LICENSE.**  
-**Do not attach this draft to a paid download or represent it as legally reviewed.**
+**DRAFT ONLY — NOT READY FOR SALE. Seller confirmation and qualified legal review are required.**
 
-This proposal is intended to define a practical, non-exclusive license for the seller's original TechStore Pro code. It does not grant rights in third-party software, images, fonts, trademarks, or other materials that remain governed by their own terms.
+## 1. Parties and covered materials
 
-## 1. Parties and product
+Proposed licensor: John Kalumba, trading as JohnKay Fundz, subject to confirmation of the legal contracting identity and contact details. Product: TechStore Pro source-code starter kit. This license covers only original source code and documentation the licensor owns or is authorized to license and that are expressly included in the delivered package. Third-party dependencies, fonts, marks, media and services are excluded and remain governed by their own terms.
 
-- **Proposed licensor:** John Kalumba, trading as JohnKay Fundz.
-- **Product:** TechStore Pro source-code starter kit.
-- **Covered materials:** only the original source code and documentation that the licensor owns or is authorized to license and that are expressly included in the final delivery.
-- **Excluded materials:** third-party dependencies, marks, images, fonts, sample data, and external services to the extent they are owned or controlled by others.
+## 2. Proposed buyer usage rights
 
-The final version must include the seller's confirmed legal contact and an effective date.
+After valid purchase, the buyer receives a non-exclusive, non-transferable license to download and retain one copy, install, run, study and modify the covered original materials, and use them to build and operate **one end product** for the buyer or one named client. Reasonable backup, development and staging copies for that same end product are permitted. A contractor may assist with that end product under confidentiality obligations and may not redistribute the source.
 
-## 2. Proposed grant
+## 3. Restrictions
 
-After a valid purchase, the licensor grants the purchaser a non-exclusive, non-transferable license to:
-
-1. Download and retain one copy of the delivered source package.
-2. Install, run, study, and modify the covered original source code.
-3. Use the code to build and operate **one end product** (for example, one online store) for the purchaser or one named client.
-4. Make reasonable backup and development/staging copies for that same end product.
-5. Deploy the modified end product and provide its normal compiled/runtime use to the purchaser's or named client's customers.
-
-The purchaser may hire a contractor to assist with that one end product, provided the contractor is bound to confidentiality and does not receive broader rights to redistribute the source.
-
-## 3. Proposed restrictions
-
-Unless the licensor gives separate written permission, the purchaser may not:
-
-- Resell, sublicense, rent, lease, publish, share, or redistribute the source package or substantial portions of it.
-- Offer the source code, or a substantially similar source-code package, as a template, starter kit, theme, boilerplate, or competing downloadable product.
-- Use one purchase to create multiple independent end products or stores.
-- Claim ownership of the licensor's original code or remove applicable copyright and attribution notices.
-- Use third-party assets or dependencies outside the permissions granted by their respective owners.
-- Use the product to violate applicable law or third-party rights.
+Unless separately authorized in writing, the buyer may not resell, sublicense, rent, publish, share or redistribute the source package or substantial portions; offer it as a template, theme, boilerplate or competing downloadable product; use one purchase for multiple independent end products; remove applicable notices; or use third-party materials outside their licenses.
 
 ## 4. Ownership and third-party rights
 
-The licensor retains ownership of the original code and materials that the licensor is entitled to license. The purchaser owns their independently created content, data, branding, and modifications to the extent permitted by applicable law, but this does not transfer ownership of the underlying licensed code.
+The licensor retains rights in original materials they own. The buyer retains rights in independently created content, data and branding to the extent permitted by law. Third-party software and assets are not relicensed by this agreement. No statement in this draft establishes ownership of any asset without evidence.
 
-Third-party packages and assets are **not relicensed** by this document. They remain subject to their own license terms, notices, attribution, source-disclosure requirements, and brand restrictions. The final package must include all notices and materials required for the exact distributed contents.
+## 5. Support, updates and external services
 
-## 5. No included services
+Unless separately agreed in writing, purchase includes no hosting, domain, database, email, payment processing, Cloudinary, AI/API usage, installation, customization, deployment, maintenance, support, future updates or compatibility guarantee. The current demo checkout is not a promise of card-payment processing. Any payment provider requires separate configuration, integration and server-side verification.
 
-Unless separately agreed in writing, the purchase does not include:
+## 6. Refund terms — proposed policy for seller review
 
-- Hosting, a domain, database, email, payment processing, Cloudinary, AI/API usage, or other external services.
-- Installation, customization, deployment, maintenance, or technical support.
-- Future updates or compatibility guarantees.
-- Any payment gateway or guarantee that the checkout flow can collect or verify card payments.
+Proposed commercial approach: requests should be submitted through the marketplace or seller support channel within the refund window stated on the final listing. Refunds should be handled under the marketplace's mandatory rules and applicable consumer-protection law. If a delivered download is defective or materially differs from the listing, the seller should provide a reasonable remedy or refund as required by law and marketplace policy. No blanket “no refunds” clause is proposed. The seller must choose the actual time window, support contact and procedure before publication; digital-content cancellation rights and statutory exceptions vary by jurisdiction and require legal review.
 
-## 6. Purchaser responsibilities
+## 7. Warranties, liability, termination and governing law
 
-The purchaser is responsible for reviewing and adapting the code, securing credentials and infrastructure, complying with privacy and consumer laws, configuring tax/shipping/returns policies, obtaining rights to their own content and product images, and testing the final deployment.
+Warranty disclaimers, limitation of liability, indemnity, termination, governing law, venue, dispute resolution and consumer-rights clauses must be drafted or reviewed by a qualified lawyer for the seller's and buyer's jurisdictions. This draft is not final enforceable wording.
 
-A payment provider must be separately integrated and its payment status verified server-side before orders are treated as paid.
+## 8. Seller decisions required
 
-## 7. Disclaimer and liability — legal review required
+- Confirm legal contracting name, business status, address and support contact.
+- Confirm one-end-product scope and contractor access.
+- Set support duration, response scope and update policy.
+- Confirm refund window and process against marketplace rules and applicable law.
+- Select governing law and dispute process with legal advice.
+- Complete exact dependency notices and asset clearance for the delivered archive.
 
-Any warranty disclaimer, limitation of liability, indemnity, termination, refund, governing-law, dispute-resolution, and consumer-rights clauses must be drafted or reviewed by a qualified lawyer for the seller's and marketplace's jurisdictions before this license is finalized. Do not rely on this draft as a substitute for those clauses.
-
-## 8. Termination — proposed concept
-
-The final agreement may provide that the license terminates if the purchaser materially breaches the source redistribution restrictions and fails to remedy the breach after any legally required notice and cure period. The final wording and consequences require legal review.
-
-## 9. Decisions the seller must confirm before publication
-
-- [ ] Confirm the licensor's legal contracting name and contact details.
-- [ ] Confirm whether one purchase permits one end product for the buyer **or** one named client (this draft proposes either one).
-- [ ] Confirm whether multiple developers/contractors may access the source while working on that one end product.
-- [ ] Decide whether updates, support, refunds, and future versions are included.
-- [ ] Choose governing law, venue, and dispute process with legal advice.
-- [ ] Obtain legal review of consumer rights, disclaimers, liability, and enforceability.
-- [ ] Complete third-party dependency and asset clearance for the exact archive.
-- [ ] Add final license and required third-party notices to the customer package.
-
-**Release rule:** this draft is a planning aid only. The product remains on HOLD until the seller confirms the business terms, legal review is complete, and the final delivered files and notices have been checked.
+**Release gate:** do not attach this draft to a paid download until the seller confirms all business terms and obtains appropriate legal review.
