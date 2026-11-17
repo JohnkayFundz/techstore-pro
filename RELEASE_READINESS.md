@@ -1,3 +1,39 @@
+# CURRENT STATUS OVERRIDE — 2026-11-17 (latest QA verification; supersedes prior snapshot below)
+
+**Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
+**QA branch:** `qa/customer-e2e`  
+**QA HEAD:** `f0d4636f0ead852237006b87fb4d32b8f3454cc9`  
+**Latest workflow run:** `44140848291` — completed with failure at the enforced root high-severity security gate.  
+**Vercel preview:** READY for this exact QA commit; preview-only (`target: null`): https://techstore-jdryzm3md-deejayjohnkay-1047s-projects.vercel.app  
+**Main baseline recorded by prior verification:** `4713a3506ba64036b16768a3713bc4956d000fb4`; no merge or production deployment was performed.
+
+## Latest exact-HEAD CI results
+
+- Root clean install, dependency reconciliation, lint, frontend production build, Chromium setup, and all 4 Playwright E2E tests passed.
+- Backend clean install, backend audit (0 vulnerabilities), syntax checks, and all 21 backend tests passed.
+- Isolated third-party notice collection succeeded and uploaded its review bundle.
+- Verified lockfiles artifact uploaded: `techstore-pro-verified-lockfiles`, artifact ID `14354950838`.
+- The final enforced security step failed because root `npm audit --audit-level=high` reports **5 high-severity findings** through `picomatch@4.0.7` → `fdir` / `tinyglobby` / `vite`. Backend audit remains clean. CI correctly did not commit the verified lockfiles after the root gate failed.
+
+## Security disposition
+
+GitHub Advisory GHSA-fc5q-39xc-vjpf / CVE-2026-112366 describes high-severity ReDoS in picomatch through 4.0.7; GitHub still lists affected and patched versions as unknown. The upstream proposed fix is not an official released package. Do not use an unmerged patch, force-downgrade Vite, suppress the audit, or bypass the gate. Keep the security HOLD until a supported remediation is available and validated in this repository. See the current primary advisory: https://github.com/advisories/GHSA-fc5q-39xc-vjpf.
+
+## Remaining release blockers
+
+1. Root build-tool dependency audit remains red (5 high findings).
+2. Automated third-party notice collection is complete, but human/legal review and package-specific obligations remain open.
+3. Commercial license remains an unapproved draft; seller decisions and qualified legal review are required.
+4. Independent buyer-machine archive extraction, clean installation, configuration, and customer/admin smoke tests remain unexecuted.
+5. Genuine Cloudinary upload verification still requires a dedicated non-production account and credentials configured securely outside chat.
+6. No final buyer archive/checksum exists; seller identity, catalogue, policies, and distribution decisions remain outstanding.
+
+## Safety disposition
+
+No merge, main update, production deployment, production data/configuration mutation, buyer archive, marketplace publication, or live payment activation has occurred. Cash on delivery remains the only verified payment method. **Keep release on HOLD.**
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-17 (supersedes historical snapshot below)
 
 **Decision: QA FUNCTIONAL CHECKS PASS / RELEASE HOLD**  
