@@ -3,12 +3,17 @@
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD**  
 **Reviewed:** 2026-11-17  
 **Branch:** `qa/customer-e2e`  
-**Latest QA branch commit:** `1cc09a2a91591fe23351de3344afc0b1cded77f8`
-**Latest completed CI:** Run #233 — `44127942696` — SUCCESS on the latest QA commit  
-**GitHub Actions:** Run #233 — `44127942696` — SUCCESS on `1cc09a2`  
+**Latest QA branch commit at this review:** `711800ede24f68c7d46d49eb082fb58644233562`
+**Latest completed CI:** Run #235 — `44129232519` — SUCCESS on exact QA HEAD `711800e`  
+**GitHub Actions:** Run #235 — `44129232519` — SUCCESS on `711800e`  
 **Production/main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` (unchanged)
 
 This record supersedes earlier stale status summaries in this file. Historical notes elsewhere in the repository are retained as history and must not be treated as current state.
+
+## Verified on the current QA commit (Run #235)
+
+- [x] Latest exact-HEAD CI Run #235 completed successfully on `711800ede24f68c7d46d49eb082fb58644233562`. The workflow job completed with conclusion `success`.
+- [x] This supersedes the prior #233 status reference for this QA snapshot.
 
 ## Verified on the current QA commit
 
@@ -24,6 +29,8 @@ This record supersedes earlier stale status summaries in this file. Historical n
 - [x] Verified lockfile artifact uploaded; CI confirmed lockfiles already match manifests and audit fixes.
 - [x] QA Vercel preview for this exact commit is READY; target is preview (`target: null`), not production.
 - [x] Main branch remains unchanged at `4713a3506ba64036b16768a3713bc4956d000fb4`.
+
+Run #235: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44129232519
 
 Run #233: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127942696
 
@@ -54,6 +61,10 @@ Run #232 also passed on `ae44d1e00e707f0ee98152e1bf5b1661587b0542`.
 - Vercel project environment inspection showed no Cloudinary configuration keys. The available `VITE_API_URL` entries are not Cloudinary credentials; do not expose their values.
 - The Vercel QA deployment is SSO-protected and preview-only. Its READY build does not prove the complete deployed application works against a configured API/database.
 - MongoDB transaction tests use disposable CI infrastructure, not a buyer's configured database.
+
+## Buyer installation protocol
+
+`BUYER_INSTALL_VERIFICATION.md` now defines the independent archive inspection, fresh extraction, clean install, non-production configuration, customer/admin smoke tests, optional isolated Cloudinary upload, and evidence record. The protocol has **not** been executed; a separate buyer-controlled machine and test services are still required.
 
 ## Remaining release blockers
 

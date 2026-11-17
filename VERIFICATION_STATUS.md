@@ -1,8 +1,9 @@
-## Current verification snapshot — 2026-11-17
+## Current verification snapshot — 2026-11-17 (refreshed after Run #235)
 
 - Branch: `qa/customer-e2e`
-- Latest QA commit before this status-only update: `c073719641c005405f3203d18a1a2ed305cd1ee3`
-- GitHub Actions Run #233: [44127942696](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127942696) — **SUCCESS** on commit `1cc09a2a91591fe23351de3344afc0b1cded77f8`.
+- Latest QA branch HEAD at this refresh: `711800ede24f68c7d46d49eb082fb58644233562`
+- GitHub Actions Run #235: [44129232519](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44129232519) — **SUCCESS** on exact branch HEAD `711800ede24f68c7d46d49eb082fb58644233562`.
+- Run #233: [44127942696](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127942696) — **SUCCESS** on commit `1cc09a2a91591fe23351de3344afc0b1cded77f8`.
 - GitHub Actions Run #232: [44127887960](https://github.com/JohnkayFundz/techstore-pro/actions/runs/44127887960) — **SUCCESS** on commit `ae44d1e00e707f0ee98152e1bf5b1661587b0542`.
 - Root/backend clean installs and dependency audits: **PASS**.
 - Repository lint and frontend build: **PASS**.
@@ -13,6 +14,8 @@
 - QA Vercel preview for code commit `3523faf5154dfb6f40f1e3b0b0210da5f2414f2c` is READY with preview target; documentation-only commits do not change the application bundle.
 - Current `main` remains `4713a3506ba64036b16768a3713bc4956d000fb4`; no merge or production change was made.
 - No buyer-machine clean install, real Cloudinary upload, final archive extraction/checksum review, or final commercial/legal sign-off has been completed.
+
+- `BUYER_INSTALL_VERIFICATION.md` documents the independent buyer-machine acceptance procedure; it has not been executed.
 
 **Decision: TECHNICAL QA PASS / COMMERCIAL RELEASE HOLD.** See `RELEASE_READINESS.md` and `LICENSE_REVIEW.md` for current blockers.
 
