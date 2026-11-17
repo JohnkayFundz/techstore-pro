@@ -451,7 +451,7 @@ This file enumerates every non-root package entry in both committed npm lockfile
 | `body-parser/node_modules/content-type` | `2.1.0` | MIT |
 | `bson` | `6.10.4` | Apache-2.0 |
 | `buffer-equal-constant-time` | `1.0.1` | BSD-3-Clause |
-| `busboy` | `1.6.0` | UNSPECIFIED |
+| `busboy` | `1.6.0` | MIT (verified from upstream v1.6.0 LICENSE; retained in `licenses/busboy-1.6.0-LICENSE.txt`) |
 | `bytes` | `3.1.2` | MIT |
 | `call-bind-apply-helpers` | `1.0.2` | MIT |
 | `call-bound` | `1.0.4` | MIT |
@@ -578,7 +578,7 @@ This file enumerates every non-root package entry in both committed npm lockfile
 | `sift` | `17.1.3` | MIT |
 | `sparse-bitfield` | `3.0.3` | MIT |
 | `statuses` | `2.0.2` | MIT |
-| `streamsearch` | `1.1.0` | UNSPECIFIED |
+| `streamsearch` | `1.1.0` | MIT (verified from upstream v1.1.0 LICENSE; retained in `licenses/streamsearch-1.1.0-LICENSE.txt`) |
 | `streamx` | `2.28.1` | MIT |
 | `tar-stream` | `3.2.2` | MIT |
 | `teex` | `1.0.1` | MIT |
@@ -598,10 +598,10 @@ This file enumerates every non-root package entry in both committed npm lockfile
 
 ## Manifest/lockfile verification findings
 
-- Root lockfile: 417 non-root package entries.
-- Backend lockfile: 165 non-root package entries.
-- Root `package.json` declares `@playwright/test@^1.61.1`, but the current root lockfile has no `node_modules/@playwright/test` entry and its root package metadata does not list that dependency. **This is a manifest/lockfile consistency blocker to resolve before buyer installation.**
-- Backend lockfile packages with no modern SPDX metadata: `busboy@1.6.0` and `streamsearch@1.1.0`. Prior review found legacy MIT metadata, but exact upstream license texts must be included in the final archive.
+- Root lockfile: 417 non-root package entries in the prior inventory; CI reconciled the manifest and committed the updated lockfile at `9af534bdb09a1c1fbd5df465a16f751d3f37ba73`.
+- Backend lockfile: 165 non-root package entries; CI reconciled it and confirmed no backend lockfile change was required.
+- The current root lockfile now contains `node_modules/@playwright/test` version `1.65.1`, matching the manifest range `^1.61.1`. The prior manifest/lockfile mismatch is resolved on this QA branch.
+- `busboy@1.6.0` and `streamsearch@1.1.0` have no modern SPDX metadata in the lockfile. Their exact-version upstream LICENSE files were checked at the `v1.6.0` and `v1.1.0` tags, respectively; both are MIT, and the full texts are retained under `licenses/`.
 
 ## Required notice completion before distribution
 
@@ -613,3 +613,10 @@ This file enumerates every non-root package entry in both committed npm lockfile
 - Re-run the inventory whenever either manifest or lockfile changes, then inspect the final archive.
 
 This generated table is a complete snapshot of lockfile license metadata, not a complete set of upstream legal notices. It does not independently establish legal compliance.
+
+
+## Exact upstream license texts verified in this review
+
+- `busboy@1.6.0`: upstream tag `v1.6.0`, `LICENSE`; SHA/source reference recorded by the upstream GitHub repository. Full text copied to `licenses/busboy-1.6.0-LICENSE.txt`.
+- `streamsearch@1.1.0`: upstream tag `v1.1.0`, `LICENSE`; full text copied to `licenses/streamsearch-1.1.0-LICENSE.txt`.
+- These two missing-metadata cases are resolved for the listed versions. This does not mean the other package notices, attribution, MPL-2.0 obligations, or the final archive have been fully reviewed.
