@@ -191,3 +191,19 @@ A fresh inspection of the current QA-branch root lockfile and release packager c
 A further static review of `scripts/package-release.js` found that three JavaScript string literals used a double-escaped newline (literal backslash plus `n`) rather than a real newline. This affected the generated backend `package.json` terminator, the backend syntax-check error message, and the SHA-256 sidecar terminator. The generated backend manifest could therefore contain trailing non-JSON characters and fail the subsequent clean production install. Corrected all three literals to use actual newline escape sequences in commit `9fbe78f543015f88a7d2e3af57b723db40e3dfcb` on `qa/customer-e2e`.
 
 **Verification status:** source diff confirms the three targeted corrections. CI for this commit has not yet been confirmed; the Vercel status was pending at the time of review. No buyer archive was generated. The distribution HOLD remains in force.
+
+## 5. picomatch advisory exposure assessment — 2026-11-18
+
+**Advisory:** GitHub GHSA-fc5q-39xc-vjpf / CVE-2026-112366, High severity. The published advisory describes regular-expression denial of service from attacker-controlled single-branch repeated extglob patterns (examples include `+(*)` and `+(*a)`). It identifies picomatch versions through `4.0.7` as affected and does not identify a patched version. The upstream fix proposal referenced by the advisory was not merged; do not treat an unmerged patch, an npm override, or an audit suppression as remediation.
+
+**QA lockfile evidence:** At the current `qa/customer-e2e` snapshot, the root lockfile resolves exactly one `picomatch@4.0.7` record at `node_modules/picomatch`, with `dev: true`. Its direct lockfile dependents are:
+- `vite@8.3.8` — dependency range `^4.0.7`, itself development tooling;
+- `tinyglobby@0.2.17` — dependency range `^4.0.4`, itself development tooling.
+
+The backend lockfile has no picomatch record. The root application manifest declares Vite only under `devDependencies`; it does not declare picomatch directly. This supports the narrow finding that the known lockfile path is in the development/build-tool dependency graph, not the declared backend runtime dependency graph. It is not a proof that the vulnerable code is unreachable in every developer, CI, preview, or build environment, nor a substitute for reviewing how build tooling processes untrusted inputs.
+
+**Exposure conclusion:** No direct application import or application-level call to picomatch has been established by this lockfile review. The documented advisory trigger requires a crafted glob pattern to reach picomatch's vulnerable parsing/matching path. The reviewed package graph alone does not establish that an external user can supply such a pattern to the deployed storefront. Conversely, development servers, CI jobs, preview/build services, or other tooling may process repository-controlled or externally supplied paths/globs; those input boundaries have not been exhaustively audited. Therefore this is a plausible tooling/availability exposure requiring further assessment, not a demonstrated remotely exploitable production-storefront path.
+
+**Remediation status:** No patched picomatch release is identified by the current GitHub advisory. Do not downgrade Vite, force an incompatible dependency tree, apply an unreviewed fork/override, or weaken the audit gate. A future remediation must demonstrate a compatible, maintained dependency path that removes the affected implementation or a validated upstream fixed release, then pass clean install, full audit, lint, build, browser tests, and backend tests.
+
+**Decision: HOLD.** This assessment narrows the known dependency scope but does not clear the audit finding or authorize packaging, publication, production deployment, or a risk acceptance exception. Recheck the advisory and resolved dependency graph before any release decision.
