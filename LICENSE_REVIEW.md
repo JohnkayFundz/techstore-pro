@@ -207,3 +207,21 @@ The backend lockfile has no picomatch record. The root application manifest decl
 **Remediation status:** No patched picomatch release is identified by the current GitHub advisory. Do not downgrade Vite, force an incompatible dependency tree, apply an unreviewed fork/override, or weaken the audit gate. A future remediation must demonstrate a compatible, maintained dependency path that removes the affected implementation or a validated upstream fixed release, then pass clean install, full audit, lint, build, browser tests, and backend tests.
 
 **Decision: HOLD.** This assessment narrows the known dependency scope but does not clear the audit finding or authorize packaging, publication, production deployment, or a risk acceptance exception. Recheck the advisory and resolved dependency graph before any release decision.
+
+
+## 5A. picomatch source and CI input-boundary review — 2026-11-18
+
+A targeted source/configuration review was completed on QA head `e9459dbecfad3d6063f0abda747c0882714349cc`:
+
+- Root scripts are limited to Vite development/build/preview, lint, Playwright E2E, Capacitor sync/open, notice generation, and release packaging. There is no application script that accepts a user-supplied glob argument.
+- `vite.config.js` contains only the standard React plugin configuration; it does not configure a network host, custom file watcher, glob expression, or middleware.
+- `playwright.config.js` starts the Vite development server explicitly on `127.0.0.1`, and the E2E base URL is loopback. This is not an externally exposed CI dev server in the checked configuration.
+- A targeted search of the inspected application entry points, API utilities, app utilities, hooks, server entry points, and project scripts found no direct `picomatch`, `tinyglobby`, `fast-glob`, `micromatch`, or `import.meta.glob` use. The application code does not establish a direct request-to-picomatch input path.
+- The CI workflow runs `npm run build` and browser tests. It does not start a publicly bound Vite server; Playwright's configured web server is loopback-only. CI still executes repository-controlled build/configuration code, so a malicious repository change or compromised build dependency could cause a build-time denial of service. That is a repository/CI supply-chain boundary, not evidence that ordinary storefront visitors can submit extglob patterns.
+- The Vite `preview` script uses Vite's default host because no `--host` override is declared in the package script. No externally exposed preview-server configuration was found in the reviewed project files. Deployment-provider configuration and all external preview settings were not independently inspected.
+
+**Refined conclusion:** the checked source/configuration provides no evidence of an externally reachable application route that forwards visitor-controlled values to picomatch. The confirmed exposure is the development/build-tool dependency and its repository-controlled build inputs. This reduces the evidence for a direct production storefront DoS, but it does not clear the high-severity audit finding: CI/build availability and any unreviewed external preview configuration remain in scope, and the dependency itself remains in the affected version range.
+
+**CI result for this assessment commit:** workflow run #302 (`44317397989`) completed with failure. Notice collection passed; frontend lint/build, browser E2E, backend installation, backend tests (21/21), and syntax checks completed successfully. The final root audit failed on `picomatch` with five high-severity findings in the dependency tree; backend audit reported zero vulnerabilities. The audit proposed `npm audit fix --force` installing `vite@6.2.7`, a breaking downgrade, and it was not applied. The security gate correctly remained failed.
+
+**Decision remains HOLD.** No dependency override, downgrade, audit suppression, release packaging, production deployment, or main-branch change was made.
