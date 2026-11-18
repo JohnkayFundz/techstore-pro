@@ -225,3 +225,14 @@ A targeted source/configuration review was completed on QA head `e9459dbecfad3d6
 **CI result for this assessment commit:** workflow run #302 (`44317397989`) completed with failure. Notice collection passed; frontend lint/build, browser E2E, backend installation, backend tests (21/21), and syntax checks completed successfully. The final root audit failed on `picomatch` with five high-severity findings in the dependency tree; backend audit reported zero vulnerabilities. The audit proposed `npm audit fix --force` installing `vite@6.2.7`, a breaking downgrade, and it was not applied. The security gate correctly remained failed.
 
 **Decision remains HOLD.** No dependency override, downgrade, audit suppression, release packaging, production deployment, or main-branch change was made.
+
+
+## 5B. Upstream release availability recheck — 2026-11-18
+
+Rechecked the publisher's GitHub-reviewed advisory and the npm package version listing after the source-boundary review:
+
+- GitHub's advisory was reviewed/updated November 17, 2026; it still lists affected versions `<=4.0.7` and explicitly lists **no patched versions**.
+- npm's published `picomatch` version listing still identifies **4.0.7** as the current `latest` tag. No published `picomatch@4.0.8` is shown.
+- A few secondary search results mention `4.0.8`, but the surfaced package-lock examples identify that version as **micromatch**, not picomatch. They are not evidence of a patched picomatch release and must not be used to clear this finding.
+
+**Decision:** no valid upstream picomatch upgrade target is currently available from the checked publisher sources. Keep the existing exact dependency graph and high-severity audit enforcement unchanged; do not invent an override or treat a similarly named package version as a fix. Recheck npm and the advisory before any future release decision. HOLD remains.
