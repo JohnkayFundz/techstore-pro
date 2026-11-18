@@ -105,7 +105,7 @@ jobs:
   notice-review:
     name: Isolated third-party notice collection (QA only)
     needs: [validation]
-    if: github.ref == 'refs/heads/qa/customer-e2e' && needs.validation.result == 'success'
+    if: always() && github.ref == 'refs/heads/qa/customer-e2e' && needs.validation.result != 'cancelled'
     runs-on: ubuntu-latest
     permissions:
       contents: read
