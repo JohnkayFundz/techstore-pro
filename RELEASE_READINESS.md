@@ -1,3 +1,34 @@
+# CURRENT STATUS OVERRIDE — 2026-11-18 (CI #288 exact-HEAD verification)
+
+**Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
+**QA branch:** `qa/customer-e2e`  
+**Exact branch HEAD tested:** `7e02b6ec89df97d4ca6d36cec8bd05e98ae9747e`  
+**CI run:** #288 — `44313800777` — completed with failure at the enforced high-severity security gate.  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — no merge or update performed.
+
+## CI #288 exact results
+
+- Root dependency reconciliation and clean installation passed.
+- Frontend lint and production build passed.
+- Chromium installation and all 4 isolated browser E2E tests passed.
+- Backend clean installation, backend audit (0 vulnerabilities), all 21 backend unit tests, and JavaScript syntax checks passed.
+- Exact-version production dependency notice collection passed in the isolated QA job; the notice review bundle uploaded successfully.
+- Verified lockfiles artifact upload passed. The lockfile commit step was skipped because the enforced security gate failed.
+- Root audit reported **5 high-severity vulnerabilities** through `picomatch@4.0.7`, reached through `vite` / `tinyglobby` / `fdir`. The final gate reported root status 1 and backend status 0.
+- The suggested `npm audit fix --force` would install Vite 6.2.7, a breaking downgrade. It was not run. No audit suppression, unmerged patch, override, or gate bypass was applied.
+
+Run #288: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44313800777
+
+## Decision and remaining blockers
+
+The root build-tool dependency security finding remains unresolved. Do not alter the dependency graph until an official compatible fix or a separately validated toolchain migration is available. Functional CI success does not override the security gate.
+
+Other open release blockers remain: human/legal review of exact-version third-party notices and archive applicability; qualified legal review and approval of the commercial license; independent buyer-machine archive extraction, installation, configuration, and customer/admin smoke tests; and genuine Cloudinary upload verification using dedicated non-production credentials.
+
+No final buyer archive/checksum or marketplace listing may be produced while HOLD. No merge/update to `main`, production deployment, production database/configuration mutation, live payment activation, buyer archive generation/distribution, or marketplace publication has occurred.
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-18 (CI #287 exact-HEAD verification)
 
 **Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
