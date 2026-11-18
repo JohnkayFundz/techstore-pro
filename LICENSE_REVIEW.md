@@ -139,3 +139,10 @@ This register is an engineering compliance aid, not legal advice or a legal opin
 The QA workflow at `.github/workflows/ci.yml` defines a dedicated `notice-review` job for `qa/customer-e2e`. It checks out the branch, installs the exact root and backend dependencies with `npm ci --ignore-scripts --no-audit --no-fund`, runs `npm run notices:generate`, and uploads `THIRD-PARTY-NOTICES.md` plus `notice-generation.log` as the `techstore-pro-third-party-notices` artifact. A push to this QA branch triggers the workflow; this is the available connected-plugin route because no workflow-dispatch action is exposed by the GitHub integration.
 
 This record is procedural only. It does not represent a new generator execution. The next QA artifact must be tied to the resulting workflow run and commit, then compared with the tracked notice file and the prior run #252 artifact. The separate validation job also runs and may report the known high-severity dependency audit blocker; no security-gate bypass is authorized. No release packaging, main-branch update, production deployment, or live payment action is part of this step.
+
+## 2D. Production 0BSD notice text spot-check — 2026-11-18
+
+A targeted inspection of the current tracked `THIRD-PARTY-NOTICES.md` confirms that the root production dependency `tslib@2.8.1` is represented in the package table as `0BSD`, with Microsoft Corp. / Microsoft Corporation copyright attribution, and that a complete `LICENSE.txt` text section is present. The section includes the permission grant and the complete warranty/liability disclaimer. This is a useful notice-preservation check for the identified root lockfile record.
+
+**Limit:** this was a review of the generated tracked notice text, not an independent comparison against the installed package's exact-version upstream LICENSE file, not a build-output/module-inclusion check, and not proof that tslib is actually redistributed in the final buyer archive. The existing archive-specific mapping and legal-review blockers remain open. Do not mark the 0BSD obligation cleared on this basis alone.
+
