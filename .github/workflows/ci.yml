@@ -150,17 +150,15 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  commit-artifacts:
-    name: Commit verified QA/product artifacts
-    needs: [validation, notice-review]
+  commit-lockfiles:
+    name: Commit verified lockfiles
+    needs: [validation]
     if: >-
       always() &&
       github.event_name == 'push' &&
       (github.ref == 'refs/heads/qa/customer-e2e' ||
        github.ref == 'refs/heads/product/paid-starter-kit-preparation') &&
-      needs.validation.result == 'success' &&
-      (github.ref != 'refs/heads/qa/customer-e2e' ||
-       needs.notice-review.result == 'success')
+      needs.validation.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -176,31 +174,63 @@ jobs:
           name: techstore-pro-verified-lockfiles
           path: .
 
-      - name: Download generated notices (QA only)
-        if: github.ref == 'refs/heads/qa/customer-e2e'
-        uses: actions/download-artifact@v4
-        with:
-          name: techstore-pro-generated-notices
-          path: .
-
-      - name: Commit artifacts and push with race protection
+      - name: Commit lockfiles and push with race protection
         env:
           TARGET_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add package-lock.json server/package-lock.json
-          if [ "$TARGET_BRANCH" = "qa/customer-e2e" ]; then
-            git add THIRD-PARTY-NOTICES.md
-          fi
 
           if git diff --cached --quiet; then
-            echo "Verified lockfiles and generated notices are already current."
+            echo "Verified lockfiles already match manifests and security fixes."
             exit 0
           fi
 
-          git commit -m "chore(ci): commit verified dependency and notice artifacts"
+          git commit -m "chore(deps): apply verified security updates"
+          git pull --rebase origin "$TARGET_BRANCH"
+          git push origin "HEAD:$TARGET_BRANCH"
+
+  commit-notices:
+    name: Commit generated third-party notices (QA only)
+    needs: [validation, notice-review, commit-lockfiles]
+    if: >-
+      always() &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/qa/customer-e2e' &&
+      needs.validation.result == 'success' &&
+      needs.notice-review.result == 'success' &&
+      needs.commit-lockfiles.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Download generated notice register
+        uses: actions/download-artifact@v4
+        with:
+          name: techstore-pro-generated-notices
+          path: .
+
+      - name: Commit notice register and push after lockfile commit
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add THIRD-PARTY-NOTICES.md
+
+          if git diff --cached --quiet; then
+            echo "Tracked notice register already matches exact-lockfile generation."
+            exit 0
+          fi
+
+          git commit -m "docs(licenses): refresh generated third-party notices"
           git pull --rebase origin "$TARGET_BRANCH"
           git push origin "HEAD:$TARGET_BRANCH"
