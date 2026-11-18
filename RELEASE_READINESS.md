@@ -1,3 +1,55 @@
+# CURRENT STATUS OVERRIDE — 2026-11-18 (CI #285 and compatible-remediation investigation)
+
+**Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
+**Branch:** `qa/customer-e2e`  
+**Branch HEAD reviewed:** `85012290b67a68e2c7dc713bd2b17ed4d008872f`  
+**CI run:** #285 — `44312738919` — completed with failure at the enforced high-severity security gate.  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — no merge or update performed.
+
+## CI #285 exact results
+
+- Root clean install, dependency reconciliation, lint, frontend production build, Chromium setup, and all 4 browser E2E tests passed.
+- Backend clean install, audit (0 vulnerabilities), 21 unit tests, and JavaScript syntax checks passed.
+- Third-party notice collection and both review-artifact uploads passed.
+- Root full audit still reports 5 high-severity findings associated with `picomatch@4.0.7`.
+- The final enforced root/backend security gate failed as expected (root status 1; backend status 0). Verified lockfiles were not committed because the gate failed.
+- No test, audit, or security-gate failure was suppressed.
+
+## Compatible-remediation investigation — no safe candidate established
+
+The exact QA lockfile graph was re-read. It confirms both direct and transitive dependency edges:
+- `vite@8.3.8` directly depends on `picomatch@^4.0.7`.
+- `vite@8.3.8` also depends on `tinyglobby@^0.2.17`, which depends on `picomatch@^4.0.4` and `fdir@^6.5.0`; `fdir` accepts picomatch 3 or 4 as a peer.
+- The React Vite plugin is `@vitejs/plugin-react@6.0.3`, with a Vite `^8.0.0` peer requirement.
+
+This matters because replacing only `tinyglobby` or `fdir` would not remove Vite's direct vulnerable picomatch dependency. A package override to an earlier 4.x release would violate Vite's declared `^4.0.7` range and would not be a verified remediation. A downgrade to Vite 6.2.7 is the breaking `npm audit fix --force` proposal and is not acceptable. A build-tool migration (for example, to a different bundler) would be a substantial toolchain change, not a narrow compatible dependency fix; no candidate has yet been proven against this repository's React plugin, build output, lint, browser tests, package workflow, and security audit.
+
+Fresh upstream checks on 2026-11-18:
+- GitHub's primary advisory GHSA-fc5q-39xc-vjpf / CVE-2026-112366 still describes the ReDoS issue through picomatch 4.0.7 and lists patched versions as unknown.
+- The latest published picomatch version remains 4.0.7; no official patched release was found.
+- Vite 8.3.8 remains the current stable Vite 8 release in the checked release information; its resolved dependency graph still includes picomatch 4.0.7.
+- The proposed picomatch PR #235 remains closed/unmerged and is not a released upstream package. PR #194 is unrelated to this specific advisory.
+
+**Conclusion:** There is currently no safe, compatible, evidence-backed package substitution to apply. Do not change manifests or lockfiles speculatively. Do not use an unmerged fork, manual package override, forced Vite downgrade, audit exception, or gate bypass.
+
+## Next safe technical action
+
+Keep the dependency graph unchanged and the release on HOLD. Reassess when either (a) picomatch publishes an official version outside the advisory's affected range and Vite's declared range can resolve it, or (b) a separately reviewed bundler/toolchain migration is proposed with a compatibility matrix and full exact-commit CI evidence. Any eventual candidate must pass root and backend audits, clean installs, lint, production build, all 4 browser tests, backend tests, syntax checks, and package/notice verification before it can be considered resolved.
+
+## Other release blockers remain
+
+1. Human review of exact-version license texts, package notices, vendored code, and archive-specific applicability; the automated 296-entry collector is not legal clearance.
+2. Commercial license draft remains unapproved and requires qualified legal review.
+3. Independent buyer-machine archive extraction, clean install, configuration, and customer/admin smoke tests remain unexecuted.
+4. Cloudinary upload verification requires a dedicated non-production account and securely configured credentials.
+5. No final buyer archive/checksum or marketplace listing may be produced while HOLD.
+
+## Safety disposition
+
+No merge/update to `main`, production deployment, production database/configuration mutation, live payment activation, buyer archive, or marketplace publication. Keep release on HOLD.
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-18 (security investigation after CI run #284)
 
 **Decision: FUNCTIONAL QA CHECKS PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
