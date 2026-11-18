@@ -174,3 +174,13 @@ A lockfile-wide exact package/version coverage comparison was run against both c
 
 **Method and limits:** for every non-root lockfile package record, the check extracted the package name from its `node_modules` path and checked for the exact package-name/version pair in the generated notice document. This is a deterministic coverage check, not a human review of all 296 license texts, not proof that every package's notice text is legally complete or correctly interpreted, and not proof that each package is actually present in the final buyer archive or bundled frontend output. It does not replace archive-specific inspection, source-form obligation analysis, or qualified legal review. Distribution remains **HOLD**.
 
+## 8. Current security and packaging gate recheck — 2026-11-18
+
+A fresh inspection of the current QA-branch root lockfile and release packager confirms:
+
+- The root lockfile still resolves `picomatch@4.0.7` as a development dependency. The previously identified high-severity advisory remains a current unresolved security finding; no dependency override, forced downgrade, suppression, or gate bypass has been introduced.
+- The CI workflow runs root and backend high-severity audits and has a final enforcement step that fails the validation job if either audit fails. The QA notice-review job is separate and does not constitute security clearance.
+- `scripts/package-release.js` checks for the explicit `<!-- COMMERCIAL-LICENSE-APPROVED -->` marker in buyer-facing `COMMERCIAL_LICENSE.md` before it builds or stages an archive. The current buyer-facing file is superseded/unapproved and the required approval marker is absent.
+
+**Disposition:** do not run the release packager or create a buyer archive. The security gate and seller/legal approval gate remain closed. No production, payment, or main-branch action is authorized by this review.
+
