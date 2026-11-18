@@ -160,3 +160,17 @@ The comparison used each lockfile's root `packages[""].dependencies` map, resolv
 
 **Limit:** this is a direct-dependency coverage check only. It does not independently validate full transitive dependency coverage, the correctness/completeness of each license text, bundled frontend module inclusion, backend archive contents, or legal compliance. It also does not establish that all 34 direct packages are redistributed in the final buyer archive. The existing full-tree, archive-specific and legal-review actions remain open; distribution remains HOLD.
 
+## 2F. Full lockfile production-scope notice coverage — 2026-11-18
+
+A lockfile-wide exact package/version coverage comparison was run against both current QA-branch npm lockfiles and the tracked notice table. The comparison inspected every non-root `packages` record and classified production scope by the npm lockfile `dev` flag (including records marked `devOptional`, which remain non-dev records in this lockfile snapshot).
+
+| Lockfile scope | All package records | Non-dev production-scope records | Exact notice matches |
+|---|---:|---:|---:|
+| Root | 417 | 166 | 166 |
+| Backend | 165 | 130 | 130 |
+| **Total** | **582** | **296** | **296** |
+
+**Result:** all 296 non-dev package records (including transitive records) have a matching package-name and exact-version entry in `THIRD-PARTY-NOTICES.md`; no missing matches were found. This reconciles with the notice bundle's stated 296 production dependency entries. The remaining 286 lockfile records are marked development dependencies and are outside this non-dev production-scope comparison.
+
+**Method and limits:** for every non-root lockfile package record, the check extracted the package name from its `node_modules` path and checked for the exact package-name/version pair in the generated notice document. This is a deterministic coverage check, not a human review of all 296 license texts, not proof that every package's notice text is legally complete or correctly interpreted, and not proof that each package is actually present in the final buyer archive or bundled frontend output. It does not replace archive-specific inspection, source-form obligation analysis, or qualified legal review. Distribution remains **HOLD**.
+
