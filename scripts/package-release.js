@@ -28,7 +28,7 @@ try {
   if (!fs.existsSync(path.join(root, "COMMERCIAL_LICENSE.md"))) fail("Reviewed buyer-facing COMMERCIAL_LICENSE.md is missing. The draft is not substituted.");
   const commercialTerms = fs.readFileSync(path.join(root, "COMMERCIAL_LICENSE.md"), "utf8");
   const approvalMarker = "<!-- COMMERCIAL-LICENSE-APPROVED -->";
-  const approvalMarkerLines = commercialTerms.split(/\\r?\\n/).filter((line) => line.trim() === approvalMarker);
+  const approvalMarkerLines = commercialTerms.split(/\r?\n/).filter((line) => line.trim() === approvalMarker);
   if (commercialTerms.includes("SUPERSEDED — DO NOT PUBLISH OR DISTRIBUTE")) fail("COMMERCIAL_LICENSE.md is explicitly superseded and cannot be distributed.");
   if (approvalMarkerLines.length !== 1) fail("COMMERCIAL_LICENSE.md must contain exactly one standalone approval-marker line after seller confirmation and qualified legal review.");
   await run("npm", ["run", "build"]);
