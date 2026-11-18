@@ -146,3 +146,17 @@ A targeted inspection of the current tracked `THIRD-PARTY-NOTICES.md` confirms t
 
 **Limit:** this was a review of the generated tracked notice text, not an independent comparison against the installed package's exact-version upstream LICENSE file, not a build-output/module-inclusion check, and not proof that tslib is actually redistributed in the final buyer archive. The existing archive-specific mapping and legal-review blockers remain open. Do not mark the 0BSD obligation cleared on this basis alone.
 
+## 2E. Direct production dependency notice coverage — 2026-11-18
+
+A deterministic comparison was run against the current QA-branch root and backend lockfiles and the tracked `THIRD-PARTY-NOTICES.md`:
+
+- Root manifest direct production dependencies: **20**.
+- Backend manifest direct production dependencies: **14**.
+- Total direct production dependencies checked: **34**.
+- Exact package-name and lockfile-version notice-table matches: **34/34**.
+- Missing direct dependency matches: **0**.
+
+The comparison used each lockfile's root `packages[""].dependencies` map, resolved each direct dependency to its locked `node_modules/<name>` record, and checked that the notice table contains the same package name and exact locked version. The checked set includes the root UI/runtime dependencies and the backend runtime dependencies, including `lucide-react@1.25.0` (ISC), `bcryptjs@3.0.3` (BSD-3-Clause), and `dotenv@17.4.2` (BSD-2-Clause).
+
+**Limit:** this is a direct-dependency coverage check only. It does not independently validate full transitive dependency coverage, the correctness/completeness of each license text, bundled frontend module inclusion, backend archive contents, or legal compliance. It also does not establish that all 34 direct packages are redistributed in the final buyer archive. The existing full-tree, archive-specific and legal-review actions remain open; distribution remains HOLD.
+
