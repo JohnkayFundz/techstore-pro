@@ -1,3 +1,45 @@
+# CURRENT STATUS OVERRIDE — 2026-11-18 (security investigation after CI run #284)
+
+**Decision: FUNCTIONAL QA CHECKS PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
+**Branch:** `qa/customer-e2e`  
+**Investigated commit:** `78f377d975934a07f5780f2b06da4250c97f5383` (CI run #284: `44310664302`)  
+**Current branch head before this documentation update:** `0f78da27c91768e0c62094a4982e219c5225b11b`  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — no merge/update performed.
+
+## Security investigation result — no safe upstream package fix available
+
+CI run #284 confirms the blocker precisely:
+- Root dependency reconciliation and the compatible, non-forced `npm audit fix --package-lock-only` step completed, but the final full root audit still reported **5 high-severity findings**.
+- The affected path is `vite@8.3.8` → `tinyglobby` / `fdir` → `picomatch@4.0.7`. The root manifest declares Vite `^8.1.1`; the installed lockfile resolves Vite `8.3.8`.
+- The backend full audit reports **0 vulnerabilities**.
+- The suggested `npm audit fix --force` would downgrade Vite to `6.2.7`, outside the declared Vite 8 line and a breaking change. It was not run.
+- The gate correctly remains enforced and fails with root status 1 / backend status 0. No audit suppression, override, fork, force downgrade, or gate bypass was applied.
+
+Current upstream evidence checked 2026-11-18:
+- GitHub Advisory [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) / CVE-2026-112366 describes ReDoS in picomatch versions through 4.0.7 and still lists patched versions as unknown.
+- The npm package page still identifies `4.0.7` as the latest published version.
+- The proposed upstream security PR [micromatch/picomatch#235](https://github.com/micromatch/picomatch/pull/235) is **closed and not merged**; its head is a fork, not an official release.
+- Upstream PR #194 is open but addresses an unrelated extglob parsing issue; it is not a remediation for this advisory.
+- Therefore, there is no verified official patched release to install. The prior assumption that an upstream PR might soon resolve the issue is not sufficient release evidence.
+
+## Decision and next safe action
+
+**No dependency change is justified at this time.** Retain the current compatible Vite 8 toolchain, preserve the full audit gate, and keep the release on HOLD. Reassess only when an official picomatch release outside the affected range is published, or when a separately reviewed dependency replacement can be demonstrated to remove the vulnerable code path without weakening the gate. Then update the lockfile and run the complete CI suite on the exact resulting QA commit.
+
+## Other release blockers remain
+
+1. Third-party notice collection is automated and complete (296 production entries, zero unresolved collector entries), but package-specific human/legal review and archive-specific obligations remain open.
+2. Commercial license is an unapproved draft; qualified legal review remains required.
+3. Independent buyer-machine archive extraction, clean installation, configuration, and customer/admin smoke tests remain unexecuted.
+4. Cloudinary upload verification still requires a dedicated non-production account and credentials configured securely outside chat.
+5. No final buyer archive/checksum exists; do not package or distribute while HOLD.
+
+## Safety disposition
+
+No merge, main update, production deployment, production data/configuration mutation, buyer archive, marketplace publication, or live payment activation has occurred. Keep release on HOLD.
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-17 (latest QA verification; supersedes prior snapshot below)
 
 **Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
