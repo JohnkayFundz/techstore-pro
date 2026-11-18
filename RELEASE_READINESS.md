@@ -17,6 +17,10 @@
 - Root audit reported **5 high-severity vulnerabilities** through `picomatch@4.0.7`, reached through `vite` / `tinyglobby` / `fdir`. The final gate reported root status 1 and backend status 0.
 - The suggested `npm audit fix --force` would install Vite 6.2.7, a breaking downgrade. It was not run. No audit suppression, unmerged patch, override, or gate bypass was applied.
 
+## Upstream release recheck — 2026-11-18
+
+The official `micromatch/picomatch` GitHub Releases endpoint was checked after CI #288. The newest published release returned is still **4.0.7** (published 2026-08-24); the release list contains no later patched release. The current GitHub advisory still lists patched versions as unknown. Accordingly, no official upstream remediation is available to adopt, and the dependency graph remains unchanged. This is a release-metadata check, not evidence that the vulnerable code path is safe.
+
 Run #288: https://github.com/JohnkayFundz/techstore-pro/actions/runs/44313800777
 
 ## Decision and remaining blockers
