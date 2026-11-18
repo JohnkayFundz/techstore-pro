@@ -180,7 +180,7 @@ A fresh inspection of the current QA-branch root lockfile and release packager c
 
 - The root lockfile still resolves `picomatch@4.0.7` as a development dependency. The previously identified high-severity advisory remains a current unresolved security finding; no dependency override, forced downgrade, suppression, or gate bypass has been introduced.
 - The CI workflow runs root and backend high-severity audits and has a final enforcement step that fails the validation job if either audit fails. The QA notice-review job is separate and does not constitute security clearance.
-- `scripts/package-release.js` checks for the explicit `<!-- COMMERCIAL-LICENSE-APPROVED -->` marker in buyer-facing `COMMERCIAL_LICENSE.md` before it builds or stages an archive. The current buyer-facing file is superseded/unapproved and the required approval marker is absent.
+- `COMMERCIAL_LICENSE.md` is explicitly marked superseded and contains the approval-marker token only as explanatory prose, not as a standalone approval line. The previous packager used a substring check, which would have treated that prose mention as approval. This was a fail-closed guard defect. The QA packager check has now been hardened to reject the superseded file and require exactly one standalone approval-marker line before building or staging an archive.
 
 **Disposition:** do not run the release packager or create a buyer archive. The security gate and seller/legal approval gate remain closed. No production, payment, or main-branch action is authorized by this review.
 
