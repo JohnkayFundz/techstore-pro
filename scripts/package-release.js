@@ -58,7 +58,7 @@ try {
   if (!manifest.dependencies || Object.keys(manifest.dependencies).length === 0) fail("Backend production dependencies are not declared.");
   delete manifest.scripts?.dev;
   delete manifest.scripts?.test;
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\\n");
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
 
   const tempInstall = await fs.promises.mkdtemp(path.join(os.tmpdir(), "techstore-backend-check-"));
   try {
@@ -73,7 +73,7 @@ try {
     walk(backend);
     for (const file of runtimeFiles) {
       const check = spawnSync(process.execPath, ["--check", file], { encoding: "utf8" });
-      if (check.status !== 0) throw new Error(`Backend syntax check failed: ${file}\\n${check.stderr}`);
+      if (check.status !== 0) throw new Error(`Backend syntax check failed: ${file}\n${check.stderr}`);
     }
   } finally {
     await fs.promises.rm(tempInstall, { recursive: true, force: true });
@@ -105,7 +105,7 @@ try {
   ]);
   if (tarCode !== 0 || gzipCode !== 0) fail("Deterministic tar/gzip process failed. GNU tar and gzip are required.");
   const hash = crypto.createHash("sha256").update(fs.readFileSync(archive)).digest("hex");
-  fs.writeFileSync(`${archive}.sha256`, `${hash}  ${path.basename(archive)}\\n`);
+  fs.writeFileSync(`${archive}.sha256`, `${hash}  ${path.basename(archive)}\n`);
   console.log(`Archive: ${archive}`);
   console.log(`SHA-256: ${hash}`);
 } catch (error) {
