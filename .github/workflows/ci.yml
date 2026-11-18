@@ -7,12 +7,15 @@ on:
   pull_request:
     branches: [main, product/paid-starter-kit-preparation]
 
+permissions:
+  contents: read
+
 jobs:
   validation:
     name: Clean install, security audit, lint, build and backend tests
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,24 +68,6 @@ jobs:
         working-directory: server
         run: npm ci --ignore-scripts --no-audit --no-fund
 
-      - name: Collect exact-version production dependency notices (QA only)
-        if: github.ref == 'refs/heads/qa/customer-e2e'
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          npm run notices:generate 2>&1 | tee notice-generation.log
-
-      - name: Upload notice review bundle (QA only)
-        if: always() && github.ref == 'refs/heads/qa/customer-e2e'
-        uses: actions/upload-artifact@v4
-        with:
-          name: techstore-pro-third-party-notices
-          path: |
-            THIRD-PARTY-NOTICES.md
-            notice-generation.log
-          if-no-files-found: warn
-          retention-days: 7
-
       - name: Audit all backend dependencies
         continue-on-error: true
         working-directory: server
@@ -96,7 +81,7 @@ jobs:
         working-directory: server
         run: node --check server.js && node --check app.js
 
-      - name: Upload verified lockfiles
+      - name: Upload verified lockfiles for downstream review
         uses: actions/upload-artifact@v4
         with:
           name: techstore-pro-verified-lockfiles
@@ -117,28 +102,22 @@ jobs:
             exit 1
           fi
 
-      - name: Commit verified lockfiles
-        if: success() && github.event_name == 'push' && (github.ref == 'refs/heads/product/paid-starter-kit-preparation' || github.ref == 'refs/heads/qa/customer-e2e')
-        run: |
-          if git diff --quiet -- package-lock.json server/package-lock.json; then
-            echo "Lockfiles already match manifests and audit fixes."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add package-lock.json server/package-lock.json
-            git commit -m "chore(deps): apply verified security updates"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
-
   notice-review:
     name: Isolated third-party notice collection (QA only)
-    if: github.ref == 'refs/heads/qa/customer-e2e'
+    needs: [validation]
+    if: github.ref == 'refs/heads/qa/customer-e2e' && needs.validation.result == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download verified lockfiles from validation
+        uses: actions/download-artifact@v4
+        with:
+          name: techstore-pro-verified-lockfiles
+          path: .
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -161,26 +140,67 @@ jobs:
           set -o pipefail
           npm run notices:generate 2>&1 | tee notice-generation.log
 
-      - name: Commit regenerated notice register (QA only)
-        if: success()
-        run: |
-          if git diff --quiet -- THIRD-PARTY-NOTICES.md; then
-            echo "Tracked notice register already matches the exact-lockfile generation."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add THIRD-PARTY-NOTICES.md
-            git commit -m "docs(licenses): refresh generated third-party notices"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
-
-      - name: Upload notice review bundle
-        if: always()
+      - name: Upload generated notice register for downstream commit
         uses: actions/upload-artifact@v4
         with:
-          name: techstore-pro-third-party-notices
+          name: techstore-pro-generated-notices
           path: |
             THIRD-PARTY-NOTICES.md
             notice-generation.log
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7
+
+  commit-artifacts:
+    name: Commit verified QA/product artifacts
+    needs: [validation, notice-review]
+    if: >-
+      always() &&
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/qa/customer-e2e' ||
+       github.ref == 'refs/heads/product/paid-starter-kit-preparation') &&
+      needs.validation.result == 'success' &&
+      (github.ref != 'refs/heads/qa/customer-e2e' ||
+       needs.notice-review.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Download verified lockfiles
+        uses: actions/download-artifact@v4
+        with:
+          name: techstore-pro-verified-lockfiles
+          path: .
+
+      - name: Download generated notices (QA only)
+        if: github.ref == 'refs/heads/qa/customer-e2e'
+        uses: actions/download-artifact@v4
+        with:
+          name: techstore-pro-generated-notices
+          path: .
+
+      - name: Commit artifacts and push with race protection
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add package-lock.json server/package-lock.json
+          if [ "$TARGET_BRANCH" = "qa/customer-e2e" ]; then
+            git add THIRD-PARTY-NOTICES.md
+          fi
+
+          if git diff --cached --quiet; then
+            echo "Verified lockfiles and generated notices are already current."
+            exit 0
+          fi
+
+          git commit -m "chore(ci): commit verified dependency and notice artifacts"
+          git pull --rebase origin "$TARGET_BRANCH"
+          git push origin "HEAD:$TARGET_BRANCH"
