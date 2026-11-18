@@ -1,3 +1,42 @@
+# CURRENT STATUS OVERRIDE — 2026-11-18 (CI #287 exact-HEAD verification)
+
+**Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
+**QA branch:** `qa/customer-e2e`  
+**Exact branch HEAD tested:** `c7b70b6455401ac8f8586d31944efc3bebbd016c`  
+**CI run:** #287 — `44313465882` — completed with failure only at the enforced high-severity security gate.  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — no merge or update performed.
+
+## CI #287 exact results
+
+- Root dependency reconciliation and clean install passed.
+- Root full audit step completed successfully as a command, but the enforced final security gate correctly failed because the audit still returns a non-zero status for high-severity findings.
+- Lint, frontend production build, Chromium setup, and all 4 isolated browser E2E tests passed.
+- Backend clean install, backend audit (0 vulnerabilities), all 21 backend unit tests, and JavaScript syntax checks passed.
+- Exact-version production dependency notice collection passed; its isolated job committed the regenerated notice register and uploaded the review bundle.
+- Verified lockfiles artifact upload passed. The lockfile commit step was skipped because the enforced security gate failed.
+- No test or audit failure was suppressed; no gate was bypassed.
+
+## Refreshed upstream advisory check — 2026-11-18
+
+The primary GitHub advisory [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) / CVE-2026-112366 still identifies picomatch through 4.0.7 as affected and lists the patched version as unknown. The npm registry still lists 4.0.7 as the latest published version. A same-day independent upstream issue also reports no patched release and describes the issue as affecting development tooling; that observation does not clear TechStore Pro's enforced root audit or establish a safe remediation. The exact project dependency graph remains unchanged.
+
+**Decision:** no dependency override, unmerged fork, forced Vite downgrade, audit exception, or security-gate bypass. Keep the release on HOLD until an official compatible fix or a separately validated toolchain migration is available.
+
+## Remaining release blockers
+
+1. Root high-severity dependency audit remains unresolved.
+2. Human review of exact-version license texts, notices, vendored code, and archive-specific applicability remains open; automated collection is not legal clearance.
+3. Commercial license remains an unapproved draft and requires qualified legal review.
+4. Independent buyer-machine archive extraction, clean installation, configuration, and customer/admin smoke tests remain unexecuted.
+5. Cloudinary upload verification requires a dedicated non-production account and securely configured credentials.
+6. No final buyer archive/checksum or marketplace listing may be produced while HOLD.
+
+## Safety disposition
+
+No merge/update to `main`, production deployment, production database/configuration mutation, live payment activation, buyer archive generation/distribution, or marketplace publication. Keep release on HOLD.
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-18 (CI #285 and compatible-remediation investigation)
 
 **Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
