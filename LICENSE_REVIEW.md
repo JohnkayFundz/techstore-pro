@@ -184,3 +184,10 @@ A fresh inspection of the current QA-branch root lockfile and release packager c
 
 **Disposition:** do not run the release packager or create a buyer archive. The security gate and seller/legal approval gate remain closed. No production, payment, or main-branch action is authorized by this review.
 
+
+
+## 8B. Release-packager newline serialization defect — 2026-11-18
+
+A further static review of `scripts/package-release.js` found that three JavaScript string literals used a double-escaped newline (literal backslash plus `n`) rather than a real newline. This affected the generated backend `package.json` terminator, the backend syntax-check error message, and the SHA-256 sidecar terminator. The generated backend manifest could therefore contain trailing non-JSON characters and fail the subsequent clean production install. Corrected all three literals to use actual newline escape sequences in commit `9fbe78f543015f88a7d2e3af57b723db40e3dfcb` on `qa/customer-e2e`.
+
+**Verification status:** source diff confirms the three targeted corrections. CI for this commit has not yet been confirmed; the Vercel status was pending at the time of review. No buyer archive was generated. The distribution HOLD remains in force.
