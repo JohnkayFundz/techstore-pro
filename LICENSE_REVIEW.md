@@ -37,9 +37,13 @@ No package is deemed legally cleared solely because a lockfile declares an SPDX 
 
 All counts are lockfile records, not counts of files copied into a buyer archive. Platform-specific optional packages are listed because they are locked; actual installation and archive contents may differ.
 
-## 2B. Notice-register snapshot discrepancy
+## 2B. Notice-register reconciliation — rechecked 2026-11-18
 
-The downloaded run #252 artifact is the authoritative output of the current collector for that run: its package table contains collected copyright/header information and its full-text section contains the package license/notice files. The currently tracked `THIRD-PARTY-NOTICES.md` at this QA branch snapshot is not identical to that artifact: its 296 table rows still say "Not yet extracted from exact upstream license file" and its introductory text says the table is only a summary. The current generator source, `scripts/generate-third-party-notices.js`, emits actual `entry.copyright` values in that column and full license texts below. Therefore, the tracked summary appears stale relative to the inspected artifact/generator and must be regenerated from the exact QA lockfiles and installed package contents, then committed and compared against CI output. Do not mark this reconciliation complete until the generated tracked file and artifact agree by content or documented deterministic differences.
+The earlier run #252 review correctly identified a stale tracked snapshot: its table contained "Not yet extracted from exact upstream license file" placeholders even though the generated CI artifact contained collected copyright/header information and full license/notice text.
+
+A fresh read of the current `qa/customer-e2e` `THIRD-PARTY-NOTICES.md` now shows the generated-format introductory statement, 296 production entries, 0 unresolved entries, populated copyright/notice-header values in the package table, and the collected full-text sections. The previously documented placeholder discrepancy is therefore no longer present in the current tracked file.
+
+**Disposition:** tracked-file regeneration/reconciliation is improved and the old stale-snapshot warning is superseded. This check was a content inspection, not a byte-for-byte comparison against the CI artifact. Preserve the exact-run artifact and perform a deterministic file/hash comparison for any final release candidate. Human license review and archive-specific applicability remain open; this does not grant legal clearance.
 
 ## 2A. Production versus development-only special-license scope
 
