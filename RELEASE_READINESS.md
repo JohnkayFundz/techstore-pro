@@ -1,3 +1,37 @@
+# CURRENT GOVERNANCE STATUS — 2026-11-19 (supersedes all historical status snapshots below)
+
+**Decision: COMMERCIAL RELEASE HOLD**  
+**Governance branch:** `qa/customer-e2e`  
+**Latest verified strict CI evidence:** Run #307 — ID `44447820030` — commit `34f7a7ed52c024167aa566fac5088cef81fbfc6b` — success.  
+**Current QA base after PR #13:** `5771e62a527931c889bbaf0d2d98e6e1c114df88`.  
+**Main baseline:** `4713a3506ba64036b16768a3713bc4956d000fb4` — protected and unchanged.
+
+## Current advisory and CI disposition
+
+- GitHub withdrew `GHSA-fc5q-39xc-vjpf` / CVE-2026-112366 on 2026-11-18, determining that the report was not a security issue. This supersedes earlier historical statements in this file that treated this advisory as an active vulnerability blocker.
+- CI Run #307 completed successfully on its exact commit. The final, enforced root and backend high-severity audit gate passed; both audits reported zero vulnerabilities. The preliminary audit steps are non-blocking, but the final strict gate is not configured with `continue-on-error`.
+- The root lockfile remained unchanged at `picomatch@4.0.7`; no patch, override, downgrade, fork, or lockfile workaround was introduced. The zero-vulnerability audit result reflects the upstream advisory withdrawal, not a package patch.
+- Run #307 verified lockfiles artifact: ID `14494785130`; ZIP SHA-256 `d4192c283003caa6e5a8ef5a3d8d8519de24c561e411737f928ccc54b32ed69d`. The root lockfile Git blob at the Run #307 commit matches the QA lockfile blob `67685edb4940344c258501aeaa6bc056b9365fc2`.
+- PR #13 is merged into `qa/customer-e2e` (merge commit `5771e62a527931c889bbaf0d2d98e6e1c114df88)); its purpose was to include the QA branch in the pull-request CI trigger filter.
+- PR #14 remains an unmerged documentation proposal. Its head predates PR #13's workflow-trigger change, and no GitHub Actions workflow run is registered for its current head. Vercel preview success is not CI validation. Do not merge PR #14 on the basis of Vercel status.
+
+## Remaining commercial-release blockers
+
+1. Qualified Nigerian legal counsel must review and approve the commercial license, consumer terms/refund wording, contracting identity, open-source obligations, and legally acceptable service/notice address. `COMMERCIAL_LICENSE_DRAFT.md` remains a draft; do not create or represent `COMMERCIAL_LICENSE.md` as approved before counsel sign-off.
+2. Exact-version third-party license texts, notices, attributions, vendored code, and archive-specific applicability still require human/legal review. Automated notice collection is not legal clearance.
+3. Independent buyer-machine archive extraction, clean installation, configuration, customer/admin smoke tests, and checksum verification remain unexecuted.
+4. A genuine Cloudinary upload test remains outstanding and requires dedicated non-production credentials.
+5. Seller/distribution eligibility and final content/identity decisions remain unverified.
+6. No final buyer archive/checksum or marketplace listing may be generated or published while HOLD.
+
+## Safety and scope
+
+No merge to `main`, production deployment, production database/configuration mutation, live payment activation, release archive generation, or marketplace publication is authorized. Preserve the main baseline above. The withdrawal record resolves only the cited advisory status; it is not blanket security, legal, licensing, or commercial clearance.
+
+**Historical note:** All dated status snapshots and security findings below this current-status section are retained as historical evidence. Where they describe GHSA-fc5q-39xc-vjpf as active, patched-version-unknown, or an unresolved high-severity blocker, those statements are superseded by the 2026-11-18 withdrawal and Run #307 evidence above.
+
+---
+
 # CURRENT STATUS OVERRIDE — 2026-11-18 (CI #288 exact-HEAD verification)
 
 **Decision: FUNCTIONAL QA PASS / SECURITY + COMMERCIAL RELEASE HOLD**  
